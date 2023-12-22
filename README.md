@@ -1,3 +1,6 @@
+# Run locally:
+See whisper-page.cmd
+
 # done CRs, oldest first
 - Split it into the files style.css, whisper-page.html, js.file
 - NEVER read the API key from the input field, but instead from the cookie.
