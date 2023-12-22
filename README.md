@@ -1,4 +1,4 @@
-Published here: https://silidev.github.io/whisper-page/whisper-page.html
+Published here: https://silidev.github.io/whisper-page/
 
 A page from which you can record speech and send to the OpenAI whisper API. The result is copied to the clipboard.
 
