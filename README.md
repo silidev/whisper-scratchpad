@@ -1,3 +1,5 @@
+Pushlished here: https://silidev.github.io/whisper-page/whisper-page.html
+
 A page from which you can record speech and send to the OpenAI whisper A
 
 # Run locally:
