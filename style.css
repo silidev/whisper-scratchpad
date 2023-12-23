@@ -12,6 +12,10 @@ body {
  width: 100%; /* Ensure full width */
 }
 
+a {
+ color: #0f0;
+}
+
 h1 {
  font-size: 2em;
  margin-bottom: 20px;
