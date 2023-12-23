@@ -38,7 +38,10 @@
 </div>
 <div style="width:100%;">
 <h3>Optional</h3>
-  <label for="prompt">Prompt:</label>
+  <label for="prompt">Prompt: <span class="info-icon">ⓘ</span>
+    <span id="info-text" style="display: none;">
+      Since it wasn't trained using instruction-following techniques, Whisper operates more like a base GPT model. It's important to keep in mind that Whisper only considers the first 244 tokens of the prompt. <a href="https://platform.openai.com/docs/guides/speech-to-text/prompting">More info</a>
+    </span></label>
   <textarea id="prompt" wrap="soft" placeholder="Optional prompt especially for hinting unusual names if they are no recognized by default." style="width:100%;height: 100%;"></textarea>
   <button id="savePromptButton">Save prompt</button>
 </div>
@@ -52,13 +55,13 @@
 <br>
 <br>
 <br>
-<div style="width:100%;">
-<h3>For devs</h3>
-<a href="https://platform.openai.com/docs/api-reference/audio/createTranscription">API docs</a>
-<br>
-<br>Once my browser said the page wanted to read the clipboard... if you get that just deny it. The page does not actually want to read the clipboard, I wrote no code for that.
-<br>
-<br>Copyright 2023 by <a href="https://twitter.com/silidev">https://twitter.com/silidev</a>. GPL V3.
+<div style="width:100%;" >
+  <h3 style="margin-bottom: -15px">For devs</h3>
+  <br>- <a href="https://platform.openai.com/docs/api-reference/audio/createTranscription">API docs</a>
+  <br>- <a href="https://platform.openai.com/docs/guides/speech-to-text">OpenAI Speech Guide</a>
+  <br>- Once my browser said the page wanted to read the clipboard... if you get that just deny it. The page does not actually want to read the clipboard, I wrote no code for that.
+  <br>
+  <br>Copyright 2023 by <a href="https://twitter.com/silidev">https://twitter.com/silidev</a>. GPL V3.
 </div>
 <script src="script.js"></script>
 </body>

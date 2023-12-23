@@ -130,3 +130,7 @@ const hideSpinner = () => {
   const spinner = document.querySelector('.spinner');
   spinner.style.display = 'none';
 };
+
+document.querySelector('.info-icon').addEventListener('click', function() {
+  document.getElementById('info-text').style.display = 'block';
+});
