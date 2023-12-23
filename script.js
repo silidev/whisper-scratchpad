@@ -1,3 +1,5 @@
+/* This is NOT my coding style, this is mostly AI generated.*/
+
 let apiKey = '';
 
 const saveKeyButton = document.getElementById('saveKeyButton');
