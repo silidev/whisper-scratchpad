@@ -1,19 +1,21 @@
 body {
  display: flex;
  flex-direction: column;
- align-items: start;
+ align-items: center; /* Changed from start to center */
  justify-content: flex-start;
  height: 100vh;
  font-family: 'Arial', sans-serif;
  background-color: black;
  color: #0f0;
- margin: auto;
- max-width: 20cm;
+ padding: 0; /* Reset default padding */
+ margin: 0; /* Reset default margin */
+ width: 100%; /* Ensure full width */
 }
 
 h1 {
  font-size: 2em;
  margin-bottom: 20px;
+ text-align: center; /* Center align the header */
 }
 
 .button-container {
@@ -21,6 +23,7 @@ h1 {
  justify-content: center;
  align-items: center;
  flex-wrap: wrap;
+ width: 100%; /* Ensure full width */
 }
 
 button, input {
@@ -37,6 +40,7 @@ button:hover, button:focus {
  transform: scale(1.05);
 }
 
+/* Set specific button colors */
 #saveKeyButton, #recordButton, #pauseButton, #clearButton, #downloadButton {
  background-color: #007bff;
  color: white;
@@ -56,13 +60,16 @@ button:hover, button:focus {
 }
 
 textarea {
- width: 100%;
+ width: calc(100% - 20px); /* Adjust for padding */
  height: 150px;
  padding: 10px;
  border-radius: 5px;
  border: 1px solid #ddd;
  resize: vertical;
  font-size: 1em;
+ background: black; /* Ensure background color */
+ color: #0f0; /* Ensure text color */
+ margin: 0; /* Reset default margin */
 }
 
 @keyframes spin {
