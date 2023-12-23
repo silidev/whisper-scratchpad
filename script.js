@@ -4,6 +4,7 @@ let apiKey = '';
 const saveKeyButton = document.getElementById('saveKeyButton');
 const recordButton = document.getElementById('recordButton');
 const pauseButton = document.getElementById('pauseButton');
+const clearButton = document.getElementById('clearButton');
 const downloadButton = document.getElementById('downloadButton');
 const sendButton = document.getElementById('sendButton');
 const whisperResponse = document.getElementById('whisperResponse');
@@ -37,28 +38,23 @@ navigator.mediaDevices.getUserMedia({ audio: true })
       downloadButton.href = audioURL;
       downloadButton.download = 'recording.wav';
       downloadButton.style.display = 'block';
+      sendAudioToServer(audioBlob).then(hideSpinner);
+  };
 
-      if (!isRecording) {
-        sendAudioToServer(audioBlob).then(hideSpinner);
-      }
-    };
-
-    const recordButton = document.querySelector('#recordButton');
-    recordButton.addEventListener('click', () => {
-      if (!isRecording) {
-        showSpinner();
-        mediaRecorder.start();
-        isRecording = true;
-        recordButton.textContent = 'Stop';
-      } else {
-        mediaRecorder.stop();
-        isRecording = false;
-        recordButton.textContent = 'Record';
-        // sendAudioToServer removed from here
-      }
-    });
+  const recordButton = document.querySelector('#recordButton');
+  recordButton.addEventListener('click', () => {
+    if (!isRecording) {
+      showSpinner();
+      mediaRecorder.start();
+      isRecording = true;
+      recordButton.textContent = 'Stop';
+    } else {
+      mediaRecorder.stop();
+      isRecording = false;
+      recordButton.textContent = 'Record';
+    }
   });
-
+});
 
 pauseButton.addEventListener('click', () => {
   if (mediaRecorder.state === 'recording') {
@@ -68,6 +64,10 @@ pauseButton.addEventListener('click', () => {
     mediaRecorder.resume();
     pauseButton.textContent = 'Pause';
   }
+});
+
+clearButton.addEventListener('click', () => {
+  whisperResponse.value = '2';
 });
 
 const sendAudioToServer = async (audioBlob) => {
@@ -84,10 +84,10 @@ const sendAudioToServer = async (audioBlob) => {
     body: formData
   });
   const result = await response.json();
-  whisperResponse.value =
-      result.text ? "Copied to clipboard:   "+ result.text
+  whisperResponse.value +=
+      result.text ? result.text
           : JSON.stringify(result, null, 2);
-  navigator.clipboard.writeText(result.text).then();
+  navigator.clipboard.writeText(whisperResponse.value).then();
 };
 
 function getCookie(name) {
