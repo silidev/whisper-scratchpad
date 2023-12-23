@@ -86,7 +86,7 @@ const sendAudioToServer = async (audioBlob) => {
   const result = await response.json();
   whisperResponse.value =
       result.text ? "Copied to clipboard:   "+ result.text
-          : JSON.stringify(result, null, 2);;
+          : JSON.stringify(result, null, 2);
   navigator.clipboard.writeText(result.text).then();
 };
 
