@@ -1,4 +1,3 @@
-
 let apiKey = '';
 
 const saveKeyButton = document.getElementById('saveKeyButton');
@@ -6,7 +5,6 @@ const recordButton = document.getElementById('recordButton');
 const pauseButton = document.getElementById('pauseButton');
 const clearButton = document.getElementById('clearButton');
 const downloadButton = document.getElementById('downloadButton');
-const sendButton = document.getElementById('sendButton');
 const whisperResponse = document.getElementById('whisperResponse');
 const apiKeyInput = document.getElementById('apiKey');
 
