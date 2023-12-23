@@ -63,17 +63,16 @@ navigator.mediaDevices.getUserMedia({ audio: true })
       sendAudioToServer(audioBlob).then(hideSpinner);
   };
 
-  const recordButton = document.querySelector('#recordButton');
   recordButton.addEventListener('click', () => {
     if (!isRecording) {
       showSpinner();
       mediaRecorder.start();
       isRecording = true;
-      recordButton.textContent = 'Stop';
+      recordButton.textContent = '◼ Stop';
     } else {
       mediaRecorder.stop();
       isRecording = false;
-      recordButton.textContent = 'Record';
+      recordButton.textContent = '⬤ Record';
     }
   });
 });

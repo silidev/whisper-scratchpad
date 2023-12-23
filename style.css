@@ -38,6 +38,10 @@ button, input, textarea {
  background-color: black;
 }
 
+button, input, .spinner {
+ height: 45px;
+}
+
 textarea {
  width: 100%;
  resize: vertical;
@@ -54,9 +58,9 @@ button:hover, button:focus {
 }
 
 .spinner {
- border: 1px solid var(--color1);
- width: 36px;
- height: 36px;
+ border: 2px solid var(--color1);
+ width: 15px;
+ height: 15px;
  border-radius: 50%;
  border-left-color: #09f;
  animation: spin 1s ease infinite;
