@@ -34,10 +34,12 @@ navigator.mediaDevices.getUserMedia({ audio: true })
       let audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
       audioChunks = [];
       const audioURL = URL.createObjectURL(audioBlob);
-      const downloadButton = document.querySelector('#downloadButton');
-      downloadButton.href = audioURL;
-      downloadButton.download = 'recording.wav';
-      downloadButton.style.display = 'block';
+      { // Download button (hidden, b/c not working)
+        const downloadButton = document.querySelector('#downloadButton');
+        downloadButton.href = audioURL;
+        downloadButton.download = 'recording.wav';
+        // downloadButton.style.display = 'block';
+      }
       sendAudioToServer(audioBlob).then(hideSpinner);
   };
 
