@@ -7,6 +7,7 @@ const clearButton = document.getElementById('clearButton');
 const downloadButton = document.getElementById('downloadButton');
 const whisperResponse = document.getElementById('whisperResponse');
 const apiKeyInput = document.getElementById('apiKey');
+const prompt = document.getElementById('prompt');
 
 saveKeyButton.addEventListener('click', () => {
   apiKey = apiKeyInput.value;
@@ -67,13 +68,14 @@ pauseButton.addEventListener('click', () => {
 });
 
 clearButton.addEventListener('click', () => {
-  whisperResponse.value = '2';
+  whisperResponse.value = '';
 });
 
 const sendAudioToServer = async (audioBlob) => {
   const formData = new FormData();
   formData.append('file', audioBlob);
   formData.append('model', 'whisper-1'); // Using the largest model
+  formData.append('prompt', prompt.value);
 
   const cookie = getCookie("apiKey");
   const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
@@ -87,8 +89,7 @@ const sendAudioToServer = async (audioBlob) => {
   whisperResponse.value +=
       result.text ? result.text
           : JSON.stringify(result, null, 2);
-  // if (result.error?.code === "invalid_api_key")
-  {
+  if (result.error?.code === "invalid_api_key") {
     whisperResponse.value = 'You need an API key. Go to <a href="https://platform.openai.com/api-keys">to get an API key</a>. If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free.';
   }
   navigator.clipboard.writeText(whisperResponse.value).then();
