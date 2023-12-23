@@ -18,7 +18,7 @@ const recordButton = document.getElementById('recordButton');
 const pauseButton = document.getElementById('pauseButton');
 const clearButton = document.getElementById('clearButton');
 const downloadButton = document.getElementById('downloadButton');
-const whisperResponse = document.getElementById('whisperResponse');
+const editorTextarea = document.getElementById('editorTextarea');
 const apiKeyInput = document.getElementById('apiKey');
 const prompt = document.getElementById('prompt');
 const savePromptButton = document.getElementById('savePromptButton');
@@ -88,7 +88,7 @@ pauseButton.addEventListener('click', () => {
 });
 
 clearButton.addEventListener('click', () => {
-  whisperResponse.value = '';
+  editorTextarea.value = '';
 });
 
 savePromptButton.addEventListener('click', () => {
@@ -97,9 +97,9 @@ savePromptButton.addEventListener('click', () => {
 prompt.value = getCookie("prompt");
 
 saveEditorButton.addEventListener('click', () => {
-  setCookie("editorText", whisperResponse.value);
+  setCookie("editorText", editorTextarea.value);
 });
-whisperResponse.value = getCookie("editorText");
+editorTextarea.value = getCookie("editorText");
 
 const sendAudioToServer = async (audioBlob) => {
   const formData = new FormData();
@@ -118,13 +118,13 @@ const sendAudioToServer = async (audioBlob) => {
   const result = await response.json();
 
   if (result.error?.code === "invalid_api_key") {
-    whisperResponse.value += 'You need an API key. Go to <a href="https://platform.openai.com/api-keys">get an API key</a>. If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.';
+    editorTextarea.value += 'You need an API key. Go to <a href="https://platform.openai.com/api-keys">get an API key</a>. If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.';
   } else {
     const addedText = " " +
         !result?.error ? result.text: JSON.stringify(result, null, 2);
-    Utils.insertTextAtCursor(whisperResponse, addedText);
+    Utils.insertTextAtCursor(editorTextarea, addedText);
   }
-  navigator.clipboard.writeText(whisperResponse.value).then();
+  navigator.clipboard.writeText(editorTextarea.value).then();
 };
 
 function getCookie(name) {
