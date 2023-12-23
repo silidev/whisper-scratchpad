@@ -6,4 +6,4 @@ The API key is only stored in a cookie locally on your computer. You don't have 
 
 - Run locally: See whisper-page.cmd
 
-By https://twitter.com/silidev
+Copyright 2023 by https://twitter.com/silidev . GPL V3.
