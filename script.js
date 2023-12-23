@@ -97,8 +97,8 @@ const sendAudioToServer = async (audioBlob) => {
     body: formData
   });
   const result = await response.json();
-  whisperResponse.value +=
-      result.text ? result.text
+  whisperResponse.value += " " +
+      !result?.error ? result.text
           : JSON.stringify(result, null, 2);
   if (result.error?.code === "invalid_api_key") {
     whisperResponse.value = 'You need an API key. Go to <a href="https://platform.openai.com/api-keys">get an API key</a>. If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.';
