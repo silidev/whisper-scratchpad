@@ -4,11 +4,6 @@
 }
 
 body {
- display: flex;
- flex-direction: column;
- align-items: start;
- justify-content: flex-start;
- height: 100vh;
  font-family: 'Arial', sans-serif;
  background-color: black;
  color: var(--color1);
@@ -27,8 +22,8 @@ h1 {
 
 .button-container {
  display: flex;
- justify-content: center;
- align-items: center;
+ justify-content: start;
+ align-items: start;
  flex-wrap: wrap;
 }
 
