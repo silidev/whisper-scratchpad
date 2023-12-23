@@ -16,10 +16,10 @@
   <button id="downloadButton" style="display:none;">Download</button>
 </div>
 
-<div>
+<div style="width:100%;">
   <textarea id="whisperResponse" wrap="soft" placeholder="Output from whisper API" style="width:100%;height: 100%;"></textarea>
 </div>
-
+<br>
 <br>I made a simple page to use the revolution in speech recognition: OpenAI Whisper. The voice recognition on your phone is a joke compared with whisper-large.
 <br>
 <br>You can record speech and send to the OpenAI whisper API. The result is appended to the previous results and the whole thing copied to the clipboard.
@@ -30,19 +30,18 @@
 <br><button id="saveKeyButton">Save API Key</button>
 <br><a href="https://platform.openai.com/api-keys">Click here to get an API key</a>. If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free.
 <h3>Optional</h3>
-<div>
+<div style="width:100%;">
   <label for="prompt">Prompt:</label>
   <textarea id="prompt" wrap="soft" placeholder="Optional prompt especially for hinting unusual names if they are no recognized by default" style="width:100%;height: 100%;"></textarea>
 </div>
-
-
+<br>
+<br>
+<div style="width:100%;">
 <h3>For devs</h3>
 <a href="https://platform.openai.com/docs/api-reference/audio/createTranscription">API docs</a>
 <br>
 <br>Copyright 2023 by <a href="https://twitter.com/silidev">https://twitter.com/silidev</a>. GPL V3.
-
-
-
+</div>
 <script src="script.js"></script>
 </body>
 </html>
