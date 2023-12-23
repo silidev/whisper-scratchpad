@@ -8,10 +8,16 @@ const downloadButton = document.getElementById('downloadButton');
 const whisperResponse = document.getElementById('whisperResponse');
 const apiKeyInput = document.getElementById('apiKey');
 const prompt = document.getElementById('prompt');
+const savePromptButton = document.getElementById('savePromptButton');
+
+const setCookie = (cookieName, cookieValue) => {
+  const expirationTime = new Date(Date.now() + 2147483647000).toUTCString();
+  document.cookie = `${cookieName}=${cookieValue};expires=${expirationTime};path=/`;
+};
 
 saveKeyButton.addEventListener('click', () => {
   apiKey = apiKeyInput.value;
-  document.cookie = `apiKey=${apiKey};expires=${new Date(Date.now() + 2147483647000).toUTCString()};path=/`;
+  setCookie('apiKey', apiKey);
 });
 
 let mediaRecorder;
@@ -70,6 +76,11 @@ pauseButton.addEventListener('click', () => {
 clearButton.addEventListener('click', () => {
   whisperResponse.value = '';
 });
+
+savePromptButton.addEventListener('click', () => {
+  setCookie("prompt", prompt.value);
+});
+prompt.value = getCookie("prompt");
 
 const sendAudioToServer = async (audioBlob) => {
   const formData = new FormData();
