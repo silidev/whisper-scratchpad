@@ -23,6 +23,7 @@ const apiKeyInput = document.getElementById('apiKey');
 const prompt = document.getElementById('prompt');
 const savePromptButton = document.getElementById('savePromptButton');
 const saveEditorButton = document.getElementById('saveEditorButton');
+const copyButton = document.getElementById('copyButton');
 
 const setCookie = (cookieName, cookieValue) => {
   const expirationTime = new Date(Date.now() + 2147483647000).toUTCString();
@@ -100,6 +101,10 @@ saveEditorButton.addEventListener('click', () => {
   setCookie("editorText", editorTextarea.value);
 });
 editorTextarea.value = getCookie("editorText");
+
+copyButton.addEventListener('click', () => {
+  navigator.clipboard.writeText(editorTextarea.value).then();
+});
 
 const sendAudioToServer = async (audioBlob) => {
   const formData = new FormData();
