@@ -22,6 +22,7 @@ const whisperResponse = document.getElementById('whisperResponse');
 const apiKeyInput = document.getElementById('apiKey');
 const prompt = document.getElementById('prompt');
 const savePromptButton = document.getElementById('savePromptButton');
+const saveEditorButton = document.getElementById('saveEditorButton');
 
 const setCookie = (cookieName, cookieValue) => {
   const expirationTime = new Date(Date.now() + 2147483647000).toUTCString();
@@ -94,6 +95,11 @@ savePromptButton.addEventListener('click', () => {
   setCookie("prompt", prompt.value);
 });
 prompt.value = getCookie("prompt");
+
+saveEditorButton.addEventListener('click', () => {
+  setCookie("editorText", whisperResponse.value);
+});
+whisperResponse.value = getCookie("editorText");
 
 const sendAudioToServer = async (audioBlob) => {
   const formData = new FormData();
