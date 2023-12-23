@@ -20,34 +20,45 @@ let isRecording = false;
 let audioBlob;
 
 navigator.mediaDevices.getUserMedia({ audio: true })
-    .then(stream => {
-      mediaRecorder = new MediaRecorder(stream);
-      mediaRecorder.ondataavailable = event => {
-        audioChunks.push(event.data);
-      };
-      mediaRecorder.onstop = () => {
-        audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-        audioChunks = [];
-        const audioURL = URL.createObjectURL(audioBlob);
-        downloadButton.href = audioURL;
-        downloadButton.download = 'recording.wav';
-        downloadButton.style.display = 'block';
-      };
-    });
+  .then(stream => {
+    let mediaRecorder = new MediaRecorder(stream);
+    let audioChunks = [];
+    let isRecording = false;
 
-recordButton.addEventListener('click', () => {
-  if (!isRecording) {
-    showSpinner();
-    mediaRecorder.start();
-    isRecording = true;
-    recordButton.textContent = 'Stop';
-  } else {
-    mediaRecorder.stop();
-    isRecording = false;
-    recordButton.textContent = 'Record';
-    sendAudioToServer(audioBlob).then(hideSpinner);
-  }
-});
+    mediaRecorder.ondataavailable = event => {
+      audioChunks.push(event.data);
+    };
+
+    mediaRecorder.onstop = () => {
+      let audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+      audioChunks = [];
+      const audioURL = URL.createObjectURL(audioBlob);
+      const downloadButton = document.querySelector('#downloadButton');
+      downloadButton.href = audioURL;
+      downloadButton.download = 'recording.wav';
+      downloadButton.style.display = 'block';
+
+      if (!isRecording) {
+        sendAudioToServer(audioBlob).then(hideSpinner);
+      }
+    };
+
+    const recordButton = document.querySelector('#recordButton');
+    recordButton.addEventListener('click', () => {
+      if (!isRecording) {
+        showSpinner();
+        mediaRecorder.start();
+        isRecording = true;
+        recordButton.textContent = 'Stop';
+      } else {
+        mediaRecorder.stop();
+        isRecording = false;
+        recordButton.textContent = 'Record';
+        // sendAudioToServer removed from here
+      }
+    });
+  });
+
 
 pauseButton.addEventListener('click', () => {
   if (mediaRecorder.state === 'recording') {
@@ -75,23 +86,23 @@ const sendAudioToServer = async (audioBlob) => {
   const result = await response.json();
   whisperResponse.value =
       result.text ? "Copied to clipboard:   "+ result.text
-      : JSON.stringify(result, null, 2);;
+          : JSON.stringify(result, null, 2);;
   navigator.clipboard.writeText(result.text).then();
 };
 
 function getCookie(name) {
-    let cookieArr = document.cookie.split(";");
-    for(let i = 0; i < cookieArr.length; i++) {
-        let cookiePair = cookieArr[i].split("=");
-        if(name === cookiePair[0].trim()) {
-            return decodeURIComponent(cookiePair[1]);
-        }
+  let cookieArr = document.cookie.split(";");
+  for(let i = 0; i < cookieArr.length; i++) {
+    let cookiePair = cookieArr[i].split("=");
+    if(name === cookiePair[0].trim()) {
+      return decodeURIComponent(cookiePair[1]);
     }
-    return null;
+  }
+  return null;
 }
 
 document.getElementById('saveKeyButton').addEventListener('click', function() {
-    document.getElementById('apiKey').value = ''; // Clear the input field
+  document.getElementById('apiKey').value = ''; // Clear the input field
 });
 
 const showSpinner = () => {
