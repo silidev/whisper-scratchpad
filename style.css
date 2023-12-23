@@ -1,3 +1,8 @@
+:root {
+ --color1: #0f0;
+ --color2: #0f0;
+}
+
 body {
  display: flex;
  flex-direction: column;
@@ -6,13 +11,13 @@ body {
  height: 100vh;
  font-family: 'Arial', sans-serif;
  background-color: black;
- color: #0f0;
+ color: var(--color1);
  margin: auto;
  max-width: 20cm;
 }
 
 a {
- color: #0f0;
+ color: var(--color1);
 }
 
 h1 {
@@ -27,27 +32,33 @@ h1 {
  flex-wrap: wrap;
 }
 
-button, input {
+button, input, textarea {
  margin: 5px;
  padding: 10px 15px;
  font-size: 16px;
- border: none;
- border-radius: 5px;
+ border: 2px solid var(--color1);
+ border-radius: 0;
  cursor: pointer;
  transition: background-color 0.3s ease, transform 0.3s ease;
+ color: var(--color1);
+ background-color: black;
+}
+
+textarea {
+ width: 100%;
+ height: 150px;
+ padding: 10px;
+ resize: vertical;
+ font-size: 1em;
+}
+
+input::placeholder, textarea::placeholder {
+ color: var(--color1);
+ filter: brightness(50%);
 }
 
 button:hover, button:focus {
  transform: scale(1.05);
-}
-
-#saveKeyButton, #recordButton, #pauseButton, #clearButton, #downloadButton {
- background-color: #007bff;
- color: white;
-}
-
-#recordButton {
- background-color: #28a745;
 }
 
 .spinner {
@@ -57,16 +68,6 @@ button:hover, button:focus {
  border-radius: 50%;
  border-left-color: #09f;
  animation: spin 1s ease infinite;
-}
-
-textarea {
- width: 100%;
- height: 150px;
- padding: 10px;
- border-radius: 5px;
- border: 1px solid #ddd;
- resize: vertical;
- font-size: 1em;
 }
 
 @keyframes spin {
