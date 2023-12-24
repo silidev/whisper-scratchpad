@@ -1,4 +1,4 @@
-const CACHE_NAME = 'your-app-cache-v1';
+const CACHE_NAME = 'whisper-scratchpad-cache-v1';
 const urlsToCache = [
     '/',
     'index.html',

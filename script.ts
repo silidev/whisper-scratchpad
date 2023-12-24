@@ -1,7 +1,8 @@
 /* This is NOT my coding style, this is mostly AI generated.*/
 
 class Utils {
-  static insertTextAtCursor = (textarea: HTMLTextAreaElement, addedText: string | any[]) => {
+  static insertTextAtCursor =
+      (textarea: HTMLTextAreaElement, addedText: string | any[]) => {
     if (!addedText)
       return;
     const cursorPosition = textarea.selectionStart;
@@ -22,7 +23,7 @@ const clearButton = document.getElementById('clearButton');
 const downloadButton = document.getElementById('downloadButton');
 const editorTextarea = document.getElementById('editorTextarea')  as HTMLTextAreaElement;
 const apiKeyInput = document.getElementById('apiKey') as HTMLTextAreaElement;
-const whisperPrompt = document.getElementById('prompt') as HTMLTextAreaElement;
+const whisperPrompt = document.getElementById('whisperPrompt') as HTMLTextAreaElement;
 const savePromptButton = document.getElementById('savePromptButton');
 const saveEditorButton = document.getElementById('saveEditorButton');
 const copyButton = document.getElementById('copyButton');
