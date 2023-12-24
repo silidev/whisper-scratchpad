@@ -1,6 +1,5 @@
 :root {
- --color1: #0f0;
- --color2: #0f0;
+ --myGreen: #0f0;
 }
 
 *, *::before, *::after {
@@ -8,16 +7,16 @@
 }
 
 body {
- font-family: 'Arial', sans-serif;
+ font-family: 'Courier', sans-serif;
  background-color: black;
- color: var(--color1);
+ color: var(--myGreen);
  margin: auto;
  width: 20cm;
  max-width: 100%;
 }
 
 a {
- color: var(--color1);
+ color: var(--myGreen);
 }
 
 .button-container {
@@ -30,19 +29,24 @@ a {
 button, input, textarea {
  margin: 5px;
  padding: 10px 15px;
- border: 1px solid var(--color1);
+ border: 1px solid var(--myGreen);
  border-radius: 0;
  cursor: pointer;
  transition: background-color 0.3s ease, transform 0.3s ease;
- color: var(--color1);
+ color: var(--myGreen);
  background-color: black;
+ font-family: 'Courier', sans-serif;
 }
 
 input:focus, textarea:focus {
- color: var(--color1);
- border: 1px solid var(--color1);
+ color: var(--myGreen);
+ border: 1px solid var(--myGreen);
  outline: none;
+}
 
+input::selection, textarea::selection {
+ background-color: var(--myGreen);
+ color: black;
 }
 
 button, input, .spinner {
@@ -56,7 +60,7 @@ textarea {
 }
 
 input::placeholder, textarea::placeholder {
- color: var(--color1);
+ color: var(--myGreen);
  filter: brightness(70%);
 }
 
@@ -65,7 +69,7 @@ button:hover, button:focus {
 }
 
 .spinner {
- border: 2px solid var(--color1);
+ border: 2px solid var(--myGreen);
  width: 15px;
  height: 15px;
  border-radius: 50%;
