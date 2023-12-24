@@ -161,7 +161,7 @@ document.querySelector('.info-icon').addEventListener('click', function() {
 });
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service-worker.js')
+  navigator.serviceWorker.register('service-worker.js')
       .then(registration => {
         console.log('ServiceWorker registration successful with scope: ', registration.scope);
       }, err => {

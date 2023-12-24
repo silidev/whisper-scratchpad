@@ -1,10 +1,14 @@
 const CACHE_NAME = 'your-app-cache-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/style.css',
-  '/script.js',
-  // Add other assets you want to cache
+    '/',
+    'index.html',
+    'manifest.json',
+    'script.js',
+    'service-worker.js',
+    'style.css',
+    'icon-192x192.png',
+    'icon-512x512.png',
+    'favicon.ico',
 ];
 
 self.addEventListener('install', event => {
