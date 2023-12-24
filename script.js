@@ -2,6 +2,8 @@
 
 class Utils {
   static insertTextAtCursor = (textarea, addedText) => {
+    if (!addedText)
+      return;
     const cursorPosition = textarea.selectionStart;
     const textBeforeCursor = textarea.value.substring(0, cursorPosition);
     const textAfterCursor = textarea.value.substring(cursorPosition);
@@ -121,12 +123,12 @@ const sendAudioToServer = async (audioBlob) => {
   });
   const result = await response.json();
 
-  if (result.error?.code === "invalid_api_key") {
-    editorTextarea.value += 'You need an API key. Go to <a href="https://platform.openai.com/api-keys">get an API key</a>. If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.';
+  if (result?.text) {
+    Utils.insertTextAtCursor(editorTextarea, result.text);
   } else {
-    const addedText = " " +
-        !result?.error ? result.text: JSON.stringify(result, null, 2);
-    Utils.insertTextAtCursor(editorTextarea, addedText);
+    editorTextarea.value +=
+        'You need an API key. Go to https://platform.openai.com/api-keys"> to get an API key. If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.\n\n'
+    + JSON.stringify(result, null,2);
   }
   navigator.clipboard.writeText(editorTextarea.value).then();
 };
