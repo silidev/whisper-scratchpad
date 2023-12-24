@@ -1,7 +1,7 @@
 /* This is NOT my coding style, this is mostly AI generated.*/
 
 class Utils {
-  static insertTextAtCursor = (textarea, addedText) => {
+  static insertTextAtCursor = (textarea: HTMLTextAreaElement, addedText: string | any[]) => {
     if (!addedText)
       return;
     const cursorPosition = textarea.selectionStart;
@@ -20,14 +20,15 @@ const recordButton = document.getElementById('recordButton');
 const pauseButton = document.getElementById('pauseButton');
 const clearButton = document.getElementById('clearButton');
 const downloadButton = document.getElementById('downloadButton');
-const editorTextarea = document.getElementById('editorTextarea');
-const apiKeyInput = document.getElementById('apiKey');
-const prompt = document.getElementById('prompt');
+const editorTextarea = document.getElementById('editorTextarea')  as HTMLTextAreaElement;
+const apiKeyInput = document.getElementById('apiKey') as HTMLTextAreaElement;
+const whisperPrompt = document.getElementById('prompt') as HTMLTextAreaElement;
 const savePromptButton = document.getElementById('savePromptButton');
 const saveEditorButton = document.getElementById('saveEditorButton');
 const copyButton = document.getElementById('copyButton');
+const spinner = document.querySelector('.spinner') as HTMLDivElement;
 
-const setCookie = (cookieName, cookieValue) => {
+const setCookie = (cookieName: string, cookieValue: string) => {
   const expirationTime = new Date(Date.now() + 2147483647000).toUTCString();
   document.cookie = `${cookieName}=${cookieValue};expires=${expirationTime};path=/`;
 };
@@ -37,10 +38,10 @@ saveKeyButton.addEventListener('click', () => {
   setCookie('apiKey', apiKey);
 });
 
-let mediaRecorder;
+let mediaRecorder : MediaRecorder;
 let audioChunks = [];
 let isRecording = false;
-let audioBlob;
+let audioBlob: Blob;
 
 navigator.mediaDevices.getUserMedia({ audio: true })
   .then(stream => {
@@ -57,7 +58,7 @@ navigator.mediaDevices.getUserMedia({ audio: true })
       audioChunks = [];
       const audioURL = URL.createObjectURL(audioBlob);
       { // Download button (hidden, b/c not working)
-        const downloadButton = document.querySelector('#downloadButton');
+        const downloadButton = document.querySelector('#downloadButton') as HTMLAnchorElement;
         downloadButton.href = audioURL;
         downloadButton.download = 'recording.wav';
         // downloadButton.style.display = 'block';
@@ -94,9 +95,9 @@ clearButton.addEventListener('click', () => {
 });
 
 savePromptButton.addEventListener('click', () => {
-  setCookie("prompt", prompt.value);
+  setCookie("prompt", whisperPrompt.value);
 });
-prompt.value = getCookie("prompt");
+whisperPrompt.value = getCookie("prompt");
 
 saveEditorButton.addEventListener('click', () => {
   setCookie("editorText", editorTextarea.value);
@@ -107,11 +108,11 @@ copyButton.addEventListener('click', () => {
   navigator.clipboard.writeText(editorTextarea.value).then();
 });
 
-const sendAudioToServer = async (audioBlob) => {
+const sendAudioToServer = async (audioBlob: Blob) => {
   const formData = new FormData();
   formData.append('file', audioBlob);
   formData.append('model', 'whisper-1'); // Using the largest model
-  formData.append('prompt', prompt.value);
+  formData.append('prompt', whisperPrompt.value);
 
   const cookie = getCookie("apiKey");
   const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
@@ -133,7 +134,7 @@ const sendAudioToServer = async (audioBlob) => {
   navigator.clipboard.writeText(editorTextarea.value).then();
 };
 
-function getCookie(name) {
+function getCookie(name: string) {
   let cookieArr = document.cookie.split(";");
   for(let i = 0; i < cookieArr.length; i++) {
     let cookiePair = cookieArr[i].split("=");
@@ -145,16 +146,14 @@ function getCookie(name) {
 }
 
 document.getElementById('saveKeyButton').addEventListener('click', function() {
-  document.getElementById('apiKey').value = ''; // Clear the input field
+  (document.getElementById('apiKey')as HTMLInputElement).value  = ''; // Clear the input field
 });
 
 const showSpinner = () => {
-  const spinner = document.querySelector('.spinner');
   spinner.style.display = 'block';
 };
 
 const hideSpinner = () => {
-  const spinner = document.querySelector('.spinner');
   spinner.style.display = 'none';
 };
 
