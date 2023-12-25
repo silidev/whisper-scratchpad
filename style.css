@@ -20,10 +20,8 @@ a {
 }
 
 .button-container {
- display: flex;
- justify-content: flex-end;
- align-items: flex-end;
- flex-wrap: wrap;
+ justify-content: end;
+ align-items: end;
 }
 
 button, input, textarea {
