@@ -1,16 +1,18 @@
 namespace WebUtils {
   export  namespace TextAreas {
-    export const insertTextAtCursor =
-        (textarea: HTMLTextAreaElement, addedText: string | any[]) => {
-          if (!addedText)
-            return;
-          const cursorPosition = textarea.selectionStart;
-          const textBeforeCursor = textarea.value.substring(0, cursorPosition);
-          const textAfterCursor = textarea.value.substring(cursorPosition);
+    export const insertTextAtCursor = (
+        textarea: HTMLTextAreaElement,
+        addedText: string) => {
 
-          textarea.value = textBeforeCursor + addedText + textAfterCursor;
-          textarea.selectionStart = textarea.selectionEnd = cursorPosition + addedText.length;
-        };
+      if (!addedText)
+        return;
+      const cursorPosition = textarea.selectionStart;
+      const textBeforeCursor = textarea.value.substring(0, cursorPosition);
+      const textAfterCursor = textarea.value.substring(cursorPosition);
+
+      textarea.value = textBeforeCursor + addedText + textAfterCursor;
+      textarea.selectionStart = textarea.selectionEnd = cursorPosition + addedText.length;
+    };
   }
 
   export namespace Cookies {
@@ -30,7 +32,6 @@ namespace WebUtils {
       return null;
     };
   }
-
 
   /**
    * Adds a click listener to a button that appends a checkmark to the button text when clicked.
@@ -54,7 +55,6 @@ namespace WebUtils {
       }, 2000);
     });
   };
-
 }
 
 namespace AppSpecific {
