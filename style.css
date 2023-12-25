@@ -11,8 +11,8 @@ body {
  background-color: black;
  color: var(--myGreen);
  margin: auto;
- width: 20cm;
- max-width: 100%;
+ max-width: 20cm;
+ width: 100%;
 }
 
 a {
@@ -35,7 +35,11 @@ button, input, textarea {
  transition: background-color 0.3s ease, transform 0.3s ease;
  color: var(--myGreen);
  background-color: black;
- font-family: 'Courier', sans-serif;
+}
+
+input, textarea {
+ font-family: 'Arial', sans-serif;
+ font-size: 20px;
 }
 
 input:focus, textarea:focus {
