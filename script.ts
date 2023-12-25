@@ -11,7 +11,9 @@ namespace WebUtils {
       const textAfterCursor = textarea.value.substring(cursorPosition);
 
       textarea.value = textBeforeCursor + addedText + textAfterCursor;
-      textarea.selectionStart = textarea.selectionEnd = cursorPosition + addedText.length;
+      const newCursorPosition = cursorPosition + addedText.length;
+      textarea.selectionStart = newCursorPosition;
+      textarea.selectionEnd = newCursorPosition;
     };
   }
 
@@ -34,24 +36,17 @@ namespace WebUtils {
   }
 
   /**
-   * Adds a click listener to a button that appends a checkmark to the button text when clicked.
-   * <pre>
-   * // Usage:
-   * addButtonClickListener(savePromptButton, () => {
-   *   WebUtils.setCookie("prompt", whisperPrompt.value);
-   * });
-   * </pre>
-   */
-  export const addButtonClickListener = (button: HTMLButtonElement
-                                         , callback: () => void) => {
-    const initialText = button.textContent; // Read initial text from the button
+   * Adds a click listener to a button that appends a checkmark to the button
+   * text when clicked. */
+  export const addButtonClickListener = (button: HTMLButtonElement, callback: () => void) => {
+    const initialHTML = button.innerHTML; // Read initial HTML from the button
     const checkmark = ' ✔️'; // Unicode checkmark
 
     button.addEventListener('click', () => {
       callback();
-      button.textContent += checkmark; // Append checkmark to the button text
+      button.innerHTML += checkmark; // Append checkmark to the button HTML
       setTimeout(() => {
-        button.textContent = initialText; // Reset the button text after 2 seconds
+        button.innerHTML = initialHTML; // Reset the button HTML after 2 seconds
       }, 2000);
     });
   };
