@@ -46,6 +46,26 @@ var WebUtils;
         });
     };
 })(WebUtils || (WebUtils = {}));
+var HelgeUtils;
+(function (HelgeUtils) {
+    HelgeUtils.replaceByRules = (subject, ruleText) => {
+        let count = 0;
+        let ruleMatches;
+        const ruleParser = /^"(.+?)"([a-z]*?)(?:\r\n|\r|\n)?->(?:\r\n|\r|\n)?"(.*?)"([a-z]*?)(?:\r\n|\r|\n)?$/gmus;
+        while (ruleMatches = ruleParser.exec(ruleText)) {
+            // console.log("\n" + ruleMatches[1] + "\n↓↓↓↓↓\n"+ ruleMatches[3]);
+            let matchRule = ruleMatches[2].length == 0 ?
+                new RegExp(ruleMatches[1], 'gm')
+                : new RegExp(ruleMatches[1], ruleMatches[2]);
+            if (ruleMatches[4] == 'x')
+                subject = subject.replace(matchRule, '');
+            else
+                subject = subject.replace(matchRule, ruleMatches[3]);
+            count++;
+        }
+        return subject;
+    };
+})(HelgeUtils || (HelgeUtils = {}));
 var AppSpecific;
 (function (AppSpecific) {
     let PageLogic;
@@ -56,11 +76,13 @@ var AppSpecific;
         const clearButton = document.getElementById('clearButton');
         const downloadButton = document.getElementById('downloadButton');
         const savePromptButton = document.getElementById('savePromptButton');
+        const saveRulesButton = document.getElementById('saveRulesButton');
         const saveEditorButton = document.getElementById('saveEditorButton');
         const copyButton = document.getElementById('copyButton');
         const apiKeyInput = document.getElementById('apiKey');
         PageLogic.editorTextarea = document.getElementById('editorTextarea');
         PageLogic.whisperPrompt = document.getElementById('whisperPrompt');
+        PageLogic.replaceRulesTextArea = document.getElementById('replaceRulesTextArea');
         const spinner = document.querySelector('.spinner');
         let apiKey = '';
         let mediaRecorder;
@@ -120,13 +142,17 @@ var AppSpecific;
             WebUtils.addButtonClickListener(clearButton, () => {
                 PageLogic.editorTextarea.value = '';
             });
+            // saveEditorButton
+            WebUtils.addButtonClickListener(saveEditorButton, () => {
+                WebUtils.Cookies.set("editorText", PageLogic.editorTextarea.value);
+            });
             // savePromptButton
             WebUtils.addButtonClickListener(savePromptButton, () => {
                 WebUtils.Cookies.set("prompt", PageLogic.whisperPrompt.value);
             });
-            // saveEditorButton
-            WebUtils.addButtonClickListener(saveEditorButton, () => {
-                WebUtils.Cookies.set("editorText", PageLogic.editorTextarea.value);
+            // saveRulesButton
+            WebUtils.addButtonClickListener(saveRulesButton, () => {
+                WebUtils.Cookies.set("replaceRules", PageLogic.replaceRulesTextArea.value);
             });
             // copyButton
             copyButton.addEventListener('click', () => {
@@ -140,8 +166,13 @@ var AppSpecific;
             document.getElementById('saveAPIKeyButton').addEventListener('click', function () {
                 document.getElementById('apiKey').value = ''; // Clear the input field
             });
-            document.querySelector('.info-icon').addEventListener('click', function () {
-                document.getElementById('info-text').style.display = 'block';
+            document.querySelector('#whisperPromptInfoIcon')
+                .addEventListener('click', function () {
+                document.getElementById('whisperPromptInfoText').style.display = 'block';
+            });
+            document.querySelector('#replaceRulesInfoIcon')
+                .addEventListener('click', function () {
+                document.getElementById('replaceRulesInfoText').style.display = 'block';
             });
         };
         const sendToWhisper = async (audioBlob) => {
@@ -159,7 +190,7 @@ var AppSpecific;
             });
             const result = await response.json();
             if (result?.text) {
-                WebUtils.TextAreas.insertTextAtCursor(PageLogic.editorTextarea, result.text);
+                WebUtils.TextAreas.insertTextAtCursor(PageLogic.editorTextarea, HelgeUtils.replaceByRules(result.text, PageLogic.replaceRulesTextArea.value));
             }
             else {
                 PageLogic.editorTextarea.value +=
@@ -175,8 +206,9 @@ var AppSpecific;
             spinner.style.display = 'none';
         };
         PageLogic.loadFormData = () => {
-            PageLogic.whisperPrompt.value = WebUtils.Cookies.get("prompt");
             PageLogic.editorTextarea.value = WebUtils.Cookies.get("editorText");
+            PageLogic.whisperPrompt.value = WebUtils.Cookies.get("prompt");
+            PageLogic.replaceRulesTextArea.value = WebUtils.Cookies.get("replaceRules");
         };
         PageLogic.registerServiceWorker = () => {
             if ('serviceWorker' in navigator) {

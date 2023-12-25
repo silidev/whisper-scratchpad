@@ -47,17 +47,44 @@
 
   If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.
 </div>
-<div style="width:90%; height: 10cm">
+
   <h3>Optional</h3>
-  <label for="whisperPrompt">Prompt: <span class="info-icon">ⓘ</span>
-    <span id="info-text" style="display: none;">
-      Since it wasn't trained using instruction-following techniques, Whisper operates more like a base GPT model. It's important to keep in mind that Whisper only considers the first 244 tokens of the prompt. <a href="https://platform.openai.com/docs/guides/speech-to-text/prompting">More info</a>
-    </span></label>
-  <textarea id="whisperPrompt" wrap="soft" placeholder="Optional prompt especially for hinting unusual names if they are not recognized by default." style="width:100%;height: 100%;"></textarea>
-  <button id="savePromptButton">
-    <span class="makeGreen">💾</span>
-    Save prompt</button>
-</div>
+
+  <!--############## whisperPrompt ##############-->
+  <div style="width:90%; height: 10cm">
+
+    <label for="whisperPrompt">Prompt: <span id="whisperPromptInfoIcon">ⓘ</span>
+      <span id="whisperPromptInfoText" style="display: none;">
+        Since it wasn't trained using instruction-following techniques, Whisper operates more like a base GPT model. It's important to keep in mind that Whisper only considers the first 244 tokens of the prompt. <a href="https://platform.openai.com/docs/guides/speech-to-text/prompting">More info</a>
+      </span>
+    </label>
+    <textarea id="whisperPrompt" wrap="soft" placeholder="Optional prompt especially for hinting unusual names if they are not recognized by default." style="width:100%;height: 100%;"></textarea>
+    <button id="savePromptButton">
+      <span class="makeGreen">💾</span>
+      Save prompt
+    </button>
+  </div>
+
+  <!--############## replaceRules ##############-->
+  <div style="width:90%; height: 10cm; margin-top: 3cm">
+    <label for="replaceRulesTextArea">Replacement rules: <span id="replaceRulesInfoIcon">ⓘ</span>
+      <span id="replaceRulesInfoText" style="display: none;">
+        A ruleset contains one or more rule, the format looks like:
+        <br>:: Any "SEARCH" becomes "REPLACE"
+        <br>"SEARCH"->"REPLACE" <a href="https://github.com/No3371/obsidian-regex-pipeline">More info</a>
+        <br>I like this:
+        <br>"comma"->","
+        <br>"full stop"->","
+        <br>"colon"->":"
+        <br>"dash"->"-"
+      </span>
+    </label>
+    <textarea id="replaceRulesTextArea" wrap="soft" placeholder="Optional. &quot;SEARCH&quot;-&gt;&quot;REPLACE&quot;" style="width:100%;height: 100%;"></textarea>
+    <button id="saveRulesButton">
+      <span class="makeGreen">💾</span>
+      Save rules
+    </button>
+  </div>
 
 <div style="width:100%;margin-top: 4cm" >
   <h3 style="margin-bottom: -15px">For devs</h3>

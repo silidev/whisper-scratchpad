@@ -52,6 +52,26 @@ namespace WebUtils {
   };
 }
 
+namespace HelgeUtils {
+  export const replaceByRules = (subject: string, ruleText: string) => {
+    let count = 0;
+    let ruleMatches: any[];
+    const ruleParser = /^"(.+?)"([a-z]*?)(?:\r\n|\r|\n)?->(?:\r\n|\r|\n)?"(.*?)"([a-z]*?)(?:\r\n|\r|\n)?$/gmus;
+    while (ruleMatches = ruleParser.exec(ruleText)) {
+      // console.log("\n" + ruleMatches[1] + "\n↓↓↓↓↓\n"+ ruleMatches[3]);
+      let matchRule = ruleMatches[2].length == 0 ?
+          new RegExp(ruleMatches[1], 'gm')
+          : new RegExp(ruleMatches[1], ruleMatches[2]);
+      if (ruleMatches[4] == 'x')
+        subject = subject.replace(matchRule, '');
+      else
+        subject = subject.replace(matchRule, ruleMatches[3]);
+      count++;
+    }
+    return subject;
+  }
+}
+
 namespace AppSpecific {
 
   namespace PageLogic {
@@ -62,12 +82,14 @@ namespace AppSpecific {
     const clearButton = document.getElementById('clearButton') as HTMLButtonElement;
     const downloadButton = document.getElementById('downloadButton') as HTMLAnchorElement;
     const savePromptButton = document.getElementById('savePromptButton') as HTMLButtonElement;
+    const saveRulesButton = document.getElementById('saveRulesButton') as HTMLButtonElement;
     const saveEditorButton = document.getElementById('saveEditorButton') as HTMLButtonElement;
     const copyButton = document.getElementById('copyButton') as HTMLButtonElement;
 
     const apiKeyInput = document.getElementById('apiKey') as HTMLTextAreaElement;
     export const editorTextarea = document.getElementById('editorTextarea') as HTMLTextAreaElement;
     export const whisperPrompt = document.getElementById('whisperPrompt') as HTMLTextAreaElement;
+    export const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement;
 
     const spinner = document.querySelector('.spinner') as HTMLDivElement;
 
@@ -135,14 +157,19 @@ namespace AppSpecific {
         editorTextarea.value = '';
       });
 
+      // saveEditorButton
+      WebUtils.addButtonClickListener(saveEditorButton, () => {
+        WebUtils.Cookies.set("editorText", editorTextarea.value);
+      });
+
       // savePromptButton
       WebUtils.addButtonClickListener(savePromptButton, () => {
         WebUtils.Cookies.set("prompt", whisperPrompt.value);
       });
 
-      // saveEditorButton
-      WebUtils.addButtonClickListener(saveEditorButton, () => {
-        WebUtils.Cookies.set("editorText", editorTextarea.value);
+      // saveRulesButton
+      WebUtils.addButtonClickListener(saveRulesButton, () => {
+        WebUtils.Cookies.set("replaceRules", replaceRulesTextArea.value);
       });
 
       // copyButton
@@ -159,8 +186,14 @@ namespace AppSpecific {
         (document.getElementById('apiKey') as HTMLInputElement).value = ''; // Clear the input field
       });
 
-      document.querySelector('.info-icon').addEventListener('click', function () {
-        document.getElementById('info-text').style.display = 'block';
+      document.querySelector('#whisperPromptInfoIcon')
+          .addEventListener('click', function () {
+        document.getElementById('whisperPromptInfoText').style.display = 'block';
+      });
+      
+      document.querySelector('#replaceRulesInfoIcon')
+          .addEventListener('click', function () {
+        document.getElementById('replaceRulesInfoText').style.display = 'block';
       });
     }
 
@@ -180,8 +213,10 @@ namespace AppSpecific {
       });
       const result = await response.json();
 
+
       if (result?.text) {
-        WebUtils.TextAreas.insertTextAtCursor(editorTextarea, result.text);
+        WebUtils.TextAreas.insertTextAtCursor(editorTextarea,
+            HelgeUtils.replaceByRules(result.text, replaceRulesTextArea.value));
       } else {
         editorTextarea.value +=
             'You need an API key. Go to https://platform.openai.com/api-keys"> to get an API key. If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.\n\n'
@@ -199,9 +234,9 @@ namespace AppSpecific {
     };
 
     export const loadFormData = () => {
-      PageLogic.whisperPrompt.value = WebUtils.Cookies.get("prompt");
-
       PageLogic.editorTextarea.value = WebUtils.Cookies.get("editorText");
+      PageLogic.whisperPrompt.value = WebUtils.Cookies.get("prompt");
+      PageLogic.replaceRulesTextArea.value = WebUtils.Cookies.get("replaceRules");
     };
 
     export const registerServiceWorker = () => {
