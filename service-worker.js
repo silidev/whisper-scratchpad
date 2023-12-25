@@ -1,11 +1,11 @@
 const CACHE_NAME = 'whisper-scratchpad-cache-v1';
 const urlsToCache = [
     '/',
-    'index.html',
-    'manifest.json',
-    'script.js',
-    'service-worker.js',
-    'style.css',
+    // 'index.html',
+    // 'manifest.json',
+    // 'script.js',
+    // 'service-worker.js',
+    // 'style.css',
     'icon-192x192.png',
     'icon-512x512.png',
     'favicon.ico',
