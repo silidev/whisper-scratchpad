@@ -30,21 +30,43 @@ namespace WebUtils {
     }
     return null;
   };
+
+  /**
+   * Adds a click listener to a button that changes the button text when clicked.
+   <pre>
+   // Usage:
+   addButtonClickListener(savePromptButton, () => {
+     WebUtils.setCookie("prompt", whisperPrompt.value);
+   }, 'Save Prompt', 'Saved!');
+    </pre>
+   */
+  export const addButtonClickListener = (button: HTMLButtonElement, callback: () => void, initialText: string, clickedText: string) => {
+    button.addEventListener('click', () => {
+      callback();
+      button.textContent = clickedText; // Acknowledge the click
+      setTimeout(() => {
+        button.textContent = initialText; // Reset the button text after 2 seconds
+      }, 2000);
+    });
+  };
+
 }
 
 let apiKey = '';
 
-const saveKeyButton = document.getElementById('saveKeyButton');
-const recordButton = document.getElementById('recordButton');
-const pauseButton = document.getElementById('pauseButton');
-const clearButton = document.getElementById('clearButton');
-const downloadButton = document.getElementById('downloadButton');
+const saveKeyButton = document.getElementById('saveKeyButton') as HTMLButtonElement;
+const recordButton = document.getElementById('recordButton') as HTMLButtonElement;
+const pauseButton = document.getElementById('pauseButton') as HTMLButtonElement;
+const clearButton = document.getElementById('clearButton') as HTMLButtonElement;
+const downloadButton = document.getElementById('downloadButton') as HTMLButtonElement;
+const savePromptButton = document.getElementById('savePromptButton') as HTMLButtonElement;
+const saveEditorButton = document.getElementById('saveEditorButton') as HTMLButtonElement;
+const copyButton = document.getElementById('copyButton') as HTMLButtonElement;
+
 const editorTextarea = document.getElementById('editorTextarea')  as HTMLTextAreaElement;
 const apiKeyInput = document.getElementById('apiKey') as HTMLTextAreaElement;
 const whisperPrompt = document.getElementById('whisperPrompt') as HTMLTextAreaElement;
-const savePromptButton = document.getElementById('savePromptButton');
-const saveEditorButton = document.getElementById('saveEditorButton');
-const copyButton = document.getElementById('copyButton');
+
 const spinner = document.querySelector('.spinner') as HTMLDivElement;
 
 
@@ -53,10 +75,11 @@ let audioChunks = [];
 let isRecording = false;
 let audioBlob: Blob;
 
-saveKeyButton.addEventListener('click', () => {
+// saveKeyButton
+WebUtils.addButtonClickListener(saveKeyButton, () => {
   apiKey = apiKeyInput.value;
   WebUtils.setCookie('apiKey', apiKey);
-});
+}, 'Save Key', 'Key Saved');
 
 navigator.mediaDevices.getUserMedia({ audio: true })
   .then(stream => {
@@ -95,6 +118,7 @@ navigator.mediaDevices.getUserMedia({ audio: true })
   });
 });
 
+// pauseButton
 pauseButton.addEventListener('click', () => {
   if (mediaRecorder.state === 'recording') {
     mediaRecorder.pause();
@@ -105,21 +129,31 @@ pauseButton.addEventListener('click', () => {
   }
 });
 
-clearButton.addEventListener('click', () => {
+// clearButton
+WebUtils.addButtonClickListener(clearButton, () => {
   editorTextarea.value = '';
-});
+}, 'Clear', 'Cleared');
 
-savePromptButton.addEventListener('click', () => {
+// savePromptButton
+WebUtils.addButtonClickListener(savePromptButton, () => {
   WebUtils.setCookie("prompt", whisperPrompt.value);
-});
+}, 'Save Prompt', 'Saved!');
 
-saveEditorButton.addEventListener('click', () => {
+// saveEditorButton
+WebUtils.addButtonClickListener(saveEditorButton, () => {
   WebUtils.setCookie("editorText", editorTextarea.value);
+}, 'Save Editor', 'Saved!');
+
+// copyButton
+copyButton.addEventListener('click', () => {
+  navigator.clipboard.writeText(editorTextarea.value).then(() => {
+    copyButton.textContent = 'Copied!';
+    setTimeout(() => {
+      copyButton.textContent = 'Copy';
+    }, 2000);
+  });
 });
 
-copyButton.addEventListener('click', () => {
-  navigator.clipboard.writeText(editorTextarea.value).then();
-});
 
 const sendAudioToServer = async (audioBlob: Blob) => {
   const formData = new FormData();
