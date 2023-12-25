@@ -54,7 +54,7 @@ namespace WebUtils {
 
 let apiKey = '';
 
-const saveKeyButton = document.getElementById('saveKeyButton') as HTMLButtonElement;
+const saveAPIKeyButton = document.getElementById('saveAPIKeyButton') as HTMLButtonElement;
 const recordButton = document.getElementById('recordButton') as HTMLButtonElement;
 const pauseButton = document.getElementById('pauseButton') as HTMLButtonElement;
 const clearButton = document.getElementById('clearButton') as HTMLButtonElement;
@@ -75,8 +75,8 @@ let audioChunks = [];
 let isRecording = false;
 let audioBlob: Blob;
 
-// saveKeyButton
-WebUtils.addButtonClickListener(saveKeyButton, () => {
+// saveAPIKeyButton
+WebUtils.addButtonClickListener(saveAPIKeyButton, () => {
   apiKey = apiKeyInput.value;
   WebUtils.setCookie('apiKey', apiKey);
 }, 'Save Key', 'Key Saved');
@@ -181,7 +181,7 @@ const sendAudioToServer = async (audioBlob: Blob) => {
   navigator.clipboard.writeText(editorTextarea.value).then();
 };
 
-document.getElementById('saveKeyButton').addEventListener('click', function() {
+document.getElementById('saveAPIKeyButton').addEventListener('click', function() {
   (document.getElementById('apiKey')as HTMLInputElement).value  = ''; // Clear the input field
 });
 
