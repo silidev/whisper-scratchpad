@@ -1,16 +1,34 @@
 /* This is NOT my coding style, this is mostly AI generated.*/
 
-class Utils {
-  static insertTextAtCursor =
-      (textarea: HTMLTextAreaElement, addedText: string | any[]) => {
-    if (!addedText)
-      return;
-    const cursorPosition = textarea.selectionStart;
-    const textBeforeCursor = textarea.value.substring(0, cursorPosition);
-    const textAfterCursor = textarea.value.substring(cursorPosition);
+namespace WebUtils {
+  export  namespace TextAreas {
+    export const insertTextAtCursor =
+        (textarea: HTMLTextAreaElement, addedText: string | any[]) => {
+          if (!addedText)
+            return;
+          const cursorPosition = textarea.selectionStart;
+          const textBeforeCursor = textarea.value.substring(0, cursorPosition);
+          const textAfterCursor = textarea.value.substring(cursorPosition);
 
-    textarea.value = textBeforeCursor + addedText + textAfterCursor;
-    textarea.selectionStart = textarea.selectionEnd = cursorPosition + addedText.length;
+          textarea.value = textBeforeCursor + addedText + textAfterCursor;
+          textarea.selectionStart = textarea.selectionEnd = cursorPosition + addedText.length;
+        };
+  }
+
+  export const setCookie = (cookieName: string, cookieValue: string) => {
+    const expirationTime = new Date(Date.now() + 2147483647000).toUTCString();
+    document.cookie = `${cookieName}=${encodeURIComponent(cookieValue)};expires=${expirationTime};path=/`;
+  };
+
+  export const getCookie = (name: string) => {
+    let cookieArr = document.cookie.split(";");
+    for(let i = 0; i < cookieArr.length; i++) {
+      let cookiePair = cookieArr[i].split("=");
+      if(name === cookiePair[0].trim()) {
+        return decodeURIComponent(cookiePair[1]);
+      }
+    }
+    return null;
   };
 }
 
@@ -29,20 +47,16 @@ const saveEditorButton = document.getElementById('saveEditorButton');
 const copyButton = document.getElementById('copyButton');
 const spinner = document.querySelector('.spinner') as HTMLDivElement;
 
-const setCookie = (cookieName: string, cookieValue: string) => {
-  const expirationTime = new Date(Date.now() + 2147483647000).toUTCString();
-  document.cookie = `${cookieName}=${cookieValue};expires=${expirationTime};path=/`;
-};
-
-saveKeyButton.addEventListener('click', () => {
-  apiKey = apiKeyInput.value;
-  setCookie('apiKey', apiKey);
-});
 
 let mediaRecorder : MediaRecorder;
 let audioChunks = [];
 let isRecording = false;
 let audioBlob: Blob;
+
+saveKeyButton.addEventListener('click', () => {
+  apiKey = apiKeyInput.value;
+  WebUtils.setCookie('apiKey', apiKey);
+});
 
 navigator.mediaDevices.getUserMedia({ audio: true })
   .then(stream => {
@@ -96,14 +110,12 @@ clearButton.addEventListener('click', () => {
 });
 
 savePromptButton.addEventListener('click', () => {
-  setCookie("prompt", whisperPrompt.value);
+  WebUtils.setCookie("prompt", whisperPrompt.value);
 });
-whisperPrompt.value = getCookie("prompt");
 
 saveEditorButton.addEventListener('click', () => {
-  setCookie("editorText", editorTextarea.value);
+  WebUtils.setCookie("editorText", editorTextarea.value);
 });
-editorTextarea.value = getCookie("editorText");
 
 copyButton.addEventListener('click', () => {
   navigator.clipboard.writeText(editorTextarea.value).then();
@@ -115,7 +127,7 @@ const sendAudioToServer = async (audioBlob: Blob) => {
   formData.append('model', 'whisper-1'); // Using the largest model
   formData.append('prompt', whisperPrompt.value);
 
-  const cookie = getCookie("apiKey");
+  const cookie = WebUtils.getCookie("apiKey");
   const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
     method: 'POST',
     headers: {
@@ -126,7 +138,7 @@ const sendAudioToServer = async (audioBlob: Blob) => {
   const result = await response.json();
 
   if (result?.text) {
-    Utils.insertTextAtCursor(editorTextarea, result.text);
+    WebUtils.TextAreas.insertTextAtCursor(editorTextarea, result.text);
   } else {
     editorTextarea.value +=
         'You need an API key. Go to https://platform.openai.com/api-keys"> to get an API key. If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.\n\n'
@@ -134,17 +146,6 @@ const sendAudioToServer = async (audioBlob: Blob) => {
   }
   navigator.clipboard.writeText(editorTextarea.value).then();
 };
-
-function getCookie(name: string) {
-  let cookieArr = document.cookie.split(";");
-  for(let i = 0; i < cookieArr.length; i++) {
-    let cookiePair = cookieArr[i].split("=");
-    if(name === cookiePair[0].trim()) {
-      return decodeURIComponent(cookiePair[1]);
-    }
-  }
-  return null;
-}
 
 document.getElementById('saveKeyButton').addEventListener('click', function() {
   (document.getElementById('apiKey')as HTMLInputElement).value  = ''; // Clear the input field
@@ -170,3 +171,7 @@ if ('serviceWorker' in navigator) {
         console.log('ServiceWorker registration failed: ', err);
       });
 }
+
+whisperPrompt.value = WebUtils.getCookie("prompt");
+
+editorTextarea.value = WebUtils.getCookie("editorText");

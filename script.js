@@ -1,15 +1,33 @@
 /* This is NOT my coding style, this is mostly AI generated.*/
-class Utils {
-}
-Utils.insertTextAtCursor = (textarea, addedText) => {
-    if (!addedText)
-        return;
-    const cursorPosition = textarea.selectionStart;
-    const textBeforeCursor = textarea.value.substring(0, cursorPosition);
-    const textAfterCursor = textarea.value.substring(cursorPosition);
-    textarea.value = textBeforeCursor + addedText + textAfterCursor;
-    textarea.selectionStart = textarea.selectionEnd = cursorPosition + addedText.length;
-};
+var WebUtils;
+(function (WebUtils) {
+    let TextAreas;
+    (function (TextAreas) {
+        TextAreas.insertTextAtCursor = (textarea, addedText) => {
+            if (!addedText)
+                return;
+            const cursorPosition = textarea.selectionStart;
+            const textBeforeCursor = textarea.value.substring(0, cursorPosition);
+            const textAfterCursor = textarea.value.substring(cursorPosition);
+            textarea.value = textBeforeCursor + addedText + textAfterCursor;
+            textarea.selectionStart = textarea.selectionEnd = cursorPosition + addedText.length;
+        };
+    })(TextAreas = WebUtils.TextAreas || (WebUtils.TextAreas = {}));
+    WebUtils.setCookie = (cookieName, cookieValue) => {
+        const expirationTime = new Date(Date.now() + 2147483647000).toUTCString();
+        document.cookie = `${cookieName}=${encodeURIComponent(cookieValue)};expires=${expirationTime};path=/`;
+    };
+    WebUtils.getCookie = (name) => {
+        let cookieArr = document.cookie.split(";");
+        for (let i = 0; i < cookieArr.length; i++) {
+            let cookiePair = cookieArr[i].split("=");
+            if (name === cookiePair[0].trim()) {
+                return decodeURIComponent(cookiePair[1]);
+            }
+        }
+        return null;
+    };
+})(WebUtils || (WebUtils = {}));
 let apiKey = '';
 const saveKeyButton = document.getElementById('saveKeyButton');
 const recordButton = document.getElementById('recordButton');
@@ -23,18 +41,14 @@ const savePromptButton = document.getElementById('savePromptButton');
 const saveEditorButton = document.getElementById('saveEditorButton');
 const copyButton = document.getElementById('copyButton');
 const spinner = document.querySelector('.spinner');
-const setCookie = (cookieName, cookieValue) => {
-    const expirationTime = new Date(Date.now() + 2147483647000).toUTCString();
-    document.cookie = `${cookieName}=${cookieValue};expires=${expirationTime};path=/`;
-};
-saveKeyButton.addEventListener('click', () => {
-    apiKey = apiKeyInput.value;
-    setCookie('apiKey', apiKey);
-});
 let mediaRecorder;
 let audioChunks = [];
 let isRecording = false;
 let audioBlob;
+saveKeyButton.addEventListener('click', () => {
+    apiKey = apiKeyInput.value;
+    WebUtils.setCookie('apiKey', apiKey);
+});
 navigator.mediaDevices.getUserMedia({ audio: true })
     .then(stream => {
     mediaRecorder = new MediaRecorder(stream);
@@ -83,13 +97,11 @@ clearButton.addEventListener('click', () => {
     editorTextarea.value = '';
 });
 savePromptButton.addEventListener('click', () => {
-    setCookie("prompt", whisperPrompt.value);
+    WebUtils.setCookie("prompt", whisperPrompt.value);
 });
-whisperPrompt.value = getCookie("prompt");
 saveEditorButton.addEventListener('click', () => {
-    setCookie("editorText", editorTextarea.value);
+    WebUtils.setCookie("editorText", editorTextarea.value);
 });
-editorTextarea.value = getCookie("editorText");
 copyButton.addEventListener('click', () => {
     navigator.clipboard.writeText(editorTextarea.value).then();
 });
@@ -98,7 +110,7 @@ const sendAudioToServer = async (audioBlob) => {
     formData.append('file', audioBlob);
     formData.append('model', 'whisper-1'); // Using the largest model
     formData.append('prompt', whisperPrompt.value);
-    const cookie = getCookie("apiKey");
+    const cookie = WebUtils.getCookie("apiKey");
     const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
         method: 'POST',
         headers: {
@@ -108,7 +120,7 @@ const sendAudioToServer = async (audioBlob) => {
     });
     const result = await response.json();
     if (result?.text) {
-        Utils.insertTextAtCursor(editorTextarea, result.text);
+        WebUtils.TextAreas.insertTextAtCursor(editorTextarea, result.text);
     }
     else {
         editorTextarea.value +=
@@ -117,16 +129,6 @@ const sendAudioToServer = async (audioBlob) => {
     }
     navigator.clipboard.writeText(editorTextarea.value).then();
 };
-function getCookie(name) {
-    let cookieArr = document.cookie.split(";");
-    for (let i = 0; i < cookieArr.length; i++) {
-        let cookiePair = cookieArr[i].split("=");
-        if (name === cookiePair[0].trim()) {
-            return decodeURIComponent(cookiePair[1]);
-        }
-    }
-    return null;
-}
 document.getElementById('saveKeyButton').addEventListener('click', function () {
     document.getElementById('apiKey').value = ''; // Clear the input field
 });
@@ -147,4 +149,6 @@ if ('serviceWorker' in navigator) {
         console.log('ServiceWorker registration failed: ', err);
     });
 }
+whisperPrompt.value = WebUtils.getCookie("prompt");
+editorTextarea.value = WebUtils.getCookie("editorText");
 //# sourceMappingURL=script.js.map
