@@ -84,10 +84,10 @@ navigator.mediaDevices.getUserMedia({ audio: true })
 pauseButton.addEventListener('click', () => {
   if (mediaRecorder.state === 'recording') {
     mediaRecorder.pause();
-    pauseButton.textContent = 'Resume';
+    pauseButton.textContent = '‖ Resume';
   } else if (mediaRecorder.state === 'paused') {
     mediaRecorder.resume();
-    pauseButton.textContent = 'Pause';
+    pauseButton.textContent = '‖ Pause';
   }
 });
 
