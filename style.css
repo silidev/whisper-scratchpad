@@ -15,6 +15,11 @@ body {
  width: 100%;
 }
 
+#kohDiv {
+ display: flex;
+ flex-wrap: wrap;
+}
+
 a {
  color: var(--myGreen);
 }
