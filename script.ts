@@ -46,9 +46,9 @@ let audioBlob: Blob;
 
 navigator.mediaDevices.getUserMedia({ audio: true })
   .then(stream => {
-    let mediaRecorder = new MediaRecorder(stream);
-    let audioChunks = [];
-    let isRecording = false;
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
+    isRecording = false;
 
     mediaRecorder.ondataavailable = event => {
       audioChunks.push(event.data);
