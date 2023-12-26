@@ -8,7 +8,7 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
-<div id="kohDiv">
+<div id="kohDiv" class="clearfix">
 <h1>whisper-scratchpad</h1>
 
 <div style="width:90%; height: 10cm">
@@ -51,14 +51,15 @@
   <h3>Optional</h3>
 
   <!--############## whisperPrompt ##############-->
-  <div style="width:90%; height: 10cm">
-
+  <div style="width:90%;">
     <label for="whisperPrompt">Prompt: <span id="whisperPromptInfoIcon">ⓘ</span>
-      <span id="whisperPromptInfoText" style="display: none;">
+      <span id="whisperPromptInfoText" class="hidden">
         Since it wasn't trained using instruction-following techniques, Whisper operates more like a base GPT model. It's important to keep in mind that Whisper only considers the first 244 tokens of the prompt. <a href="https://platform.openai.com/docs/guides/speech-to-text/prompting">More info</a>
       </span>
     </label>
-    <textarea id="whisperPrompt" wrap="soft" placeholder="Optional prompt especially for hinting unusual names if they are not recognized by default." style="width:100%;height: 100%;"></textarea>
+    <div style="height: 10cm;">
+      <textarea id="whisperPrompt" wrap="soft" placeholder="Optional prompt especially for hinting unusual names if they are not recognized by default." style="width:100%;height: 100%;"></textarea>
+    </div>
     <button id="savePromptButton">
       <span class="makeGreen">💾</span>
       Save prompt
@@ -66,10 +67,11 @@
   </div>
 
   <!--############## replaceRules ##############-->
-  <div style="width:90%; height: 10cm; margin-top: 3cm">
-    <label for="replaceRulesTextArea">Replacement rules: <span id="replaceRulesInfoIcon">ⓘ</span>
-      <span id="replaceRulesInfoText" style="display: none;">
-        A ruleset contains one or more rule, the format looks like:
+  <div style="width:90%;">
+    <label for="replaceRulesTextArea">Replacement rules:
+      <span id="replaceRulesInfoIcon">ⓘ</span>
+      <span id="replaceRulesInfoText" class="hidden">
+        <br>A ruleset contains one or more rule, the format looks like:
         <br>:: Any "SEARCH" becomes "REPLACE"
         <br>"SEARCH"->"REPLACE" <a href="https://github.com/No3371/obsidian-regex-pipeline">More info</a>
         <br>I like this:
@@ -88,21 +90,23 @@
         <br>"Klammer zu"->")"
       </span>
     </label>
-    <textarea id="replaceRulesTextArea" wrap="soft" placeholder="Optional. &quot;SEARCH&quot;-&gt;&quot;REPLACE&quot;" style="width:100%;height: 100%;"></textarea>
+    <div style="height: 10cm;">
+      <textarea id="replaceRulesTextArea" wrap="soft" placeholder="Optional. &quot;SEARCH&quot;-&gt;&quot;REPLACE&quot;" style="width:100%;height: 100%;"></textarea>
+    </div>
     <button id="saveRulesButton">
       <span class="makeGreen">💾</span>
       Save rules
     </button>
   </div>
 
-<div style="width:100%;margin-top: 4cm" >
-  <h3 style="margin-bottom: -15px">For devs</h3>
-  <br>- <a href="https://platform.openai.com/docs/api-reference/audio/createTranscription">API docs</a>
-  <br>- <a href="https://platform.openai.com/docs/guides/speech-to-text">OpenAI Speech Guide</a>
-  <br>- Once my browser said the page wanted to read the clipboard... if you get that just deny it. The page does not actually want to read the clipboard, I wrote no code for that.
-  <br>
-  <br>Copyright 2023 by <a href="https://twitter.com/silidev">https://twitter.com/silidev</a>. V1.04. GPL V3.
-</div>
+<div style="width:100%;" >
+    <h3 style="margin-bottom: -15px">For devs</h3>
+    <br>- <a href="https://platform.openai.com/docs/api-reference/audio/createTranscription">API docs</a>
+    <br>- <a href="https://platform.openai.com/docs/guides/speech-to-text">OpenAI Speech Guide</a>
+    <br>- Once my browser said the page wanted to read the clipboard... if you get that just deny it. The page does not actually want to read the clipboard, I wrote no code for that.
+    <br>
+    <br>Copyright 2023 by <a href="https://twitter.com/silidev">https://twitter.com/silidev</a>. V1.04. GPL V3.
+  </div>
 </div>
 <script src="script.js"></script>
 </body>

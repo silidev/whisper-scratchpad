@@ -168,11 +168,11 @@ var AppSpecific;
             });
             document.querySelector('#whisperPromptInfoIcon')
                 .addEventListener('click', function () {
-                document.getElementById('whisperPromptInfoText').style.display = 'block';
+                document.getElementById('whisperPromptInfoText').classList.toggle('hidden');
             });
             document.querySelector('#replaceRulesInfoIcon')
                 .addEventListener('click', function () {
-                document.getElementById('replaceRulesInfoText').style.display = 'block';
+                document.getElementById('replaceRulesInfoText').classList.toggle('hidden');
             });
         };
         const sendToWhisper = async (audioBlob) => {
