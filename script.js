@@ -189,7 +189,7 @@ var AppSpecific;
                 body: formData
             });
             const result = await response.json();
-            if (result?.text) {
+            if (result?.text || result?.text === '') {
                 WebUtils.TextAreas.insertTextAtCursor(PageLogic.editorTextarea, HelgeUtils.replaceByRules(result.text, PageLogic.replaceRulesTextArea.value));
             }
             else {

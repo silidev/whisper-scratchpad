@@ -214,7 +214,7 @@ namespace AppSpecific {
       const result = await response.json();
 
 
-      if (result?.text) {
+      if (result?.text || result?.text === '') {
         WebUtils.TextAreas.insertTextAtCursor(editorTextarea,
             HelgeUtils.replaceByRules(result.text, replaceRulesTextArea.value));
       } else {
