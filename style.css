@@ -27,8 +27,14 @@ a {
 }
 
 .button-container {
- justify-content: end;
- align-items: end;
+ display: flex;
+ justify-content: flex-end;
+ align-items: center;
+}
+
+.record-spinner-group {
+ display: flex;
+ align-items: center;
 }
 
 button, input, textarea {
