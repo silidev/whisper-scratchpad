@@ -98,10 +98,6 @@ button:hover, button:focus {
  100% { transform: rotate(360deg); }
 }
 
-.whisperPromptInfoIcon {
- cursor: pointer;
-}
-
 .makeGreen {
  filter: grayscale(100%) sepia(1) hue-rotate(90deg) brightness(0.5) saturate(10);
 }

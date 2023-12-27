@@ -11,20 +11,14 @@
 <body>
 <div id="kohDiv" class="clearfix">
 
-  <info-button>
-    Content of the info button element.
-  </info-button>
-  <info-button>
-    2
+<h1>whisper-scratchpad (alpha)</h1><info-button>
+    The first text area is the editor. The text of the recordings is inserted at the cursor position. The full editor is copied to clipboard after each recording. For info about the project look at the bottom of the page.
   </info-button>
 
-  <h1>whisper-scratchpad (alpha)
-
-</h1>
 
 <div style="width:90%; height: 10cm">
   <textarea id="editorTextarea" wrap="soft"
-    placeholder="Editor, recording inserted at cursor. Full editor copied to clipboard after each recording."
+    placeholder=""
     style="width:100%;height: 100%;"></textarea>
 </div>
 
@@ -64,10 +58,10 @@
 
   <!--############## whisperPrompt ##############-->
   <div style="width:90%;">
-    <label for="whisperPrompt">Prompt: <span id="whisperPromptInfoIcon">ⓘ</span>
-      <span id="whisperPromptInfoText" class="hidden">
+    <label for="whisperPrompt">Prompt:
+      <info-button>
         Since it wasn't trained using instruction-following techniques, Whisper operates more like a base GPT model. It's important to keep in mind that Whisper only considers the first 244 tokens of the prompt. <a href="https://platform.openai.com/docs/guides/speech-to-text/prompting">More info</a>
-      </span>
+      </info-button>
     </label>
     <div style="height: 10cm;">
       <textarea id="whisperPrompt" wrap="soft" placeholder="Optional prompt especially for hinting unusual names if they are not recognized by default." style="width:100%;height: 100%;"></textarea>
@@ -81,8 +75,7 @@
   <!--############## replaceRules ##############-->
   <div style="width:90%;">
     <label for="replaceRulesTextArea">Replacement rules:
-      <span id="replaceRulesInfoIcon">ⓘ</span>
-      <span id="replaceRulesInfoText" class="hidden">
+      <info-button>
         <br>A ruleset contains one or more rule, the format looks like:
         <br>:: Any "SEARCH" becomes "REPLACE"
         <br>"SEARCH"->"REPLACE" <a href="https://github.com/No3371/obsidian-regex-pipeline">More info</a>
@@ -103,7 +96,7 @@
         <br>"Schrägstrich"->"/"
         <br>"Ausrufezeichen"->"!"
         <br>"Fragezeichen"->"?"
-      </span>
+      </info-button>
     </label>
     <div style="height: 10cm;">
       <textarea id="replaceRulesTextArea" wrap="soft" placeholder="Optional. &quot;SEARCH&quot;-&gt;&quot;REPLACE&quot;" style="width:100%;height: 100%;"></textarea>

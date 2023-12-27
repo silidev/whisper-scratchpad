@@ -185,16 +185,6 @@ namespace AppSpecific {
       document.getElementById('saveAPIKeyButton').addEventListener('click', function () {
         (document.getElementById('apiKey') as HTMLInputElement).value = ''; // Clear the input field
       });
-
-      document.querySelector('#whisperPromptInfoIcon')
-          .addEventListener('click', function () {
-        document.getElementById('whisperPromptInfoText').classList.toggle('hidden');
-      });
-      
-      document.querySelector('#replaceRulesInfoIcon')
-          .addEventListener('click', function () {
-        document.getElementById('replaceRulesInfoText').classList.toggle('hidden');
-      });
     }
 
     const sendToWhisper = async (audioBlob: Blob) => {
