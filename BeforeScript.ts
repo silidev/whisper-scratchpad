@@ -8,9 +8,8 @@ class InfoButton extends HTMLElement {
 
   connectedCallback() {
     const targetId = this.getAttribute('target-id') || 'default-id';
-    const infoText = this.getAttribute('info-text') || '';
-    const moreInfoLink = this.getAttribute('more-info-link') || '#';
-    const moreInfoText = this.getAttribute('more-info-text') || 'More info';
+    const moreInfoLinkText = this.getAttribute('moreInfoLinkText') || 'ⓘ';
+    const moreInfoText = this.getAttribute('moreInfoText');
 
     this.shadow.innerHTML = `
       <style>
@@ -21,9 +20,9 @@ class InfoButton extends HTMLElement {
           cursor: pointer;
         }
       </style>
-      <a href="${moreInfoLink}">${moreInfoText}</a>
+      <span>${moreInfoLinkText}</span>
       <span id="${targetId}" class="hidden">
-        ${infoText}
+        ${moreInfoText}
       </span>
     `;
 
