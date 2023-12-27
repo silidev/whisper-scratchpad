@@ -6,7 +6,6 @@ class InfoButton extends HTMLElement {
     connectedCallback() {
         const targetId = this.getAttribute('target-id') || 'default-id';
         const moreInfoLinkText = this.getAttribute('moreInfoLinkText') || 'ⓘ';
-        const moreInfoText = this.getAttribute('moreInfoText');
         this.shadow.innerHTML = `
       <style>
         .hidden {
