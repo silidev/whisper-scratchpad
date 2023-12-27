@@ -6,10 +6,23 @@
   <link rel="stylesheet" type="text/css" href="style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="manifest" href="manifest.json">
+  <script src="BeforeScript.js"></script>
 </head>
 <body>
 <div id="kohDiv" class="clearfix">
-<h1>whisper-scratchpad (alpha)</h1>
+
+  <simple-demo></simple-demo>
+
+  <info-button
+      target-id="infoText"
+      info-text="This is the information text."
+      more-info-link="https://example.com"
+      more-info-text="Learn More">
+  </info-button>
+
+  <h1>whisper-scratchpad (alpha)
+
+</h1>
 
 <div style="width:90%; height: 10cm">
   <textarea id="editorTextarea" wrap="soft"
@@ -112,6 +125,6 @@
     <br>Copyright 2023 by <a href="https://twitter.com/silidev">https://twitter.com/silidev</a>. V.906. GPL V3.
   </div>
 </div>
-<script src="script.js"></script>
+<script src="script.js"></script> <!-- Rename to AfterScript.js -->
 </body>
 </html>
