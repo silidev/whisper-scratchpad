@@ -1,20 +1,12 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.InfoButton = void 0;
 class InfoButton extends HTMLElement {
     constructor() {
         super();
-        this.toggleHiddenClass = () => {
-            const targetElement = this.shadow.getElementById(this.getAttribute('target-id'));
-            if (targetElement) {
-                targetElement.classList.toggle('hidden');
-            }
-        };
         this.shadow = this.attachShadow({ mode: 'open' });
-        const targetId = this.getAttribute('target-id') || '';
-        const infoText = this.getAttribute('info-text') || '';
-        const moreInfoLink = this.getAttribute('more-info-link') || '#';
-        const moreInfoText = this.getAttribute('more-info-text') || 'More info';
+    }
+    connectedCallback() {
+        const targetId = this.getAttribute('target-id') || 'default-id';
+        const moreInfoLinkText = this.getAttribute('moreInfoLinkText') || 'ⓘ';
+        const moreInfoText = this.getAttribute('moreInfoText');
         this.shadow.innerHTML = `
       <style>
         .hidden {
@@ -24,15 +16,22 @@ class InfoButton extends HTMLElement {
           cursor: pointer;
         }
       </style>
+      <span>${moreInfoLinkText}</span>
       <span id="${targetId}" class="hidden">
-        ${infoText}
-        <a href="${moreInfoLink}">${moreInfoText}</a>
+        <slot></slot>
       </span>
     `;
-    }
-    connectedCallback() {
+        this.toggleHiddenClass = () => {
+            const targetElement = this.shadow.getElementById(targetId);
+            if (targetElement) {
+                targetElement.classList.toggle('hidden');
+            }
+            else {
+                console.error(`Element with id ${targetId} not found`);
+            }
+        };
         this.addEventListener('click', this.toggleHiddenClass);
     }
 }
-exports.InfoButton = InfoButton;
+customElements.define('info-button', InfoButton);
 //# sourceMappingURL=InfoButton.js.map

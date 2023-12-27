@@ -1,9 +1,10 @@
 class InfoButton extends HTMLElement {
   private shadow: ShadowRoot;
   private toggleHiddenClass: any;
+
   constructor() {
     super();
-    this.shadow = this.attachShadow({ mode: 'open' });
+    this.shadow = this.attachShadow({mode: 'open'});
   }
 
   connectedCallback() {
@@ -22,7 +23,7 @@ class InfoButton extends HTMLElement {
       </style>
       <span>${moreInfoLinkText}</span>
       <span id="${targetId}" class="hidden">
-        ${moreInfoText}
+        <slot></slot>
       </span>
     `;
 
@@ -40,4 +41,3 @@ class InfoButton extends HTMLElement {
 }
 
 customElements.define('info-button', InfoButton);
-
