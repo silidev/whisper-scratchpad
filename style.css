@@ -26,15 +26,17 @@ a {
  color: var(--myGreen);
 }
 
-.button-container {
+.button-container, .record-spinner-group {
  display: flex;
- justify-content: flex-end;
- align-items: center;
+ align-items: stretch;
+}
+
+button {
+ flex-grow: 1;
 }
 
 .record-spinner-group {
  display: flex;
- align-items: center;
 }
 
 button, input, textarea {
@@ -65,7 +67,6 @@ input::selection, textarea::selection {
 }
 
 button, input, .spinner {
- height: 45px;
 }
 
 textarea {
