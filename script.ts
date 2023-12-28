@@ -1,4 +1,4 @@
-namespace WebUtils {
+namespace HtmlUtils {
   export  namespace TextAreas {
     export const insertTextAtCursor = (
         textarea: HTMLTextAreaElement,
@@ -14,6 +14,13 @@ namespace WebUtils {
       const newCursorPosition = cursorPosition + addedText.length;
       textarea.selectionStart = newCursorPosition;
       textarea.selectionEnd = newCursorPosition;
+    };
+  }
+
+  export namespace Media {
+    export const releaseMicrophone = (stream: MediaStream) => {
+      if (!stream) return;
+      stream.getTracks().forEach(track => track.stop());
     };
   }
 
@@ -51,6 +58,7 @@ namespace WebUtils {
     });
   };
 }
+
 
 namespace HelgeUtils {
   export const replaceByRules = (subject: string, ruleText: string) => {
@@ -127,6 +135,7 @@ namespace AppSpecific {
                 mediaRecorder.start();
                 isRecording = true;
                 recordButton.textContent = '◼ Stop';
+                HtmlUtils.Media.releaseMicrophone(stream);
               } else {
                 mediaRecorder.stop();
                 isRecording = false;
@@ -147,29 +156,29 @@ namespace AppSpecific {
       });
 
       // saveAPIKeyButton
-      WebUtils.addButtonClickListener(saveAPIKeyButton, () => {
+      HtmlUtils.addButtonClickListener(saveAPIKeyButton, () => {
         apiKey = apiKeyInput.value;
-        WebUtils.Cookies.set('apiKey', apiKey);
+        HtmlUtils.Cookies.set('apiKey', apiKey);
       });
 
       // clearButton
-      WebUtils.addButtonClickListener(clearButton, () => {
+      HtmlUtils.addButtonClickListener(clearButton, () => {
         editorTextarea.value = '';
       });
 
       // saveEditorButton
-      WebUtils.addButtonClickListener(saveEditorButton, () => {
-        WebUtils.Cookies.set("editorText", editorTextarea.value);
+      HtmlUtils.addButtonClickListener(saveEditorButton, () => {
+        HtmlUtils.Cookies.set("editorText", editorTextarea.value);
       });
 
       // savePromptButton
-      WebUtils.addButtonClickListener(savePromptButton, () => {
-        WebUtils.Cookies.set("prompt", whisperPrompt.value);
+      HtmlUtils.addButtonClickListener(savePromptButton, () => {
+        HtmlUtils.Cookies.set("prompt", whisperPrompt.value);
       });
 
       // saveRulesButton
-      WebUtils.addButtonClickListener(saveRulesButton, () => {
-        WebUtils.Cookies.set("replaceRules", replaceRulesTextArea.value);
+      HtmlUtils.addButtonClickListener(saveRulesButton, () => {
+        HtmlUtils.Cookies.set("replaceRules", replaceRulesTextArea.value);
       });
 
       // copyButton
@@ -193,7 +202,7 @@ namespace AppSpecific {
       formData.append('model', 'whisper-1'); // Using the largest model
       formData.append('prompt', whisperPrompt.value);
 
-      const cookie = WebUtils.Cookies.get("apiKey");
+      const cookie = HtmlUtils.Cookies.get("apiKey");
       const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
         method: 'POST',
         headers: {
@@ -205,7 +214,7 @@ namespace AppSpecific {
 
 
       if (result?.text || result?.text === '') {
-        WebUtils.TextAreas.insertTextAtCursor(editorTextarea,
+        HtmlUtils.TextAreas.insertTextAtCursor(editorTextarea,
             HelgeUtils.replaceByRules(result.text, replaceRulesTextArea.value));
       } else {
         editorTextarea.value +=
@@ -224,9 +233,9 @@ namespace AppSpecific {
     };
 
     export const loadFormData = () => {
-      PageLogic.editorTextarea.value = WebUtils.Cookies.get("editorText");
-      PageLogic.whisperPrompt.value = WebUtils.Cookies.get("prompt");
-      PageLogic.replaceRulesTextArea.value = WebUtils.Cookies.get("replaceRules");
+      PageLogic.editorTextarea.value = HtmlUtils.Cookies.get("editorText");
+      PageLogic.whisperPrompt.value = HtmlUtils.Cookies.get("prompt");
+      PageLogic.replaceRulesTextArea.value = HtmlUtils.Cookies.get("replaceRules");
     };
 
     export const registerServiceWorker = () => {

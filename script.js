@@ -1,5 +1,5 @@
-var WebUtils;
-(function (WebUtils) {
+var HtmlUtils;
+(function (HtmlUtils) {
     let TextAreas;
     (function (TextAreas) {
         TextAreas.insertTextAtCursor = (textarea, addedText) => {
@@ -13,7 +13,15 @@ var WebUtils;
             textarea.selectionStart = newCursorPosition;
             textarea.selectionEnd = newCursorPosition;
         };
-    })(TextAreas = WebUtils.TextAreas || (WebUtils.TextAreas = {}));
+    })(TextAreas = HtmlUtils.TextAreas || (HtmlUtils.TextAreas = {}));
+    let Media;
+    (function (Media) {
+        Media.releaseMicrophone = (stream) => {
+            if (!stream)
+                return;
+            stream.getTracks().forEach(track => track.stop());
+        };
+    })(Media = HtmlUtils.Media || (HtmlUtils.Media = {}));
     let Cookies;
     (function (Cookies) {
         Cookies.set = (cookieName, cookieValue) => {
@@ -30,11 +38,11 @@ var WebUtils;
             }
             return null;
         };
-    })(Cookies = WebUtils.Cookies || (WebUtils.Cookies = {}));
+    })(Cookies = HtmlUtils.Cookies || (HtmlUtils.Cookies = {}));
     /**
      * Adds a click listener to a button that appends a checkmark to the button
      * text when clicked. */
-    WebUtils.addButtonClickListener = (button, callback) => {
+    HtmlUtils.addButtonClickListener = (button, callback) => {
         const initialHTML = button.innerHTML; // Read initial HTML from the button
         const checkmark = ' ✔️'; // Unicode checkmark
         button.addEventListener('click', () => {
@@ -45,7 +53,7 @@ var WebUtils;
             }, 2000);
         });
     };
-})(WebUtils || (WebUtils = {}));
+})(HtmlUtils || (HtmlUtils = {}));
 var HelgeUtils;
 (function (HelgeUtils) {
     HelgeUtils.replaceByRules = (subject, ruleText) => {
@@ -114,6 +122,7 @@ var AppSpecific;
                         mediaRecorder.start();
                         isRecording = true;
                         recordButton.textContent = '◼ Stop';
+                        HtmlUtils.Media.releaseMicrophone(stream);
                     }
                     else {
                         mediaRecorder.stop();
@@ -134,25 +143,25 @@ var AppSpecific;
                 }
             });
             // saveAPIKeyButton
-            WebUtils.addButtonClickListener(saveAPIKeyButton, () => {
+            HtmlUtils.addButtonClickListener(saveAPIKeyButton, () => {
                 apiKey = apiKeyInput.value;
-                WebUtils.Cookies.set('apiKey', apiKey);
+                HtmlUtils.Cookies.set('apiKey', apiKey);
             });
             // clearButton
-            WebUtils.addButtonClickListener(clearButton, () => {
+            HtmlUtils.addButtonClickListener(clearButton, () => {
                 PageLogic.editorTextarea.value = '';
             });
             // saveEditorButton
-            WebUtils.addButtonClickListener(saveEditorButton, () => {
-                WebUtils.Cookies.set("editorText", PageLogic.editorTextarea.value);
+            HtmlUtils.addButtonClickListener(saveEditorButton, () => {
+                HtmlUtils.Cookies.set("editorText", PageLogic.editorTextarea.value);
             });
             // savePromptButton
-            WebUtils.addButtonClickListener(savePromptButton, () => {
-                WebUtils.Cookies.set("prompt", PageLogic.whisperPrompt.value);
+            HtmlUtils.addButtonClickListener(savePromptButton, () => {
+                HtmlUtils.Cookies.set("prompt", PageLogic.whisperPrompt.value);
             });
             // saveRulesButton
-            WebUtils.addButtonClickListener(saveRulesButton, () => {
-                WebUtils.Cookies.set("replaceRules", PageLogic.replaceRulesTextArea.value);
+            HtmlUtils.addButtonClickListener(saveRulesButton, () => {
+                HtmlUtils.Cookies.set("replaceRules", PageLogic.replaceRulesTextArea.value);
             });
             // copyButton
             copyButton.addEventListener('click', () => {
@@ -172,7 +181,7 @@ var AppSpecific;
             formData.append('file', audioBlob);
             formData.append('model', 'whisper-1'); // Using the largest model
             formData.append('prompt', PageLogic.whisperPrompt.value);
-            const cookie = WebUtils.Cookies.get("apiKey");
+            const cookie = HtmlUtils.Cookies.get("apiKey");
             const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
                 method: 'POST',
                 headers: {
@@ -182,7 +191,7 @@ var AppSpecific;
             });
             const result = await response.json();
             if (result?.text || result?.text === '') {
-                WebUtils.TextAreas.insertTextAtCursor(PageLogic.editorTextarea, HelgeUtils.replaceByRules(result.text, PageLogic.replaceRulesTextArea.value));
+                HtmlUtils.TextAreas.insertTextAtCursor(PageLogic.editorTextarea, HelgeUtils.replaceByRules(result.text, PageLogic.replaceRulesTextArea.value));
             }
             else {
                 PageLogic.editorTextarea.value +=
@@ -198,9 +207,9 @@ var AppSpecific;
             spinner.style.display = 'none';
         };
         PageLogic.loadFormData = () => {
-            PageLogic.editorTextarea.value = WebUtils.Cookies.get("editorText");
-            PageLogic.whisperPrompt.value = WebUtils.Cookies.get("prompt");
-            PageLogic.replaceRulesTextArea.value = WebUtils.Cookies.get("replaceRules");
+            PageLogic.editorTextarea.value = HtmlUtils.Cookies.get("editorText");
+            PageLogic.whisperPrompt.value = HtmlUtils.Cookies.get("prompt");
+            PageLogic.replaceRulesTextArea.value = HtmlUtils.Cookies.get("replaceRules");
         };
         PageLogic.registerServiceWorker = () => {
             if ('serviceWorker' in navigator) {
