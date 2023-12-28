@@ -1,8 +1,8 @@
 const CACHE_NAME = 'whisper-scratchpad-cache-v1';
 const urlsToCache = [
-    'whisper-scratchpad/',
+    '/',
     'index.html',
-    'whisper-scratchpad/manifest.json',
+    'manifest.json',
     'script.js',
     'service-worker.js',
     'style.css',
