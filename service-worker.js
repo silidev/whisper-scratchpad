@@ -8,7 +8,6 @@ const urlsToCache = [
     'style.css',
     'icon-192x192.png',
     'icon-512x512.png',
-    'favicon.ico',
 ];
 
 self.addEventListener('install', event => {
