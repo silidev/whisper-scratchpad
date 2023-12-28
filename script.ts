@@ -93,6 +93,7 @@ namespace AppSpecific {
     const saveRulesButton = document.getElementById('saveRulesButton') as HTMLButtonElement;
     const saveEditorButton = document.getElementById('saveEditorButton') as HTMLButtonElement;
     const copyButton = document.getElementById('copyButton') as HTMLButtonElement;
+    const transcribeAgainButton = document.getElementById('transcribeAgainButton') as HTMLButtonElement;
 
     const apiKeyInput = document.getElementById('apiKey') as HTMLTextAreaElement;
     export const editorTextarea = document.getElementById('editorTextarea') as HTMLTextAreaElement;
@@ -104,6 +105,7 @@ namespace AppSpecific {
     let apiKey = '';
     let mediaRecorder: MediaRecorder;
     let audioChunks = [];
+    let audioBlob: Blob;
     let isRecording = false;
 
     export const addButtonEventListeners = () => {
@@ -118,33 +120,39 @@ namespace AppSpecific {
             };
 
             mediaRecorder.onstop = () => {
-              let audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
+              audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
               audioChunks = [];
-              const audioURL = URL.createObjectURL(audioBlob);
-              { // Download button (hidden, b/c not working)
-                downloadButton.href = audioURL;
+              { // Download button
+                downloadButton.href = URL.createObjectURL(audioBlob);
                 downloadButton.download = 'recording.wav';
-                // downloadButton.style.display = 'block';
+                downloadButton.style.display = 'block';
               }
               sendToWhisper(audioBlob).then(hideSpinner);
             };
 
+            function startRecording() {
+              showSpinner();
+              mediaRecorder.start();
+              isRecording = true;
+              recordButton.textContent = '◼ Stop';
+            }
+
+            function stopRecording() {
+              mediaRecorder.stop();
+              isRecording = false;
+              recordButton.textContent = '⬤ Record';
+              HtmlUtils.Media.releaseMicrophone(stream);
+            }
+
             recordButton.addEventListener('click', () => {
-              if (!isRecording) {
-                showSpinner();
-                mediaRecorder.start();
-                isRecording = true;
-                recordButton.textContent = '◼ Stop';
-                HtmlUtils.Media.releaseMicrophone(stream);
+              if (isRecording) {
+                stopRecording();
               } else {
-                mediaRecorder.stop();
-                isRecording = false;
-                recordButton.textContent = '⬤ Record';
+                startRecording();
               }
             });
           });
 
-      // pauseButton
       pauseButton.addEventListener('click', () => {
         if (mediaRecorder.state === 'recording') {
           mediaRecorder.pause();
@@ -159,6 +167,12 @@ namespace AppSpecific {
       HtmlUtils.addButtonClickListener(saveAPIKeyButton, () => {
         apiKey = apiKeyInput.value;
         HtmlUtils.Cookies.set('apiKey', apiKey);
+      });
+
+      //transcribeAgainButton
+      HtmlUtils.addButtonClickListener(transcribeAgainButton, () => {
+        showSpinner();
+        sendToWhisper(audioBlob).then(hideSpinner);
       });
 
       // clearButton

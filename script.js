@@ -87,6 +87,7 @@ var AppSpecific;
         const saveRulesButton = document.getElementById('saveRulesButton');
         const saveEditorButton = document.getElementById('saveEditorButton');
         const copyButton = document.getElementById('copyButton');
+        const transcribeAgainButton = document.getElementById('transcribeAgainButton');
         const apiKeyInput = document.getElementById('apiKey');
         PageLogic.editorTextarea = document.getElementById('editorTextarea');
         PageLogic.whisperPrompt = document.getElementById('whisperPrompt');
@@ -95,6 +96,7 @@ var AppSpecific;
         let apiKey = '';
         let mediaRecorder;
         let audioChunks = [];
+        let audioBlob;
         let isRecording = false;
         PageLogic.addButtonEventListeners = () => {
             navigator.mediaDevices.getUserMedia({ audio: true })
@@ -106,32 +108,36 @@ var AppSpecific;
                     audioChunks.push(event.data);
                 };
                 mediaRecorder.onstop = () => {
-                    let audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                     audioChunks = [];
-                    const audioURL = URL.createObjectURL(audioBlob);
-                    { // Download button (hidden, b/c not working)
-                        downloadButton.href = audioURL;
+                    { // Download button
+                        downloadButton.href = URL.createObjectURL(audioBlob);
                         downloadButton.download = 'recording.wav';
-                        // downloadButton.style.display = 'block';
+                        downloadButton.style.display = 'block';
                     }
                     sendToWhisper(audioBlob).then(hideSpinner);
                 };
+                function startRecording() {
+                    showSpinner();
+                    mediaRecorder.start();
+                    isRecording = true;
+                    recordButton.textContent = '◼ Stop';
+                }
+                function stopRecording() {
+                    mediaRecorder.stop();
+                    isRecording = false;
+                    recordButton.textContent = '⬤ Record';
+                    HtmlUtils.Media.releaseMicrophone(stream);
+                }
                 recordButton.addEventListener('click', () => {
-                    if (!isRecording) {
-                        showSpinner();
-                        mediaRecorder.start();
-                        isRecording = true;
-                        recordButton.textContent = '◼ Stop';
-                        HtmlUtils.Media.releaseMicrophone(stream);
+                    if (isRecording) {
+                        stopRecording();
                     }
                     else {
-                        mediaRecorder.stop();
-                        isRecording = false;
-                        recordButton.textContent = '⬤ Record';
+                        startRecording();
                     }
                 });
             });
-            // pauseButton
             pauseButton.addEventListener('click', () => {
                 if (mediaRecorder.state === 'recording') {
                     mediaRecorder.pause();
@@ -146,6 +152,11 @@ var AppSpecific;
             HtmlUtils.addButtonClickListener(saveAPIKeyButton, () => {
                 apiKey = apiKeyInput.value;
                 HtmlUtils.Cookies.set('apiKey', apiKey);
+            });
+            //transcribeAgainButton
+            HtmlUtils.addButtonClickListener(transcribeAgainButton, () => {
+                showSpinner();
+                sendToWhisper(audioBlob).then(hideSpinner);
             });
             // clearButton
             HtmlUtils.addButtonClickListener(clearButton, () => {
