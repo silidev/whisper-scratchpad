@@ -6,8 +6,8 @@ const urlsToCache = [
     'script.js',
     'service-worker.js',
     'style.css',
-    'icon-192x192.png',
-    'icon-512x512.png',
+    'icon192x192.png',
+    'icon512x512.png',
 ];
 
 self.addEventListener('install', event => {
