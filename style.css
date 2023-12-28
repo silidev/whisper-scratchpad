@@ -116,3 +116,10 @@ button:hover, button:focus {
 .hidden {
  display: none;
 }
+
+@media (max-width: 600px) {
+ h1, h2, h3, h4, h5, h6 {
+  display: inline-block; /* Ensures display is inline-block on mobile */
+  margin-top: 1cm; /* Custom margin for mobile */
+ }
+}
