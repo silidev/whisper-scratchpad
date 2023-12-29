@@ -95,6 +95,7 @@ namespace AppSpecific {
     const saveEditorButton = document.getElementById('saveEditorButton') as HTMLButtonElement;
     const copyButton = document.getElementById('copyButton') as HTMLButtonElement;
     const transcribeAgainButton = document.getElementById('transcribeAgainButton') as HTMLButtonElement;
+    const overwriteEditorCheckbox = <HTMLInputElement>document.getElementById('overwriteEditorCheckbox');
 
     const apiKeyInput = document.getElementById('apiKey') as HTMLTextAreaElement;
     export const editorTextarea = document.getElementById('editorTextarea') as HTMLTextAreaElement;
@@ -242,8 +243,11 @@ namespace AppSpecific {
 
 
       if (result?.text || result?.text === '') {
-        HtmlUtils.TextAreas.insertTextAtCursor(editorTextarea,
-            HelgeUtils.replaceByRules(result.text, replaceRulesTextArea.value));
+        const replacedOutput = HelgeUtils.replaceByRules(result.text, replaceRulesTextArea.value);
+        if (overwriteEditorCheckbox.checked)
+          editorTextarea.value = replacedOutput;
+        else
+          HtmlUtils.TextAreas.insertTextAtCursor(editorTextarea, replacedOutput);
       } else {
         editorTextarea.value +=
             'You need an API key. Go to https://platform.openai.com/api-keys"> to get an API key. If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.\n\n'

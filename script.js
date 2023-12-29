@@ -89,6 +89,7 @@ var AppSpecific;
         const saveEditorButton = document.getElementById('saveEditorButton');
         const copyButton = document.getElementById('copyButton');
         const transcribeAgainButton = document.getElementById('transcribeAgainButton');
+        const overwriteEditorCheckbox = document.getElementById('overwriteEditorCheckbox');
         const apiKeyInput = document.getElementById('apiKey');
         PageLogic.editorTextarea = document.getElementById('editorTextarea');
         PageLogic.whisperPrompt = document.getElementById('whisperPrompt');
@@ -213,7 +214,11 @@ var AppSpecific;
             });
             const result = await response.json();
             if (result?.text || result?.text === '') {
-                HtmlUtils.TextAreas.insertTextAtCursor(PageLogic.editorTextarea, HelgeUtils.replaceByRules(result.text, PageLogic.replaceRulesTextArea.value));
+                const replacedOutput = HelgeUtils.replaceByRules(result.text, PageLogic.replaceRulesTextArea.value);
+                if (overwriteEditorCheckbox.checked)
+                    PageLogic.editorTextarea.value = replacedOutput;
+                else
+                    HtmlUtils.TextAreas.insertTextAtCursor(PageLogic.editorTextarea, replacedOutput);
             }
             else {
                 PageLogic.editorTextarea.value +=
