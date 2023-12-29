@@ -100,21 +100,29 @@ namespace AppSpecific {
     export const whisperPrompt = document.getElementById('whisperPrompt') as HTMLTextAreaElement;
     export const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement;
 
-    const spinner = document.querySelector('.spinner') as HTMLDivElement;
 
-    let apiKey = '';
-    let mediaRecorder: MediaRecorder;
-    let audioChunks = [];
-    let audioBlob: Blob;
-    let isRecording = false;
-
+    // ############## addButtonEventListeners ##############
     export const addButtonEventListeners = () => {
-      navigator.mediaDevices.getUserMedia({audio: true})
-          .then(stream => {
+
+      const spinner = document.querySelector('.spinner') as HTMLDivElement;
+      let apiKey = '';
+      let mediaRecorder: MediaRecorder;
+      let audioChunks = [];
+      let audioBlob: Blob;
+      let isRecording = false;
+      let stream: MediaStream;
+
+      recordButton.addEventListener('click', () => {
+        function startRecording() {
+          showSpinner();
+          recordButton.textContent = '◼ Stop';
+
+          const onfulfilled = (streamParam: MediaStream) => {
+            stream = streamParam;
             mediaRecorder = new MediaRecorder(stream);
             audioChunks = [];
-            isRecording = false;
-
+            mediaRecorder.start();
+            isRecording = true;
             mediaRecorder.ondataavailable = event => {
               audioChunks.push(event.data);
             };
@@ -129,29 +137,24 @@ namespace AppSpecific {
               }
               sendToWhisper(audioBlob).then(hideSpinner);
             };
+          };
 
-            function startRecording() {
-              showSpinner();
-              mediaRecorder.start();
-              isRecording = true;
-              recordButton.textContent = '◼ Stop';
-            }
+          navigator.mediaDevices.getUserMedia({audio: true})
+              .then(onfulfilled);
+        }
 
-            function stopRecording() {
-              mediaRecorder.stop();
-              isRecording = false;
-              recordButton.textContent = '⬤ Record';
-              HtmlUtils.Media.releaseMicrophone(stream);
-            }
-
-            recordButton.addEventListener('click', () => {
-              if (isRecording) {
-                stopRecording();
-              } else {
-                startRecording();
-              }
-            });
-          });
+        function stopRecording() {
+          mediaRecorder.stop();
+          isRecording = false;
+          recordButton.textContent = '⬤ Record';
+          HtmlUtils.Media.releaseMicrophone(stream);
+        }
+        if (isRecording) {
+          stopRecording();
+        } else {
+          startRecording();
+        }
+      });
 
       pauseButton.addEventListener('click', () => {
         if (mediaRecorder.state === 'recording') {
@@ -208,6 +211,14 @@ namespace AppSpecific {
       document.getElementById('saveAPIKeyButton').addEventListener('click', function () {
         (document.getElementById('apiKey') as HTMLInputElement).value = ''; // Clear the input field
       });
+
+      const showSpinner = () => {
+        spinner.style.display = 'block';
+      };
+
+      const hideSpinner = () => {
+        spinner.style.display = 'none';
+      };
     }
 
     const sendToWhisper = async (audioBlob: Blob) => {
@@ -238,13 +249,6 @@ namespace AppSpecific {
       navigator.clipboard.writeText(editorTextarea.value).then();
     };
 
-    const showSpinner = () => {
-      spinner.style.display = 'block';
-    };
-
-    const hideSpinner = () => {
-      spinner.style.display = 'none';
-    };
 
     export const loadFormData = () => {
       PageLogic.editorTextarea.value = HtmlUtils.Cookies.get("editorText");

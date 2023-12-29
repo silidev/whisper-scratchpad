@@ -92,36 +92,41 @@ var AppSpecific;
         PageLogic.editorTextarea = document.getElementById('editorTextarea');
         PageLogic.whisperPrompt = document.getElementById('whisperPrompt');
         PageLogic.replaceRulesTextArea = document.getElementById('replaceRulesTextArea');
-        const spinner = document.querySelector('.spinner');
-        let apiKey = '';
-        let mediaRecorder;
-        let audioChunks = [];
-        let audioBlob;
-        let isRecording = false;
+        // ############## addButtonEventListeners ##############
         PageLogic.addButtonEventListeners = () => {
-            navigator.mediaDevices.getUserMedia({ audio: true })
-                .then(stream => {
-                mediaRecorder = new MediaRecorder(stream);
-                audioChunks = [];
-                isRecording = false;
-                mediaRecorder.ondataavailable = event => {
-                    audioChunks.push(event.data);
-                };
-                mediaRecorder.onstop = () => {
-                    audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                    audioChunks = [];
-                    { // Download button
-                        downloadButton.href = URL.createObjectURL(audioBlob);
-                        downloadButton.download = 'recording.wav';
-                        downloadButton.style.display = 'block';
-                    }
-                    sendToWhisper(audioBlob).then(hideSpinner);
-                };
+            const spinner = document.querySelector('.spinner');
+            let apiKey = '';
+            let mediaRecorder;
+            let audioChunks = [];
+            let audioBlob;
+            let isRecording = false;
+            let stream;
+            recordButton.addEventListener('click', () => {
                 function startRecording() {
                     showSpinner();
-                    mediaRecorder.start();
-                    isRecording = true;
                     recordButton.textContent = '◼ Stop';
+                    const onfulfilled = (streamParam) => {
+                        stream = streamParam;
+                        mediaRecorder = new MediaRecorder(stream);
+                        audioChunks = [];
+                        mediaRecorder.start();
+                        isRecording = true;
+                        mediaRecorder.ondataavailable = event => {
+                            audioChunks.push(event.data);
+                        };
+                        mediaRecorder.onstop = () => {
+                            audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                            audioChunks = [];
+                            { // Download button
+                                downloadButton.href = URL.createObjectURL(audioBlob);
+                                downloadButton.download = 'recording.wav';
+                                downloadButton.style.display = 'block';
+                            }
+                            sendToWhisper(audioBlob).then(hideSpinner);
+                        };
+                    };
+                    navigator.mediaDevices.getUserMedia({ audio: true })
+                        .then(onfulfilled);
                 }
                 function stopRecording() {
                     mediaRecorder.stop();
@@ -129,14 +134,12 @@ var AppSpecific;
                     recordButton.textContent = '⬤ Record';
                     HtmlUtils.Media.releaseMicrophone(stream);
                 }
-                recordButton.addEventListener('click', () => {
-                    if (isRecording) {
-                        stopRecording();
-                    }
-                    else {
-                        startRecording();
-                    }
-                });
+                if (isRecording) {
+                    stopRecording();
+                }
+                else {
+                    startRecording();
+                }
             });
             pauseButton.addEventListener('click', () => {
                 if (mediaRecorder.state === 'recording') {
@@ -186,6 +189,12 @@ var AppSpecific;
             document.getElementById('saveAPIKeyButton').addEventListener('click', function () {
                 document.getElementById('apiKey').value = ''; // Clear the input field
             });
+            const showSpinner = () => {
+                spinner.style.display = 'block';
+            };
+            const hideSpinner = () => {
+                spinner.style.display = 'none';
+            };
         };
         const sendToWhisper = async (audioBlob) => {
             const formData = new FormData();
@@ -210,12 +219,6 @@ var AppSpecific;
                         + JSON.stringify(result, null, 2);
             }
             navigator.clipboard.writeText(PageLogic.editorTextarea.value).then();
-        };
-        const showSpinner = () => {
-            spinner.style.display = 'block';
-        };
-        const hideSpinner = () => {
-            spinner.style.display = 'none';
         };
         PageLogic.loadFormData = () => {
             PageLogic.editorTextarea.value = HtmlUtils.Cookies.get("editorText");
