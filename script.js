@@ -89,6 +89,7 @@ var AppSpecific;
         const saveEditorButton = document.getElementById('saveEditorButton');
         const copyButton = document.getElementById('copyButton');
         const transcribeAgainButton = document.getElementById('transcribeAgainButton');
+        const replaceAgainButton = document.getElementById('replaceAgainButton');
         const overwriteEditorCheckbox = document.getElementById('overwriteEditorCheckbox');
         const apiKeyInput = document.getElementById('apiKey');
         PageLogic.editorTextarea = document.getElementById('editorTextarea');
@@ -167,6 +168,10 @@ var AppSpecific;
             // clearButton
             HtmlUtils.addButtonClickListener(clearButton, () => {
                 PageLogic.editorTextarea.value = '';
+            });
+            // replaceAgainButton
+            HtmlUtils.addButtonClickListener(replaceAgainButton, () => {
+                PageLogic.editorTextarea.value = HelgeUtils.replaceByRules(PageLogic.editorTextarea.value, PageLogic.replaceRulesTextArea.value);
             });
             // saveEditorButton
             HtmlUtils.addButtonClickListener(saveEditorButton, () => {

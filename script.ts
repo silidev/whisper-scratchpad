@@ -95,6 +95,7 @@ namespace AppSpecific {
     const saveEditorButton = document.getElementById('saveEditorButton') as HTMLButtonElement;
     const copyButton = document.getElementById('copyButton') as HTMLButtonElement;
     const transcribeAgainButton = document.getElementById('transcribeAgainButton') as HTMLButtonElement;
+    const replaceAgainButton = document.getElementById('replaceAgainButton') as HTMLButtonElement;
     const overwriteEditorCheckbox = <HTMLInputElement>document.getElementById('overwriteEditorCheckbox');
 
     const apiKeyInput = document.getElementById('apiKey') as HTMLTextAreaElement;
@@ -185,6 +186,11 @@ namespace AppSpecific {
       // clearButton
       HtmlUtils.addButtonClickListener(clearButton, () => {
         editorTextarea.value = '';
+      });
+
+      // replaceAgainButton
+      HtmlUtils.addButtonClickListener(replaceAgainButton, () => {
+        editorTextarea.value = HelgeUtils.replaceByRules(editorTextarea.value, replaceRulesTextArea.value);
       });
 
       // saveEditorButton

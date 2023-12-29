@@ -34,23 +34,28 @@
     style="width:100%;height: 100%;"></textarea>
 </div>
 
-<div class="button-container" style="margin-top: 5mm">
-  <div class="record-spinner-group">
-    <button id="recordButton">⬤ Record</button>
-    <span class="spinner" style="display: none;"></span>
+<div class="wrapping-container" style="margin-top: 5mm">
+  <div class="button-container">
+    <div class="record-spinner-group">
+      <button id="recordButton">⬤ Record</button>
+      <span class="spinner" style="display: none;"></span>
+    </div>
+    <button id="pauseButton">‖ Pause</button>
+    <button id="clearButton"><span class="greenFilter">🧹</span> Clear</button>
   </div>
-  <button id="pauseButton">‖ Pause</button>
-  <button id="clearButton"><span class="greenFilter">🧹</span> Clear</button>
-</div>
-<div class="button-container" style="">
-  <button id="copyButton">⎘ Copy to clipboard</button>
-  <button id="saveEditorButton">
-    <span class="greenFilter">💾</span> Save editor
-  </button>
-  <button id="transcribeAgainButton" style="">Transcribe again</button>
+  <div class="button-container" style="">
+    <button id="copyButton">⎘ Copy to clipboard</button>
+    <button id="saveEditorButton">
+      <span class="greenFilter">💾</span> Save editor
+    </button>
+  </div>
+  <div class="button-container" style="">
+    <button id="transcribeAgainButton" style="">Transcribe again</button>
+    <button id="replaceAgainButton" style="">Replace again</button>
+  </div>
 </div>
 <div>
-  <input type="checkbox" id="overwriteEditorCheckbox" class="greenFilter" checked> Overwrite editor
+  <input type="checkbox" id="overwriteEditorCheckbox" checked class="greenFilter"> Overwrite editor
   <a id="downloadButton" style="display:none; margin-left: 2cm">Download audio</a>
 </div>
 <!--############## whisperPrompt ##############-->
