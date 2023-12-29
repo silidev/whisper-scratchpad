@@ -30,7 +30,7 @@
 
 <div style="width:90%; height: 10cm">
   <textarea id="editorTextarea" wrap="soft"
-    placeholder=""
+    placeholder="ICH ICH ICH"
     style="width:100%;height: 100%;"></textarea>
 </div>
 
@@ -40,18 +40,18 @@
     <span class="spinner" style="display: none;"></span>
   </div>
   <button id="pauseButton">‖ Pause</button>
-  <button id="clearButton"><span class="makeGreen">🧹</span> Clear</button>
+  <button id="clearButton"><span class="greenFilter">🧹</span> Clear</button>
 </div>
 <div class="button-container" style="">
   <button id="copyButton">⎘ Copy to clipboard</button>
   <button id="saveEditorButton">
-    <span class="makeGreen">💾</span> Save editor
+    <span class="greenFilter">💾</span> Save editor
   </button>
   <button id="transcribeAgainButton" style="">Transcribe again</button>
 </div>
 <div>
-  <input type="checkbox" id="overwriteEditorCheckbox" class="makeGreen" checked style="margin-right: 2cm"> Overwrite editor
-  <a id="downloadButton" style="display:none;">Download audio</a>
+  <input type="checkbox" id="overwriteEditorCheckbox" class="greenFilter" checked> Overwrite editor
+  <a id="downloadButton" style="display:none; margin-left: 2cm">Download audio</a>
 </div>
 <!--############## whisperPrompt ##############-->
 <div style="width:90%;">
@@ -63,7 +63,7 @@
     <textarea id="whisperPrompt" wrap="soft" placeholder="Optional prompt especially for hinting unusual names if they are not recognized by default." style="width:100%;height: 100%;"></textarea>
   </div>
   <button id="savePromptButton" style="margin-top: 5mm">
-    <span class="makeGreen">💾</span>
+    <span class="greenFilter">💾</span>
     Save prompt
   </button>
 </div>
@@ -97,7 +97,7 @@
     <textarea id="replaceRulesTextArea" wrap="soft" placeholder="Optional. &quot;SEARCH&quot;-&gt;&quot;REPLACE&quot;" style="width:100%;height: 100%;"></textarea>
   </div>
   <button id="saveRulesButton" style="margin-top: 5mm">
-    <span class="makeGreen">💾</span>
+    <span class="greenFilter">💾</span>
     Save rules
   </button>
 </div>
@@ -106,7 +106,7 @@
   <h2>API Key</h2>
   <br><input type="text" id="apiKey" placeholder="Enter OpenAI API key">
   <button id="saveAPIKeyButton">
-    <span class="makeGreen">💾</span>
+    <span class="greenFilter">💾</span>
     Save API Key
   </button>
   <br>
