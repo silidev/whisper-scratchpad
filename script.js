@@ -227,7 +227,7 @@ var AppSpecific;
                 spinner.style.display = 'none';
             };
         };
-        async function transcribeWithOpenAI(audioBlob, apiKey) {
+        const transcribeWithOpenAI = async (audioBlob, apiKey) => {
             const formData = new FormData();
             formData.append('file', audioBlob);
             formData.append('model', 'whisper-1'); // Using the largest model
@@ -240,8 +240,8 @@ var AppSpecific;
                 body: formData
             });
             return await response.json();
-        }
-        async function transcribeWithGladia(audioBlob, apiKey, diarization = false) {
+        };
+        const transcribeWithGladia = async (audioBlob, apiKey, diarization = false) => {
             const formData = new FormData();
             formData.append('audio', audioBlob);
             formData.append('toggle_diarization', diarization ? 'true' : 'false');
@@ -253,7 +253,7 @@ var AppSpecific;
                 body: formData
             });
             return await response.json();
-        }
+        };
         function getApiKey() {
             return Cookies.get(apiSelector.value + 'ApiKey');
         }

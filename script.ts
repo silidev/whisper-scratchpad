@@ -258,7 +258,7 @@ namespace AppSpecific {
       };
     }
 
-    async function transcribeWithOpenAI(audioBlob: Blob, apiKey: string) {
+    const transcribeWithOpenAI = async (audioBlob: Blob, apiKey: string) => {
       const formData = new FormData();
       formData.append('file', audioBlob);
       formData.append('model', 'whisper-1'); // Using the largest model
@@ -272,9 +272,11 @@ namespace AppSpecific {
         body: formData
       });
       return await response.json();
-    }
+    };
 
-    async function transcribeWithGladia(audioBlob: Blob, apiKey: string, diarization: boolean = false) {
+
+
+    const transcribeWithGladia = async (audioBlob: Blob, apiKey: string, diarization: boolean = false) => {
       const formData = new FormData();
       formData.append('audio', audioBlob);
       formData.append('toggle_diarization', diarization ? 'true' : 'false');
@@ -287,7 +289,7 @@ namespace AppSpecific {
         body: formData
       });
       return await response.json();
-    }
+    };
 
     function getApiKey() {
       return Cookies.get(apiSelector.value + 'ApiKey');
