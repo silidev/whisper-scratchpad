@@ -98,7 +98,7 @@ namespace AppSpecific {
     const replaceAgainButton = document.getElementById('replaceAgainButton') as HTMLButtonElement;
     const overwriteEditorCheckbox = <HTMLInputElement>document.getElementById('overwriteEditorCheckbox');
 
-    const apiKeyInput = document.getElementById('apiKey') as HTMLTextAreaElement;
+    const apiKeyInput = document.getElementById('') as HTMLTextAreaElement;
     export const editorTextarea = document.getElementById('editorTextarea') as HTMLTextAreaElement;
     export const whisperPrompt = document.getElementById('whisperPrompt') as HTMLTextAreaElement;
     export const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement;
@@ -123,7 +123,7 @@ namespace AppSpecific {
             downloadButton.download = 'recording.wav';
             downloadButton.style.display = 'block';
           }
-          sendToWhisper(audioBlob).then(hideSpinner);
+          transcribeAndHandleResult(audioBlob).then(hideSpinner);
         };
 
         const onStreamReady = (streamParam: MediaStream) => {
@@ -172,7 +172,7 @@ namespace AppSpecific {
         //transcribeAgainButton
         HtmlUtils.addButtonClickListener(transcribeAgainButton, () => {
           showSpinner();
-          sendToWhisper(audioBlob).then(hideSpinner);
+          transcribeAndHandleResult(audioBlob).then(hideSpinner);
         });
 
       }
@@ -231,22 +231,25 @@ namespace AppSpecific {
       };
     }
 
-    const sendToWhisper = async (audioBlob: Blob) => {
+    async function transcribeWithOpenAI(audioBlob: Blob) {
       const formData = new FormData();
       formData.append('file', audioBlob);
       formData.append('model', 'whisper-1'); // Using the largest model
       formData.append('prompt', whisperPrompt.value);
 
-      const cookie = HtmlUtils.Cookies.get("apiKey");
+      const apiKey = HtmlUtils.Cookies.get("apiKey");
       const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${cookie}`
+          'Authorization': `Bearer ${apiKey}`
         },
         body: formData
       });
-      const result = await response.json();
+      return await response.json();
+    }
 
+    const transcribeAndHandleResult = async (audioBlob: Blob) => {
+      const result = await transcribeWithOpenAI(audioBlob);
 
       if (result?.text || result?.text === '') {
         const replacedOutput = HelgeUtils.replaceByRules(result.text, replaceRulesTextArea.value);
