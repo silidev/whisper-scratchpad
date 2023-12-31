@@ -1,4 +1,14 @@
 namespace HtmlUtils {
+
+  const memoize = HelgeUtils.memoize;
+
+  export const elementWithId = memoize((id: string): HTMLElement | null => {
+    return document.getElementById(id) as HTMLElement;
+  });
+
+  export const buttonWithId = elementWithId as (id: string) => HTMLButtonElement | null;
+  export const textAreaWithId = elementWithId as (id: string) => HTMLTextAreaElement | null;
+
   export  namespace TextAreas {
     export const insertTextAtCursor = (
         textarea: HTMLTextAreaElement,
@@ -59,7 +69,6 @@ namespace HtmlUtils {
   };
 }
 
-
 namespace HelgeUtils {
   export const replaceByRules = (subject: string, ruleText: string) => {
     let count = 0;
@@ -78,11 +87,28 @@ namespace HelgeUtils {
     }
     return subject;
   }
+
+  export const memoize = <T, R>(func: (...args: T[]) => R): (...args: T[]) => R => {
+    const cache = new Map<string, R>();
+
+    return (...args: T[]): R => {
+      const key = JSON.stringify(args);
+      if (cache.has(key)) {
+        return cache.get(key)!;
+      } else {
+        const result = func(...args);
+        cache.set(key, result);
+        return result;
+      }
+    };
+  }
 }
 
 namespace AppSpecific {
 
-  namespace PageLogic {
+  namespace AfterInit {
+
+    const Cookies = HtmlUtils.Cookies;
 
     const saveAPIKeyButton = document.getElementById('saveAPIKeyButton') as HTMLButtonElement;
     const recordButton = document.getElementById('recordButton') as HTMLButtonElement;
@@ -97,7 +123,7 @@ namespace AppSpecific {
     const transcribeAgainButton = document.getElementById('transcribeAgainButton') as HTMLButtonElement;
     const replaceAgainButton = document.getElementById('replaceAgainButton') as HTMLButtonElement;
 
-    const overwriteEditorCheckbox = <HTMLInputElement>document.getElementById('overwriteEditorCheckbox');
+    const overwriteEditorCheckbox = document.getElementById('overwriteEditorCheckbox') as HTMLInputElement;
     const apiSelector: HTMLSelectElement = document.getElementById('apiSelector') as HTMLSelectElement;
 
     const apiKeyInput = document.getElementById('apiKeyInputField') as HTMLTextAreaElement;
@@ -192,17 +218,17 @@ namespace AppSpecific {
 
       // saveEditorButton
       HtmlUtils.addButtonClickListener(saveEditorButton, () => {
-        HtmlUtils.Cookies.set("editorText", editorTextarea.value);
+        Cookies.set("editorText", editorTextarea.value);
       });
 
       // savePromptButton
       HtmlUtils.addButtonClickListener(savePromptButton, () => {
-        HtmlUtils.Cookies.set("prompt", whisperPrompt.value);
+        Cookies.set("prompt", whisperPrompt.value);
       });
 
       // saveRulesButton
       HtmlUtils.addButtonClickListener(saveRulesButton, () => {
-        HtmlUtils.Cookies.set("replaceRules", replaceRulesTextArea.value);
+        Cookies.set("replaceRules", replaceRulesTextArea.value);
       });
 
       // copyButton
@@ -220,7 +246,7 @@ namespace AppSpecific {
       });
 
       apiSelector.addEventListener('change', () => {
-        HtmlUtils.Cookies.set('apiSelector', apiSelector.value);
+        Cookies.set('apiSelector', apiSelector.value);
       });
 
       const showSpinner = () => {
@@ -264,11 +290,11 @@ namespace AppSpecific {
     }
 
     function getApiKey() {
-      return HtmlUtils.Cookies.get(apiSelector.value + 'ApiKey');
+      return Cookies.get(apiSelector.value + 'ApiKey');
     }
 
     function setApiKeyCookie(apiKey: string) {
-      HtmlUtils.Cookies.set(apiSelector.value + 'ApiKey', apiKey);
+      Cookies.set(apiSelector.value + 'ApiKey', apiKey);
     }
 
     const transcribeAndHandleResult = async (audioBlob: Blob) => {
@@ -294,10 +320,10 @@ namespace AppSpecific {
 
 
     export const loadFormData = () => {
-      editorTextarea.value = HtmlUtils.Cookies.get("editorText");
-      whisperPrompt.value = HtmlUtils.Cookies.get("prompt");
-      replaceRulesTextArea.value = HtmlUtils.Cookies.get("replaceRules");
-      apiSelector.value = HtmlUtils.Cookies.get("apiSelector");
+      editorTextarea.value = Cookies.get("editorText");
+      whisperPrompt.value = Cookies.get("prompt");
+      replaceRulesTextArea.value = Cookies.get("replaceRules");
+      apiSelector.value = Cookies.get("apiSelector");
     };
 
     export const registerServiceWorker = () => {
@@ -313,9 +339,9 @@ namespace AppSpecific {
   }
 
   const init = () => {
-    PageLogic.addButtonEventListeners();
-    PageLogic.registerServiceWorker();
-    PageLogic.loadFormData();
+    AfterInit.addButtonEventListeners();
+    AfterInit.registerServiceWorker();
+    AfterInit.loadFormData();
   }
 
   init();

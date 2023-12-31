@@ -1,5 +1,11 @@
 var HtmlUtils;
 (function (HtmlUtils) {
+    const memoize = HelgeUtils.memoize;
+    HtmlUtils.elementWithId = memoize((id) => {
+        return document.getElementById(id);
+    });
+    HtmlUtils.buttonWithId = HtmlUtils.elementWithId;
+    HtmlUtils.textAreaWithId = HtmlUtils.elementWithId;
     let TextAreas;
     (function (TextAreas) {
         TextAreas.insertTextAtCursor = (textarea, addedText) => {
@@ -73,11 +79,26 @@ var HelgeUtils;
         }
         return subject;
     };
+    HelgeUtils.memoize = (func) => {
+        const cache = new Map();
+        return (...args) => {
+            const key = JSON.stringify(args);
+            if (cache.has(key)) {
+                return cache.get(key);
+            }
+            else {
+                const result = func(...args);
+                cache.set(key, result);
+                return result;
+            }
+        };
+    };
 })(HelgeUtils || (HelgeUtils = {}));
 var AppSpecific;
 (function (AppSpecific) {
-    let PageLogic;
-    (function (PageLogic) {
+    let AfterInit;
+    (function (AfterInit) {
+        const Cookies = HtmlUtils.Cookies;
         const saveAPIKeyButton = document.getElementById('saveAPIKeyButton');
         const recordButton = document.getElementById('recordButton');
         const spinner = document.getElementById('spinner');
@@ -97,7 +118,7 @@ var AppSpecific;
         const whisperPrompt = document.getElementById('whisperPrompt');
         const replaceRulesTextArea = document.getElementById('replaceRulesTextArea');
         // ############## addButtonEventListeners ##############
-        PageLogic.addButtonEventListeners = () => {
+        AfterInit.addButtonEventListeners = () => {
             { // Media buttons
                 let mediaRecorder;
                 let audioChunks = [];
@@ -174,15 +195,15 @@ var AppSpecific;
             });
             // saveEditorButton
             HtmlUtils.addButtonClickListener(saveEditorButton, () => {
-                HtmlUtils.Cookies.set("editorText", editorTextarea.value);
+                Cookies.set("editorText", editorTextarea.value);
             });
             // savePromptButton
             HtmlUtils.addButtonClickListener(savePromptButton, () => {
-                HtmlUtils.Cookies.set("prompt", whisperPrompt.value);
+                Cookies.set("prompt", whisperPrompt.value);
             });
             // saveRulesButton
             HtmlUtils.addButtonClickListener(saveRulesButton, () => {
-                HtmlUtils.Cookies.set("replaceRules", replaceRulesTextArea.value);
+                Cookies.set("replaceRules", replaceRulesTextArea.value);
             });
             // copyButton
             copyButton.addEventListener('click', () => {
@@ -197,7 +218,7 @@ var AppSpecific;
                 document.getElementById('apiKey').value = ''; // Clear the input field
             });
             apiSelector.addEventListener('change', () => {
-                HtmlUtils.Cookies.set('apiSelector', apiSelector.value);
+                Cookies.set('apiSelector', apiSelector.value);
             });
             const showSpinner = () => {
                 spinner.style.display = 'block';
@@ -234,10 +255,10 @@ var AppSpecific;
             return await response.json();
         }
         function getApiKey() {
-            return HtmlUtils.Cookies.get(apiSelector.value + 'ApiKey');
+            return Cookies.get(apiSelector.value + 'ApiKey');
         }
         function setApiKeyCookie(apiKey) {
-            HtmlUtils.Cookies.set(apiSelector.value + 'ApiKey', apiKey);
+            Cookies.set(apiSelector.value + 'ApiKey', apiKey);
         }
         const transcribeAndHandleResult = async (audioBlob) => {
             let result;
@@ -261,13 +282,13 @@ var AppSpecific;
             }
             navigator.clipboard.writeText(editorTextarea.value).then();
         };
-        PageLogic.loadFormData = () => {
-            editorTextarea.value = HtmlUtils.Cookies.get("editorText");
-            whisperPrompt.value = HtmlUtils.Cookies.get("prompt");
-            replaceRulesTextArea.value = HtmlUtils.Cookies.get("replaceRules");
-            apiSelector.value = HtmlUtils.Cookies.get("apiSelector");
+        AfterInit.loadFormData = () => {
+            editorTextarea.value = Cookies.get("editorText");
+            whisperPrompt.value = Cookies.get("prompt");
+            replaceRulesTextArea.value = Cookies.get("replaceRules");
+            apiSelector.value = Cookies.get("apiSelector");
         };
-        PageLogic.registerServiceWorker = () => {
+        AfterInit.registerServiceWorker = () => {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('service-worker.js')
                     .then(registration => {
@@ -277,11 +298,11 @@ var AppSpecific;
                 });
             }
         };
-    })(PageLogic || (PageLogic = {}));
+    })(AfterInit || (AfterInit = {}));
     const init = () => {
-        PageLogic.addButtonEventListeners();
-        PageLogic.registerServiceWorker();
-        PageLogic.loadFormData();
+        AfterInit.addButtonEventListeners();
+        AfterInit.registerServiceWorker();
+        AfterInit.loadFormData();
     };
     init();
 })(AppSpecific || (AppSpecific = {}));
