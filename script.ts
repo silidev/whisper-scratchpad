@@ -96,9 +96,10 @@ namespace AppSpecific {
     const copyButton = document.getElementById('copyButton') as HTMLButtonElement;
     const transcribeAgainButton = document.getElementById('transcribeAgainButton') as HTMLButtonElement;
     const replaceAgainButton = document.getElementById('replaceAgainButton') as HTMLButtonElement;
-    const overwriteEditorCheckbox = <HTMLInputElement>document.getElementById('overwriteEditorCheckbox');
 
+    const overwriteEditorCheckbox = <HTMLInputElement>document.getElementById('overwriteEditorCheckbox');
     const apiSelector: HTMLSelectElement = document.getElementById('apiSelector') as HTMLSelectElement;
+
     const apiKeyInput = document.getElementById('apiKeyInputField') as HTMLTextAreaElement;
     const editorTextarea = document.getElementById('editorTextarea') as HTMLTextAreaElement;
     const whisperPrompt = document.getElementById('whisperPrompt') as HTMLTextAreaElement;
