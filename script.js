@@ -80,7 +80,7 @@ var AppSpecific;
     (function (PageLogic) {
         const saveAPIKeyButton = document.getElementById('saveAPIKeyButton');
         const recordButton = document.getElementById('recordButton');
-        const spinner = document.querySelector('.spinner');
+        const spinner = document.getElementById('spinner');
         const pauseButton = document.getElementById('pauseButton');
         const clearButton = document.getElementById('clearButton');
         const downloadButton = document.getElementById('downloadButton');
@@ -91,13 +91,13 @@ var AppSpecific;
         const transcribeAgainButton = document.getElementById('transcribeAgainButton');
         const replaceAgainButton = document.getElementById('replaceAgainButton');
         const overwriteEditorCheckbox = document.getElementById('overwriteEditorCheckbox');
-        const apiKeyInput = document.getElementById('');
-        PageLogic.editorTextarea = document.getElementById('editorTextarea');
-        PageLogic.whisperPrompt = document.getElementById('whisperPrompt');
-        PageLogic.replaceRulesTextArea = document.getElementById('replaceRulesTextArea');
+        const apiSelector = document.getElementById('apiSelector');
+        const apiKeyInput = document.getElementById('apiKeyInputField');
+        const editorTextarea = document.getElementById('editorTextarea');
+        const whisperPrompt = document.getElementById('whisperPrompt');
+        const replaceRulesTextArea = document.getElementById('replaceRulesTextArea');
         // ############## addButtonEventListeners ##############
         PageLogic.addButtonEventListeners = () => {
-            let apiKey = '';
             { // Media buttons
                 let mediaRecorder;
                 let audioChunks = [];
@@ -162,32 +162,31 @@ var AppSpecific;
             }
             // saveAPIKeyButton
             HtmlUtils.addButtonClickListener(saveAPIKeyButton, () => {
-                apiKey = apiKeyInput.value;
-                HtmlUtils.Cookies.set('apiKey', apiKey);
+                setApiKeyCookie(apiKeyInput.value);
             });
             // clearButton
             HtmlUtils.addButtonClickListener(clearButton, () => {
-                PageLogic.editorTextarea.value = '';
+                editorTextarea.value = '';
             });
             // replaceAgainButton
             HtmlUtils.addButtonClickListener(replaceAgainButton, () => {
-                PageLogic.editorTextarea.value = HelgeUtils.replaceByRules(PageLogic.editorTextarea.value, PageLogic.replaceRulesTextArea.value);
+                editorTextarea.value = HelgeUtils.replaceByRules(editorTextarea.value, replaceRulesTextArea.value);
             });
             // saveEditorButton
             HtmlUtils.addButtonClickListener(saveEditorButton, () => {
-                HtmlUtils.Cookies.set("editorText", PageLogic.editorTextarea.value);
+                HtmlUtils.Cookies.set("editorText", editorTextarea.value);
             });
             // savePromptButton
             HtmlUtils.addButtonClickListener(savePromptButton, () => {
-                HtmlUtils.Cookies.set("prompt", PageLogic.whisperPrompt.value);
+                HtmlUtils.Cookies.set("prompt", whisperPrompt.value);
             });
             // saveRulesButton
             HtmlUtils.addButtonClickListener(saveRulesButton, () => {
-                HtmlUtils.Cookies.set("replaceRules", PageLogic.replaceRulesTextArea.value);
+                HtmlUtils.Cookies.set("replaceRules", replaceRulesTextArea.value);
             });
             // copyButton
             copyButton.addEventListener('click', () => {
-                navigator.clipboard.writeText(PageLogic.editorTextarea.value).then(() => {
+                navigator.clipboard.writeText(editorTextarea.value).then(() => {
                     copyButton.textContent = '⎘ Copied!';
                     setTimeout(() => {
                         copyButton.textContent = '⎘ Copy';
@@ -197,6 +196,9 @@ var AppSpecific;
             document.getElementById('saveAPIKeyButton').addEventListener('click', function () {
                 document.getElementById('apiKey').value = ''; // Clear the input field
             });
+            apiSelector.addEventListener('change', () => {
+                HtmlUtils.Cookies.set('apiSelector', apiSelector.value);
+            });
             const showSpinner = () => {
                 spinner.style.display = 'block';
             };
@@ -204,12 +206,11 @@ var AppSpecific;
                 spinner.style.display = 'none';
             };
         };
-        async function transcribeWithOpenAI(audioBlob) {
+        async function transcribeWithOpenAI(audioBlob, apiKey) {
             const formData = new FormData();
             formData.append('file', audioBlob);
             formData.append('model', 'whisper-1'); // Using the largest model
-            formData.append('prompt', PageLogic.whisperPrompt.value);
-            const apiKey = HtmlUtils.Cookies.get("apiKey");
+            formData.append('prompt', whisperPrompt.value);
             const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
                 method: 'POST',
                 headers: {
@@ -219,26 +220,52 @@ var AppSpecific;
             });
             return await response.json();
         }
+        async function transcribeWithGladia(audioBlob, apiKey, diarization = false) {
+            const formData = new FormData();
+            formData.append('audio', audioBlob);
+            formData.append('toggle_diarization', diarization ? 'true' : 'false');
+            const response = await fetch('https://api.gladia.io/audio/text/audio-transcription/', {
+                method: 'POST',
+                headers: {
+                    'x-gladia-key': apiKey
+                },
+                body: formData
+            });
+            return await response.json();
+        }
+        function getApiKey() {
+            return HtmlUtils.Cookies.get(apiSelector.value + 'ApiKey');
+        }
+        function setApiKeyCookie(apiKey) {
+            HtmlUtils.Cookies.set(apiSelector.value + 'ApiKey', apiKey);
+        }
         const transcribeAndHandleResult = async (audioBlob) => {
-            const result = await transcribeWithOpenAI(audioBlob);
+            let result;
+            if (apiSelector.value === 'gladia') {
+                result = await transcribeWithGladia(audioBlob, getApiKey());
+            }
+            else if (apiSelector.value === 'openai') {
+                result = await transcribeWithOpenAI(audioBlob, getApiKey());
+            }
             if (result?.text || result?.text === '') {
-                const replacedOutput = HelgeUtils.replaceByRules(result.text, PageLogic.replaceRulesTextArea.value);
+                const replacedOutput = HelgeUtils.replaceByRules(result.text, replaceRulesTextArea.value);
                 if (overwriteEditorCheckbox.checked)
-                    PageLogic.editorTextarea.value = replacedOutput;
+                    editorTextarea.value = replacedOutput;
                 else
-                    HtmlUtils.TextAreas.insertTextAtCursor(PageLogic.editorTextarea, replacedOutput);
+                    HtmlUtils.TextAreas.insertTextAtCursor(editorTextarea, replacedOutput);
             }
             else {
-                PageLogic.editorTextarea.value +=
-                    'You need an API key. Go to https://platform.openai.com/api-keys"> to get an API key. If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.\n\n'
+                editorTextarea.value +=
+                    'You need an API key. You can get one at https://platform.openai.com/api-keys">. If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.\n\n'
                         + JSON.stringify(result, null, 2);
             }
-            navigator.clipboard.writeText(PageLogic.editorTextarea.value).then();
+            navigator.clipboard.writeText(editorTextarea.value).then();
         };
         PageLogic.loadFormData = () => {
-            PageLogic.editorTextarea.value = HtmlUtils.Cookies.get("editorText");
-            PageLogic.whisperPrompt.value = HtmlUtils.Cookies.get("prompt");
-            PageLogic.replaceRulesTextArea.value = HtmlUtils.Cookies.get("replaceRules");
+            editorTextarea.value = HtmlUtils.Cookies.get("editorText");
+            whisperPrompt.value = HtmlUtils.Cookies.get("prompt");
+            replaceRulesTextArea.value = HtmlUtils.Cookies.get("replaceRules");
+            apiSelector.value = HtmlUtils.Cookies.get("apiSelector");
         };
         PageLogic.registerServiceWorker = () => {
             if ('serviceWorker' in navigator) {

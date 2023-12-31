@@ -38,7 +38,7 @@
   <div class="button-container">
     <div class="record-spinner-group">
       <button id="recordButton">⬤ Record</button>
-      <span class="spinner" style="display: none;"></span>
+      <span id="spinner" style="display: none;"></span>
     </div>
     <button id="pauseButton">‖ Pause</button>
     <button id="clearButton"><span class="greenFilter">🧹</span> Clear</button>
@@ -108,8 +108,14 @@
 </div>
 
 <div style="width:100%">
-  <h2>API Key</h2>
-  <br><input type="text" id="apiKey" placeholder="Enter OpenAI API key">
+  <h2>API</h2>
+  <br><select id="apiSelector" class="greenFilter" style="font-size: 22px">
+    <option value="openai"><b>OpenAI</b></option>
+    <option value="gladia"><b>Gladia.io</b></option>
+  </select>
+
+  <br><h2>API Key</h2>
+  <br><input type="text" id="apiKeyInputField" placeholder="Enter API key for selected service">
   <button id="saveAPIKeyButton">
     <span class="greenFilter">💾</span>
     Save API Key

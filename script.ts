@@ -86,7 +86,7 @@ namespace AppSpecific {
 
     const saveAPIKeyButton = document.getElementById('saveAPIKeyButton') as HTMLButtonElement;
     const recordButton = document.getElementById('recordButton') as HTMLButtonElement;
-    const spinner = document.querySelector('.spinner') as HTMLDivElement;
+    const spinner = document.getElementById('spinner') as HTMLDivElement;
     const pauseButton = document.getElementById('pauseButton') as HTMLButtonElement;
     const clearButton = document.getElementById('clearButton') as HTMLButtonElement;
     const downloadButton = document.getElementById('downloadButton') as HTMLAnchorElement;
@@ -98,16 +98,14 @@ namespace AppSpecific {
     const replaceAgainButton = document.getElementById('replaceAgainButton') as HTMLButtonElement;
     const overwriteEditorCheckbox = <HTMLInputElement>document.getElementById('overwriteEditorCheckbox');
 
-    const apiKeyInput = document.getElementById('') as HTMLTextAreaElement;
-    export const editorTextarea = document.getElementById('editorTextarea') as HTMLTextAreaElement;
-    export const whisperPrompt = document.getElementById('whisperPrompt') as HTMLTextAreaElement;
-    export const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement;
-
+    const apiSelector: HTMLSelectElement = document.getElementById('apiSelector') as HTMLSelectElement;
+    const apiKeyInput = document.getElementById('apiKeyInputField') as HTMLTextAreaElement;
+    const editorTextarea = document.getElementById('editorTextarea') as HTMLTextAreaElement;
+    const whisperPrompt = document.getElementById('whisperPrompt') as HTMLTextAreaElement;
+    const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement;
 
     // ############## addButtonEventListeners ##############
     export const addButtonEventListeners = () => {
-      let apiKey = '';
-
       { // Media buttons
         let mediaRecorder: MediaRecorder;
         let audioChunks = [];
@@ -174,13 +172,11 @@ namespace AppSpecific {
           showSpinner();
           transcribeAndHandleResult(audioBlob).then(hideSpinner);
         });
-
       }
 
       // saveAPIKeyButton
       HtmlUtils.addButtonClickListener(saveAPIKeyButton, () => {
-        apiKey = apiKeyInput.value;
-        HtmlUtils.Cookies.set('apiKey', apiKey);
+        setApiKeyCookie(apiKeyInput.value);
       });
 
       // clearButton
@@ -222,6 +218,10 @@ namespace AppSpecific {
         (document.getElementById('apiKey') as HTMLInputElement).value = ''; // Clear the input field
       });
 
+      apiSelector.addEventListener('change', () => {
+        HtmlUtils.Cookies.set('apiSelector', apiSelector.value);
+      });
+
       const showSpinner = () => {
         spinner.style.display = 'block';
       };
@@ -231,13 +231,12 @@ namespace AppSpecific {
       };
     }
 
-    async function transcribeWithOpenAI(audioBlob: Blob) {
+    async function transcribeWithOpenAI(audioBlob: Blob, apiKey: string) {
       const formData = new FormData();
       formData.append('file', audioBlob);
       formData.append('model', 'whisper-1'); // Using the largest model
       formData.append('prompt', whisperPrompt.value);
 
-      const apiKey = HtmlUtils.Cookies.get("apiKey");
       const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
         method: 'POST',
         headers: {
@@ -248,9 +247,36 @@ namespace AppSpecific {
       return await response.json();
     }
 
-    const transcribeAndHandleResult = async (audioBlob: Blob) => {
-      const result = await transcribeWithOpenAI(audioBlob);
+    async function transcribeWithGladia(audioBlob: Blob, apiKey: string, diarization: boolean = false) {
+      const formData = new FormData();
+      formData.append('audio', audioBlob);
+      formData.append('toggle_diarization', diarization ? 'true' : 'false');
 
+      const response = await fetch('https://api.gladia.io/audio/text/audio-transcription/', {
+        method: 'POST',
+        headers: {
+          'x-gladia-key': apiKey
+        },
+        body: formData
+      });
+      return await response.json();
+    }
+
+    function getApiKey() {
+      return HtmlUtils.Cookies.get(apiSelector.value + 'ApiKey');
+    }
+
+    function setApiKeyCookie(apiKey: string) {
+      HtmlUtils.Cookies.set(apiSelector.value + 'ApiKey', apiKey);
+    }
+
+    const transcribeAndHandleResult = async (audioBlob: Blob) => {
+      let result: { text: string; };
+      if (apiSelector.value === 'gladia') {
+        result = await transcribeWithGladia(audioBlob, getApiKey());
+      } else if (apiSelector.value === 'openai') {
+        result = await transcribeWithOpenAI(audioBlob, getApiKey());
+      }
       if (result?.text || result?.text === '') {
         const replacedOutput = HelgeUtils.replaceByRules(result.text, replaceRulesTextArea.value);
         if (overwriteEditorCheckbox.checked)
@@ -259,7 +285,7 @@ namespace AppSpecific {
           HtmlUtils.TextAreas.insertTextAtCursor(editorTextarea, replacedOutput);
       } else {
         editorTextarea.value +=
-            'You need an API key. Go to https://platform.openai.com/api-keys"> to get an API key. If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.\n\n'
+            'You need an API key. You can get one at https://platform.openai.com/api-keys">. If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.\n\n'
             + JSON.stringify(result, null, 2);
       }
       navigator.clipboard.writeText(editorTextarea.value).then();
@@ -267,9 +293,10 @@ namespace AppSpecific {
 
 
     export const loadFormData = () => {
-      PageLogic.editorTextarea.value = HtmlUtils.Cookies.get("editorText");
-      PageLogic.whisperPrompt.value = HtmlUtils.Cookies.get("prompt");
-      PageLogic.replaceRulesTextArea.value = HtmlUtils.Cookies.get("replaceRules");
+      editorTextarea.value = HtmlUtils.Cookies.get("editorText");
+      whisperPrompt.value = HtmlUtils.Cookies.get("prompt");
+      replaceRulesTextArea.value = HtmlUtils.Cookies.get("replaceRules");
+      apiSelector.value = HtmlUtils.Cookies.get("apiSelector");
     };
 
     export const registerServiceWorker = () => {
