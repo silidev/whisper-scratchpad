@@ -258,7 +258,7 @@ namespace AppSpecific {
       };
     }
 
-    const transcribeWithOpenAI = async (audioBlob: Blob, apiKey: string) => {
+    const transcribeWithOpenAi = async (audioBlob: Blob, apiKey: string) => {
       const formData = new FormData();
       formData.append('file', audioBlob);
       formData.append('model', 'whisper-1'); // Using the largest model
@@ -274,7 +274,16 @@ namespace AppSpecific {
       return await response.json();
     };
 
-
+    const transcribeWithOpenAiAndHandleErrors  = async (audioBlob: Blob, apiKey: string) => {
+      const result = await transcribeWithOpenAi(audioBlob, apiKey);
+      if (result?.text || result?.text === '')
+        return result.text;
+      else {
+        editorTextarea.value +=
+            'You need an API key. You can get one at https://platform.openai.com/api-keys">. If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.\n\n'
+            + JSON.stringify(result, null, 2);
+      }
+    }
 
     const transcribeWithGladia = async (audioBlob: Blob, apiKey: string, diarization: boolean = false) => {
       const formData = new FormData();
@@ -300,26 +309,19 @@ namespace AppSpecific {
     }
 
     const transcribeAndHandleResult = async (audioBlob: Blob) => {
-      let result: { text: string; };
+      let result: string;
       if (apiSelector.value === 'gladia') {
         result = await transcribeWithGladia(audioBlob, getApiKey());
       } else if (apiSelector.value === 'openai') {
-        result = await transcribeWithOpenAI(audioBlob, getApiKey());
+        result = await transcribeWithOpenAiAndHandleErrors(audioBlob, getApiKey());
       }
-      if (result?.text || result?.text === '') {
-        const replacedOutput = HelgeUtils.replaceByRules(result.text, replaceRulesTextArea.value);
-        if (overwriteEditorCheckbox.checked)
-          editorTextarea.value = replacedOutput;
-        else
-          HtmlUtils.TextAreas.insertTextAtCursor(editorTextarea, replacedOutput);
-      } else {
-        editorTextarea.value +=
-            'You need an API key. You can get one at https://platform.openai.com/api-keys">. If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.\n\n'
-            + JSON.stringify(result, null, 2);
-      }
+      const replacedOutput = HelgeUtils.replaceByRules(result, replaceRulesTextArea.value);
+      if (overwriteEditorCheckbox.checked)
+        editorTextarea.value = replacedOutput;
+      else
+        HtmlUtils.TextAreas.insertTextAtCursor(editorTextarea, replacedOutput);
       navigator.clipboard.writeText(editorTextarea.value).then();
     };
-
 
     export const loadFormData = () => {
       editorTextarea.value = Cookies.get("editorText");
