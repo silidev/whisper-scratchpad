@@ -26,6 +26,7 @@ var HelgeUtils;
                 formData.append('language_behaviour', 'automatic multiple languages');
                 formData.append('toggle_diarization', 'false');
                 formData.append('transcription_hint', prompt);
+                formData.append('output_format', 'txt');
                 const response = await fetch('https://api.gladia.io/audio/text/audio-transcription/', {
                     method: 'POST',
                     headers: {
@@ -34,12 +35,10 @@ var HelgeUtils;
                     body: formData
                 });
                 const result = await response.json();
-                try {
-                    return result["prediction_raw"]["transcription"]["transcription"];
-                }
-                catch (e) {
-                    return result;
-                }
+                const resultText = result["prediction_raw"]["transcription"]["transcription"];
+                if (typeof resultText === "string")
+                    return resultText;
+                return result;
             };
             const output = api === "OpenAI" ?
                 await withOpenAi(audioBlob, apiKey, prompt)
@@ -48,7 +47,9 @@ var HelgeUtils;
                 return output;
             else
                 return JSON.stringify(output, null, 2)
-                    + '\nYou need an API key. You can get one at https://platform.openai.com/api-keys">. If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.\n\n';
+                    + '\nYou need an API key. You can get one at https://platform.openai.com/api-keys">.' +
+                    ' If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS' +
+                    ' apps for free without API key.\n\n';
         };
     })(Audio = HelgeUtils.Audio || (HelgeUtils.Audio = {}));
     HelgeUtils.replaceByRules = (subject, ruleText) => {
