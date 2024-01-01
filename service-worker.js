@@ -4,6 +4,8 @@ const urlsToCache = [
     'index.html',
     'manifest.json',
     'script.js',
+    'HelgeUtils.js',
+    'HtmlUtils.js',
     'service-worker.js',
     'style.css',
     'icon192x192.png',
