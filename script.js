@@ -3,6 +3,23 @@ var HelgeUtils;
     let Audio;
     (function (Audio) {
         Audio.transcribe = async (api, audioBlob, apiKey, prompt = '') => {
+            const withOpenAi = async (audioBlob, apiKey, prompt) => {
+                const formData = new FormData();
+                formData.append('file', audioBlob);
+                formData.append('model', 'whisper-1'); // Using the largest model
+                formData.append('prompt', prompt);
+                const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: formData
+                });
+                const result = await response.json();
+                if (typeof result.text === "string")
+                    return result.text;
+                return result;
+            };
             const withGladia = async (audioBlob, apiKey, prompt = '') => {
                 const formData = new FormData();
                 formData.append('audio', audioBlob);
@@ -16,31 +33,22 @@ var HelgeUtils;
                     },
                     body: formData
                 });
-                return await response.json();
+                const result = await response.json();
+                try {
+                    return result["prediction_raw"]["transcription"]["transcription"];
+                }
+                catch (e) {
+                    return result;
+                }
             };
-            const withOpenAi = async (audioBlob, apiKey, prompt) => {
-                const formData = new FormData();
-                formData.append('file', audioBlob);
-                formData.append('model', 'whisper-1'); // Using the largest model
-                formData.append('prompt', prompt);
-                const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${apiKey}`
-                    },
-                    body: formData
-                });
-                return await response.json();
-            };
-            const result = api === "OpenAI" ?
+            const output = api === "OpenAI" ?
                 await withOpenAi(audioBlob, apiKey, prompt)
                 : await withGladia(audioBlob, apiKey, prompt);
-            const outputString = result["transcription"];
-            if (outputString || outputString === '')
-                return outputString;
+            if (typeof output === "string")
+                return output;
             else
-                return JSON.stringify(result, null, 2)
-                    + 'You need an API key. You can get one at https://platform.openai.com/api-keys">. If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.\n\n';
+                return JSON.stringify(output, null, 2)
+                    + '\nYou need an API key. You can get one at https://platform.openai.com/api-keys">. If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.\n\n';
         };
     })(Audio = HelgeUtils.Audio || (HelgeUtils.Audio = {}));
     HelgeUtils.replaceByRules = (subject, ruleText) => {
