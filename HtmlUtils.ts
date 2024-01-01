@@ -1,4 +1,4 @@
-import {HelgeUtils} from "./HelgeUtils";
+import {HelgeUtils} from "./HelgeUtils.js";
 
 export namespace HtmlUtils {
 

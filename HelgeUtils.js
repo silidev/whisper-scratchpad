@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.HelgeUtils = void 0;
-var HelgeUtils;
+export var HelgeUtils;
 (function (HelgeUtils) {
     let Audio;
     (function (Audio) {
@@ -86,5 +83,5 @@ var HelgeUtils;
             }
         };
     };
-})(HelgeUtils || (exports.HelgeUtils = HelgeUtils = {}));
+})(HelgeUtils || (HelgeUtils = {}));
 //# sourceMappingURL=HelgeUtils.js.map

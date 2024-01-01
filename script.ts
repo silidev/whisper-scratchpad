@@ -1,5 +1,5 @@
-import {HtmlUtils} from "./HtmlUtils";
-import {HelgeUtils} from "./HelgeUtils";
+import {HtmlUtils} from "./HtmlUtils.js";
+import {HelgeUtils} from "./HelgeUtils.js";
 
 namespace AppSpecific {
 

@@ -1,13 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const HtmlUtils_1 = require("./HtmlUtils");
-const HelgeUtils_1 = require("./HelgeUtils");
+import { HtmlUtils } from "./HtmlUtils.js";
+import { HelgeUtils } from "./HelgeUtils.js";
 var AppSpecific;
 (function (AppSpecific) {
-    const Audio = HelgeUtils_1.HelgeUtils.Audio;
+    const Audio = HelgeUtils.Audio;
     let AfterInit;
     (function (AfterInit) {
-        const Cookies = HtmlUtils_1.HtmlUtils.Cookies;
+        const Cookies = HtmlUtils.Cookies;
         const saveAPIKeyButton = document.getElementById('saveAPIKeyButton');
         const recordButton = document.getElementById('recordButton');
         const pauseButton = document.getElementById('pauseButton');
@@ -64,7 +62,7 @@ var AppSpecific;
                     mediaRecorder.stop();
                     isRecording = false;
                     recordButton.textContent = '⬤ Record';
-                    HtmlUtils_1.HtmlUtils.Media.releaseMicrophone(stream);
+                    HtmlUtils.Media.releaseMicrophone(stream);
                 }
                 recordButton.addEventListener('click', () => {
                     if (isRecording) {
@@ -85,33 +83,33 @@ var AppSpecific;
                     }
                 });
                 //transcribeAgainButton
-                HtmlUtils_1.HtmlUtils.addButtonClickListener(transcribeAgainButton, () => {
+                HtmlUtils.addButtonClickListener(transcribeAgainButton, () => {
                     showSpinner();
                     transcribeAndHandleResult(audioBlob).then(hideSpinner);
                 });
             }
             // saveAPIKeyButton
-            HtmlUtils_1.HtmlUtils.addButtonClickListener(saveAPIKeyButton, () => {
+            HtmlUtils.addButtonClickListener(saveAPIKeyButton, () => {
                 setApiKeyCookie(apiKeyInput.value);
             });
             // clearButton
-            HtmlUtils_1.HtmlUtils.addButtonClickListener(clearButton, () => {
+            HtmlUtils.addButtonClickListener(clearButton, () => {
                 editorTextarea.value = '';
             });
             // replaceAgainButton
-            HtmlUtils_1.HtmlUtils.addButtonClickListener(replaceAgainButton, () => {
-                editorTextarea.value = HelgeUtils_1.HelgeUtils.replaceByRules(editorTextarea.value, replaceRulesTextArea.value);
+            HtmlUtils.addButtonClickListener(replaceAgainButton, () => {
+                editorTextarea.value = HelgeUtils.replaceByRules(editorTextarea.value, replaceRulesTextArea.value);
             });
             // saveEditorButton
-            HtmlUtils_1.HtmlUtils.addButtonClickListener(saveEditorButton, () => {
+            HtmlUtils.addButtonClickListener(saveEditorButton, () => {
                 Cookies.set("editorText", editorTextarea.value);
             });
             // savePromptButton
-            HtmlUtils_1.HtmlUtils.addButtonClickListener(savePromptButton, () => {
+            HtmlUtils.addButtonClickListener(savePromptButton, () => {
                 Cookies.set("prompt", transcriptionPrompt.value);
             });
             // saveRulesButton
-            HtmlUtils_1.HtmlUtils.addButtonClickListener(saveRulesButton, () => {
+            HtmlUtils.addButtonClickListener(saveRulesButton, () => {
                 Cookies.set("replaceRules", replaceRulesTextArea.value);
             });
             // copyButton
@@ -145,11 +143,11 @@ var AppSpecific;
         const transcribeAndHandleResult = async (audioBlob) => {
             const api = apiSelector.value;
             const result = await Audio.transcribe(api, audioBlob, getApiKey(), transcriptionPrompt.value);
-            const replacedOutput = HelgeUtils_1.HelgeUtils.replaceByRules(result, replaceRulesTextArea.value);
+            const replacedOutput = HelgeUtils.replaceByRules(result, replaceRulesTextArea.value);
             if (overwriteEditorCheckbox.checked)
                 editorTextarea.value = replacedOutput;
             else
-                HtmlUtils_1.HtmlUtils.TextAreas.insertTextAtCursor(editorTextarea, replacedOutput);
+                HtmlUtils.TextAreas.insertTextAtCursor(editorTextarea, replacedOutput);
             navigator.clipboard.writeText(editorTextarea.value).then();
         };
         AfterInit.loadFormData = () => {

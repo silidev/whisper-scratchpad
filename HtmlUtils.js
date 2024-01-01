@@ -1,10 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.HtmlUtils = void 0;
-const HelgeUtils_1 = require("./HelgeUtils");
-var HtmlUtils;
+import { HelgeUtils } from "./HelgeUtils.js";
+export var HtmlUtils;
 (function (HtmlUtils) {
-    const memoize = HelgeUtils_1.HelgeUtils.memoize;
+    const memoize = HelgeUtils.memoize;
     HtmlUtils.elementWithId = memoize((id) => {
         return document.getElementById(id);
     });
@@ -63,5 +60,5 @@ var HtmlUtils;
             }, 2000);
         });
     };
-})(HtmlUtils || (exports.HtmlUtils = HtmlUtils = {}));
+})(HtmlUtils || (HtmlUtils = {}));
 //# sourceMappingURL=HtmlUtils.js.map
