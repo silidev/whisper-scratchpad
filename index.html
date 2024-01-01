@@ -58,14 +58,14 @@
   <input type="checkbox" id="overwriteEditorCheckbox" checked class="greenFilter"> Overwrite editor
   <a id="downloadButton" style="display:none; margin-left: 2cm">Download audio</a>
 </div>
-<!--############## whisperPrompt ##############-->
+<!--############## transcriptionPrompt ##############-->
 <div style="width:90%;">
   <h2>Prompt:</h2>
     <info-button>
       Since it wasn't trained using instruction-following techniques, Whisper operates more like a base GPT model. It's important to keep in mind that Whisper only considers the first 244 tokens of the prompt. <a href="https://platform.openai.com/docs/guides/speech-to-text/prompting">More info</a>
     </info-button>
   <div style="height: 10cm;">
-    <textarea id="whisperPrompt" wrap="soft" placeholder="Optional prompt especially for hinting unusual names if they are not recognized by default." style="width:100%;height: 100%;"></textarea>
+    <textarea id="transcriptionPrompt" wrap="soft" placeholder="Optional prompt especially for hinting unusual names if they are not recognized by default." style="width:100%;height: 100%;"></textarea>
   </div>
   <button id="savePromptButton" style="margin-top: 5mm">
     <span class="greenFilter">💾</span>
@@ -110,8 +110,8 @@
 <div style="width:100%">
   <h2>API</h2>
   <br><select id="apiSelector" class="greenFilter" style="font-size: 22px">
-    <option value="openai">OpenAI</option>
-    <option value="gladia">Gladia.io</option>
+    <option value="OpenAI">OpenAI</option>
+    <option value="Gladia">Gladia.io</option>
   </select>
 
   <br><h2>API Key</h2>

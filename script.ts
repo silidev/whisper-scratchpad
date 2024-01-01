@@ -1,3 +1,87 @@
+namespace HelgeUtils {
+  export namespace Audio {
+
+    export type Api = "OpenAI"|"Gladia";
+
+    export const transcribe = async (api: Api, audioBlob: Blob, apiKey: string
+                                     , prompt: string = '') => {
+      const withGladia = async (audioBlob: Blob, apiKey: string, prompt: string = '') => {
+        const formData = new FormData();
+        formData.append('audio', audioBlob);
+        formData.append('language_behaviour', 'automatic multiple languages');
+        formData.append('toggle_diarization', 'false');
+        formData.append('transcription_hint', prompt);
+
+        const response = await fetch('https://api.gladia.io/audio/text/audio-transcription/', {
+          method: 'POST',
+          headers: {
+            'x-gladia-key': apiKey
+          },
+          body: formData
+        });
+        return await response.json();
+      };
+
+      const withOpenAi = async (audioBlob: Blob, apiKey: string, prompt: string) => {
+        const formData = new FormData();
+        formData.append('file', audioBlob);
+        formData.append('model', 'whisper-1'); // Using the largest model
+        formData.append('prompt', prompt);
+
+        const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`
+          },
+          body: formData
+        });
+        return await response.json();
+      };
+      const result =
+          api=== "OpenAI" ?
+          await withOpenAi(audioBlob, apiKey, prompt)
+        : await withGladia(audioBlob, apiKey, prompt);
+      const outputString = result["transcription"];
+      if (outputString || outputString === '') return outputString;
+      else return JSON.stringify(result, null, 2)
+          + 'You need an API key. You can get one at https://platform.openai.com/api-keys">. If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.\n\n';
+    }
+  }
+
+  export const replaceByRules = (subject: string, ruleText: string) => {
+    let count = 0;
+    let ruleMatches: any[];
+    const ruleParser = /^"(.+?)"([a-z]*?)(?:\r\n|\r|\n)?->(?:\r\n|\r|\n)?"(.*?)"([a-z]*?)(?:\r\n|\r|\n)?$/gmus;
+    while (ruleMatches = ruleParser.exec(ruleText)) {
+      // console.log("\n" + ruleMatches[1] + "\n↓↓↓↓↓\n"+ ruleMatches[3]);
+      let matchRule = ruleMatches[2].length == 0 ?
+          new RegExp(ruleMatches[1], 'gm')
+          : new RegExp(ruleMatches[1], ruleMatches[2]);
+      if (ruleMatches[4] == 'x')
+        subject = subject.replace(matchRule, '');
+      else
+        subject = subject.replace(matchRule, ruleMatches[3]);
+      count++;
+    }
+    return subject;
+  }
+
+  export const memoize = <T, R>(func: (...args: T[]) => R): (...args: T[]) => R => {
+    const cache = new Map<string, R>();
+
+    return (...args: T[]): R => {
+      const key = JSON.stringify(args);
+      if (cache.has(key)) {
+        return cache.get(key)!;
+      } else {
+        const result = func(...args);
+        cache.set(key, result);
+        return result;
+      }
+    };
+  }
+}
+
 namespace HtmlUtils {
 
   const memoize = HelgeUtils.memoize;
@@ -69,42 +153,9 @@ namespace HtmlUtils {
   };
 }
 
-namespace HelgeUtils {
-  export const replaceByRules = (subject: string, ruleText: string) => {
-    let count = 0;
-    let ruleMatches: any[];
-    const ruleParser = /^"(.+?)"([a-z]*?)(?:\r\n|\r|\n)?->(?:\r\n|\r|\n)?"(.*?)"([a-z]*?)(?:\r\n|\r|\n)?$/gmus;
-    while (ruleMatches = ruleParser.exec(ruleText)) {
-      // console.log("\n" + ruleMatches[1] + "\n↓↓↓↓↓\n"+ ruleMatches[3]);
-      let matchRule = ruleMatches[2].length == 0 ?
-          new RegExp(ruleMatches[1], 'gm')
-          : new RegExp(ruleMatches[1], ruleMatches[2]);
-      if (ruleMatches[4] == 'x')
-        subject = subject.replace(matchRule, '');
-      else
-        subject = subject.replace(matchRule, ruleMatches[3]);
-      count++;
-    }
-    return subject;
-  }
-
-  export const memoize = <T, R>(func: (...args: T[]) => R): (...args: T[]) => R => {
-    const cache = new Map<string, R>();
-
-    return (...args: T[]): R => {
-      const key = JSON.stringify(args);
-      if (cache.has(key)) {
-        return cache.get(key)!;
-      } else {
-        const result = func(...args);
-        cache.set(key, result);
-        return result;
-      }
-    };
-  }
-}
-
 namespace AppSpecific {
+
+  const Audio = HelgeUtils.Audio;
 
   namespace AfterInit {
 
@@ -128,7 +179,7 @@ namespace AppSpecific {
 
     const apiKeyInput = document.getElementById('apiKeyInputField') as HTMLTextAreaElement;
     const editorTextarea = document.getElementById('editorTextarea') as HTMLTextAreaElement;
-    const whisperPrompt = document.getElementById('whisperPrompt') as HTMLTextAreaElement;
+    const transcriptionPrompt = document.getElementById('transcriptionPrompt') as HTMLTextAreaElement;
     const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement;
 
     // ############## addButtonEventListeners ##############
@@ -223,7 +274,7 @@ namespace AppSpecific {
 
       // savePromptButton
       HtmlUtils.addButtonClickListener(savePromptButton, () => {
-        Cookies.set("prompt", whisperPrompt.value);
+        Cookies.set("prompt", transcriptionPrompt.value);
       });
 
       // saveRulesButton
@@ -258,48 +309,6 @@ namespace AppSpecific {
       };
     }
 
-    const transcribeWithOpenAi = async (audioBlob: Blob, apiKey: string) => {
-      const formData = new FormData();
-      formData.append('file', audioBlob);
-      formData.append('model', 'whisper-1'); // Using the largest model
-      formData.append('prompt', whisperPrompt.value);
-
-      const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`
-        },
-        body: formData
-      });
-      return await response.json();
-    };
-
-    const transcribeWithOpenAiAndHandleErrors  = async (audioBlob: Blob, apiKey: string) => {
-      const result = await transcribeWithOpenAi(audioBlob, apiKey);
-      if (result?.text || result?.text === '')
-        return result.text;
-      else {
-        editorTextarea.value +=
-            'You need an API key. You can get one at https://platform.openai.com/api-keys">. If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.\n\n'
-            + JSON.stringify(result, null, 2);
-      }
-    }
-
-    const transcribeWithGladia = async (audioBlob: Blob, apiKey: string, diarization: boolean = false) => {
-      const formData = new FormData();
-      formData.append('audio', audioBlob);
-      formData.append('toggle_diarization', diarization ? 'true' : 'false');
-
-      const response = await fetch('https://api.gladia.io/audio/text/audio-transcription/', {
-        method: 'POST',
-        headers: {
-          'x-gladia-key': apiKey
-        },
-        body: formData
-      });
-      return await response.json();
-    };
-
     function getApiKey() {
       return Cookies.get(apiSelector.value + 'ApiKey');
     }
@@ -309,12 +318,8 @@ namespace AppSpecific {
     }
 
     const transcribeAndHandleResult = async (audioBlob: Blob) => {
-      let result: string;
-      if (apiSelector.value === 'gladia') {
-        result = await transcribeWithGladia(audioBlob, getApiKey());
-      } else if (apiSelector.value === 'openai') {
-        result = await transcribeWithOpenAiAndHandleErrors(audioBlob, getApiKey());
-      }
+      const api = apiSelector.value as HelgeUtils.Audio.Api;
+      const result = await Audio.transcribe(api,audioBlob, getApiKey(), transcriptionPrompt.value);
       const replacedOutput = HelgeUtils.replaceByRules(result, replaceRulesTextArea.value);
       if (overwriteEditorCheckbox.checked)
         editorTextarea.value = replacedOutput;
@@ -325,7 +330,7 @@ namespace AppSpecific {
 
     export const loadFormData = () => {
       editorTextarea.value = Cookies.get("editorText");
-      whisperPrompt.value = Cookies.get("prompt");
+      transcriptionPrompt.value = Cookies.get("prompt");
       replaceRulesTextArea.value = Cookies.get("replaceRules");
       apiSelector.value = Cookies.get("apiSelector");
     };
