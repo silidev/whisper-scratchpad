@@ -170,7 +170,6 @@ namespace AppSpecific {
 
     const saveAPIKeyButton = document.getElementById('saveAPIKeyButton') as HTMLButtonElement;
     const recordButton = document.getElementById('recordButton') as HTMLButtonElement;
-    const spinner = document.getElementById('spinner') as HTMLDivElement;
     const pauseButton = document.getElementById('pauseButton') as HTMLButtonElement;
     const clearButton = document.getElementById('clearButton') as HTMLButtonElement;
     const downloadButton = document.getElementById('downloadButton') as HTMLAnchorElement;
@@ -181,6 +180,7 @@ namespace AppSpecific {
     const transcribeAgainButton = document.getElementById('transcribeAgainButton') as HTMLButtonElement;
     const replaceAgainButton = document.getElementById('replaceAgainButton') as HTMLButtonElement;
 
+    const spinner = document.getElementById('spinner') as HTMLElement;
     const overwriteEditorCheckbox = document.getElementById('overwriteEditorCheckbox') as HTMLInputElement;
     const apiSelector: HTMLSelectElement = document.getElementById('apiSelector') as HTMLSelectElement;
 
