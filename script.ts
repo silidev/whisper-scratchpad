@@ -180,7 +180,7 @@ namespace AppSpecific {
     const transcribeAgainButton = document.getElementById('transcribeAgainButton') as HTMLButtonElement;
     const replaceAgainButton = document.getElementById('replaceAgainButton') as HTMLButtonElement;
 
-    const spinner = document.getElementById('spinner') as HTMLElement;
+    const recordSpinner = document.getElementById('recordSpinner') as HTMLElement;
     const overwriteEditorCheckbox = document.getElementById('overwriteEditorCheckbox') as HTMLInputElement;
     const apiSelector: HTMLSelectElement = document.getElementById('apiSelector') as HTMLSelectElement;
 
@@ -308,11 +308,11 @@ namespace AppSpecific {
       });
 
       const showSpinner = () => {
-        spinner.style.display = 'block';
+        recordSpinner.style.display = 'block';
       };
 
       const hideSpinner = () => {
-        spinner.style.display = 'none';
+        recordSpinner.style.display = 'none';
       };
     }
 

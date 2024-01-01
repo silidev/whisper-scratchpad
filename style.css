@@ -76,9 +76,6 @@ input::selection, textarea::selection {
  color: black;
 }
 
-button, input, .spinner {
-}
-
 textarea {
  width: 100%;
  resize: vertical;

@@ -162,7 +162,7 @@ var AppSpecific;
         const copyButton = document.getElementById('copyButton');
         const transcribeAgainButton = document.getElementById('transcribeAgainButton');
         const replaceAgainButton = document.getElementById('replaceAgainButton');
-        const spinner = document.getElementById('spinner');
+        const recordSpinner = document.getElementById('recordSpinner');
         const overwriteEditorCheckbox = document.getElementById('overwriteEditorCheckbox');
         const apiSelector = document.getElementById('apiSelector');
         const apiKeyInput = document.getElementById('apiKeyInputField');
@@ -273,10 +273,10 @@ var AppSpecific;
                 Cookies.set('apiSelector', apiSelector.value);
             });
             const showSpinner = () => {
-                spinner.style.display = 'block';
+                recordSpinner.style.display = 'block';
             };
             const hideSpinner = () => {
-                spinner.style.display = 'none';
+                recordSpinner.style.display = 'none';
             };
         };
         function getApiKey() {
