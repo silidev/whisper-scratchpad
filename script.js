@@ -1,157 +1,13 @@
-var HelgeUtils;
-(function (HelgeUtils) {
-    let Audio;
-    (function (Audio) {
-        Audio.transcribe = async (api, audioBlob, apiKey, prompt = '') => {
-            const withOpenAi = async (audioBlob, apiKey, prompt) => {
-                const formData = new FormData();
-                formData.append('file', audioBlob);
-                formData.append('model', 'whisper-1'); // Using the largest model
-                formData.append('prompt', prompt);
-                const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${apiKey}`
-                    },
-                    body: formData
-                });
-                const result = await response.json();
-                if (typeof result.text === "string")
-                    return result.text;
-                return result;
-            };
-            const withGladia = async (audioBlob, apiKey, prompt = '') => {
-                const formData = new FormData();
-                formData.append('audio', audioBlob);
-                formData.append('language_behaviour', 'automatic multiple languages');
-                formData.append('toggle_diarization', 'false');
-                formData.append('transcription_hint', prompt);
-                formData.append('output_format', 'txt');
-                const response = await fetch('https://api.gladia.io/audio/text/audio-transcription/', {
-                    method: 'POST',
-                    headers: {
-                        'x-gladia-key': apiKey
-                    },
-                    body: formData
-                });
-                const result = await response.json();
-                const resultText = result["prediction_raw"]["transcription"]["transcription"];
-                if (typeof resultText === "string")
-                    return resultText;
-                return result;
-            };
-            const output = api === "OpenAI" ?
-                await withOpenAi(audioBlob, apiKey, prompt)
-                : await withGladia(audioBlob, apiKey, prompt);
-            if (typeof output === "string")
-                return output;
-            else
-                return JSON.stringify(output, null, 2)
-                    + '\nYou need an API key. You can get one at https://platform.openai.com/api-keys">.' +
-                    ' If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS' +
-                    ' apps for free without API key.\n\n';
-        };
-    })(Audio = HelgeUtils.Audio || (HelgeUtils.Audio = {}));
-    HelgeUtils.replaceByRules = (subject, ruleText) => {
-        let count = 0;
-        let ruleMatches;
-        const ruleParser = /^"(.+?)"([a-z]*?)(?:\r\n|\r|\n)?->(?:\r\n|\r|\n)?"(.*?)"([a-z]*?)(?:\r\n|\r|\n)?$/gmus;
-        while (ruleMatches = ruleParser.exec(ruleText)) {
-            // console.log("\n" + ruleMatches[1] + "\n↓↓↓↓↓\n"+ ruleMatches[3]);
-            let matchRule = ruleMatches[2].length == 0 ?
-                new RegExp(ruleMatches[1], 'gm')
-                : new RegExp(ruleMatches[1], ruleMatches[2]);
-            if (ruleMatches[4] == 'x')
-                subject = subject.replace(matchRule, '');
-            else
-                subject = subject.replace(matchRule, ruleMatches[3]);
-            count++;
-        }
-        return subject;
-    };
-    HelgeUtils.memoize = (func) => {
-        const cache = new Map();
-        return (...args) => {
-            const key = JSON.stringify(args);
-            if (cache.has(key)) {
-                return cache.get(key);
-            }
-            else {
-                const result = func(...args);
-                cache.set(key, result);
-                return result;
-            }
-        };
-    };
-})(HelgeUtils || (HelgeUtils = {}));
-var HtmlUtils;
-(function (HtmlUtils) {
-    const memoize = HelgeUtils.memoize;
-    HtmlUtils.elementWithId = memoize((id) => {
-        return document.getElementById(id);
-    });
-    HtmlUtils.buttonWithId = HtmlUtils.elementWithId;
-    HtmlUtils.textAreaWithId = HtmlUtils.elementWithId;
-    let TextAreas;
-    (function (TextAreas) {
-        TextAreas.insertTextAtCursor = (textarea, addedText) => {
-            if (!addedText)
-                return;
-            const cursorPosition = textarea.selectionStart;
-            const textBeforeCursor = textarea.value.substring(0, cursorPosition);
-            const textAfterCursor = textarea.value.substring(cursorPosition);
-            textarea.value = textBeforeCursor + addedText + textAfterCursor;
-            const newCursorPosition = cursorPosition + addedText.length;
-            textarea.selectionStart = newCursorPosition;
-            textarea.selectionEnd = newCursorPosition;
-        };
-    })(TextAreas = HtmlUtils.TextAreas || (HtmlUtils.TextAreas = {}));
-    let Media;
-    (function (Media) {
-        Media.releaseMicrophone = (stream) => {
-            if (!stream)
-                return;
-            stream.getTracks().forEach(track => track.stop());
-        };
-    })(Media = HtmlUtils.Media || (HtmlUtils.Media = {}));
-    let Cookies;
-    (function (Cookies) {
-        Cookies.set = (cookieName, cookieValue) => {
-            const expirationTime = new Date(Date.now() + 2147483647000).toUTCString();
-            document.cookie = `${cookieName}=${encodeURIComponent(cookieValue)};expires=${expirationTime};path=/`;
-        };
-        Cookies.get = (name) => {
-            let cookieArr = document.cookie.split(";");
-            for (let i = 0; i < cookieArr.length; i++) {
-                let cookiePair = cookieArr[i].split("=");
-                if (name === cookiePair[0].trim()) {
-                    return decodeURIComponent(cookiePair[1]);
-                }
-            }
-            return null;
-        };
-    })(Cookies = HtmlUtils.Cookies || (HtmlUtils.Cookies = {}));
-    /**
-     * Adds a click listener to a button that appends a checkmark to the button
-     * text when clicked. */
-    HtmlUtils.addButtonClickListener = (button, callback) => {
-        const initialHTML = button.innerHTML; // Read initial HTML from the button
-        const checkmark = ' ✔️'; // Unicode checkmark
-        button.addEventListener('click', () => {
-            callback();
-            button.innerHTML += checkmark; // Append checkmark to the button HTML
-            setTimeout(() => {
-                button.innerHTML = initialHTML; // Reset the button HTML after 2 seconds
-            }, 2000);
-        });
-    };
-})(HtmlUtils || (HtmlUtils = {}));
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const HtmlUtils_1 = require("./HtmlUtils");
+const HelgeUtils_1 = require("./HelgeUtils");
 var AppSpecific;
 (function (AppSpecific) {
-    const Audio = HelgeUtils.Audio;
+    const Audio = HelgeUtils_1.HelgeUtils.Audio;
     let AfterInit;
     (function (AfterInit) {
-        const Cookies = HtmlUtils.Cookies;
+        const Cookies = HtmlUtils_1.HtmlUtils.Cookies;
         const saveAPIKeyButton = document.getElementById('saveAPIKeyButton');
         const recordButton = document.getElementById('recordButton');
         const pauseButton = document.getElementById('pauseButton');
@@ -208,7 +64,7 @@ var AppSpecific;
                     mediaRecorder.stop();
                     isRecording = false;
                     recordButton.textContent = '⬤ Record';
-                    HtmlUtils.Media.releaseMicrophone(stream);
+                    HtmlUtils_1.HtmlUtils.Media.releaseMicrophone(stream);
                 }
                 recordButton.addEventListener('click', () => {
                     if (isRecording) {
@@ -229,33 +85,33 @@ var AppSpecific;
                     }
                 });
                 //transcribeAgainButton
-                HtmlUtils.addButtonClickListener(transcribeAgainButton, () => {
+                HtmlUtils_1.HtmlUtils.addButtonClickListener(transcribeAgainButton, () => {
                     showSpinner();
                     transcribeAndHandleResult(audioBlob).then(hideSpinner);
                 });
             }
             // saveAPIKeyButton
-            HtmlUtils.addButtonClickListener(saveAPIKeyButton, () => {
+            HtmlUtils_1.HtmlUtils.addButtonClickListener(saveAPIKeyButton, () => {
                 setApiKeyCookie(apiKeyInput.value);
             });
             // clearButton
-            HtmlUtils.addButtonClickListener(clearButton, () => {
+            HtmlUtils_1.HtmlUtils.addButtonClickListener(clearButton, () => {
                 editorTextarea.value = '';
             });
             // replaceAgainButton
-            HtmlUtils.addButtonClickListener(replaceAgainButton, () => {
-                editorTextarea.value = HelgeUtils.replaceByRules(editorTextarea.value, replaceRulesTextArea.value);
+            HtmlUtils_1.HtmlUtils.addButtonClickListener(replaceAgainButton, () => {
+                editorTextarea.value = HelgeUtils_1.HelgeUtils.replaceByRules(editorTextarea.value, replaceRulesTextArea.value);
             });
             // saveEditorButton
-            HtmlUtils.addButtonClickListener(saveEditorButton, () => {
+            HtmlUtils_1.HtmlUtils.addButtonClickListener(saveEditorButton, () => {
                 Cookies.set("editorText", editorTextarea.value);
             });
             // savePromptButton
-            HtmlUtils.addButtonClickListener(savePromptButton, () => {
+            HtmlUtils_1.HtmlUtils.addButtonClickListener(savePromptButton, () => {
                 Cookies.set("prompt", transcriptionPrompt.value);
             });
             // saveRulesButton
-            HtmlUtils.addButtonClickListener(saveRulesButton, () => {
+            HtmlUtils_1.HtmlUtils.addButtonClickListener(saveRulesButton, () => {
                 Cookies.set("replaceRules", replaceRulesTextArea.value);
             });
             // copyButton
@@ -289,11 +145,11 @@ var AppSpecific;
         const transcribeAndHandleResult = async (audioBlob) => {
             const api = apiSelector.value;
             const result = await Audio.transcribe(api, audioBlob, getApiKey(), transcriptionPrompt.value);
-            const replacedOutput = HelgeUtils.replaceByRules(result, replaceRulesTextArea.value);
+            const replacedOutput = HelgeUtils_1.HelgeUtils.replaceByRules(result, replaceRulesTextArea.value);
             if (overwriteEditorCheckbox.checked)
                 editorTextarea.value = replacedOutput;
             else
-                HtmlUtils.TextAreas.insertTextAtCursor(editorTextarea, replacedOutput);
+                HtmlUtils_1.HtmlUtils.TextAreas.insertTextAtCursor(editorTextarea, replacedOutput);
             navigator.clipboard.writeText(editorTextarea.value).then();
         };
         AfterInit.loadFormData = () => {
