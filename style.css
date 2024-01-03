@@ -50,8 +50,12 @@ button {
  display: flex;
 }
 
+div {
+ border-collapse: collapse;
+}
+
 button, input, textarea {
- /*margin: 5px;*/
+ border-collapse: collapse;
  padding: 10px 15px;
  border: 1px solid var(--myGreen);
  border-radius: 0;
