@@ -1,11 +1,12 @@
 import {HtmlUtils} from "./HtmlUtils.js";
 import {HelgeUtils} from "./HelgeUtils.js";
+import elementWithId = HtmlUtils.elementWithId;
+import TextAreas = HtmlUtils.TextAreas;
 
 const Audio = HelgeUtils.Audio;
 
 namespace AfterInit {
 
-  import elementWithId = HtmlUtils.elementWithId;
   const Cookies = HtmlUtils.Cookies;
 
   const saveAPIKeyButton = document.getElementById('saveAPIKeyButton') as HTMLButtonElement;
@@ -27,6 +28,10 @@ namespace AfterInit {
   const editorTextarea = document.getElementById('editorTextarea') as HTMLTextAreaElement;
   const transcriptionPrompt = document.getElementById('transcriptionPrompt') as HTMLTextAreaElement;
   const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement;
+
+  TextAreas.setAutoSave('replaceRulesTextArea', 'replaceRules');
+  TextAreas.setAutoSave('editorTextarea', 'editorText');
+  TextAreas.setAutoSave('transcriptionPrompt', 'prompt');
 
   // ############## addButtonEventListeners ##############
   export const addButtonEventListeners = () => {

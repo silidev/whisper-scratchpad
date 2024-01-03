@@ -1,9 +1,10 @@
 import { HtmlUtils } from "./HtmlUtils.js";
 import { HelgeUtils } from "./HelgeUtils.js";
+var elementWithId = HtmlUtils.elementWithId;
+var TextAreas = HtmlUtils.TextAreas;
 const Audio = HelgeUtils.Audio;
 var AfterInit;
 (function (AfterInit) {
-    var elementWithId = HtmlUtils.elementWithId;
     const Cookies = HtmlUtils.Cookies;
     const saveAPIKeyButton = document.getElementById('saveAPIKeyButton');
     const recordButton = document.getElementById('recordButton');
@@ -22,6 +23,9 @@ var AfterInit;
     const editorTextarea = document.getElementById('editorTextarea');
     const transcriptionPrompt = document.getElementById('transcriptionPrompt');
     const replaceRulesTextArea = document.getElementById('replaceRulesTextArea');
+    TextAreas.setAutoSave('replaceRulesTextArea', 'replaceRules');
+    TextAreas.setAutoSave('editorTextarea', 'editorText');
+    TextAreas.setAutoSave('transcriptionPrompt', 'prompt');
     // ############## addButtonEventListeners ##############
     AfterInit.addButtonEventListeners = () => {
         { // Media buttons

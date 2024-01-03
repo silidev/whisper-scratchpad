@@ -12,6 +12,17 @@ export namespace HtmlUtils {
   export const textAreaWithId = elementWithId as (id: string) => HTMLTextAreaElement | null;
 
   export namespace TextAreas {
+    /**
+     * Makes a text area element auto-save its content to a cookie after each modified character (input event).
+     * @param id - The ID of the text area element.
+     * @param cookieName - The name of the cookie to store the text area content.
+     */
+    export const setAutoSave = (id: string, cookieName: string) => {
+      HtmlUtils.textAreaWithId(id).addEventListener('input', () => {
+        Cookies.set(cookieName, HtmlUtils.textAreaWithId(id).value);
+      });
+    }
+
     export const insertTextAtCursor = (
         textarea: HTMLTextAreaElement,
         addedText: string) => {
@@ -66,7 +77,7 @@ export namespace HtmlUtils {
       button.innerHTML += checkmark; // Append checkmark to the button HTML
       setTimeout(() => {
         button.innerHTML = initialHTML; // Reset the button HTML after 2 seconds
-      }, 2000);
+      }, 500);
     });
   };
 }
