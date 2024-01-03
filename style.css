@@ -46,16 +46,12 @@ button {
  flex-grow: 1;
 }
 
-.button-height {
- height: 39px;
-}
-
 .record-spinner-group {
  display: flex;
 }
 
 button, input, textarea {
- margin: 5px;
+ /*margin: 5px;*/
  padding: 10px 15px;
  border: 1px solid var(--myGreen);
  border-radius: 0;
