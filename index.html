@@ -43,21 +43,26 @@
         <button id="recordButton">⬤ Record</button>
         <span id="recordSpinner" class="spinner" style="display: none;"></span>
       </div>
-      <button id="interimTranscribeButton">Interim Transcription</button>
+      <button id="interimTranscribeButton">Send</button>
       <info-button>
-        This will send the current recording to the API, start a new recording insert the result at the cursor position.
+        This will send the current recording to the API, start a new recording and insert the
+        transcription at the cursor position.
       </info-button>
-      <button id="pauseButton">‖ Pause</button>
     </div>
     <div class="button-container" style="">
-      <button id="copyButton">⎘ Copy to clipboard</button>
+      <button id="pauseButton">‖ Pause</button>
+      <button id="copyButton">⎘ Copy</button>
+      <info-button>Copies the content of the editor to the clipboard.</info-button>
       <button id="saveEditorButton" style="display: none;">
         <span class="greenFilter">💾</span> Save editor
       </button>
     </div>
     <div class="button-container" style="">
-      <button id="transcribeAgainButton" style="">Transcribe again</button>
-      <button id="replaceAgainButton" style="">Replace again</button>
+      <button id="transcribeAgainButton" style="">Tr. again</button>
+      <info-button>
+        Transcribe the last recording again. This is useful if you changed the prompt.
+      </info-button>
+      <button id="replaceAgainButton" style="">Replace</button>
     </div>
   </div>
   <div>
