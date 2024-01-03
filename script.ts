@@ -7,6 +7,7 @@ const Audio = HelgeUtils.Audio;
 
 namespace AfterInit {
 
+  import buttonWithId = HtmlUtils.buttonWithId;
   const Cookies = HtmlUtils.Cookies;
 
   const saveAPIKeyButton = document.getElementById('saveAPIKeyButton') as HTMLButtonElement;
@@ -86,7 +87,6 @@ namespace AfterInit {
       }
 
       const startRecording = () => {
-        showSpinner();
         navigator.mediaDevices.getUserMedia({audio: true}).then(onStreamReady);
       };
 
@@ -99,12 +99,25 @@ namespace AfterInit {
         HtmlUtils.Media.releaseMicrophone(stream);
       };
 
+      // ############## recordButton ##############
       recordButton.addEventListener('click', () => {
         if (isRecording) {
           stopRecording();
         } else {
+          showSpinner();
           startRecording();
         }
+      });
+
+      // ############## interimTranscribeButton ##############
+      buttonWithId("interimTranscribeButton").addEventListener('click', () => {
+        mediaRecorder.onstop = () => {
+          audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
+          audioChunks = [];
+          transcribeAndHandleResult(audioBlob).then(hideSpinner);
+          startRecording();
+        };
+        mediaRecorder.stop();
       });
 
       pauseButton.addEventListener('click', () => {

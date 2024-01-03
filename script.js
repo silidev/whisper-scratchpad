@@ -5,6 +5,7 @@ var TextAreas = HtmlUtils.TextAreas;
 const Audio = HelgeUtils.Audio;
 var AfterInit;
 (function (AfterInit) {
+    var buttonWithId = HtmlUtils.buttonWithId;
     const Cookies = HtmlUtils.Cookies;
     const saveAPIKeyButton = document.getElementById('saveAPIKeyButton');
     const recordButton = document.getElementById('recordButton');
@@ -70,7 +71,6 @@ var AfterInit;
                 pauseButton.textContent = '‖ Resume';
             }
             const startRecording = () => {
-                showSpinner();
                 navigator.mediaDevices.getUserMedia({ audio: true }).then(onStreamReady);
             };
             const stopRecording = () => {
@@ -81,13 +81,25 @@ var AfterInit;
                 recordButton.textContent = '⬤ Record';
                 HtmlUtils.Media.releaseMicrophone(stream);
             };
+            // ############## recordButton ##############
             recordButton.addEventListener('click', () => {
                 if (isRecording) {
                     stopRecording();
                 }
                 else {
+                    showSpinner();
                     startRecording();
                 }
+            });
+            // ############## interimTranscribeButton ##############
+            buttonWithId("interimTranscribeButton").addEventListener('click', () => {
+                mediaRecorder.onstop = () => {
+                    audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    audioChunks = [];
+                    transcribeAndHandleResult(audioBlob).then(hideSpinner);
+                    startRecording();
+                };
+                mediaRecorder.stop();
             });
             pauseButton.addEventListener('click', () => {
                 if (mediaRecorder.state === 'recording') {
