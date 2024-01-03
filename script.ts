@@ -21,7 +21,6 @@ namespace AfterInit {
   const replaceAgainButton = document.getElementById('replaceAgainButton') as HTMLButtonElement;
 
   const recordSpinner = document.getElementById('recordSpinner') as HTMLElement;
-  const overwriteEditorCheckbox = document.getElementById('overwriteEditorCheckbox') as HTMLInputElement;
   const apiSelector = document.getElementById('apiSelector') as HTMLSelectElement;
 
   const apiKeyInput = document.getElementById('apiKeyInputField') as HTMLTextAreaElement;
@@ -190,10 +189,7 @@ namespace AfterInit {
     const api = apiSelector.value as HelgeUtils.Audio.Api;
     const result = await Audio.transcribe(api,audioBlob, getApiKey(), transcriptionPrompt.value);
     const replacedOutput = HelgeUtils.replaceByRules(result, replaceRulesTextArea.value);
-    if (overwriteEditorCheckbox.checked)
-      editorTextarea.value = replacedOutput;
-    else
-      HtmlUtils.TextAreas.insertTextAtCursor(editorTextarea, replacedOutput);
+    HtmlUtils.TextAreas.insertTextAtCursor(editorTextarea, replacedOutput);
     navigator.clipboard.writeText(editorTextarea.value).then();
   };
 

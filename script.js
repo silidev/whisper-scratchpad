@@ -17,7 +17,6 @@ var AfterInit;
     const transcribeAgainButton = document.getElementById('transcribeAgainButton');
     const replaceAgainButton = document.getElementById('replaceAgainButton');
     const recordSpinner = document.getElementById('recordSpinner');
-    const overwriteEditorCheckbox = document.getElementById('overwriteEditorCheckbox');
     const apiSelector = document.getElementById('apiSelector');
     const apiKeyInput = document.getElementById('apiKeyInputField');
     const editorTextarea = document.getElementById('editorTextarea');
@@ -159,10 +158,7 @@ var AfterInit;
         const api = apiSelector.value;
         const result = await Audio.transcribe(api, audioBlob, getApiKey(), transcriptionPrompt.value);
         const replacedOutput = HelgeUtils.replaceByRules(result, replaceRulesTextArea.value);
-        if (overwriteEditorCheckbox.checked)
-            editorTextarea.value = replacedOutput;
-        else
-            HtmlUtils.TextAreas.insertTextAtCursor(editorTextarea, replacedOutput);
+        HtmlUtils.TextAreas.insertTextAtCursor(editorTextarea, replacedOutput);
         navigator.clipboard.writeText(editorTextarea.value).then();
     };
     AfterInit.loadFormData = () => {
