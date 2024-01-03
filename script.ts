@@ -55,30 +55,30 @@ namespace AfterInit {
         audioChunks = [];
         mediaRecorder.start();
         isRecording = true;
-        setRecordIndicator(true);
+        setRecordingIndicator();
         mediaRecorder.ondataavailable = event => {
           audioChunks.push(event.data);
         };
       };
 
-      const setRecordIndicator = (isRecordingParam: boolean) => {
-        if (isRecordingParam) {
-          elementWithId("recordingIndicator").innerHTML = '🔴Recording';
+      function setRecordingIndicator() {
+        elementWithId("recordingIndicator").innerHTML = '🔴Recording';
 
-          recordButton.textContent = '◼ Stop';
-          recordButton.style.backgroundColor = 'red';
+        recordButton.textContent = '◼ Stop';
+        recordButton.style.backgroundColor = 'red';
 
-          pauseButton.textContent = '‖ Pause';
-          pauseButton.style.backgroundColor = 'red';
-        } else { // Paused
-          elementWithId("recordingIndicator").innerHTML = '‖ Paused';
+        pauseButton.textContent = '‖ Pause';
+        pauseButton.style.backgroundColor = 'red';
+      }
 
-          recordButton.textContent = '⬤ Record';
-          recordButton.style.backgroundColor = 'black';
+      function setPausedIndicator() {
+        elementWithId("recordingIndicator").innerHTML = '‖ Paused';
 
-          pauseButton.style.backgroundColor = 'black';
-          pauseButton.textContent = '‖ Resume';
-        }
+        recordButton.textContent = '⬤ Record';
+        recordButton.style.backgroundColor = 'black';
+
+        pauseButton.style.backgroundColor = 'black';
+        pauseButton.textContent = '‖ Resume';
       }
 
       const startRecording = () => {
@@ -89,7 +89,7 @@ namespace AfterInit {
       const stopRecording = () => {
         mediaRecorder.onstop = mediaRecorderStoppedCallback;
         mediaRecorder.stop();
-        setRecordIndicator(false);
+        setPausedIndicator();
         isRecording = false;
         recordButton.textContent = '⬤ Record';
         HtmlUtils.Media.releaseMicrophone(stream);
@@ -106,10 +106,10 @@ namespace AfterInit {
       pauseButton.addEventListener('click', () => {
         if (mediaRecorder.state === 'recording') {
           mediaRecorder.pause();
-          setRecordIndicator(false);
+          setPausedIndicator();
         } else if (mediaRecorder.state === 'paused') {
           mediaRecorder.resume();
-          setRecordIndicator(true);
+          setRecordingIndicator();
         }
       });
 

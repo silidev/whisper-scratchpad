@@ -47,27 +47,25 @@ var AfterInit;
                 audioChunks = [];
                 mediaRecorder.start();
                 isRecording = true;
-                setRecordIndicator(true);
+                setRecordingIndicator();
                 mediaRecorder.ondataavailable = event => {
                     audioChunks.push(event.data);
                 };
             };
-            const setRecordIndicator = (isRecordingParam) => {
-                if (isRecordingParam) {
-                    elementWithId("recordingIndicator").innerHTML = '🔴Recording';
-                    recordButton.textContent = '◼ Stop';
-                    recordButton.style.backgroundColor = 'red';
-                    pauseButton.textContent = '‖ Pause';
-                    pauseButton.style.backgroundColor = 'red';
-                }
-                else { // Paused
-                    elementWithId("recordingIndicator").innerHTML = '‖ Paused';
-                    recordButton.textContent = '⬤ Record';
-                    recordButton.style.backgroundColor = 'black';
-                    pauseButton.style.backgroundColor = 'black';
-                    pauseButton.textContent = '‖ Resume';
-                }
-            };
+            function setRecordingIndicator() {
+                elementWithId("recordingIndicator").innerHTML = '🔴Recording';
+                recordButton.textContent = '◼ Stop';
+                recordButton.style.backgroundColor = 'red';
+                pauseButton.textContent = '‖ Pause';
+                pauseButton.style.backgroundColor = 'red';
+            }
+            function setPausedIndicator() {
+                elementWithId("recordingIndicator").innerHTML = '‖ Paused';
+                recordButton.textContent = '⬤ Record';
+                recordButton.style.backgroundColor = 'black';
+                pauseButton.style.backgroundColor = 'black';
+                pauseButton.textContent = '‖ Resume';
+            }
             const startRecording = () => {
                 showSpinner();
                 navigator.mediaDevices.getUserMedia({ audio: true }).then(onStreamReady);
@@ -75,7 +73,7 @@ var AfterInit;
             const stopRecording = () => {
                 mediaRecorder.onstop = mediaRecorderStoppedCallback;
                 mediaRecorder.stop();
-                setRecordIndicator(false);
+                setPausedIndicator();
                 isRecording = false;
                 recordButton.textContent = '⬤ Record';
                 HtmlUtils.Media.releaseMicrophone(stream);
@@ -91,11 +89,11 @@ var AfterInit;
             pauseButton.addEventListener('click', () => {
                 if (mediaRecorder.state === 'recording') {
                     mediaRecorder.pause();
-                    setRecordIndicator(false);
+                    setPausedIndicator();
                 }
                 else if (mediaRecorder.state === 'paused') {
                     mediaRecorder.resume();
-                    setRecordIndicator(true);
+                    setRecordingIndicator();
                 }
             });
             //transcribeAgainButton
