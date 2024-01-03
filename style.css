@@ -45,6 +45,10 @@ button {
  flex-grow: 1;
 }
 
+.button-height {
+ height: 39px;
+}
+
 .record-spinner-group {
  display: flex;
 }
