@@ -2,11 +2,11 @@ import { HtmlUtils } from "./HtmlUtils.js";
 import { HelgeUtils } from "./HelgeUtils.js";
 var elementWithId = HtmlUtils.elementWithId;
 var TextAreas = HtmlUtils.TextAreas;
+var buttonWithId = HtmlUtils.buttonWithId;
+var Cookies = HtmlUtils.Cookies;
 const Audio = HelgeUtils.Audio;
 var AfterInit;
 (function (AfterInit) {
-    var buttonWithId = HtmlUtils.buttonWithId;
-    const Cookies = HtmlUtils.Cookies;
     const downloadLink = document.getElementById('downloadLink');
     const recordSpinner = document.getElementById('recordSpinner');
     const apiSelector = document.getElementById('apiSelector');
@@ -81,7 +81,7 @@ var AfterInit;
             });
             // ############## interimTranscribeButton ##############
             buttonWithId("interimTranscribeButton").addEventListener('click', () => {
-                if (mediaRecorder.state === 'recording') {
+                if (mediaRecorder?.state === 'recording') {
                     mediaRecorder.onstop = () => {
                         audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                         audioChunks = [];

@@ -2,13 +2,13 @@ import {HtmlUtils} from "./HtmlUtils.js";
 import {HelgeUtils} from "./HelgeUtils.js";
 import elementWithId = HtmlUtils.elementWithId;
 import TextAreas = HtmlUtils.TextAreas;
+import buttonWithId = HtmlUtils.buttonWithId;
+import Cookies = HtmlUtils.Cookies;
 
 const Audio = HelgeUtils.Audio;
 
 namespace AfterInit {
 
-  import buttonWithId = HtmlUtils.buttonWithId;
-  const Cookies = HtmlUtils.Cookies;
   const downloadLink = document.getElementById('downloadLink') as HTMLAnchorElement;
   const recordSpinner = document.getElementById('recordSpinner') as HTMLElement;
   const apiSelector = document.getElementById('apiSelector') as HTMLSelectElement;
@@ -97,7 +97,7 @@ namespace AfterInit {
 
       // ############## interimTranscribeButton ##############
       buttonWithId("interimTranscribeButton").addEventListener('click', () => {
-        if (mediaRecorder.state === 'recording') {
+        if (mediaRecorder?.state === 'recording') {
           mediaRecorder.onstop = () => {
             audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
             audioChunks = [];
