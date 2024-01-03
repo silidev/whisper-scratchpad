@@ -27,15 +27,14 @@ export var HelgeUtils;
                 formData.append('toggle_diarization', 'false');
                 formData.append('transcription_hint', prompt);
                 formData.append('output_format', 'txt');
-                const response = await fetch('https://api.gladia.io/audio/text/audio-transcription/', {
+                const result = await (await fetch('https://api.gladia.io/audio/text/audio-transcription/', {
                     method: 'POST',
                     headers: {
                         'x-gladia-key': apiKey
                     },
                     body: formData
-                });
-                const result = await response.json();
-                const resultText = result["prediction_raw"]["transcription"]["transcription"];
+                })).json();
+                const resultText = result?.prediction ?? null;
                 if (typeof resultText === "string")
                     return resultText;
                 return result;
