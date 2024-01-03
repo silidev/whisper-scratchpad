@@ -61,7 +61,7 @@ namespace AfterInit {
       };
 
       function setRecordingIndicator() {
-        elementWithId("recordingIndicator").innerHTML = '🔴Recording';
+        elementWithId("recordingIndicator").innerHTML = '<span class="blinking">🔴Recording</span>';
 
         recordButton.textContent = '◼ Stop';
         recordButton.style.backgroundColor = 'red';
