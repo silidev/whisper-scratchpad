@@ -5,6 +5,7 @@ const Audio = HelgeUtils.Audio;
 
 namespace AfterInit {
 
+  import elementWithId = HtmlUtils.elementWithId;
   const Cookies = HtmlUtils.Cookies;
 
   const saveAPIKeyButton = document.getElementById('saveAPIKeyButton') as HTMLButtonElement;
@@ -21,7 +22,7 @@ namespace AfterInit {
 
   const recordSpinner = document.getElementById('recordSpinner') as HTMLElement;
   const overwriteEditorCheckbox = document.getElementById('overwriteEditorCheckbox') as HTMLInputElement;
-  const apiSelector: HTMLSelectElement = document.getElementById('apiSelector') as HTMLSelectElement;
+  const apiSelector = document.getElementById('apiSelector') as HTMLSelectElement;
 
   const apiKeyInput = document.getElementById('apiKeyInputField') as HTMLTextAreaElement;
   const editorTextarea = document.getElementById('editorTextarea') as HTMLTextAreaElement;
@@ -54,24 +55,45 @@ namespace AfterInit {
         audioChunks = [];
         mediaRecorder.start();
         isRecording = true;
+        setRecordIndicator(true);
         mediaRecorder.ondataavailable = event => {
           audioChunks.push(event.data);
         };
       };
 
-      function startRecording() {
-        showSpinner();
-        recordButton.textContent = '◼ Stop';
-        navigator.mediaDevices.getUserMedia({audio: true}).then(onStreamReady);
+      const setRecordIndicator = (isRecordingParam: boolean) => {
+        if (isRecordingParam) {
+          elementWithId("recordingIndicator").innerHTML = '🔴Recording';
+
+          recordButton.textContent = '◼ Stop';
+          recordButton.style.backgroundColor = 'red';
+
+          pauseButton.textContent = '‖ Pause';
+          pauseButton.style.backgroundColor = 'red';
+        } else { // Paused
+          elementWithId("recordingIndicator").innerHTML = '‖ Paused';
+
+          recordButton.textContent = '⬤ Record';
+          recordButton.style.backgroundColor = 'black';
+
+          pauseButton.style.backgroundColor = 'black';
+          pauseButton.textContent = '‖ Resume';
+        }
       }
 
-      function stopRecording() {
+      const startRecording = () => {
+        showSpinner();
+        navigator.mediaDevices.getUserMedia({audio: true}).then(onStreamReady);
+      };
+
+      const stopRecording = () => {
         mediaRecorder.onstop = mediaRecorderStoppedCallback;
         mediaRecorder.stop();
+        setRecordIndicator(false);
         isRecording = false;
         recordButton.textContent = '⬤ Record';
         HtmlUtils.Media.releaseMicrophone(stream);
-      }
+      };
 
       recordButton.addEventListener('click', () => {
         if (isRecording) {
@@ -84,10 +106,10 @@ namespace AfterInit {
       pauseButton.addEventListener('click', () => {
         if (mediaRecorder.state === 'recording') {
           mediaRecorder.pause();
-          pauseButton.textContent = '‖ Resume';
+          setRecordIndicator(false);
         } else if (mediaRecorder.state === 'paused') {
           mediaRecorder.resume();
-          pauseButton.textContent = '‖ Pause';
+          setRecordIndicator(true);
         }
       });
 
