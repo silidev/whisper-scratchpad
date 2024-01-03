@@ -9,19 +9,7 @@ namespace AfterInit {
 
   import buttonWithId = HtmlUtils.buttonWithId;
   const Cookies = HtmlUtils.Cookies;
-
-  const saveAPIKeyButton = document.getElementById('saveAPIKeyButton') as HTMLButtonElement;
-  const recordButton = document.getElementById('recordButton') as HTMLButtonElement;
-  const pauseButton = document.getElementById('pauseButton') as HTMLButtonElement;
-  const clearButton = document.getElementById('clearButton') as HTMLButtonElement;
-  const downloadButton = document.getElementById('downloadButton') as HTMLAnchorElement;
-  const savePromptButton = document.getElementById('savePromptButton') as HTMLButtonElement;
-  const saveRulesButton = document.getElementById('saveRulesButton') as HTMLButtonElement;
-  const saveEditorButton = document.getElementById('saveEditorButton') as HTMLButtonElement;
-  const copyButton = document.getElementById('copyButton') as HTMLButtonElement;
-  const transcribeAgainButton = document.getElementById('transcribeAgainButton') as HTMLButtonElement;
-  const replaceAgainButton = document.getElementById('replaceAgainButton') as HTMLButtonElement;
-
+  const downloadLink = document.getElementById('downloadLink') as HTMLAnchorElement;
   const recordSpinner = document.getElementById('recordSpinner') as HTMLElement;
   const apiSelector = document.getElementById('apiSelector') as HTMLSelectElement;
 
@@ -47,9 +35,9 @@ namespace AfterInit {
         audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
         audioChunks = [];
         { // Download button
-          downloadButton.href = URL.createObjectURL(audioBlob);
-          downloadButton.download = 'recording.wav';
-          downloadButton.style.display = 'block';
+          downloadLink.href = URL.createObjectURL(audioBlob);
+          downloadLink.download = 'recording.wav';
+          downloadLink.style.display = 'block';
         }
         transcribeAndHandleResult(audioBlob).then(hideSpinner);
       };
@@ -66,25 +54,23 @@ namespace AfterInit {
         };
       };
 
-      function setRecordingIndicator() {
+      const setRecordingIndicator = () => {
         elementWithId("recordingIndicator").innerHTML = '<span class="blinking">🔴Recording</span>';
 
-        recordButton.textContent = '◼ Stop';
-        recordButton.style.backgroundColor = 'red';
+        buttonWithId("recordButton").textContent = '◼ Stop';
+        buttonWithId("recordButton").style.backgroundColor = 'red';
 
-        pauseButton.textContent = '‖ Pause';
-        pauseButton.style.backgroundColor = 'red';
-      }
+        buttonWithId("pauseButton").style.backgroundColor = 'red';
+      };
 
-      function setPausedIndicator() {
+      const setPausedIndicator = () => {
         elementWithId("recordingIndicator").innerHTML = '‖ Paused';
 
-        recordButton.textContent = '⬤ Record';
-        recordButton.style.backgroundColor = 'black';
+        buttonWithId("recordButton").textContent = '⬤ Record';
+        buttonWithId("recordButton").style.backgroundColor = 'black';
 
-        pauseButton.style.backgroundColor = 'black';
-        pauseButton.textContent = '‖ Resume';
-      }
+        buttonWithId("pauseButton").style.backgroundColor = 'black';
+      };
 
       const startRecording = () => {
         navigator.mediaDevices.getUserMedia({audio: true}).then(onStreamReady);
@@ -95,12 +81,12 @@ namespace AfterInit {
         mediaRecorder.stop();
         setPausedIndicator();
         isRecording = false;
-        recordButton.textContent = '⬤ Record';
+        buttonWithId("recordButton").textContent = '⬤ Record';
         HtmlUtils.Media.releaseMicrophone(stream);
       };
 
       // ############## recordButton ##############
-      recordButton.addEventListener('click', () => {
+      buttonWithId("recordButton").addEventListener('click', () => {
         if (isRecording) {
           stopRecording();
         } else {
@@ -111,16 +97,20 @@ namespace AfterInit {
 
       // ############## interimTranscribeButton ##############
       buttonWithId("interimTranscribeButton").addEventListener('click', () => {
-        mediaRecorder.onstop = () => {
-          audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
-          audioChunks = [];
-          transcribeAndHandleResult(audioBlob).then(hideSpinner);
-          startRecording();
-        };
-        mediaRecorder.stop();
+        if (mediaRecorder.state === 'recording') {
+          mediaRecorder.onstop = () => {
+            audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
+            audioChunks = [];
+            transcribeAndHandleResult(audioBlob).then(hideSpinner);
+            startRecording();
+          };
+          mediaRecorder.stop();
+        } else {
+          buttonWithId("recordButton").click();
+        }
       });
 
-      pauseButton.addEventListener('click', () => {
+      buttonWithId("pauseButton").addEventListener('click', () => {
         if (mediaRecorder.state === 'recording') {
           mediaRecorder.pause();
           setPausedIndicator();
@@ -131,54 +121,54 @@ namespace AfterInit {
       });
 
       //transcribeAgainButton
-      HtmlUtils.addButtonClickListener(transcribeAgainButton, () => {
+      HtmlUtils.addButtonClickListener(buttonWithId("transcribeAgainButton"), () => {
         showSpinner();
         transcribeAndHandleResult(audioBlob).then(hideSpinner);
       });
     }
 
     // saveAPIKeyButton
-    HtmlUtils.addButtonClickListener(saveAPIKeyButton, () => {
+    HtmlUtils.addButtonClickListener(buttonWithId("saveAPIKeyButton"), () => {
       setApiKeyCookie(apiKeyInput.value);
       apiKeyInput.value = '';
     });
 
     // clearButton
-    HtmlUtils.addButtonClickListener(clearButton, () => {
+    HtmlUtils.addButtonClickListener(buttonWithId("clearButton"), () => {
       editorTextarea.value = '';
     });
 
     // replaceAgainButton
-    HtmlUtils.addButtonClickListener(replaceAgainButton, () => {
+    HtmlUtils.addButtonClickListener(buttonWithId("replaceAgainButton"), () => {
       editorTextarea.value = HelgeUtils.replaceByRules(editorTextarea.value, replaceRulesTextArea.value);
     });
 
     // saveEditorButton
-    HtmlUtils.addButtonClickListener(saveEditorButton, () => {
+    HtmlUtils.addButtonClickListener(buttonWithId("saveEditorButton"), () => {
       Cookies.set("editorText", editorTextarea.value);
     });
 
     // savePromptButton
-    HtmlUtils.addButtonClickListener(savePromptButton, () => {
+    HtmlUtils.addButtonClickListener(buttonWithId("savePromptButton"), () => {
       Cookies.set("prompt", transcriptionPrompt.value);
     });
 
     // saveRulesButton
-    HtmlUtils.addButtonClickListener(saveRulesButton, () => {
+    HtmlUtils.addButtonClickListener(buttonWithId("saveRulesButton"), () => {
       Cookies.set("replaceRules", replaceRulesTextArea.value);
     });
 
     // copyButton
-    copyButton.addEventListener('click', () => {
+    buttonWithId("copyButton").addEventListener('click', () => {
       navigator.clipboard.writeText(editorTextarea.value).then(() => {
-        copyButton.textContent = '⎘ Copied!';
+        buttonWithId("copyButton").textContent = '⎘ Copied!';
         setTimeout(() => {
-          copyButton.textContent = '⎘ Copy';
+          buttonWithId("copyButton").textContent = '⎘ Copy';
         }, 2000);
       });
     });
 
-    document.getElementById('saveAPIKeyButton').addEventListener('click', function () {
+    buttonWithId("saveAPIKeyButton").addEventListener('click', function () {
       (document.getElementById('apiKey') as HTMLInputElement).value = ''; // Clear the input field
     });
 
@@ -195,13 +185,11 @@ namespace AfterInit {
     };
   }
 
-  function getApiKey() {
-    return Cookies.get(apiSelector.value + 'ApiKey');
-  }
+  const getApiKey = () => Cookies.get(apiSelector.value + 'ApiKey');
 
-  function setApiKeyCookie(apiKey: string) {
+  const setApiKeyCookie = (apiKey: string) => {
     Cookies.set(apiSelector.value + 'ApiKey', apiKey);
-  }
+  };
 
   const transcribeAndHandleResult = async (audioBlob: Blob) => {
     const api = apiSelector.value as HelgeUtils.Audio.Api;
