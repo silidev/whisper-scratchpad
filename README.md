@@ -1,4 +1,4 @@
-Published here: https://silidev.github.io/whisper-page/
+Published here: https://silidev.github.io/whisper-scratchpad/
 
 A page from which you can record speech and send to the OpenAI whisper API. The result is copied to the clipboard.
 
@@ -6,4 +6,4 @@ The API key is only stored in a cookie locally on your computer. You don't have 
 
 - Run locally: See whisper-page.cmd
 
-Copyright 2023 by https://twitter.com/silidev . GPL V3.
+Copyright 2024 by Helge Kosuch https://twitter.com/silidev .
