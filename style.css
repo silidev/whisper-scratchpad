@@ -130,10 +130,6 @@ textarea {
  height: 10cm;
 }
 
-/*Special rules for phones */
-@media (max-width: 600px) {
-}
-
 @keyframes blink {
  0%, 100% { opacity: 1; }
  50% { opacity: 0; }
@@ -141,4 +137,10 @@ textarea {
 
 .blinking {
  animation: blink 1s linear infinite;
+}
+
+@media only screen and (max-width: 600px) {
+ .editorTextAreaContainer {
+  width: 90%;
+ }
 }
