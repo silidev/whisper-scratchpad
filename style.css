@@ -11,7 +11,7 @@ body {
  background-color: black;
  color: var(--myGreen);
  margin: auto;
- max-width: 20cm;
+ max-width: 25cm;
  width: 100%;
 }
 
@@ -24,7 +24,8 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
  display: inline-block; /* Allows headings to have dimensions but remain inline */
- margin-top: 1cm;
+ margin-top: .1cm;
+ margin-bottom: 0;
 }
 
 a {
@@ -80,12 +81,6 @@ input::selection, textarea::selection {
  color: black;
 }
 
-textarea {
- width: 100%;
- resize: vertical;
- margin-right: 5cm;
-}
-
 input::placeholder, textarea::placeholder {
  color: var(--myGreen);
  filter: brightness(70%);
@@ -123,9 +118,18 @@ button:hover, button:focus {
  display: none;
 }
 
+textarea {
+ width: 100%;
+ height: 100%;
+ resize: vertical;
+ margin-right: 5cm;
+}
+
+.editorTextAreaContainer {
+ width: 20cm;
+ height: 10cm;
+}
+
+/*Special rules for phones */
 @media (max-width: 600px) {
- h1, h2, h3, h4, h5, h6 {
-  display: inline-block; /* Ensures display is inline-block on mobile */
-  margin-top: 1cm; /* Custom margin for mobile */
- }
 }

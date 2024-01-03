@@ -14,70 +14,55 @@
   <script src="InfoButton.js"></script>
 </head>
 <body>
-<div id="kohDiv" class="clearfix">
+  <div id="kohDiv" class="clearfix">
 
-<div><h1>whisper-scratchpad (alpha)</h1>
-  <info-button>
-    The first text area is the editor. The full editor is copied to clipboard after each recording. For info about the project look at the bottom of the page.
-    <br>The text of each recording is inserted at the cursor position.
-    <br>
-    <br>I made this simple page to use the revolution in speech recognition: OpenAI Whisper. The voice recognition on your phone is a joke compared with whisper-large.
-    <br>
-    <br>This can be installed as an App, tested on Android and Windows, probably on other OSes as well ("PWA"). <a href="https://www.google.com/search?client=opera&q=how+to+install+a+web+page+as+an+app&sourceid=opera&ie=UTF-8&oe=UTF-8">How-Tos here</a>
-    <br>
-    <br>The API key is stored in a cookie. To be on the safe side, you can set a limit to your costs in the OpenAI dashboard. Mine is $2, because Whisper is dirt cheap: $0.036 / hour (rounded to the nearest second).
-    <br>I won't steal your key, and you don't have to trust me on that, you can download this to your computer and run it there and check (and improve :) ) the very simple code.
-  </info-button>
-</div>
-
-<div style="width:90%; height: 10cm">
-  <textarea id="editorTextarea" wrap="soft"
-    placeholder="ICH ICH ICH"
-    style="width:100%;height: 100%;"></textarea>
-</div>
-
-<div class="wrapping-container" style="margin-top: 5mm">
-  <div class="button-container">
-    <button id="recordingIndicator" class="" style="border: none">‖ Paused</button>
-    <button id="clearButton"><span class="greenFilter">🧹</span> Clear</button>
-    <div class="record-spinner-group">
-      <button id="recordButton">⬤ Record</button>
-      <span id="recordSpinner" class="spinner" style="display: none;"></span>
-    </div>
-    <button id="pauseButton">‖ Pause</button>
-  </div>
-  <div class="button-container" style="">
-    <button id="copyButton">⎘ Copy to clipboard</button>
-    <button id="saveEditorButton">
-      <span class="greenFilter">💾</span> Save editor
-    </button>
-  </div>
-  <div class="button-container" style="">
-    <button id="transcribeAgainButton" style="">Transcribe again</button>
-    <button id="replaceAgainButton" style="">Replace again</button>
-  </div>
-</div>
-<div>
-  <a id="downloadButton" style="display:none; margin-left: 2cm">Download audio</a>
-</div>
-<!--############## transcriptionPrompt ##############-->
-<div style="width:90%;">
-  <h2>Prompt:</h2>
+  <div><h1>whisper-scratchpad (alpha)</h1>
     <info-button>
-      Since it wasn't trained using instruction-following techniques, Whisper operates more like a base GPT model. It's important to keep in mind that Whisper only considers the first 244 tokens of the prompt. <a href="https://platform.openai.com/docs/guides/speech-to-text/prompting">More info</a>
+      The first text area is the editor. The full editor is copied to clipboard after each recording. For info about the project look at the bottom of the page.
+      <br>The text of each recording is inserted at the cursor position.
+      <br>
+      <br>I made this simple page to use the revolution in speech recognition: OpenAI Whisper. The voice recognition on your phone is a joke compared with whisper-large.
+      <br>
+      <br>This can be installed as an App, tested on Android and Windows, probably on other OSes as well ("PWA"). <a href="https://www.google.com/search?client=opera&q=how+to+install+a+web+page+as+an+app&sourceid=opera&ie=UTF-8&oe=UTF-8">How-Tos here</a>
+      <br>
+      <br>The API key is stored in a cookie. To be on the safe side, you can set a limit to your costs in the OpenAI dashboard. Mine is $2, because Whisper is dirt cheap: $0.036 / hour (rounded to the nearest second).
+      <br>I won't steal your key, and you don't have to trust me on that, you can download this to your computer and run it there and check (and improve :) ) the very simple code.
     </info-button>
-  <div style="height: 10cm;">
-    <textarea id="transcriptionPrompt" wrap="soft" placeholder="Optional prompt especially for hinting unusual names if they are not recognized by default." style="width:100%;height: 100%;"></textarea>
   </div>
-  <button id="savePromptButton" style="margin-top: 5mm">
-    <span class="greenFilter">💾</span>
-    Save prompt
-  </button>
-</div>
 
-<!--############## replaceRules ##############-->
-<div style="width:90%;">
-  <h2>Replacement rules:</h2>
+  <div class="editorTextAreaContainer">
+    <textarea id="editorTextarea" wrap="soft"
+      placeholder="ICH ICH ICH"></textarea>
+  </div>
+
+  <div class="wrapping-container" style="margin-top: 5mm">
+    <div class="button-container">
+      <button id="recordingIndicator" class="" style="border: none">‖ Paused</button>
+      <button id="clearButton"><span class="greenFilter">🧹</span> Clear</button>
+      <div class="record-spinner-group">
+        <button id="recordButton">⬤ Record</button>
+        <span id="recordSpinner" class="spinner" style="display: none;"></span>
+      </div>
+      <button id="pauseButton">‖ Pause</button>
+    </div>
+    <div class="button-container" style="">
+      <button id="copyButton">⎘ Copy to clipboard</button>
+      <button id="saveEditorButton">
+        <span class="greenFilter">💾</span> Save editor
+      </button>
+    </div>
+    <div class="button-container" style="">
+      <button id="transcribeAgainButton" style="">Transcribe again</button>
+      <button id="replaceAgainButton" style="">Replace again</button>
+    </div>
+  </div>
+  <div>
+    <a id="downloadButton" style="display:none; margin-left: 2cm">Download audio</a>
+  </div>
+
+  <!--############## replaceRules ##############-->
+  <div>
+    <h2>Replacement rules:</h2>
     <info-button>
       <br>A ruleset contains one or more rule, the format looks like:
       <br>:: Any "SEARCH" becomes "REPLACE"
@@ -100,45 +85,62 @@
       <br>"Ausrufezeichen"->"!"
       <br>"Fragezeichen"->"?"
     </info-button>
-  <div style="height: 10cm;">
-    <textarea id="replaceRulesTextArea" wrap="soft" placeholder="Optional. &quot;SEARCH&quot;-&gt;&quot;REPLACE&quot;" style="width:100%;height: 100%;"></textarea>
+    <div class="editorTextAreaContainer">
+      <textarea id="replaceRulesTextArea" wrap="soft" placeholder="Optional. &quot;SEARCH&quot;-&gt;&quot;REPLACE&quot;" >
+      </textarea>
+    </div>
+    <button id="saveRulesButton" style="margin-top: 5mm">
+      <span class="greenFilter">💾</span>
+      Save rules
+    </button>
   </div>
-  <button id="saveRulesButton" style="margin-top: 5mm">
-    <span class="greenFilter">💾</span>
-    Save rules
-  </button>
-</div>
 
-<div style="width:100%">
-  <h2>API</h2>
-  <br><select id="apiSelector" class="greenFilter" style="font-size: 22px">
-    <option value="OpenAI">OpenAI</option>
-    <option value="Gladia">Gladia.io</option>
-  </select>
 
-  <br><h2>API Key</h2>
-  <br><input type="text" id="apiKeyInputField" placeholder="Enter API key for selected service">
-  <button id="saveAPIKeyButton">
-    <span class="greenFilter">💾</span>
-    Save API Key
-  </button>
-  <br>
-  <br><a href="https://platform.openai.com/api-keys">Click here to get an API key</a>.
+  <!--############## transcriptionPrompt ##############-->
+  <div style="width:90%;">
+    <h2>Prompt:</h2>
+      <info-button>
+        Since it wasn't trained using instruction-following techniques, Whisper operates more like a base GPT model. It's important to keep in mind that Whisper only considers the first 244 tokens of the prompt. <a href="https://platform.openai.com/docs/guides/speech-to-text/prompting">More info</a>
+      </info-button>
+    <div class="editorTextAreaContainer">
+      <textarea id="transcriptionPrompt" wrap="soft" placeholder="Optional prompt especially for hinting unusual names if they are not recognized by default."></textarea>
+    </div>
+    <button id="savePromptButton" style="margin-top: 5mm">
+      <span class="greenFilter">💾</span>
+      Save prompt
+    </button>
+  </div>
 
-  If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.
-</div>
+  <div style="width:100%">
+    <h2>API</h2>
+    <br><select id="apiSelector" class="greenFilter" style="font-size: 22px">
+      <option value="OpenAI">OpenAI</option>
+      <option value="Gladia">Gladia.io</option>
+    </select>
 
-<div style="width:100%;" >
-    <h2>For devs</h2>
-    <br>- <a href="https://github.com/silidev/whisper-scratchpad">GitHub Repo</a>
-    <br>- <a href="https://platform.openai.com/docs/api-reference/audio/createTranscription">API docs</a>
-    <br>- <a href="https://platform.openai.com/docs/guides/speech-to-text">OpenAI Speech Guide</a>
-    <br>- Once my browser said the page wanted to read the clipboard... if you get that just deny it. The page does not actually want to read the clipboard, I wrote no code for that.
+    <br><h2>API Key</h2>
+    <br><input type="text" id="apiKeyInputField" placeholder="Enter API key for selected service">
+    <button id="saveAPIKeyButton">
+      <span class="greenFilter">💾</span>
+      Save API Key
+    </button>
     <br>
-    <br>Copyright 2023 by <a href="https://twitter.com/silidev">https://twitter.com/silidev</a>. GPL V3.
-    <br>V.9 Doggie
+    <br><a href="https://platform.openai.com/api-keys">Click here to get an API key</a>.
+
+    If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.
   </div>
-</div>
-<script src="script.js" type="module"></script> <!-- Rename to AfterScript.js -->
+
+  <div style="width:100%;" >
+      <h2>For devs</h2>
+      <br>- <a href="https://github.com/silidev/whisper-scratchpad">GitHub Repo</a>
+      <br>- <a href="https://platform.openai.com/docs/api-reference/audio/createTranscription">API docs</a>
+      <br>- <a href="https://platform.openai.com/docs/guides/speech-to-text">OpenAI Speech Guide</a>
+      <br>- Once my browser said the page wanted to read the clipboard... if you get that just deny it. The page does not actually want to read the clipboard, I wrote no code for that.
+      <br>
+      <br>Copyright 2024 by Helge Kosuch, <a href="https://twitter.com/silidev">https://twitter.com/silidev</a>.
+      <br>V.9 Doggie
+    </div>
+  </div>
+  <script src="script.js" type="module"></script> <!-- Rename to AfterScript.js -->
 </body>
 </html>
