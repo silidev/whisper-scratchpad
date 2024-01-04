@@ -50,10 +50,7 @@
     <span class="button-container">
       <button id="replaceAgainButton" style="">Replace</button>
       <span>
-        <button id="copyButton" class="attachedInfoButton" style="height: 55.5px">⎘ Copy</button>
-        <button class="infoButton">
-          <info-button>Copies the content of the editor to the clipboard.</info-button>
-        </button>
+        <button id="copyButton" style="height: 55.5px">⎘ Copy</button>
       </span>
       <button id="saveEditorButton" style="display: none;">
         <span class="greenFilter">💾</span> Save editor
@@ -61,20 +58,20 @@
     </span>
     <span class="button-container">
       <span>
-        <button id="transcribeAgainButton" class="attachedInfoButton">Tr. again</button>
-        <button class="infoButton"><info-button>
-          Transcribe the last recording again. This is useful if you changed the prompt.
-        </info-button></button>
+        <button id="transcribeAgainButton">Tr. again</button>
       </span>
       <span>
-        <button id="sendButton" class="attachedInfoButton">Send</button>
-        <button class="infoButton"><info-button>
-          This will send the current recording to the API, start a new recording and insert the
-          transcription at the cursor position.
-        </info-button></button>
+        <button id="sendButton">Send</button>
       </span>
     </span>
   </span>
+  <info-button>
+    <br>Copy-Button: Copies the content of the editor to the clipboard.
+    <br>Send-Button: This will send the current recording to the API, start a new recording and insert the
+    transcription at the cursor position.
+    <br>Replace-Button: Replaces the text in the editor according to the ruleset.
+    <br>"Tr. again"-Button: Transcribes the current recording and inserts the transcription at the cursor position.
+  </info-button>
   <div>
     <a id="downloadLink" style="display:none; margin-left: 2cm">Download audio</a>
   </div>
