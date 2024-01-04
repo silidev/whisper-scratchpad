@@ -40,14 +40,14 @@
     <span class="button-container">
       <button>  <info-button>
         <div style="position: fixed;
-    left: 0; background-color: black; border: 1px solid green; padding: 5px;
-    width: 100%;">
-    <br>Copy-Button: Copies the content of the editor to the clipboard.
-    <br>Send-Button: This will send the current recording to the API, start a new recording and insert the
-    transcription at the cursor position.
-    <br>Replace-Button: Replaces the text in the editor according to the ruleset.
-    <br>"Tr. again"-Button: Transcribes the current recording and inserts the transcription at the cursor position.
-  </div></info-button></button>
+          left: 0; background-color: black; border: 1px solid green; padding: 5px;
+          width: 6cm">
+        <ul>
+          <li>Copy-Button: Copies the content of the editor to the clipboard.</li>
+          <li>Send-Button: This will send the current recording to the API, start a new recording and insert the transcription at the cursor position.</li>
+          <li>Replace-Button: Replaces the text in the editor according to the ruleset.</li>
+          <li>"Tr. again"-Button: Transcribes the current recording and inserts the transcription at the cursor position.</li>
+        </ul>
       <button id="clearButton"><span class="greenFilter">🧹</span> Clear</button>
       <span class="record-spinner-group">
         <button id="recordButton">‖ Paused</button>
@@ -119,7 +119,7 @@
 
   <!--############## transcriptionPrompt ##############-->
   <div>
-    <h2>Prompt:</h2>
+    <h2>Transcription Prompt:</h2>
       <info-button>
         Since Whisper wasn't trained using instruction-following techniques, Whisper operates more like a base GPT model. The content of the editor is appended to the prompt. It's important to keep in mind that Whisper only considers the first 244 tokens of the prompt. <a href="https://platform.openai.com/docs/guides/speech-to-text/prompting">More info</a>
       </info-button>
