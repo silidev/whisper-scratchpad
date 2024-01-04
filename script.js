@@ -17,9 +17,10 @@ var AfterInit;
     const editorTextarea = document.getElementById('editorTextarea');
     const transcriptionPrompt = document.getElementById('transcriptionPrompt');
     const replaceRulesTextArea = document.getElementById('replaceRulesTextArea');
-    TextAreas.setAutoSave('replaceRulesTextArea', 'replaceRules');
-    TextAreas.setAutoSave('editorTextarea', 'editorText');
-    TextAreas.setAutoSave('transcriptionPrompt', 'prompt');
+    const saveEditor = () => Cookies.set("editorText", HtmlUtils.textAreaWithId("editorTextarea").value);
+    TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea');
+    TextAreas.setAutoSave('editorText', 'editorTextarea');
+    TextAreas.setAutoSave('prompt', 'transcriptionPrompt');
     function insertAtCursor(text) {
         TextAreas.insertTextAtCursor(editorTextarea, text);
     }
@@ -160,6 +161,7 @@ var AfterInit;
         // clearButton
         HtmlUtils.addButtonClickListener(buttonWithId("clearButton"), () => {
             editorTextarea.value = '';
+            saveEditor();
         });
         // replaceAgainButton
         HtmlUtils.addButtonClickListener(buttonWithId("replaceAgainButton"), () => {
@@ -177,6 +179,10 @@ var AfterInit;
         HtmlUtils.addButtonClickListener(buttonWithId("saveRulesButton"), () => {
             Cookies.set("replaceRules", replaceRulesTextArea.value);
         });
+        // aboutButton
+        HtmlUtils.addButtonClickListener(buttonWithId("abortButton"), () => {
+            window.location.reload();
+        });
         // copyButton
         buttonWithId("copyButton").addEventListener('click', () => {
             navigator.clipboard.writeText(editorTextarea.value).then(() => {
@@ -193,7 +199,7 @@ var AfterInit;
             Cookies.set('apiSelector', apiSelector.value);
         });
         const showSpinner = () => {
-            recordSpinner.style.display = 'block';
+            // recordSpinner.style.display = 'block';
         };
         const hideSpinner = () => {
             recordSpinner.style.display = 'none';

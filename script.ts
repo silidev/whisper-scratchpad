@@ -22,9 +22,11 @@ namespace AfterInit {
   const transcriptionPrompt = document.getElementById('transcriptionPrompt') as HTMLTextAreaElement;
   const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement;
 
-  TextAreas.setAutoSave('replaceRulesTextArea', 'replaceRules');
-  TextAreas.setAutoSave('editorTextarea', 'editorText');
-  TextAreas.setAutoSave('transcriptionPrompt', 'prompt');
+  const saveEditor = () => Cookies.set("editorText", HtmlUtils.textAreaWithId("editorTextarea").value);
+
+  TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea');
+  TextAreas.setAutoSave('editorText', 'editorTextarea');
+  TextAreas.setAutoSave('prompt', 'transcriptionPrompt');
 
   function insertAtCursor(text: string) {
     TextAreas.insertTextAtCursor(editorTextarea, text);
@@ -176,6 +178,7 @@ namespace AfterInit {
     // clearButton
     HtmlUtils.addButtonClickListener(buttonWithId("clearButton"), () => {
       editorTextarea.value = '';
+      saveEditor();
     });
 
     // replaceAgainButton
@@ -198,6 +201,11 @@ namespace AfterInit {
       Cookies.set("replaceRules", replaceRulesTextArea.value);
     });
 
+    // aboutButton
+    HtmlUtils.addButtonClickListener(buttonWithId("abortButton"), () => {
+      window.location.reload();
+    });
+
     // copyButton
     buttonWithId("copyButton").addEventListener('click', () => {
       navigator.clipboard.writeText(editorTextarea.value).then(() => {
@@ -217,7 +225,7 @@ namespace AfterInit {
     });
 
     const showSpinner = () => {
-      recordSpinner.style.display = 'block';
+      // recordSpinner.style.display = 'block';
     };
 
     const hideSpinner = () => {

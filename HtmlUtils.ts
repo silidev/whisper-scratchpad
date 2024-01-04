@@ -14,10 +14,10 @@ export namespace HtmlUtils {
   export namespace TextAreas {
     /**
      * Makes a text area element auto-save its content to a cookie after each modified character (input event).
-     * @param id - The ID of the text area element.
      * @param cookieName - The name of the cookie to store the text area content.
+     * @param id - The ID of the text area element.
      */
-    export const setAutoSave = (id: string, cookieName: string) => {
+    export const setAutoSave = (cookieName: string, id: string) => {
       HtmlUtils.textAreaWithId(id).addEventListener('input', () => {
         Cookies.set(cookieName, HtmlUtils.textAreaWithId(id).value);
       });
