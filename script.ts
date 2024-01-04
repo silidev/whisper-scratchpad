@@ -203,7 +203,7 @@ namespace AfterInit {
     editorTextarea.value = Cookies.get("editorText");
     transcriptionPrompt.value = Cookies.get("prompt");
     replaceRulesTextArea.value = Cookies.get("replaceRules");
-    apiSelector.value = Cookies.get("apiSelector");
+    apiSelector.value = Cookies.get("apiSelector")??'OpenAI';
   };
 
   export const registerServiceWorker = () => {
