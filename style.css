@@ -55,11 +55,22 @@ a {
 .button-container, .record-spinner-group {
  display: flex;
  align-items: stretch;
+ justify-content: flex-end;
+ float: right;
+ text-align: right;
+}
+
+.button-container {
+ display: flex;
+ justify-content: flex-end;
+ text-align: right;
 }
 
 .wrapping-container {
  display: flex;
  flex-wrap: wrap;
+ justify-content: flex-end;
+ float: right;
 }
 
 button {

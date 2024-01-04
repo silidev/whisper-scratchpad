@@ -52,12 +52,12 @@ var AfterInit;
             const setRecordingIndicator = () => {
                 elementWithId("recordingIndicator").innerHTML = '<span class="blinking">🔴Recording</span>';
                 buttonWithId("recordButton").textContent = '◼ Stop';
+                buttonWithId("pauseButton").textContent = '‖ Pause';
             };
             const setPausedIndicator = () => {
                 elementWithId("recordingIndicator").innerHTML = '‖ Paused';
                 buttonWithId("recordButton").textContent = '◼ Stop';
-                buttonWithId("recordButton").style.backgroundColor = 'black';
-                buttonWithId("pauseButton").style.backgroundColor = 'black';
+                buttonWithId("pauseButton").textContent = '⬤ Record';
             };
             const startRecording = () => {
                 navigator.mediaDevices.getUserMedia({ audio: true }).then(onStreamReady);
