@@ -114,7 +114,9 @@ namespace AfterInit {
         }
       });
 
+      // ############## pauseButton ##############
       buttonWithId("pauseButton").addEventListener('click', () => {
+        if (!mediaRecorder) buttonWithId("recordButton").click();
         if (mediaRecorder.state === 'recording') {
           mediaRecorder.pause();
           setPausedIndicator();
@@ -124,14 +126,14 @@ namespace AfterInit {
         }
       });
 
-      //transcribeAgainButton
+      // ############## transcribeAgainButton ##############
       HtmlUtils.addButtonClickListener(buttonWithId("transcribeAgainButton"), () => {
         showSpinner();
         transcribeAndHandleResult(audioBlob).then(hideSpinner);
       });
     }
 
-    // saveAPIKeyButton
+    // ############## saveAPIKeyButton ##############
     HtmlUtils.addButtonClickListener(buttonWithId("saveAPIKeyButton"), () => {
       setApiKeyCookie(apiKeyInput.value);
       apiKeyInput.value = '';
