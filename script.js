@@ -199,8 +199,10 @@ var AfterInit;
             Cookies.set('apiSelector', apiSelector.value);
         });
         const showSpinner = () => {
+            // probably not needed anymore, delete later
             // recordSpinner.style.display = 'block';
         };
+        // probably not needed anymore, delete later
         const hideSpinner = () => {
             recordSpinner.style.display = 'none';
         };
