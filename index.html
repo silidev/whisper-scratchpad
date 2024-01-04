@@ -14,68 +14,68 @@
   <script src="InfoButton.js"></script>
 </head>
 <body>
-  <div id="kohDiv" class="clearfix">
 
-  <div><h1>whisper-scratchpad (alpha)</h1>
-    <info-button>
-      The first text area is the editor. The full editor is copied to clipboard after each recording. For info about the project look at the bottom of the page.
-      <br>The text of each recording is inserted at the cursor position.
-      <br>
-      <br>I made this simple page to use the revolution in speech recognition: OpenAI Whisper. The voice recognition on your phone is a joke compared with whisper-large.
-      <br>
-      <br>This can be installed as an App, tested on Android and Windows, probably on other OSes as well ("PWA"). <a href="https://www.google.com/search?client=opera&q=how+to+install+a+web+page+as+an+app&sourceid=opera&ie=UTF-8&oe=UTF-8">How-Tos here</a>
-      <br>
-      <br>The API key is stored in a cookie. To be on the safe side, you can set a limit to your costs in the OpenAI dashboard. Mine is $2, because Whisper is dirt cheap: $0.036 / hour (rounded to the nearest second).
-      <br>I won't steal your key, and you don't have to trust me on that, you can download this to your computer and run it there and check (and improve :) ) the very simple code.
-    </info-button>
-  </div>
+  <h1>whisper-scratchpad</h1>
+  <info-button>
+    The first text area is the editor. The full editor is copied to clipboard after each recording. For info about the project look at the bottom of the page.
+    <br>The text of each recording is inserted at the cursor position.
+    <br>
+    <br>I made this simple page to use the revolution in speech recognition: OpenAI Whisper. The voice recognition on your phone is a joke compared with whisper-large.
+    <br>
+    <br>This can be installed as an App, tested on Android and Windows, probably on other OSes as well ("PWA"). <a href="https://www.google.com/search?client=opera&q=how+to+install+a+web+page+as+an+app&sourceid=opera&ie=UTF-8&oe=UTF-8">How-Tos here</a>
+    <br>
+    <br>The API key is stored in a cookie. To be on the safe side, you can set a limit to your costs in the OpenAI dashboard. Mine is $2, because Whisper is dirt cheap: $0.036 / hour (rounded to the nearest second).
+    <br>I won't steal your key, and you don't have to trust me on that, you can download this to your computer and run it there and check (and improve :) ) the very simple code.
+  </info-button>
 
-  <div class="editorTextAreaContainer">
-    <textarea id="editorTextarea" wrap="soft"
-      placeholder="ICH ICH ICH"></textarea>
-  </div>
+  <br>Hardly usable for anyone but me.
+
+
+  <textarea id="editorTextarea" wrap="soft" placeholder="ICH ICH ICH">
+  </textarea>
 
   <!--############## Buttons ##############-->
-  <div class="wrapping-container">
-    <div class="button-container">
+  <span class="wrapping-container">
+    <span class="button-container">
       <button id="clearButton"><span class="greenFilter">🧹</span> Clear</button>
       <button id="recordingIndicator" style="border: none">‖ Paused</button>
-      <div class="record-spinner-group">
+      <span class="record-spinner-group">
         <button id="recordButton">⬤ Record</button>
         <span id="recordSpinner" class="spinner" style="display: none;"></span>
-      </div>
+      </span>
       <button id="pauseButton">⬤ Record</button>
-    </div>
-  </div>
-  <div class="wrapping-container">
-    <div class="button-container">
+    </span>
+  </span>
+
+  <span class="wrapping-container">
+    <span class="button-container">
       <button id="replaceAgainButton" style="">Replace</button>
-      <div>
+      <span>
         <button id="copyButton" class="attachedInfoButton" style="height: 55.5px">⎘ Copy</button>
         <button class="infoButton">
           <info-button>Copies the content of the editor to the clipboard.</info-button>
         </button>
-      </div>
+      </span>
       <button id="saveEditorButton" style="display: none;">
         <span class="greenFilter">💾</span> Save editor
       </button>
-    </div>
-    <div class="button-container">
-      <div>
+    </span>
+    <span class="button-container">
+      <span>
         <button id="transcribeAgainButton" class="attachedInfoButton">Tr. again</button>
         <button class="infoButton"><info-button>
           Transcribe the last recording again. This is useful if you changed the prompt.
         </info-button></button>
-      </div>
-      <div>
+      </span>
+      <span>
         <button id="sendButton" class="attachedInfoButton">Send</button>
         <button class="infoButton"><info-button>
           This will send the current recording to the API, start a new recording and insert the
           transcription at the cursor position.
         </info-button></button>
-      </div>
-    </div>
-  </div>
+      </span>
+    </span>
+  </span>
   <div>
     <a id="downloadLink" style="display:none; margin-left: 2cm">Download audio</a>
   </div>
@@ -151,15 +151,14 @@
   </div>
 
   <div style="width:100%;" >
-      <h2>For devs</h2>
-      <br>- <a href="https://github.com/silidev/whisper-scratchpad">GitHub Repo</a>
-      <br>- <a href="https://platform.openai.com/docs/api-reference/audio/createTranscription">API docs</a>
-      <br>- <a href="https://platform.openai.com/docs/guides/speech-to-text">OpenAI Speech Guide</a>
-      <br>- Once my browser said the page wanted to read the clipboard... if you get that just deny it. The page does not actually want to read the clipboard, I wrote no code for that.
-      <br>
-      <br>Copyright 2024 by Helge Kosuch, <a href="https://twitter.com/silidev">https://twitter.com/silidev</a>.
-      <br>V.9 Wallaby
-    </div>
+    <h2>For devs</h2>
+    <br>- <a href="https://github.com/silidev/whisper-scratchpad">GitHub Repo</a>
+    <br>- <a href="https://platform.openai.com/docs/api-reference/audio/createTranscription">API docs</a>
+    <br>- <a href="https://platform.openai.com/docs/guides/speech-to-text">OpenAI Speech Guide</a>
+    <br>- Once my browser said the page wanted to read the clipboard... if you get that just deny it. The page does not actually want to read the clipboard, I wrote no code for that.
+    <br>
+    <br>Copyright 2024 by Helge Kosuch, <a href="https://twitter.com/silidev">https://twitter.com/silidev</a>.
+    <br>V.9 Wallaby
   </div>
   <script src="script.js" type="module"></script> <!-- Rename to AfterScript.js -->
 </body>

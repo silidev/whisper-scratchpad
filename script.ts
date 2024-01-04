@@ -26,14 +26,42 @@ namespace AfterInit {
   TextAreas.setAutoSave('editorTextarea', 'editorText');
   TextAreas.setAutoSave('transcriptionPrompt', 'prompt');
 
-  // ############## addButtonEventListeners ##############
+  function insertAtCursor(text: string) {
+    TextAreas.insertTextAtCursor(editorTextarea, text);
+  }
+
+  function getApiSelectedInUi() {
+    return apiSelector.value as HelgeUtils.Audio.Api;
+  }
+
+// ############## addButtonEventListeners ##############
   export const addButtonEventListeners = () => {
-    { // Media buttons
+    {// Media buttons
+
       let mediaRecorder: MediaRecorder;
       let audioChunks = [];
       let audioBlob: Blob;
       let isRecording = false;
       let stream: MediaStream;
+      let sending = false;
+
+      const transcribeAndHandleResultAsync = async (audioBlob: Blob) => {
+        sending = true;
+        updateStateIndicator();
+        const apiName = getApiSelectedInUi();
+        if (!apiName) {
+          insertAtCursor("You must select an API below.");
+          return;
+        }
+        const promptForWhisper = () => transcriptionPrompt.value + APPEND_EDITOR_TO_PROMPT ? editorTextarea.value : "";
+        const result =  async () => await Audio.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper());
+        const replacedOutput = HelgeUtils.replaceByRules(await result(), replaceRulesTextArea.value);
+        insertAtCursor(" ");
+        insertAtCursor(replacedOutput);
+        navigator.clipboard.writeText(editorTextarea.value).then();
+        sending = false;
+        updateStateIndicator();
+      };
 
       const mediaRecorderStoppedCallback = () => {
         audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
@@ -43,7 +71,7 @@ namespace AfterInit {
           downloadLink.download = 'recording.wav';
           downloadLink.style.display = 'block';
         }
-        transcribeAndHandleResult(audioBlob).then(hideSpinner);
+        transcribeAndHandleResultAsync(audioBlob).then(hideSpinner);
       };
 
       const onStreamReady = (streamParam: MediaStream) => {
@@ -52,23 +80,38 @@ namespace AfterInit {
         audioChunks = [];
         mediaRecorder.start();
         isRecording = true;
-        setRecordingIndicator();
+        updateStateIndicator();
         mediaRecorder.ondataavailable = event => {
           audioChunks.push(event.data);
         };
       };
 
-      const setRecordingIndicator = () => {
-        elementWithId("recordingIndicator").innerHTML = '<span class="blinking">🔴Recording</span>';
-        buttonWithId("recordButton").textContent = '◼ Stop';
-        buttonWithId("pauseButton").textContent = '‖ Pause';
-      };
+      const updateStateIndicator = () => {
+        const setRecordingIndicator = () => {
+          const message = sending ? '🔴Sending' : '🔴Recording';
+          elementWithId("recordingIndicator").innerHTML = `<span class="blinking">${message}</span>`;
+          buttonWithId("recordButton").textContent = '◼ Stop';
+          buttonWithId("pauseButton").textContent = '‖ Pause';
+        };
+        const setPausedIndicator = () => {
+          elementWithId("recordingIndicator").innerHTML = '‖ Paused';
+          buttonWithId("recordButton").textContent = '◼ Stop';
+          buttonWithId("pauseButton").textContent = '⬤ Record';
+        };
+        const setStoppedIndicator = () => {
+          elementWithId("recordingIndicator").innerHTML = '◼ Stopped';
+          buttonWithId("recordButton").textContent = '⬤ Record';
+          buttonWithId("pauseButton").textContent = '⬤ Record';
+        };
 
-      const setPausedIndicator = () => {
-        elementWithId("recordingIndicator").innerHTML = '‖ Paused';
-        buttonWithId("recordButton").textContent = '◼ Stop';
-        buttonWithId("pauseButton").textContent = '⬤ Record';
-      };
+        if (mediaRecorder?.state === 'recording') {
+          setRecordingIndicator();
+        } else if (mediaRecorder?.state === 'paused') {
+          setPausedIndicator();
+        } else {
+          setStoppedIndicator();
+        }
+      }
 
       const startRecording = () => {
         navigator.mediaDevices.getUserMedia({audio: true}).then(onStreamReady);
@@ -77,7 +120,7 @@ namespace AfterInit {
       const stopRecording = () => {
         mediaRecorder.onstop = mediaRecorderStoppedCallback;
         mediaRecorder.stop();
-        setPausedIndicator();
+        updateStateIndicator();
         isRecording = false;
         buttonWithId("recordButton").textContent = '⬤ Record';
         HtmlUtils.Media.releaseMicrophone(stream);
@@ -99,7 +142,7 @@ namespace AfterInit {
           mediaRecorder.onstop = () => {
             audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
             audioChunks = [];
-            transcribeAndHandleResult(audioBlob).then(hideSpinner);
+            transcribeAndHandleResultAsync(audioBlob).then(hideSpinner);
             startRecording();
           };
           mediaRecorder.stop();
@@ -112,10 +155,10 @@ namespace AfterInit {
       buttonWithId("pauseButton").addEventListener('click', () => {
         if (mediaRecorder?.state === 'recording') {
           mediaRecorder.pause();
-          setPausedIndicator();
+          updateStateIndicator();
         } else if (mediaRecorder?.state === 'paused') {
           mediaRecorder.resume();
-          setRecordingIndicator();
+          updateStateIndicator();
         } else {
           buttonWithId("recordButton").click();
         }
@@ -124,7 +167,7 @@ namespace AfterInit {
       // ############## transcribeAgainButton ##############
       HtmlUtils.addButtonClickListener(buttonWithId("transcribeAgainButton"), () => {
         showSpinner();
-        transcribeAndHandleResult(audioBlob).then(hideSpinner);
+        transcribeAndHandleResultAsync(audioBlob).then(hideSpinner);
       });
     }
 
@@ -190,16 +233,6 @@ namespace AfterInit {
 
   const setApiKeyCookie = (apiKey: string) => {
     Cookies.set(apiSelector.value + 'ApiKey', apiKey);
-  };
-
-  const transcribeAndHandleResult = async (audioBlob: Blob) => {
-    const api = apiSelector.value as HelgeUtils.Audio.Api;
-    if (!api) TextAreas.insertTextAtCursor(editorTextarea, "You must select an API below.");
-    const result = await Audio.transcribe(api,audioBlob, getApiKey()
-        , transcriptionPrompt.value + APPEND_EDITOR_TO_PROMPT?editorTextarea.value:"");
-    const replacedOutput = HelgeUtils.replaceByRules(result, replaceRulesTextArea.value);
-    TextAreas.insertTextAtCursor(editorTextarea, replacedOutput);
-    navigator.clipboard.writeText(editorTextarea.value).then();
   };
 
   export const loadFormData = () => {
