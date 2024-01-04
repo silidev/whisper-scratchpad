@@ -62,15 +62,12 @@ namespace AfterInit {
         elementWithId("recordingIndicator").innerHTML = '<span class="blinking">🔴Recording</span>';
 
         buttonWithId("recordButton").textContent = '◼ Stop';
-        buttonWithId("recordButton").style.backgroundColor = 'red';
-
-        buttonWithId("pauseButton").style.backgroundColor = 'red';
       };
 
       const setPausedIndicator = () => {
         elementWithId("recordingIndicator").innerHTML = '‖ Paused';
 
-        buttonWithId("recordButton").textContent = '⬤ Record';
+        buttonWithId("recordButton").textContent = '◼ Stop';
         buttonWithId("recordButton").style.backgroundColor = 'black';
 
         buttonWithId("pauseButton").style.backgroundColor = 'black';
@@ -116,13 +113,14 @@ namespace AfterInit {
 
       // ############## pauseButton ##############
       buttonWithId("pauseButton").addEventListener('click', () => {
-        if (!mediaRecorder) buttonWithId("recordButton").click();
-        if (mediaRecorder.state === 'recording') {
+        if (mediaRecorder?.state === 'recording') {
           mediaRecorder.pause();
           setPausedIndicator();
-        } else if (mediaRecorder.state === 'paused') {
+        } else if (mediaRecorder?.state === 'paused') {
           mediaRecorder.resume();
           setRecordingIndicator();
+        } else {
+          buttonWithId("recordButton").click();
         }
       });
 
