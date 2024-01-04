@@ -17,6 +17,24 @@ body,html {
  max-width: 25cm;
 }
 
+.infoButton {
+ align-items: start;
+ padding-left: 0;
+ border-left: none;
+ padding-right: 2mm;
+}
+
+.attachedInfoButton {
+ margin-right:-3mm;
+ border-right: none;
+ padding-right: 1mm;
+}
+
+div {
+ margin: 0;
+ padding: 0;
+}
+
 #kohDiv {
  display: flex;
  flex-direction: column;
@@ -46,6 +64,7 @@ a {
 
 button {
  flex-grow: 1;
+ height: 55px;
 }
 
 .record-spinner-group {
@@ -60,6 +79,7 @@ button, input, textarea {
  border-collapse: collapse;
  padding: 10px 15px;
  border: 1px solid var(--myGreen);
+ margin: 0;
  border-radius: 0;
  cursor: pointer;
  transition: background-color 0.3s ease, transform 0.3s ease;
@@ -88,9 +108,9 @@ input::placeholder, textarea::placeholder {
  filter: brightness(70%);
 }
 
-button:hover, button:focus {
- transform: scale(1.05);
-}
+/*button:hover, button:focus {*/
+/* transform: scale(1.05);*/
+/*}*/
 
 .spinner {
  border: 2px solid var(--myGreen);

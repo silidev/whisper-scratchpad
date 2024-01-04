@@ -82,8 +82,8 @@ var AfterInit;
                     startRecording();
                 }
             });
-            // ############## interimTranscribeButton ##############
-            buttonWithId("interimTranscribeButton").addEventListener('click', () => {
+            // ############## sendButton ##############
+            buttonWithId("sendButton").addEventListener('click', () => {
                 if (mediaRecorder?.state === 'recording') {
                     mediaRecorder.onstop = () => {
                         audioBlob = new Blob(audioChunks, { type: 'audio/wav' });

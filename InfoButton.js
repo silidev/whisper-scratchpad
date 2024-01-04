@@ -15,7 +15,7 @@ class InfoButton extends HTMLElement {
           cursor: pointer;
         }
       </style>
-      <span>${moreInfoLinkText}</span>
+      <span style="margin: 0;padding: 0">${moreInfoLinkText}</span>
       <span id="${targetId}" class="hidden">
         <slot></slot>
       </span>

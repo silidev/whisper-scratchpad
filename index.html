@@ -35,9 +35,10 @@
       placeholder="ICH ICH ICH"></textarea>
   </div>
 
+  <!--############## Buttons ##############-->
   <div class="wrapping-container">
     <div class="button-container">
-      <button id="recordingIndicator" class="" style="border: none">‖ Paused</button>
+      <button id="recordingIndicator" style="border: none">‖ Paused</button>
       <button id="clearButton"><span class="greenFilter">🧹</span> Clear</button>
       <div class="record-spinner-group">
         <button id="recordButton">⬤ Record</button>
@@ -45,29 +46,33 @@
       </div>
       <button id="pauseButton">‖ Pause</button>
     </div>
-    </div>
-    <div class="wrapping-container">
-    <br>
-    <br>
-    <div class="button-container" style="">
+  </div>
+  <div class="wrapping-container">
+    <div class="button-container">
       <button id="replaceAgainButton" style="">Replace</button>
-      <button id="copyButton">⎘ Copy</button>
-      <info-button>Copies the content of the editor to the clipboard.</info-button>
+      <div>
+        <button id="copyButton" class="attachedInfoButton" style="height: 55.5px">⎘ Copy</button>
+        <button class="infoButton">
+          <info-button>Copies the content of the editor to the clipboard.</info-button>
+        </button>
+      </div>
       <button id="saveEditorButton" style="display: none;">
         <span class="greenFilter">💾</span> Save editor
       </button>
     </div>
-    <div class="button-container" style="">
-      <button id="transcribeAgainButton" style="">Tr. again</button>
-      <info-button>
-        Transcribe the last recording again. This is useful if you changed the prompt.
-      </info-button>
+    <div class="button-container">
       <div>
-        <button id="interimTranscribeButton">Send</button>
-        <info-button>
+        <button id="transcribeAgainButton" class="attachedInfoButton">Tr. again</button>
+        <button class="infoButton"><info-button>
+          Transcribe the last recording again. This is useful if you changed the prompt.
+        </info-button></button>
+      </div>
+      <div>
+        <button id="sendButton" class="attachedInfoButton">Send</button>
+        <button class="infoButton"><info-button>
           This will send the current recording to the API, start a new recording and insert the
           transcription at the cursor position.
-        </info-button>
+        </info-button></button>
       </div>
     </div>
   </div>
