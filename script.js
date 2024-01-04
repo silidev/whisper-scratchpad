@@ -4,7 +4,10 @@ var elementWithId = HtmlUtils.elementWithId;
 var TextAreas = HtmlUtils.TextAreas;
 var buttonWithId = HtmlUtils.buttonWithId;
 var Cookies = HtmlUtils.Cookies;
-const Audio = HelgeUtils.Audio;
+var Audio = HelgeUtils.Audio;
+// ############## Config ##############
+const APPEND_EDITOR_TO_PROMPT = true;
+// ############## AfterInit ##############
 var AfterInit;
 (function (AfterInit) {
     const downloadLink = document.getElementById('downloadLink');
@@ -165,7 +168,7 @@ var AfterInit;
         const api = apiSelector.value;
         if (!api)
             TextAreas.insertTextAtCursor(editorTextarea, "You must select an API below.");
-        const result = await Audio.transcribe(api, audioBlob, getApiKey(), transcriptionPrompt.value);
+        const result = await Audio.transcribe(api, audioBlob, getApiKey(), transcriptionPrompt.value + APPEND_EDITOR_TO_PROMPT ? editorTextarea.value : "");
         const replacedOutput = HelgeUtils.replaceByRules(result, replaceRulesTextArea.value);
         TextAreas.insertTextAtCursor(editorTextarea, replacedOutput);
         navigator.clipboard.writeText(editorTextarea.value).then();

@@ -1,12 +1,16 @@
+
 import {HtmlUtils} from "./HtmlUtils.js";
 import {HelgeUtils} from "./HelgeUtils.js";
 import elementWithId = HtmlUtils.elementWithId;
 import TextAreas = HtmlUtils.TextAreas;
 import buttonWithId = HtmlUtils.buttonWithId;
 import Cookies = HtmlUtils.Cookies;
+import Audio = HelgeUtils.Audio;
 
-const Audio = HelgeUtils.Audio;
+// ############## Config ##############
+const APPEND_EDITOR_TO_PROMPT = true;
 
+// ############## AfterInit ##############
 namespace AfterInit {
 
   const downloadLink = document.getElementById('downloadLink') as HTMLAnchorElement;
@@ -194,7 +198,8 @@ namespace AfterInit {
   const transcribeAndHandleResult = async (audioBlob: Blob) => {
     const api = apiSelector.value as HelgeUtils.Audio.Api;
     if (!api) TextAreas.insertTextAtCursor(editorTextarea, "You must select an API below.");
-    const result = await Audio.transcribe(api,audioBlob, getApiKey(), transcriptionPrompt.value);
+    const result = await Audio.transcribe(api,audioBlob, getApiKey()
+        , transcriptionPrompt.value + APPEND_EDITOR_TO_PROMPT?editorTextarea.value:"");
     const replacedOutput = HelgeUtils.replaceByRules(result, replaceRulesTextArea.value);
     TextAreas.insertTextAtCursor(editorTextarea, replacedOutput);
     navigator.clipboard.writeText(editorTextarea.value).then();
