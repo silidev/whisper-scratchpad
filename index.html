@@ -35,8 +35,19 @@
   </textarea>
 
   <!--############## Buttons ##############-->
+
   <span class="wrapping-container">
     <span class="button-container">
+      <button>  <info-button>
+        <div style="position: fixed;
+    left: 0; background-color: black; border: 1px solid green; padding: 5px;
+    width: 100%;">
+    <br>Copy-Button: Copies the content of the editor to the clipboard.
+    <br>Send-Button: This will send the current recording to the API, start a new recording and insert the
+    transcription at the cursor position.
+    <br>Replace-Button: Replaces the text in the editor according to the ruleset.
+    <br>"Tr. again"-Button: Transcribes the current recording and inserts the transcription at the cursor position.
+  </div></info-button></button>
       <button id="clearButton"><span class="greenFilter">🧹</span> Clear</button>
       <span class="record-spinner-group">
         <button id="recordButton">‖ Paused</button>
@@ -65,13 +76,6 @@
       </span>
     </span>
   </span>
-  <info-button>
-    <br>Copy-Button: Copies the content of the editor to the clipboard.
-    <br>Send-Button: This will send the current recording to the API, start a new recording and insert the
-    transcription at the cursor position.
-    <br>Replace-Button: Replaces the text in the editor according to the ruleset.
-    <br>"Tr. again"-Button: Transcribes the current recording and inserts the transcription at the cursor position.
-  </info-button>
   <div>
     <a id="downloadLink" style="display:none; margin-left: 2cm">Download audio</a>
   </div>
