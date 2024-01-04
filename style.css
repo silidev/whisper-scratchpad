@@ -6,13 +6,15 @@
  box-sizing: border-box;
 }
 
-body {
+body,html {
+ margin: auto;
+ padding: 0;
+ width: 100%;
+ height: 100%;
  font-family: 'Courier', sans-serif;
  background-color: black;
  color: var(--myGreen);
- margin: auto;
  max-width: 25cm;
- width: 100%;
 }
 
 #kohDiv {
@@ -122,11 +124,15 @@ textarea {
  width: 100%;
  height: 100%;
  resize: vertical;
+ box-sizing: border-box;
+ margin: 0;
 }
 
 .editorTextAreaContainer {
  width: 20cm;
  height: 10cm;
+ box-sizing: border-box;
+ margin: 0;
 }
 
 @keyframes blink {
@@ -141,5 +147,11 @@ textarea {
 @media only screen and (max-width: 600px) {
  .editorTextAreaContainer {
   width: 90%;
+ }
+ body, html {
+  margin: 0;
+ }
+ .editorTextAreaContainer {
+  width: 100%
  }
 }
