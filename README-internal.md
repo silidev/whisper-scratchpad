@@ -4,9 +4,11 @@ Start recording
 ## Recording:
 Pause
 ITrans
+Abort
 ## Paused
 Resume
 Stop
+Abort
 ## Idea
 Start / Pause / Resume
 Send

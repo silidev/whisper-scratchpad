@@ -1,15 +1,17 @@
 export namespace HelgeUtils {
   export namespace Audio {
 
-    export type Api = "OpenAI" | "Gladia";
+    export type ApiName = "OpenAI" | "Gladia";
 
-    export const transcribe = async (api: Api, audioBlob: Blob, apiKey: string
+    export const transcribe = async (api: ApiName, audioBlob: Blob, apiKey: string
         , prompt: string = '') => {
       const withOpenAi = async (audioBlob: Blob, apiKey: string, prompt: string) => {
         const formData = new FormData();
         formData.append('file', audioBlob);
         formData.append('model', 'whisper-1'); // Using the largest model
         formData.append('prompt', prompt);
+        /* Language. Anything in a different language will be translated to the target language. */
+        formData.append('language', "");
 
         const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
           method: 'POST',

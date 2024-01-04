@@ -8,6 +8,8 @@ export var HelgeUtils;
                 formData.append('file', audioBlob);
                 formData.append('model', 'whisper-1'); // Using the largest model
                 formData.append('prompt', prompt);
+                /* Language. Anything in a different language will be translated to the target language. */
+                formData.append('language', "");
                 const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
                     method: 'POST',
                     headers: {

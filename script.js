@@ -76,18 +76,15 @@ var AfterInit;
             const updateStateIndicator = () => {
                 const setRecordingIndicator = () => {
                     const message = sending ? '🔴Sending' : '🔴Recording';
-                    elementWithId("recordingIndicator").innerHTML = `<span class="blinking">${message}</span>`;
-                    buttonWithId("recordButton").textContent = '◼ Stop';
+                    elementWithId("recordButton").innerHTML = `<span class="blinking">${message}</span>`;
                     buttonWithId("pauseButton").textContent = '‖ Pause';
                 };
                 const setPausedIndicator = () => {
-                    elementWithId("recordingIndicator").innerHTML = '‖ Paused';
-                    buttonWithId("recordButton").textContent = '◼ Stop';
+                    elementWithId("recordButton").innerHTML = '‖ Paused';
                     buttonWithId("pauseButton").textContent = '⬤ Record';
                 };
                 const setStoppedIndicator = () => {
-                    elementWithId("recordingIndicator").innerHTML = '◼ Stopped';
-                    buttonWithId("recordButton").textContent = '⬤ Record';
+                    elementWithId("recordButton").innerHTML = '◼ Stopped';
                     buttonWithId("pauseButton").textContent = '⬤ Record';
                 };
                 if (mediaRecorder?.state === 'recording') {
@@ -108,7 +105,6 @@ var AfterInit;
                 mediaRecorder.stop();
                 updateStateIndicator();
                 isRecording = false;
-                buttonWithId("recordButton").textContent = '⬤ Record';
                 HtmlUtils.Media.releaseMicrophone(stream);
             };
             // ############## recordButton ##############
