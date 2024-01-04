@@ -163,9 +163,11 @@ var AfterInit;
     };
     const transcribeAndHandleResult = async (audioBlob) => {
         const api = apiSelector.value;
+        if (!api)
+            TextAreas.insertTextAtCursor(editorTextarea, "You must select an API below.");
         const result = await Audio.transcribe(api, audioBlob, getApiKey(), transcriptionPrompt.value);
         const replacedOutput = HelgeUtils.replaceByRules(result, replaceRulesTextArea.value);
-        HtmlUtils.TextAreas.insertTextAtCursor(editorTextarea, replacedOutput);
+        TextAreas.insertTextAtCursor(editorTextarea, replacedOutput);
         navigator.clipboard.writeText(editorTextarea.value).then();
     };
     AfterInit.loadFormData = () => {
