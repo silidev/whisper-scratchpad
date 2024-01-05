@@ -77,7 +77,7 @@ var AfterInit;
             };
             const updateStateIndicator = () => {
                 const setRecordingIndicator = () => {
-                    const message = sending ? '🔴Sending' : '🔴Recording';
+                    const message = sending ? '🔴Sending' : '🔴Stop';
                     elementWithId("recordButton").innerHTML = `<span class="blinking">${message}</span>`;
                     buttonWithId("pauseButton").textContent = '‖ Pause';
                 };
@@ -179,6 +179,11 @@ var AfterInit;
         // saveRulesButton
         HtmlUtils.addButtonClickListener(buttonWithId("saveRulesButton"), () => {
             Cookies.set("replaceRules", replaceRulesTextArea.value);
+        });
+        // undoButton
+        HtmlUtils.addButtonClickListener(buttonWithId("undoButton"), () => {
+            editorTextarea.focus();
+            document.execCommand('undo'); // Yes, deprecated, but works. I will replace it when it fails. Docs: https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
         });
         // aboutButton
         HtmlUtils.addButtonClickListener(buttonWithId("abortButton"), () => {
