@@ -7,6 +7,7 @@ export var HtmlUtils;
     });
     HtmlUtils.buttonWithId = HtmlUtils.elementWithId;
     HtmlUtils.textAreaWithId = HtmlUtils.elementWithId;
+    HtmlUtils.inputElementWithId = HtmlUtils.elementWithId;
     let TextAreas;
     (function (TextAreas) {
         /**

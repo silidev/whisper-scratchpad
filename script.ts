@@ -13,6 +13,7 @@ const APPEND_EDITOR_TO_PROMPT = true;
 // ############## AfterInit ##############
 namespace AfterInit {
 
+  import inputElementWithId = HtmlUtils.inputElementWithId;
   const downloadLink = document.getElementById('downloadLink') as HTMLAnchorElement;
   const recordSpinner = document.getElementById('recordSpinner') as HTMLElement;
   const apiSelector = document.getElementById('apiSelector') as HTMLSelectElement;
@@ -214,17 +215,25 @@ namespace AfterInit {
     });
 
     // copyButton
-    buttonWithId("copyButton").addEventListener('click', () => {
-      navigator.clipboard.writeText(editorTextarea.value).then(() => {
-        buttonWithId("copyButton").textContent = '⎘ Copied!';
-        setTimeout(() => {
-          buttonWithId("copyButton").textContent = '⎘ Copy';
-        }, 2000);
+    /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
+    function addEventListenerForCopyButton(buttonId: string, inputElementId: string) {
+      buttonWithId(buttonId).addEventListener('click', () => {
+        navigator.clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
+          buttonWithId(buttonId).textContent = '⎘ Copied!';
+          setTimeout(() => {
+            buttonWithId(buttonId).textContent = '⎘ Copy';
+          }, 2000);
+        });
       });
-    });
+    }
+
+    // copyButtons
+    addEventListenerForCopyButton("copyButton", "editorTextarea");
+    addEventListenerForCopyButton("copyReplaceRulesButton", "replaceRulesTextArea");
+    addEventListenerForCopyButton("copyPromptButton", "transcriptionPrompt");
 
     buttonWithId("saveAPIKeyButton").addEventListener('click', function () {
-      (document.getElementById('apiKey') as HTMLInputElement).value = ''; // Clear the input field
+      inputElementWithId('apiKey').value = ''; // Clear the input field
     });
 
     apiSelector.addEventListener('change', () => {

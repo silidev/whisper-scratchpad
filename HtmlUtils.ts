@@ -10,6 +10,7 @@ export namespace HtmlUtils {
 
   export const buttonWithId = elementWithId as (id: string) => HTMLButtonElement | null;
   export const textAreaWithId = elementWithId as (id: string) => HTMLTextAreaElement | null;
+  export const inputElementWithId = elementWithId as (id: string) => HTMLInputElement | null;
 
   export namespace TextAreas {
     /**

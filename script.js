@@ -10,6 +10,7 @@ const APPEND_EDITOR_TO_PROMPT = true;
 // ############## AfterInit ##############
 var AfterInit;
 (function (AfterInit) {
+    var inputElementWithId = HtmlUtils.inputElementWithId;
     const downloadLink = document.getElementById('downloadLink');
     const recordSpinner = document.getElementById('recordSpinner');
     const apiSelector = document.getElementById('apiSelector');
@@ -190,16 +191,23 @@ var AfterInit;
             window.location.reload();
         });
         // copyButton
-        buttonWithId("copyButton").addEventListener('click', () => {
-            navigator.clipboard.writeText(editorTextarea.value).then(() => {
-                buttonWithId("copyButton").textContent = '⎘ Copied!';
-                setTimeout(() => {
-                    buttonWithId("copyButton").textContent = '⎘ Copy';
-                }, 2000);
+        /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
+        function addEventListenerForCopyButton(buttonId, inputElementId) {
+            buttonWithId(buttonId).addEventListener('click', () => {
+                navigator.clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
+                    buttonWithId(buttonId).textContent = '⎘ Copied!';
+                    setTimeout(() => {
+                        buttonWithId(buttonId).textContent = '⎘ Copy';
+                    }, 2000);
+                });
             });
-        });
+        }
+        // copyButtons
+        addEventListenerForCopyButton("copyButton", "editorTextarea");
+        addEventListenerForCopyButton("copyReplaceRulesButton", "replaceRulesTextArea");
+        addEventListenerForCopyButton("copyPromptButton", "transcriptionPrompt");
         buttonWithId("saveAPIKeyButton").addEventListener('click', function () {
-            document.getElementById('apiKey').value = ''; // Clear the input field
+            inputElementWithId('apiKey').value = ''; // Clear the input field
         });
         apiSelector.addEventListener('change', () => {
             Cookies.set('apiSelector', apiSelector.value);

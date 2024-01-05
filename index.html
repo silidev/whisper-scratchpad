@@ -68,8 +68,10 @@
   </div>
 
   <!--############## replaceRules ##############-->
+<!--  Select between different replace rules -->
+
   <div>
-    <h2>Replacement rules:</h2>
+    <h2>Replace rules:</h2>
     <info-button>
       <br>A ruleset contains one or more rule, the format looks like:
       <br>:: Any "SEARCH" becomes "REPLACE"
@@ -92,6 +94,13 @@
       <br>"Ausrufezeichen"->"!"
       <br>"Fragezeichen"->"?"
     </info-button>
+    <select id="replaceRulesSelector" class="greenFilter">
+      <option value="normal">normal</option>
+      <option value="du2ich">du2ich</option>
+      <option value="comma2newlines">comma2newlines</option>
+      <option value="tmp">tmp</option>
+    </select>
+    <button id="copyReplaceRulesButton" style="height: 55.5px">⎘ Copy</button>
     <div class="editorTextAreaContainer">
       <textarea id="replaceRulesTextArea" wrap="soft" placeholder="Optional. &quot;SEARCH&quot;-&gt;&quot;REPLACE&quot;" >
       </textarea>
@@ -109,6 +118,7 @@
       <info-button>
         Since Whisper wasn't trained using instruction-following techniques, Whisper operates more like a base GPT model. The content of the editor is appended to the prompt. It's important to keep in mind that Whisper only considers the first 244 tokens of the prompt. <a href="https://platform.openai.com/docs/guides/speech-to-text/prompting">More info</a>
       </info-button>
+    <button id="copyPromptButton" style="height: 55.5px">⎘ Copy</button>
     <div class="editorTextAreaContainer">
       <textarea id="transcriptionPrompt" wrap="soft" placeholder="Optional prompt especially for hinting unusual names if they are not recognized by default."></textarea>
     </div>
