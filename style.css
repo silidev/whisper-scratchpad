@@ -67,7 +67,7 @@ div {
 
 button, input, textarea {
  border-collapse: collapse;
- padding: 10px 15px;
+ padding: 2px;
  border: 1px solid var(--myGreen);
  margin: 0;
  border-radius: 0;
@@ -75,6 +75,10 @@ button, input, textarea {
  transition: background-color 0.3s ease, transform 0.3s ease;
  color: var(--myGreen);
  background-color: black;
+}
+
+button {
+ padding: 0 10px;
 }
 
 input, textarea {
