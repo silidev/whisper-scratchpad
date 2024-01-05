@@ -28,9 +28,9 @@ namespace AfterInit {
   TextAreas.setAutoSave('editorText', 'editorTextarea');
   TextAreas.setAutoSave('prompt', 'transcriptionPrompt');
 
-  function insertAtCursor(text: string) {
+  const insertAtCursor = (text: string) => {
     TextAreas.insertTextAtCursor(editorTextarea, text);
-  }
+  };
 
   function getApiSelectedInUi() {
     return apiSelector.value as HelgeUtils.Audio.ApiName;
@@ -58,7 +58,8 @@ namespace AfterInit {
         const promptForWhisper = () => transcriptionPrompt.value + APPEND_EDITOR_TO_PROMPT ? editorTextarea.value : "";
         const result =  async () => await Audio.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper());
         const replacedOutput = HelgeUtils.replaceByRules(await result(), replaceRulesTextArea.value);
-        insertAtCursor(" ");
+        if (editorTextarea.value.length > 0)
+          insertAtCursor(" ");
         insertAtCursor(replacedOutput);
         navigator.clipboard.writeText(editorTextarea.value).then();
         sending = false;
