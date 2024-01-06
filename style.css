@@ -2,6 +2,12 @@
  --myGreen: #0f0;
 }
 
+* {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+}
+
 body,html {
  margin: auto;
  padding: 0;
@@ -11,13 +17,6 @@ body,html {
  background-color: black;
  color: var(--myGreen);
  max-width: 20cm;
-}
-
-.infoButton {
- align-items: start;
- padding-left: 0;
- border-left: none;
- padding-right: 2mm;
 }
 
 div {
