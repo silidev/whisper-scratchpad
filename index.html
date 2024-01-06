@@ -74,16 +74,23 @@
     <h2>Replace rules (regex):</h2>
     <info-button>
       <pre>
-        These are very useful to replace words which the ASR system recognize wrong.
+        These are very useful to replace words which the ASR system recognize wrong, e. g. uncommon names.
 
         A ruleset contains one or more rule, the format looks like:
         :: Any "SEARCH" becomes "REPLACE"
         "SEARCH"->"REPLACE" <a target="_blank" href="https://github.com/No3371/obsidian-regex-pipeline#readme">More info</a>
 
-        Gotchas: NO newlines outside quotes!!!
+        Gotchas:
+        * NO newlines outside quotes!!!
+        * You must escape regex special characters like "." or "\" with a backslash. <a href="https://www.google.com/search?q=escape+regex+online" target="_blank">Online escape tools</a>
+
+        If something doesnt work I recommend to use an AI like GPT-3 to generate the regex.
 
         Ignore case:
         SEARCH"i->"REPLACE"
+
+        Full word search: Word boundaries are denoted by \b in regex. Example: \bSuperman\b
+        Optional space: \s?
 
         Technical details:
         The default regex flags are "gmu". You can replace the "i" with any regex flags. <a target="_blank" href="https://www.google.com/search?q=regex">Google "regex"</a>
