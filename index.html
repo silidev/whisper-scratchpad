@@ -17,7 +17,7 @@
   <textarea id="editorTextarea" wrap="soft" placeholder="ICH ICH ICH">
   </textarea>
 
-  <!--############## Buttons ##############-->
+<!--############## Buttons ##############-->
 
   <span class="flexRightAndWrapContent">
     <span class="flexRight">
@@ -62,8 +62,7 @@
     <a id="downloadLink" style="display:none; margin-left: 2cm">Download audio</a>
   </div>
 
-  <!--############## replaceRules ##############-->
-<!--  Select between different replace rules -->
+<!--############## replaceRules ##############-->
 
   <div>
     <h2>Replace rules (regex):</h2>
@@ -92,15 +91,14 @@
       </pre>
     </info-button>
     <span>
-      <select id="replaceRulesSelector" class="greenFilter">
-        <option value="normal">normal</option>
-        <option value="du2ich">du2ich</option>
-        <option value="comma2newlines">comma2newlines</option>
-        <option value="tmp">tmp</option>
-      </select>
-
-<!-- ############## Replace buttons ###############-->
       <span class="flexRightAndWrapContent">
+        <select id="replaceRulesSelector" class="greenFilter" style="width: 15mm">
+          <option value="normal">normal</option>
+          <option value="du2ich">du2ich</option>
+          <option value="comma2newlines">comma2newlines</option>
+          <option value="tmp">tmp</option>
+        </select>
+<!-- ############## Replace buttons ###############-->
         <button id="copyReplaceRulesButton">⎘ Copy</button>
         <button id="undoButtonOfReplaceRules">⎌ Undo</button>
         <button id="addReplaceRuleButton"><span style="font-size: 16px">""->""</span></button>
@@ -118,7 +116,7 @@
   </div>
 
 
-  <!--############## transcriptionPrompt ##############-->
+<!--############## transcriptionPrompt ##############-->
   <div>
     <h2>Transcription Prompt:</h2>
       <info-button>
