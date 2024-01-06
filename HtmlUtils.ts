@@ -2,6 +2,21 @@ import {HelgeUtils} from "./HelgeUtils.js";
 
 export namespace HtmlUtils {
 
+  // ########## Blinking fast and slow ##########
+  // https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow
+  /**
+   * .blinkingFast {
+   *  animation: blink 1s linear infinite;
+   * }
+   */
+  export const blinkFast = (message: string) => `<span class="blinkingFast">${message}</span>`
+  /**
+   * .blinkingSlow {
+   *  animation: blink 2s linear infinite;
+   * }
+   */
+  export const blinkSlow = (message: string) => `<span class="blinkingSlow">${message}</span>`
+
   const memoize = HelgeUtils.memoize;
 
   export const elementWithId = memoize((id: string): HTMLElement | null => {

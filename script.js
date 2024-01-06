@@ -1,10 +1,11 @@
 import { HtmlUtils } from "./HtmlUtils.js";
 import { HelgeUtils } from "./HelgeUtils.js";
-var elementWithId = HtmlUtils.elementWithId;
 var TextAreas = HtmlUtils.TextAreas;
 var buttonWithId = HtmlUtils.buttonWithId;
 var Cookies = HtmlUtils.Cookies;
 var Audio = HelgeUtils.Audio;
+var blinkFast = HtmlUtils.blinkFast;
+var blinkSlow = HtmlUtils.blinkSlow;
 // ############## Config ##############
 const APPEND_EDITOR_TO_PROMPT = true;
 // ############## AfterInit ##############
@@ -38,19 +39,23 @@ var AfterInit;
             let stream;
             let sending = false;
             const updateStateIndicator = () => {
+                const setHtmlOfButtonStop = (html) => {
+                    buttonWithId("stopButton").innerHTML = html;
+                };
+                const setHtmlOfButtonPauseRecord = (html) => {
+                    buttonWithId("pauseRecordButton").innerHTML = html;
+                };
                 const setRecordingIndicator = () => {
-                    const message = sending ? '🔴Sending' : '🔴Stop';
-                    elementWithId("stopButton").innerHTML = `<span class="blinking">${message}</span>`;
-                    buttonWithId("pauseButton").textContent = '‖ Pause';
+                    setHtmlOfButtonStop(blinkFast('🔴') + (sending ? 'Sending' : 'Stop'));
+                    setHtmlOfButtonPauseRecord(blinkFast('||') + ' Pause');
                 };
                 const setPausedIndicator = () => {
-                    elementWithId("stopButton").
-                        innerHTML = '‖ Paused';
-                    buttonWithId("pauseButton").textContent = '⬤ Record';
+                    setHtmlOfButtonStop(blinkSlow('◼') + ' Stop');
+                    setHtmlOfButtonPauseRecord(blinkSlow('⬤') + ' Cont.');
                 };
                 const setStoppedIndicator = () => {
-                    elementWithId("stopButton").innerHTML = sending ? '◼ Sending' : '◼ Stopped';
-                    buttonWithId("pauseButton").textContent = '⬤ Record';
+                    setHtmlOfButtonStop(sending ? blinkFast('◼') + ' Sending' : ' Stopped');
+                    setHtmlOfButtonPauseRecord('⬤ Record');
                 };
                 if (mediaRecorder?.state === 'recording') {
                     setRecordingIndicator();
@@ -136,8 +141,8 @@ var AfterInit;
                     buttonWithId("stopButton").click();
                 }
             });
-            // ############## pauseButton ##############
-            buttonWithId("pauseButton").addEventListener('click', () => {
+            // ############## pauseRecordButton ##############
+            buttonWithId("pauseRecordButton").addEventListener('click', () => {
                 if (mediaRecorder?.state === 'recording') {
                     mediaRecorder.pause();
                     updateStateIndicator();

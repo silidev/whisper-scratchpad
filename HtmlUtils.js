@@ -1,6 +1,20 @@
 import { HelgeUtils } from "./HelgeUtils.js";
 export var HtmlUtils;
 (function (HtmlUtils) {
+    // ########## Blinking fast and slow ##########
+    // https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow
+    /**
+     * .blinkingFast {
+     *  animation: blink 1s linear infinite;
+     * }
+     */
+    HtmlUtils.blinkFast = (message) => `<span class="blinkingFast">${message}</span>`;
+    /**
+     * .blinkingSlow {
+     *  animation: blink 2s linear infinite;
+     * }
+     */
+    HtmlUtils.blinkSlow = (message) => `<span class="blinkingSlow">${message}</span>`;
     const memoize = HelgeUtils.memoize;
     HtmlUtils.elementWithId = memoize((id) => {
         return document.getElementById(id);

@@ -138,8 +138,12 @@ textarea {
  50% { opacity: 0; }
 }
 
-.blinking {
+.blinkingFast {
  animation: blink 1s linear infinite;
+}
+
+.blinkingSlow {
+ animation: blink 2s linear infinite;
 }
 
 @media only screen and (max-width: 600px) {
