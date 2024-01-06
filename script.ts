@@ -269,7 +269,7 @@ namespace AfterInit {
       // add TextArea.selectedText() to the start of the replaceRulesTextArea
       TextAreas.setCursor(replaceRulesTextArea, 0);
       const selectedText = TextAreas.selectedText(editorTextarea);
-      TextAreas.insertTextAtCursor(replaceRulesTextArea, `"${selectedText}"->""\n`);
+      TextAreas.insertTextAtCursor(replaceRulesTextArea, `"${selectedText}"->"${selectedText}"\n`);
       TextAreas.setCursor(replaceRulesTextArea, 5 + selectedText.length);
       replaceRulesTextArea.focus();
     });
