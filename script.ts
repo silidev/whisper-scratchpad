@@ -49,7 +49,7 @@ namespace AfterInit {
 
       const updateStateIndicator = () => {
         const setRecordingIndicator = () => {
-          const message = sending ? '🔴Sending' : '🔴Stop';
+          const message = sending ? '🔴Sending': '🔴Stop';
           elementWithId("recordButton").innerHTML = `<span class="blinking">${message}</span>`;
           buttonWithId("pauseButton").textContent = '‖ Pause';
         };
@@ -58,7 +58,7 @@ namespace AfterInit {
           buttonWithId("pauseButton").textContent = '⬤ Record';
         };
         const setStoppedIndicator = () => {
-          elementWithId("recordButton").innerHTML = '◼ Stopped';
+          elementWithId("recordButton").innerHTML = sending ? '◼ Sending': '◼ Stopped';
           buttonWithId("pauseButton").textContent = '⬤ Record';
         };
 

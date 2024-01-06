@@ -48,7 +48,7 @@ var AfterInit;
                     buttonWithId("pauseButton").textContent = '⬤ Record';
                 };
                 const setStoppedIndicator = () => {
-                    elementWithId("recordButton").innerHTML = '◼ Stopped';
+                    elementWithId("recordButton").innerHTML = sending ? '◼ Sending' : '◼ Stopped';
                     buttonWithId("pauseButton").textContent = '⬤ Record';
                 };
                 if (mediaRecorder?.state === 'recording') {
