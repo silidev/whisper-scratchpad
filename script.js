@@ -7,7 +7,7 @@ var Audio = HelgeUtils.Audio;
 var blinkFast = HtmlUtils.blinkFast;
 var blinkSlow = HtmlUtils.blinkSlow;
 // ############## Config ##############
-const APPEND_EDITOR_TO_PROMPT = true;
+const INSERT_EDITOR_INTO_PROMPT = true;
 // ############## AfterInit ##############
 var AfterInit;
 (function (AfterInit) {
@@ -76,7 +76,10 @@ var AfterInit;
                     insertAtCursor("You must select an API below.");
                     return;
                 }
-                const promptForWhisper = () => transcriptionPrompt.value + APPEND_EDITOR_TO_PROMPT ? editorTextarea.value : "";
+                const promptForWhisper = () => transcriptionPrompt.value + INSERT_EDITOR_INTO_PROMPT ? editorTextarea.value.slice(-(750 /* Taking the last 750 chars is for sure less than the max 250 tokens whisper is considering. This is
+                important because the last words of the last transcription should always be included to avoid hallucinations
+                 if it otherwise would be an incomplete sentence. */
+                    - transcriptionPrompt.value.length)) : "";
                 const result = async () => await Audio.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper());
                 const replacedOutput = HelgeUtils.replaceByRules(await result(), replaceRulesTextArea.value);
                 if (editorTextarea.value.length > 0)
@@ -238,7 +241,7 @@ var AfterInit;
             // add TextArea.selectedText() to the start of the replaceRulesTextArea
             TextAreas.setCursor(replaceRulesTextArea, 0);
             const selectedText = TextAreas.selectedText(editorTextarea);
-            TextAreas.insertTextAtCursor(replaceRulesTextArea, `"${selectedText}"->""\n`);
+            TextAreas.insertTextAtCursor(replaceRulesTextArea, `"${selectedText}"->"${selectedText}"\n`);
             TextAreas.setCursor(replaceRulesTextArea, 5 + selectedText.length);
             replaceRulesTextArea.focus();
         });
