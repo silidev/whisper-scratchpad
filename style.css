@@ -20,12 +20,6 @@ body,html {
  padding-right: 2mm;
 }
 
-.attachedInfoButton {
- margin-right:-3mm;
- border-right: none;
- padding-right: 1mm;
-}
-
 div {
  margin: 0;
  padding: 0;
@@ -52,11 +46,6 @@ a {
  justify-content: flex-end;
 }
 
-button {
- flex-grow: 1;
- height: 55px;
-}
-
 .record-spinner-group {
  display: flex;
 }
@@ -72,13 +61,15 @@ button, input, textarea {
  margin: 0;
  border-radius: 0;
  cursor: pointer;
- transition: background-color 0.3s ease, transform 0.3s ease;
  color: var(--myGreen);
  background-color: black;
 }
 
 button {
  padding: 0 10px;
+ margin: 0;
+ /*flex-grow: 1;*/
+ height: 55px;
 }
 
 input, textarea {
@@ -161,4 +152,8 @@ textarea {
  .editorTextAreaContainer {
   width: 100%
  }
+}
+
+.negativeRightMargin {
+ margin-right: -15px;
 }

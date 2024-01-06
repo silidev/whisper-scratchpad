@@ -31,9 +31,8 @@ export namespace HtmlUtils {
       });
     }
 
-    export const setCursor = (textarea: HTMLTextAreaElement, cursorPosition: number) => {
-      textarea.selectionStart = cursorPosition;
-      textarea.selectionEnd = cursorPosition;
+    export const setCursor = (textarea: HTMLTextAreaElement, position: number) => {
+      textarea.setSelectionRange(position, position);
     }
 
     export const insertTextAtCursor = (

@@ -46,10 +46,8 @@
 
   <span class="wrapping-container">
     <span class="button-container">
-      <button id="addReplaceRuleButton" style="">+ replace</button>
       <button id="undoButton" style="">⎌ Undo</button>
       <button id="abortButton" style="">Abort</button>
-      <button id="replaceAgainButton" style="">Replace</button>
       <span>
         <button id="copyButton" style="height: 55.5px">⎘ Copy</button>
       </span>
@@ -99,13 +97,17 @@
         The default regex flags are "gmu". You can replace the "i" with any regex flags. <a target="_blank" href="https://www.google.com/search?q=regex">Google "regex"</a>
       </pre>
     </info-button>
-    <select id="replaceRulesSelector" class="greenFilter">
-      <option value="normal">normal</option>
-      <option value="du2ich">du2ich</option>
-      <option value="comma2newlines">comma2newlines</option>
-      <option value="tmp">tmp</option>
-    </select>
-    <button id="copyReplaceRulesButton" style="height: 55.5px">⎘ Copy</button>
+    <span>
+        <select id="replaceRulesSelector" class="greenFilter">
+          <option value="normal">normal</option>
+          <option value="du2ich">du2ich</option>
+          <option value="comma2newlines">comma2newlines</option>
+          <option value="tmp">tmp</option>
+        </select>
+        <button id="addReplaceRuleButton" class="negativeRightMargin">+ replace</button>
+        <button id="replaceAgainButton" class="negativeRightMargin">Replace</button>
+        <button id="copyReplaceRulesButton" class="negativeRightMargin">⎘ Copy</button>
+    </span>
     <div class="editorTextAreaContainer">
       <textarea id="replaceRulesTextArea" wrap="soft" placeholder="Optional. &quot;SEARCH&quot;-&gt;&quot;REPLACE&quot;" >
       </textarea>
