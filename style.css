@@ -77,7 +77,7 @@ input, textarea {
  font-size: 20px;
 }
 
-input:focus, textarea:focus {
+select, option, input:focus, textarea:focus {
  color: var(--myGreen);
  border: 1px solid var(--myGreen);
  outline: none;
@@ -178,4 +178,9 @@ textarea {
 
 .heading {
  background-color: black;
+}
+
+select, option {
+ background-color: black;
+ color: green;
 }

@@ -112,7 +112,7 @@
   </info-button>
   <span>
       <span class="flexRightAndWrapContent">
-        <select id="replaceRulesSelector" class="greenFilter" style="width: 15mm; display: none">
+        <select id="replaceRulesSelector" style="width: 15mm; display: none">
           <option value="normal">normal</option>
           <option value="du2ich">du2ich</option>
           <option value="comma2newlines">comma2newlines</option>
@@ -137,7 +137,7 @@
 
 <!--############## transcriptionPrompt ##############-->
 <div>
-  <h2>Transcription Prompt:</h2>
+  <h4>Transcription Prompt:</h4>
   <info-button>
     Since Whisper wasn't trained using instruction-following techniques, Whisper operates more like a base GPT model. The content of the editor is appended to the prompt. It's important to keep in mind that Whisper only considers the first 244 tokens of the prompt. <a target="_blank" href="https://platform.openai.com/docs/guides/speech-to-text/prompting">More info</a>
   </info-button>
@@ -157,7 +157,7 @@
 <!--############## API Selector ##############-->
 <div style="width:100%">
   <h2>API</h2>
-  <br><select id="apiSelector" class="greenFilter" style="font-size: 22px">
+  <br><select id="apiSelector" style="font-size: 22px">
   <option value="OpenAI">OpenAI</option>
   <option value="Gladia">Gladia.io</option>
 </select>
