@@ -14,7 +14,7 @@ namespace AfterInit {
 
   import inputElementWithId = HtmlUtils.inputElementWithId;
   const downloadLink = document.getElementById('downloadLink') as HTMLAnchorElement;
-  const recordSpinner = document.getElementById('recordSpinner') as HTMLElement;
+  const spinner1 = document.getElementById('spinner1') as HTMLElement;
   const apiSelector = document.getElementById('apiSelector') as HTMLSelectElement;
 
   const apiKeyInput = document.getElementById('apiKeyInputField') as HTMLTextAreaElement;
@@ -46,6 +46,30 @@ namespace AfterInit {
       let isRecording = false;
       let stream: MediaStream;
       let sending = false;
+
+      const updateStateIndicator = () => {
+        const setRecordingIndicator = () => {
+          const message = sending ? '🔴Sending' : '🔴Stop';
+          elementWithId("recordButton").innerHTML = `<span class="blinking">${message}</span>`;
+          buttonWithId("pauseButton").textContent = '‖ Pause';
+        };
+        const setPausedIndicator = () => {
+          elementWithId("recordButton").innerHTML = '‖ Paused';
+          buttonWithId("pauseButton").textContent = '⬤ Record';
+        };
+        const setStoppedIndicator = () => {
+          elementWithId("recordButton").innerHTML = '◼ Stopped';
+          buttonWithId("pauseButton").textContent = '⬤ Record';
+        };
+
+        if (mediaRecorder?.state === 'recording') {
+          setRecordingIndicator();
+        } else if (mediaRecorder?.state === 'paused') {
+          setPausedIndicator();
+        } else {
+          setStoppedIndicator();
+        }
+      }
 
       const transcribeAndHandleResultAsync = async (audioBlob: Blob) => {
         sending = true;
@@ -88,30 +112,6 @@ namespace AfterInit {
           audioChunks.push(event.data);
         };
       };
-
-      const updateStateIndicator = () => {
-        const setRecordingIndicator = () => {
-          const message = sending ? '🔴Sending' : '🔴Stop';
-          elementWithId("recordButton").innerHTML = `<span class="blinking">${message}</span>`;
-          buttonWithId("pauseButton").textContent = '‖ Pause';
-        };
-        const setPausedIndicator = () => {
-          elementWithId("recordButton").innerHTML = '‖ Paused';
-          buttonWithId("pauseButton").textContent = '⬤ Record';
-        };
-        const setStoppedIndicator = () => {
-          elementWithId("recordButton").innerHTML = '◼ Stopped';
-          buttonWithId("pauseButton").textContent = '⬤ Record';
-        };
-
-        if (mediaRecorder?.state === 'recording') {
-          setRecordingIndicator();
-        } else if (mediaRecorder?.state === 'paused') {
-          setPausedIndicator();
-        } else {
-          setStoppedIndicator();
-        }
-      }
 
       const startRecording = () => {
         navigator.mediaDevices.getUserMedia({audio: true}).then(onStreamReady);
@@ -168,6 +168,8 @@ namespace AfterInit {
         showSpinner();
         transcribeAndHandleResultAsync(audioBlob).then(hideSpinner);
       });
+
+      updateStateIndicator();
     } // End of media buttons
 
     // ############## Crop Highlights Button ##############
@@ -263,12 +265,12 @@ namespace AfterInit {
 
     const showSpinner = () => {
       // probably not needed anymore, delete later
-      // recordSpinner.style.display = 'block';
+      // spinner1.style.display = 'block';
     };
 
     // probably not needed anymore, delete later
     const hideSpinner = () => {
-      recordSpinner.style.display = 'none';
+      spinner1.style.display = 'none';
     };
   }
 

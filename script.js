@@ -12,7 +12,7 @@ var AfterInit;
 (function (AfterInit) {
     var inputElementWithId = HtmlUtils.inputElementWithId;
     const downloadLink = document.getElementById('downloadLink');
-    const recordSpinner = document.getElementById('recordSpinner');
+    const spinner1 = document.getElementById('spinner1');
     const apiSelector = document.getElementById('apiSelector');
     const apiKeyInput = document.getElementById('apiKeyInputField');
     const editorTextarea = document.getElementById('editorTextarea');
@@ -37,6 +37,30 @@ var AfterInit;
             let isRecording = false;
             let stream;
             let sending = false;
+            const updateStateIndicator = () => {
+                const setRecordingIndicator = () => {
+                    const message = sending ? '🔴Sending' : '🔴Stop';
+                    elementWithId("recordButton").innerHTML = `<span class="blinking">${message}</span>`;
+                    buttonWithId("pauseButton").textContent = '‖ Pause';
+                };
+                const setPausedIndicator = () => {
+                    elementWithId("recordButton").innerHTML = '‖ Paused';
+                    buttonWithId("pauseButton").textContent = '⬤ Record';
+                };
+                const setStoppedIndicator = () => {
+                    elementWithId("recordButton").innerHTML = '◼ Stopped';
+                    buttonWithId("pauseButton").textContent = '⬤ Record';
+                };
+                if (mediaRecorder?.state === 'recording') {
+                    setRecordingIndicator();
+                }
+                else if (mediaRecorder?.state === 'paused') {
+                    setPausedIndicator();
+                }
+                else {
+                    setStoppedIndicator();
+                }
+            };
             const transcribeAndHandleResultAsync = async (audioBlob) => {
                 sending = true;
                 updateStateIndicator();
@@ -75,30 +99,6 @@ var AfterInit;
                 mediaRecorder.ondataavailable = event => {
                     audioChunks.push(event.data);
                 };
-            };
-            const updateStateIndicator = () => {
-                const setRecordingIndicator = () => {
-                    const message = sending ? '🔴Sending' : '🔴Stop';
-                    elementWithId("recordButton").innerHTML = `<span class="blinking">${message}</span>`;
-                    buttonWithId("pauseButton").textContent = '‖ Pause';
-                };
-                const setPausedIndicator = () => {
-                    elementWithId("recordButton").innerHTML = '‖ Paused';
-                    buttonWithId("pauseButton").textContent = '⬤ Record';
-                };
-                const setStoppedIndicator = () => {
-                    elementWithId("recordButton").innerHTML = '◼ Stopped';
-                    buttonWithId("pauseButton").textContent = '⬤ Record';
-                };
-                if (mediaRecorder?.state === 'recording') {
-                    setRecordingIndicator();
-                }
-                else if (mediaRecorder?.state === 'paused') {
-                    setPausedIndicator();
-                }
-                else {
-                    setStoppedIndicator();
-                }
             };
             const startRecording = () => {
                 navigator.mediaDevices.getUserMedia({ audio: true }).then(onStreamReady);
@@ -154,6 +154,7 @@ var AfterInit;
                 showSpinner();
                 transcribeAndHandleResultAsync(audioBlob).then(hideSpinner);
             });
+            updateStateIndicator();
         } // End of media buttons
         // ############## Crop Highlights Button ##############
         HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsButton"), () => {
@@ -233,11 +234,11 @@ var AfterInit;
         });
         const showSpinner = () => {
             // probably not needed anymore, delete later
-            // recordSpinner.style.display = 'block';
+            // spinner1.style.display = 'block';
         };
         // probably not needed anymore, delete later
         const hideSpinner = () => {
-            recordSpinner.style.display = 'none';
+            spinner1.style.display = 'none';
         };
     };
     const getApiKey = () => Cookies.get(apiSelector.value + 'ApiKey');
