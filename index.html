@@ -23,11 +23,19 @@
   <span class="flexRightAndWrapContent">
     <wc-menu-wrapper>
       <!-- https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper -->
-      <div class='heading'>Menu</div>
+      <div class='heading'>☰</div>
       <div class='item'>
-        <a id="cropHighlightsButton">Crop == highlights</a>
+        <a id="cropHighlightsButton">Crop highlights (== ...==)</a>
       </div>
     </wc-menu-wrapper>
+    <button id="clearButton"><span class="greenFilter">🧹</span> Clear</button>
+    <button id="copyButton" style="height: 55.5px">⎘ Copy</button>
+    <span class="record-spinner-group">
+      <button id="recordButton">‖ Paused</button>
+      <span id="recordSpinner" class="spinner" style="display: none;"></span>
+    </span>
+    <button id="pauseButton">⬤ Record</button>
+
     <button>  <info-button>
       <div style="position: fixed;
         left: 0; background-color: black; border: 1px solid green; padding: 5px;
@@ -42,13 +50,7 @@
         </ul>
       </div>
     </info-button></button>
-    <button id="clearButton"><span class="greenFilter">🧹</span> Clear</button>
-    <button id="copyButton" style="height: 55.5px">⎘ Copy</button>
-    <span class="record-spinner-group">
-      <button id="recordButton">‖ Paused</button>
-      <span id="recordSpinner" class="spinner" style="display: none;"></span>
-    </span>
-    <button id="pauseButton">⬤ Record</button>
+
     <button id="undoButtonOfEditor" style="">Un-<br>do</button>
     <button id="abortButton" style="">🗙 Abort</button>
     <button id="saveEditorButton" style="display: none;">
@@ -67,7 +69,7 @@
 <!--############## replaceRules ##############-->
 
   <div>
-    <h2>Replace rules (regex):</h2>
+          Replace rules:
     <info-button>
       <pre>
         These are very useful to replace words which the ASR system recognize wrong, e. g. uncommon names.
@@ -100,8 +102,8 @@
           <option value="comma2newlines">comma2newlines</option>
           <option value="tmp">tmp</option>
         </select>
-<!-- ############## Replace buttons ###############-->
-      <button id="addReplaceRuleButton"><span style="font-size: 16px">""->""</span></button>
+<!-- ############## Replace-rules buttons ###############-->
+        <button id="addReplaceRuleButton"><span style="font-size: 16px">""->""</span></button>
         <button id="copyReplaceRulesButton">⎘ Copy</button>
         <button id="undoButtonOfReplaceRules">⎌ Undo</button>
       </span>
