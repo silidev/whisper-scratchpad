@@ -74,31 +74,19 @@
     <h2>Replace rules (regex):</h2>
     <info-button>
       <pre>
+        These are very useful to replace words which the ASR system recognize wrong.
+
         A ruleset contains one or more rule, the format looks like:
         :: Any "SEARCH" becomes "REPLACE"
-        "SEARCH"->"REPLACE" <a href="https://github.com/No3371/obsidian-regex-pipeline#readme">More info</a>
-        NO newlines outside quotes!!!
+        "SEARCH"->"REPLACE" <a target="_blank" href="https://github.com/No3371/obsidian-regex-pipeline#readme">More info</a>
+
+        Gotchas: NO newlines outside quotes!!!
 
         Ignore case:
         SEARCH"i->"REPLACE"
 
-        I like this (alpha):
-        :: ### English ###
-        "comma"->","
-        "full stop"->","
-        "colon"->":"
-        "dash"->"-"
-        :: ### German ###
-        "Komma"->","
-        "Punkt"->","
-        "Doppelpunkt"->":"
-        "Bindestrich"->"-"
-        "Semikolon"->";"
-        "Klammer auf"->"("
-        "Klammer zu"->")"
-        "Schrägstrich"->"/"
-        "Ausrufezeichen"->"!"
-        "Fragezeichen"->"?"
+        Technical details:
+        The default regex flags are "gmu". You can replace the "i" with any regex flags. <a target="_blank" href="https://www.google.com/search?q=regex">Google "regex"</a>
       </pre>
     </info-button>
     <select id="replaceRulesSelector" class="greenFilter">
@@ -123,7 +111,7 @@
   <div>
     <h2>Transcription Prompt:</h2>
       <info-button>
-        Since Whisper wasn't trained using instruction-following techniques, Whisper operates more like a base GPT model. The content of the editor is appended to the prompt. It's important to keep in mind that Whisper only considers the first 244 tokens of the prompt. <a href="https://platform.openai.com/docs/guides/speech-to-text/prompting">More info</a>
+        Since Whisper wasn't trained using instruction-following techniques, Whisper operates more like a base GPT model. The content of the editor is appended to the prompt. It's important to keep in mind that Whisper only considers the first 244 tokens of the prompt. <a target="_blank" href="https://platform.openai.com/docs/guides/speech-to-text/prompting">More info</a>
       </info-button>
     <button id="copyPromptButton" style="height: 55.5px">⎘ Copy</button>
     <div class="editorTextAreaContainer">
@@ -149,7 +137,7 @@
       Save API Key
     </button>
     <br>
-    <br><a href="https://platform.openai.com/api-keys">Click here to get an API key</a>.
+    <br><a target="_blank" href="https://platform.openai.com/api-keys">Click here to get an API key</a>.
 
     If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS apps for free without API key.
   </div>
@@ -161,7 +149,7 @@
     <br>
     <br>I made this simple page to use the revolution in speech recognition: OpenAI Whisper. The voice recognition on your phone is a joke compared with whisper-large.
     <br>
-    <br>This can be installed as an App, tested on Android and Windows, probably on other OSes as well ("PWA"). <a href="https://www.google.com/search?client=opera&q=how+to+install+a+web+page+as+an+app&sourceid=opera&ie=UTF-8&oe=UTF-8">How-Tos here</a>
+    <br>This can be installed as an App, tested on Android and Windows, probably on other OSes as well ("PWA"). <a target="_blank" href="https://www.google.com/search?client=opera&q=how+to+install+a+web+page+as+an+app&sourceid=opera&ie=UTF-8&oe=UTF-8">How-Tos here</a>
     <br>
     <br>The API key is stored in a cookie. To be on the safe side, you can set a limit to your costs in the OpenAI dashboard. Mine is $2, because Whisper is dirt cheap: $0.036 / hour (rounded to the nearest second).
     <br>I won't steal your key, and you don't have to trust me on that, you can download this to your computer and run it there and check (and improve :) ) the very simple code.
@@ -171,12 +159,12 @@
 
   <div style="width:100%;" >
     <h2>For devs</h2>
-    <br>- <a href="https://github.com/silidev/whisper-scratchpad">GitHub Repo</a>
-    <br>- <a href="https://platform.openai.com/docs/api-reference/audio/createTranscription">API docs</a>
-    <br>- <a href="https://platform.openai.com/docs/guides/speech-to-text">OpenAI Speech Guide</a>
+    <br>- <a target="_blank" href="https://github.com/silidev/whisper-scratchpad">GitHub Repo</a>
+    <br>- <a target="_blank" href="https://platform.openai.com/docs/api-reference/audio/createTranscription">API docs</a>
+    <br>- <a target="_blank" href="https://platform.openai.com/docs/guides/speech-to-text">OpenAI Speech Guide</a>
     <br>- Once my browser said the page wanted to read the clipboard... if you get that just deny it. The page does not actually want to read the clipboard, I wrote no code for that.
     <br>
-    <br>Copyright 2024 by Helge Kosuch, <a href="https://twitter.com/silidev">https://twitter.com/silidev</a>.
+    <br>Copyright 2024 by Helge Kosuch, <a target="_blank" href="https://twitter.com/silidev">https://twitter.com/silidev</a>.
     <br>V.9 Pfau
   </div>
   <script src="script.js" type="module"></script> <!-- Rename to AfterScript.js -->

@@ -75,7 +75,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
     while (ruleMatches = ruleParser.exec(ruleText)) {
       console.log("\n" + ruleMatches[1] + "\n↓↓↓↓↓\n"+ ruleMatches[3]);
       let matchRule = ruleMatches[2].length == 0 ?
-          new RegExp(ruleMatches[1], 'gm')
+          new RegExp(ruleMatches[1], 'gmu')
           : new RegExp(ruleMatches[1], ruleMatches[2]);
       if (ruleMatches[4] == 'x')
         subject = subject.replace(matchRule, '');
