@@ -40,16 +40,16 @@ var AfterInit;
             const updateStateIndicator = () => {
                 const setRecordingIndicator = () => {
                     const message = sending ? '🔴Sending' : '🔴Stop';
-                    elementWithId("recordButton").innerHTML = `<span class="blinking">${message}</span>`;
+                    elementWithId("stopButton").innerHTML = `<span class="blinking">${message}</span>`;
                     buttonWithId("pauseButton").textContent = '‖ Pause';
                 };
                 const setPausedIndicator = () => {
-                    elementWithId("recordButton").
+                    elementWithId("stopButton").
                         innerHTML = '‖ Paused';
                     buttonWithId("pauseButton").textContent = '⬤ Record';
                 };
                 const setStoppedIndicator = () => {
-                    elementWithId("recordButton").innerHTML = sending ? '◼ Sending' : '◼ Stopped';
+                    elementWithId("stopButton").innerHTML = sending ? '◼ Sending' : '◼ Stopped';
                     buttonWithId("pauseButton").textContent = '⬤ Record';
                 };
                 if (mediaRecorder?.state === 'recording') {
@@ -111,8 +111,8 @@ var AfterInit;
                 isRecording = false;
                 HtmlUtils.Media.releaseMicrophone(stream);
             };
-            // ############## recordButton ##############
-            buttonWithId("recordButton").addEventListener('click', () => {
+            // ############## stopButton ##############
+            buttonWithId("stopButton").addEventListener('click', () => {
                 if (isRecording) {
                     stopRecording();
                 }
@@ -133,7 +133,7 @@ var AfterInit;
                     mediaRecorder.stop();
                 }
                 else {
-                    buttonWithId("recordButton").click();
+                    buttonWithId("stopButton").click();
                 }
             });
             // ############## pauseButton ##############
@@ -147,7 +147,7 @@ var AfterInit;
                     updateStateIndicator();
                 }
                 else {
-                    buttonWithId("recordButton").click();
+                    buttonWithId("stopButton").click();
                 }
             });
             // ############## transcribeAgainButton ##############
