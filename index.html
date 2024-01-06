@@ -71,28 +71,35 @@
 <!--  Select between different replace rules -->
 
   <div>
-    <h2>Replace rules:</h2>
+    <h2>Replace rules (regex):</h2>
     <info-button>
-      <br>A ruleset contains one or more rule, the format looks like:
-      <br>:: Any "SEARCH" becomes "REPLACE"
-      <br>"SEARCH"->"REPLACE" <a href="https://github.com/No3371/obsidian-regex-pipeline">More info</a>
-      <br>I like this (alpha):
-      <br>:: ### English ###
-      <br>"comma"->","
-      <br>"full stop"->","
-      <br>"colon"->":"
-      <br>"dash"->"-"
-      <br>:: ### German ###
-      <br>"Komma"->","
-      <br>"Punkt"->","
-      <br>"Doppelpunkt"->":"
-      <br>"Bindestrich"->"-"
-      <br>"Semikolon"->";"
-      <br>"Klammer auf"->"("
-      <br>"Klammer zu"->")"
-      <br>"Schrägstrich"->"/"
-      <br>"Ausrufezeichen"->"!"
-      <br>"Fragezeichen"->"?"
+      <pre>
+        A ruleset contains one or more rule, the format looks like:
+        :: Any "SEARCH" becomes "REPLACE"
+        "SEARCH"->"REPLACE" <a href="https://github.com/No3371/obsidian-regex-pipeline#readme">More info</a>
+        NO newlines outside quotes!!!
+
+        Ignore case:
+        SEARCH"i->"REPLACE"
+
+        I like this (alpha):
+        :: ### English ###
+        "comma"->","
+        "full stop"->","
+        "colon"->":"
+        "dash"->"-"
+        :: ### German ###
+        "Komma"->","
+        "Punkt"->","
+        "Doppelpunkt"->":"
+        "Bindestrich"->"-"
+        "Semikolon"->";"
+        "Klammer auf"->"("
+        "Klammer zu"->")"
+        "Schrägstrich"->"/"
+        "Ausrufezeichen"->"!"
+        "Fragezeichen"->"?"
+      </pre>
     </info-button>
     <select id="replaceRulesSelector" class="greenFilter">
       <option value="normal">normal</option>

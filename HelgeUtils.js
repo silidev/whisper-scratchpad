@@ -66,7 +66,7 @@ export var HelgeUtils;
         let ruleMatches;
         const ruleParser = /^"(.+?)"([a-z]*?)(?:\r\n|\r|\n)?->(?:\r\n|\r|\n)?"(.*?)"([a-z]*?)(?:\r\n|\r|\n)?$/gmus;
         while (ruleMatches = ruleParser.exec(ruleText)) {
-            // console.log("\n" + ruleMatches[1] + "\n↓↓↓↓↓\n"+ ruleMatches[3]);
+            console.log("\n" + ruleMatches[1] + "\n↓↓↓↓↓\n" + ruleMatches[3]);
             let matchRule = ruleMatches[2].length == 0 ?
                 new RegExp(ruleMatches[1], 'gm')
                 : new RegExp(ruleMatches[1], ruleMatches[2]);
