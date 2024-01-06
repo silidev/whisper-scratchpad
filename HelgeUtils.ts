@@ -77,15 +77,17 @@ Please note that certain strong accents can possibly cause this mode to transcri
     }
   }
 
-  export const replaceByRules = (subject: string, ruleText: string) => {
+  export const replaceByRules = (subject: string, ruleText: string, wholewords = false) => {
+    const wordBoundaryMarker = wholewords ? '\\b' : '';
     let count = 0;
     let ruleMatches: any[];
     const ruleParser = /^"(.+?)"([a-z]*?)(?:\r\n|\r|\n)?->(?:\r\n|\r|\n)?"(.*?)"([a-z]*?)(?:\r\n|\r|\n)?$/gmus;
     while (ruleMatches = ruleParser.exec(ruleText)) {
-      console.log("\n" + ruleMatches[1] + "\n↓↓↓↓↓\n"+ ruleMatches[3]);
+      const target = wordBoundaryMarker+ruleMatches[1]+wordBoundaryMarker;
+      console.log("\n" + target + "\n↓↓↓↓↓\n"+ ruleMatches[3]);
       let matchRule = ruleMatches[2].length == 0 ?
-          new RegExp(ruleMatches[1], 'gmu')
-          : new RegExp(ruleMatches[1], ruleMatches[2]);
+          new RegExp(target, 'gmu')
+          : new RegExp(target, ruleMatches[2]);
       if (ruleMatches[4] == 'x')
         subject = subject.replace(matchRule, '');
       else

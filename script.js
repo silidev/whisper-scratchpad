@@ -30,6 +30,7 @@ var AfterInit;
         return apiSelector.value;
     }
     // ############## addButtonEventListeners ##############
+    // noinspection SpellCheckingInspection
     AfterInit.addButtonEventListeners = () => {
         { // Media buttons
             let mediaRecorder;
@@ -163,8 +164,35 @@ var AfterInit;
             updateStateIndicator();
         } // End of media buttons
         // ############## Crop Highlights Button ##############
-        HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsItem"), () => {
+        HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
             editorTextarea.value = HelgeUtils.extractHighlights(editorTextarea.value).join(' ');
+            saveEditor();
+        });
+        // noinspection SpellCheckingInspection
+        const du2ich = (input) => HelgeUtils.replaceByRules(HelgeUtils.replaceByRules(input, `
+"st\\b"->""
+`), `
+"Du"->"Ich"
+"du""->"ich"
+"dich"->"mich"
+"Dich"->"Mich"
+"dir"->"mir"
+"Dir"->"Mir"
+"dein"->"mein"
+"Dein"->"Mein"
+"bist"->"bin"
+"hast"->"habe"
+"I"->"Ist"
+"i"->"ist"
+`, true);
+        // noinspection SpellCheckingInspection
+        /*
+        * */
+        // ############## Crop Highlights Button ##############
+        HtmlUtils.addButtonClickListener(buttonWithId("du2ichMenuItem"), () => {
+            const value = du2ich(editorTextarea.value);
+            console.log(value);
+            editorTextarea.value = value;
             saveEditor();
         });
         // ############## saveAPIKeyButton ##############

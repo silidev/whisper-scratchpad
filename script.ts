@@ -38,6 +38,7 @@ namespace AfterInit {
   }
 
 // ############## addButtonEventListeners ##############
+  // noinspection SpellCheckingInspection
   export const addButtonEventListeners = () => {
     {// Media buttons
 
@@ -179,8 +180,40 @@ namespace AfterInit {
     } // End of media buttons
 
     // ############## Crop Highlights Button ##############
-    HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsItem"), () => {
+    HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
       editorTextarea.value = HelgeUtils.extractHighlights(editorTextarea.value).join(' ');
+      saveEditor();
+    });
+
+    // noinspection SpellCheckingInspection
+    const du2ich = (input: string) => HelgeUtils.replaceByRules(HelgeUtils.replaceByRules(input
+            ,`
+"st\\b"->""
+`)
+            , `
+"Du"->"Ich"
+"du""->"ich"
+"dich"->"mich"
+"Dich"->"Mich"
+"dir"->"mir"
+"Dir"->"Mir"
+"dein"->"mein"
+"Dein"->"Mein"
+"bist"->"bin"
+"hast"->"habe"
+"I"->"Ist"
+"i"->"ist"
+`,true)
+;
+// noinspection SpellCheckingInspection
+    /*
+    * */
+
+  // ############## Crop Highlights Button ##############
+    HtmlUtils.addButtonClickListener(buttonWithId("du2ichMenuItem"), () => {
+      const value = du2ich(editorTextarea.value);
+      console.log(value);
+      editorTextarea.value = value;
       saveEditor();
     });
 
