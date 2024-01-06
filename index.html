@@ -25,11 +25,13 @@
         <div style="position: fixed;
           left: 0; background-color: black; border: 1px solid green; padding: 5px;
           width: 6cm">
+          The buttons:
           <ul>
-            <li>Copy-Button: Copies the content of the editor to the clipboard.</li>
-            <li>Send-Button: This will send the current recording to the API, start a new recording and insert the transcription at the cursor position.</li>
-            <li>Replace-Button: Replaces the text in the editor according to the ruleset.</li>
-            <li>"Tr. again"-Button: Transcribes the current recording and inserts the transcription at the cursor position.</li>
+            <li>Copy: Copies the content of the editor to the clipboard.</li>
+            <li>Send: This will send the current recording to the API, start a new recording and insert the transcription at the cursor position.</li>
+            <li>Replace: Replaces the text in the editor according to the ruleset.</li>
+            <li>"Tr. again": Transcribes the current recording and inserts the transcription at the cursor position.</li>
+            <li>"+ replace": Add a replace rule with the currently selected text.</li>
           </ul>
         </div>
       </info-button></button>
@@ -44,6 +46,7 @@
 
   <span class="wrapping-container">
     <span class="button-container">
+      <button id="addReplaceRuleButton" style="">+ replace</button>
       <button id="undoButton" style="">⎌ Undo</button>
       <button id="abortButton" style="">Abort</button>
       <button id="replaceAgainButton" style="">Replace</button>

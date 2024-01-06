@@ -13,6 +13,13 @@ export namespace HtmlUtils {
   export const inputElementWithId = elementWithId as (id: string) => HTMLInputElement | null;
 
   export namespace TextAreas {
+
+    export const selectedText = (textarea) => {
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      return textarea.value.substring(start, end);
+    };
+
     /**
      * Makes a text area element auto-save its content to a cookie after each modified character (input event).
      * @param cookieName - The name of the cookie to store the text area content.
@@ -22,6 +29,11 @@ export namespace HtmlUtils {
       HtmlUtils.textAreaWithId(id).addEventListener('input', () => {
         Cookies.set(cookieName, HtmlUtils.textAreaWithId(id).value);
       });
+    }
+
+    export const setCursor = (textarea: HTMLTextAreaElement, cursorPosition: number) => {
+      textarea.selectionStart = cursorPosition;
+      textarea.selectionEnd = cursorPosition;
     }
 
     export const insertTextAtCursor = (
@@ -36,8 +48,7 @@ export namespace HtmlUtils {
 
       textarea.value = textBeforeCursor + addedText + textAfterCursor;
       const newCursorPosition = cursorPosition + addedText.length;
-      textarea.selectionStart = newCursorPosition;
-      textarea.selectionEnd = newCursorPosition;
+      setCursor(textarea, newCursorPosition);
     };
   }
 

@@ -209,6 +209,16 @@ namespace AfterInit {
       document.execCommand('undo'); // Yes, deprecated, but works. I will replace it when it fails. Docs: https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
     });
 
+    // addReplaceRuleButton
+    HtmlUtils.addButtonClickListener(buttonWithId("addReplaceRuleButton"), () => {
+      // add TextArea.selectedText() to the start of the replaceRulesTextArea
+      TextAreas.setCursor(replaceRulesTextArea, 0);
+      const selectedText = TextAreas.selectedText(editorTextarea);
+      TextAreas.insertTextAtCursor(replaceRulesTextArea, `"${selectedText}"->""\n`);
+      TextAreas.setCursor(replaceRulesTextArea, 5 + selectedText.length);
+      replaceRulesTextArea.focus();
+    });
+
     // aboutButton
     HtmlUtils.addButtonClickListener(buttonWithId("abortButton"), () => {
       window.location.reload();

@@ -10,6 +10,11 @@ export var HtmlUtils;
     HtmlUtils.inputElementWithId = HtmlUtils.elementWithId;
     let TextAreas;
     (function (TextAreas) {
+        TextAreas.selectedText = (textarea) => {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            return textarea.value.substring(start, end);
+        };
         /**
          * Makes a text area element auto-save its content to a cookie after each modified character (input event).
          * @param cookieName - The name of the cookie to store the text area content.
@@ -20,6 +25,10 @@ export var HtmlUtils;
                 Cookies.set(cookieName, HtmlUtils.textAreaWithId(id).value);
             });
         };
+        TextAreas.setCursor = (textarea, cursorPosition) => {
+            textarea.selectionStart = cursorPosition;
+            textarea.selectionEnd = cursorPosition;
+        };
         TextAreas.insertTextAtCursor = (textarea, addedText) => {
             if (!addedText)
                 return;
@@ -28,8 +37,7 @@ export var HtmlUtils;
             const textAfterCursor = textarea.value.substring(cursorPosition);
             textarea.value = textBeforeCursor + addedText + textAfterCursor;
             const newCursorPosition = cursorPosition + addedText.length;
-            textarea.selectionStart = newCursorPosition;
-            textarea.selectionEnd = newCursorPosition;
+            TextAreas.setCursor(textarea, newCursorPosition);
         };
     })(TextAreas = HtmlUtils.TextAreas || (HtmlUtils.TextAreas = {}));
     let Media;
