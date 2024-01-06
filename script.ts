@@ -179,7 +179,7 @@ namespace AfterInit {
     } // End of media buttons
 
     // ############## Crop Highlights Button ##############
-    HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsButton"), () => {
+    HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsItem"), () => {
       editorTextarea.value = HelgeUtils.extractHighlights(editorTextarea.value).join(' ');
       saveEditor();
     });
@@ -239,7 +239,8 @@ namespace AfterInit {
     });
 
     // aboutButton
-    HtmlUtils.addButtonClickListener(buttonWithId("abortButton"), () => {
+    HtmlUtils.addButtonClickListener(buttonWithId("cancelButton"), () => {
+      saveEditor()
       window.location.reload();
     });
 
