@@ -53,17 +53,17 @@
     </div>
   </info-button></button>
   <!-- ########### row1EditorButtons ############# -->
-  <button id="clearButton"><span class="greenFilter">🧹</span> Clear</button>
+  <button id="clearButton" style="line-height: 20px"><span class="greenFilter">🧹</span> Clear</button>
   <button id="copyButton" style="height: 55.5px">⎘ Copy</button>
   <span class="spinnerGroup">
-      <button id="stopButton">
+      <button id="stopButton" style="width: 80px; line-height: 20px">
 <!--        This would be better, but no time now: -->
         <!--        <span id="stopButtonRecording" class="stopButtonText blinkingFast">🔴Stop   </span>-->
         <!--        <span id="stopButtonStopped"   class="stopButtonText"         >◼ Stopped</span>-->
       </button>
       <span id="spinner1" class="spinner" style="display: none;"></span>
     </span>
-  <button id="pauseRecordButton"></button>
+  <button id="pauseRecordButton" style="width: 90px; line-height: 20px"></button>
 </div>
 
 <!-- This division is important to keep the stopButton on the right side, good reachable for the thumb.   -->
@@ -112,7 +112,7 @@
   </info-button>
   <span>
       <span class="flexRightAndWrapContent">
-        <select id="replaceRulesSelector" class="greenFilter" style="width: 15mm">
+        <select id="replaceRulesSelector" class="greenFilter" style="width: 15mm; display: none">
           <option value="normal">normal</option>
           <option value="du2ich">du2ich</option>
           <option value="comma2newlines">comma2newlines</option>
