@@ -92,6 +92,7 @@ namespace AfterInit {
         if (editorTextarea.value.length > 0)
           insertAtCursor(" ");
         insertAtCursor(replacedOutput);
+        saveEditor()
         navigator.clipboard.writeText(editorTextarea.value).then();
         sending = false;
         updateStateIndicator();
@@ -142,8 +143,7 @@ namespace AfterInit {
         }
       });
 
-      // ############## sendButton ##############
-      buttonWithId("sendButton").addEventListener('click', () => {
+      const sendButton = () => {
         if (mediaRecorder?.state === 'recording') {
           mediaRecorder.onstop = () => {
             audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
@@ -155,7 +155,10 @@ namespace AfterInit {
         } else {
           buttonWithId("stopButton").click();
         }
-      });
+      }
+
+      // ############## sendButton ##############
+      buttonWithId("sendButton").addEventListener('click', sendButton);
 
       // ############## pauseRecordButton ##############
       buttonWithId("pauseRecordButton").addEventListener('click', () => {
