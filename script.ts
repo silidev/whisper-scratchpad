@@ -51,16 +51,16 @@ namespace AfterInit {
         const setRecordingIndicator = () => {
           const message = sending ? '🔴Sending': '🔴Stop';
           elementWithId("stopButton").innerHTML = `<span class="blinking">${message}</span>`;
-          buttonWithId("pauseButton").textContent = '‖ Pause';
+          buttonWithId("pauseRecordButton").textContent = '‖ Pause';
         };
         const setPausedIndicator = () => {
           elementWithId("stopButton").
               innerHTML = '‖ Paused';
-          buttonWithId("pauseButton").textContent = '⬤ Record';
+          buttonWithId("pauseRecordButton").textContent = '⬤ Record';
         };
         const setStoppedIndicator = () => {
           elementWithId("stopButton").innerHTML = sending ? '◼ Sending': '◼ Stopped';
-          buttonWithId("pauseButton").textContent = '⬤ Record';
+          buttonWithId("pauseRecordButton").textContent = '⬤ Record';
         };
 
         if (mediaRecorder?.state === 'recording') {
@@ -151,8 +151,8 @@ namespace AfterInit {
         }
       });
 
-      // ############## pauseButton ##############
-      buttonWithId("pauseButton").addEventListener('click', () => {
+      // ############## pauseRecordButton ##############
+      buttonWithId("pauseRecordButton").addEventListener('click', () => {
         if (mediaRecorder?.state === 'recording') {
           mediaRecorder.pause();
           updateStateIndicator();
