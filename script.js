@@ -44,8 +44,9 @@ var AfterInit;
                     buttonWithId("pauseButton").textContent = '‖ Pause';
                 };
                 const setPausedIndicator = () => {
-                    elementWithId("recordButton").innerHTML = '‖ Paused';
-                    buttonWithId("pauseButton").textContent = '⬤ Cont.';
+                    elementWithId("recordButton").
+                        innerHTML = '‖ Paused';
+                    buttonWithId("pauseButton").textContent = '⬤ Record';
                 };
                 const setStoppedIndicator = () => {
                     elementWithId("recordButton").innerHTML = sending ? '◼ Sending' : '◼ Stopped';
