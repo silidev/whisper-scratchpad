@@ -181,11 +181,16 @@ var AfterInit;
         HtmlUtils.addButtonClickListener(buttonWithId("saveRulesButton"), () => {
             Cookies.set("replaceRules", replaceRulesTextArea.value);
         });
-        // undoButton
-        HtmlUtils.addButtonClickListener(buttonWithId("undoButton"), () => {
-            editorTextarea.focus();
-            document.execCommand('undo'); // Yes, deprecated, but works. I will replace it when it fails. Docs: https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
-        });
+        function addUndoButtonEventListener(undoButtonId, textArea) {
+            HtmlUtils.addButtonClickListener(buttonWithId(undoButtonId), () => {
+                textArea.focus();
+                document.execCommand('undo'); // Yes, deprecated, but works. I will replace it when it fails. Docs: https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
+            });
+        }
+        // undoButtonOfEditor
+        addUndoButtonEventListener("undoButtonOfEditor", editorTextarea);
+        addUndoButtonEventListener("undoButtonOfReplaceRules", replaceRulesTextArea);
+        addUndoButtonEventListener("undoButtonOfPrompt", transcriptionPrompt);
         // addReplaceRuleButton
         HtmlUtils.addButtonClickListener(buttonWithId("addReplaceRuleButton"), () => {
             // add TextArea.selectedText() to the start of the replaceRulesTextArea

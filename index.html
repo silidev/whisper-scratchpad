@@ -46,7 +46,7 @@
 
   <span class="wrapping-container">
     <span class="button-container">
-      <button id="undoButton" style="">⎌ Undo</button>
+      <button id="undoButtonOfEditor" style="">⎌ Undo</button>
       <button id="abortButton" style="">Abort</button>
       <span>
         <button id="copyButton" style="height: 55.5px">⎘ Copy</button>
@@ -104,9 +104,11 @@
           <option value="comma2newlines">comma2newlines</option>
           <option value="tmp">tmp</option>
         </select>
+        <br>
         <button id="addReplaceRuleButton" class="negativeRightMargin">+ replace</button>
         <button id="replaceAgainButton" class="negativeRightMargin">Replace</button>
         <button id="copyReplaceRulesButton" class="negativeRightMargin">⎘ Copy</button>
+        <button id="undoButtonOfReplaceRules" class="negativeRightMargin">⎌ Undo</button>
     </span>
     <div class="editorTextAreaContainer">
       <textarea id="replaceRulesTextArea" wrap="soft" placeholder="Optional. &quot;SEARCH&quot;-&gt;&quot;REPLACE&quot;" >
@@ -125,7 +127,8 @@
       <info-button>
         Since Whisper wasn't trained using instruction-following techniques, Whisper operates more like a base GPT model. The content of the editor is appended to the prompt. It's important to keep in mind that Whisper only considers the first 244 tokens of the prompt. <a target="_blank" href="https://platform.openai.com/docs/guides/speech-to-text/prompting">More info</a>
       </info-button>
-    <button id="copyPromptButton" style="height: 55.5px">⎘ Copy</button>
+    <button id="copyPromptButton" class="negativeRightMargin">⎘ Copy</button>
+    <button id="undoButtonOfPrompt" class="negativeRightMargin">⎌ Undo</button>
     <div class="editorTextAreaContainer">
       <textarea id="transcriptionPrompt" wrap="soft" placeholder="Optional prompt especially for hinting unusual names if they are not recognized by default."></textarea>
     </div>
