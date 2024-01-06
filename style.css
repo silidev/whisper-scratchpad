@@ -34,12 +34,12 @@ a {
  color: var(--myGreen);
 }
 
-.button-container {
+.flexRight {
  display: flex;
  justify-content: flex-end;
 }
 
-.wrapping-container {
+.flexRightAndWrapContent {
  display: flex;
  flex-wrap: wrap;
  justify-content: flex-end;

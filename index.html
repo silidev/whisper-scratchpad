@@ -19,8 +19,8 @@
 
   <!--############## Buttons ##############-->
 
-  <span class="wrapping-container">
-    <span class="button-container">
+  <span class="flexRightAndWrapContent">
+    <span class="flexRight">
       <button>  <info-button>
         <div style="position: fixed;
           left: 0; background-color: black; border: 1px solid green; padding: 5px;
@@ -44,24 +44,18 @@
     </span>
   </span>
 
-  <span class="wrapping-container">
-    <span class="button-container">
+  <span class="flexRightAndWrapContent">
+    <span class="flexRight">
+      <button id="copyButton" style="height: 55.5px">⎘ Copy</button>
       <button id="undoButtonOfEditor" style="">⎌ Undo</button>
-      <button id="abortButton" style="">Abort</button>
-      <span>
-        <button id="copyButton" style="height: 55.5px">⎘ Copy</button>
-      </span>
+      <button id="abortButton" style="">🗙 Abort</button>
       <button id="saveEditorButton" style="display: none;">
         <span class="greenFilter">💾</span> Save editor
       </button>
     </span>
-    <span class="button-container">
-      <span>
-        <button id="transcribeAgainButton">Tr. again</button>
-      </span>
-      <span>
+    <span class="flexRight">
+      <button id="transcribeAgainButton">↻ Tr. again</button>
         <button id="sendButton">✉ Send</button>
-      </span>
     </span>
   </span>
   <div>
@@ -98,17 +92,20 @@
       </pre>
     </info-button>
     <span>
-        <select id="replaceRulesSelector" class="greenFilter">
-          <option value="normal">normal</option>
-          <option value="du2ich">du2ich</option>
-          <option value="comma2newlines">comma2newlines</option>
-          <option value="tmp">tmp</option>
-        </select>
-        <br>
-        <button id="addReplaceRuleButton" class="negativeRightMargin">+ replace</button>
-        <button id="replaceAgainButton" class="negativeRightMargin">Replace</button>
-        <button id="copyReplaceRulesButton" class="negativeRightMargin">⎘ Copy</button>
-        <button id="undoButtonOfReplaceRules" class="negativeRightMargin">⎌ Undo</button>
+      <select id="replaceRulesSelector" class="greenFilter">
+        <option value="normal">normal</option>
+        <option value="du2ich">du2ich</option>
+        <option value="comma2newlines">comma2newlines</option>
+        <option value="tmp">tmp</option>
+      </select>
+
+<!-- ############## Replace buttons ###############-->
+      <span class="flexRightAndWrapContent">
+        <button id="copyReplaceRulesButton">⎘ Copy</button>
+        <button id="undoButtonOfReplaceRules">⎌ Undo</button>
+        <button id="addReplaceRuleButton">""->""</button>
+        <button id="replaceAgainButton">♻ Replace</button>
+      </span>
     </span>
     <div class="editorTextAreaContainer">
       <textarea id="replaceRulesTextArea" wrap="soft" placeholder="Optional. &quot;SEARCH&quot;-&gt;&quot;REPLACE&quot;" >
@@ -127,8 +124,10 @@
       <info-button>
         Since Whisper wasn't trained using instruction-following techniques, Whisper operates more like a base GPT model. The content of the editor is appended to the prompt. It's important to keep in mind that Whisper only considers the first 244 tokens of the prompt. <a target="_blank" href="https://platform.openai.com/docs/guides/speech-to-text/prompting">More info</a>
       </info-button>
-    <button id="copyPromptButton" class="negativeRightMargin">⎘ Copy</button>
-    <button id="undoButtonOfPrompt" class="negativeRightMargin">⎌ Undo</button>
+      <span class="flexRightAndWrapContent">
+        <button id="copyPromptButton">⎘ Copy</button>
+        <button id="undoButtonOfPrompt">⎌ Undo</button>
+      </span>
     <div class="editorTextAreaContainer">
       <textarea id="transcriptionPrompt" wrap="soft" placeholder="Optional prompt especially for hinting unusual names if they are not recognized by default."></textarea>
     </div>
@@ -138,6 +137,7 @@
     </button>
   </div>
 
+  <!--############## API Selector ##############-->
   <div style="width:100%">
     <h2>API</h2>
     <br><select id="apiSelector" class="greenFilter" style="font-size: 22px">
