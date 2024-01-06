@@ -90,7 +90,7 @@ namespace AfterInit {
         updateStateIndicator();
       };
 
-      const mediaRecorderStoppedCallback = () => {
+      const stopCallback = () => {
         audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
         audioChunks = [];
         { // Download button
@@ -118,7 +118,7 @@ namespace AfterInit {
       };
 
       const stopRecording = () => {
-        mediaRecorder.onstop = mediaRecorderStoppedCallback;
+        mediaRecorder.onstop = stopCallback;
         mediaRecorder.stop();
         updateStateIndicator();
         isRecording = false;

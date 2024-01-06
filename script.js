@@ -79,7 +79,7 @@ var AfterInit;
                 sending = false;
                 updateStateIndicator();
             };
-            const mediaRecorderStoppedCallback = () => {
+            const stopCallback = () => {
                 audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                 audioChunks = [];
                 { // Download button
@@ -104,7 +104,7 @@ var AfterInit;
                 navigator.mediaDevices.getUserMedia({ audio: true }).then(onStreamReady);
             };
             const stopRecording = () => {
-                mediaRecorder.onstop = mediaRecorderStoppedCallback;
+                mediaRecorder.onstop = stopCallback;
                 mediaRecorder.stop();
                 updateStateIndicator();
                 isRecording = false;
