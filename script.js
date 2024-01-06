@@ -100,19 +100,23 @@ var AfterInit;
                 }
                 transcribeAndHandleResultAsync(audioBlob).then(hideSpinner);
             };
-            const onStreamReady = (streamParam) => {
-                stream = streamParam;
-                mediaRecorder = new MediaRecorder(stream);
-                audioChunks = [];
-                mediaRecorder.start();
-                isRecording = true;
-                updateStateIndicator();
-                mediaRecorder.ondataavailable = event => {
-                    audioChunks.push(event.data);
+            const getOnStreamReady = (beginPaused) => {
+                return (streamParam) => {
+                    stream = streamParam;
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.start();
+                    isRecording = true;
+                    updateStateIndicator();
+                    mediaRecorder.ondataavailable = event => {
+                        audioChunks.push(event.data);
+                    };
+                    if (beginPaused)
+                        mediaRecorder.pause();
                 };
             };
-            const startRecording = () => {
-                navigator.mediaDevices.getUserMedia({ audio: true }).then(onStreamReady);
+            const startRecording = (beginPaused = false) => {
+                navigator.mediaDevices.getUserMedia({ audio: true }).then(getOnStreamReady(beginPaused));
             };
             const stopRecording = () => {
                 mediaRecorder.onstop = stopCallback;
@@ -137,18 +141,18 @@ var AfterInit;
                         audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                         audioChunks = [];
                         transcribeAndHandleResultAsync(audioBlob).then(hideSpinner);
-                        startRecording();
+                        startRecording(true);
                     };
                     mediaRecorder.stop();
                 }
                 else {
-                    buttonWithId("stopButton").click();
+                    pauseRecordButton();
                 }
             };
             // ############## sendButton ##############
             buttonWithId("sendButton").addEventListener('click', sendButton);
             // ############## pauseRecordButton ##############
-            buttonWithId("pauseRecordButton").addEventListener('click', () => {
+            const pauseRecordButton = () => {
                 if (mediaRecorder?.state === 'recording') {
                     mediaRecorder.pause();
                     updateStateIndicator();
@@ -160,7 +164,8 @@ var AfterInit;
                 else {
                     buttonWithId("stopButton").click();
                 }
-            });
+            };
+            buttonWithId("pauseRecordButton").addEventListener('click', pauseRecordButton);
             // ############## transcribeAgainButton ##############
             HtmlUtils.addButtonClickListener(buttonWithId("transcribeAgainButton"), () => {
                 showSpinner();
