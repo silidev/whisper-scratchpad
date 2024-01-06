@@ -1,4 +1,3 @@
-
 import {HtmlUtils} from "./HtmlUtils.js";
 import {HelgeUtils} from "./HelgeUtils.js";
 import elementWithId = HtmlUtils.elementWithId;
@@ -169,7 +168,13 @@ namespace AfterInit {
         showSpinner();
         transcribeAndHandleResultAsync(audioBlob).then(hideSpinner);
       });
-    }
+    } // End of media buttons
+
+    // ############## Crop Highlights Button ##############
+    HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsButton"), () => {
+      editorTextarea.value = HelgeUtils.extractHighlights(editorTextarea.value).join(' ');
+      saveEditor();
+    });
 
     // ############## saveAPIKeyButton ##############
     HtmlUtils.addButtonClickListener(buttonWithId("saveAPIKeyButton"), () => {

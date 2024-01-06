@@ -1,5 +1,11 @@
 export var HelgeUtils;
 (function (HelgeUtils) {
+    HelgeUtils.suppressUnusedWarning = (...args) => {
+        const flag = false;
+        if (flag) {
+            console.log(args);
+        }
+    };
     let Audio;
     (function (Audio) {
         Audio.transcribe = async (api, audioBlob, apiKey, prompt = '') => {
@@ -23,6 +29,7 @@ export var HelgeUtils;
                 return result;
             };
             const withGladia = async (audioBlob, apiKey, prompt = '') => {
+                HelgeUtils.suppressUnusedWarning(prompt);
                 // Docs: https://docs.gladia.io/reference/pre-recorded
                 const formData = new FormData();
                 formData.append('audio', audioBlob);
@@ -91,6 +98,15 @@ export var HelgeUtils;
                 return result;
             }
         };
+    };
+    HelgeUtils.extractHighlights = (input) => {
+        const regex = /={2,3}([^=]+)={2,3}/g;
+        let matches = [];
+        let match;
+        while ((match = regex.exec(input)) !== null) {
+            matches.push(match[1].trim());
+        }
+        return matches;
     };
 })(HelgeUtils || (HelgeUtils = {}));
 //# sourceMappingURL=HelgeUtils.js.map

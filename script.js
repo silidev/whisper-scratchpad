@@ -154,7 +154,12 @@ var AfterInit;
                 showSpinner();
                 transcribeAndHandleResultAsync(audioBlob).then(hideSpinner);
             });
-        }
+        } // End of media buttons
+        // ############## Crop Highlights Button ##############
+        HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsButton"), () => {
+            editorTextarea.value = HelgeUtils.extractHighlights(editorTextarea.value).join(' ');
+            saveEditor();
+        });
         // ############## saveAPIKeyButton ##############
         HtmlUtils.addButtonClickListener(buttonWithId("saveAPIKeyButton"), () => {
             setApiKeyCookie(apiKeyInput.value);

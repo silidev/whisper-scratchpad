@@ -1,4 +1,12 @@
 export namespace HelgeUtils {
+
+  export const suppressUnusedWarning = (...args: any[]) => {
+    const flag = false;
+    if (flag) {
+      console.log(args);
+    }
+  };
+
   export namespace Audio {
 
     export type ApiName = "OpenAI" | "Gladia";
@@ -26,6 +34,7 @@ export namespace HelgeUtils {
       };
 
       const withGladia = async (audioBlob: Blob, apiKey: string, prompt: string = '') => {
+        suppressUnusedWarning(prompt);
         // Docs: https://docs.gladia.io/reference/pre-recorded
         const formData = new FormData();
         formData.append('audio', audioBlob);
@@ -100,4 +109,16 @@ Please note that certain strong accents can possibly cause this mode to transcri
       }
     };
   }
+
+  export const extractHighlights = (input: string): string[] => {
+    const regex = /={2,3}([^=]+)={2,3}/g;
+    let matches = [];
+    let match: string[];
+
+    while ((match = regex.exec(input)) !== null) {
+      matches.push(match[1].trim());
+    }
+
+    return matches;
+  };
 }
