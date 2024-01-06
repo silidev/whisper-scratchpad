@@ -55,7 +55,7 @@
   <!-- ########### row1EditorButtons ############# -->
   <button id="clearButton"><span class="greenFilter">🧹</span> Clear</button>
   <button id="copyButton" style="height: 55.5px">⎘ Copy</button>
-  <span class="record-spinner-group">
+  <span class="spinnerGroup">
       <button id="stopButton">
 <!--        This would be better, but no time now: -->
         <!--        <span id="stopButtonRecording" class="stopButtonText blinkingFast">🔴Stop   </span>-->
@@ -64,7 +64,11 @@
       <span id="spinner1" class="spinner" style="display: none;"></span>
     </span>
   <button id="pauseRecordButton"></button>
-  <br><!-- This br is important to keep the stopButton on the right side, good reachable for the thumb.   -->
+</div>
+
+<!-- This division is important to keep the stopButton on the right side, good reachable for the thumb.   -->
+
+<div class="flexRightAndWrapContent">
   <!-- ########### row2EditorButtons ############# -->
   <button id="undoButtonOfEditor" style="">Un-<br>do</button>
   <button id="abortButton" style="">🗙 Abort</button>
