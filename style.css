@@ -1,5 +1,6 @@
 :root {
  --myGreen: #0f0;
+ --buttonHeight: 55px;
 }
 
 * {
@@ -68,7 +69,7 @@ button {
  padding: 0 10px;
  margin: 0;
  /*flex-grow: 1;*/
- height: 55px;
+ height: var(--buttonHeight);
 }
 
 input, textarea {
@@ -155,4 +156,22 @@ textarea {
 
 .negativeRightMargin {
  margin-right: -15px;
+}
+
+.item, .heading {
+ padding: 0 10px;
+ background-color: black;
+ height: var(--buttonHeight);
+ align-items: center;
+ justify-content: center;
+ border: 1px solid var(--myGreen);
+}
+
+.item:hover {
+ background: white;
+ cursor: default;
+}
+
+.heading {
+ background-color: black;
 }

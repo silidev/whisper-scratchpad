@@ -12,54 +12,54 @@
   <script type="module" src="HelgeUtils.js"></script>
   <script type="module" src="HtmlUtils.js"></script>
   <script src="InfoButton.js"></script>
+  <script defer src='wc-menu-wrapper.min.js'></script>
 </head>
 <body>
-  <textarea id="editorTextarea" wrap="soft" placeholder="ICH ICH ICH">
+  <textarea id="editorTextarea" wrap="soft" placeholder="ICH ICH ICH" style="margin-bottom: -6px">
   </textarea>
 
 <!--############## Buttons ##############-->
 
   <span class="flexRightAndWrapContent">
-    <span class="flexRight">
-      <button>  <info-button>
-        <div style="position: fixed;
-          left: 0; background-color: black; border: 1px solid green; padding: 5px;
-          width: 6cm">
-          The buttons:
-          <ul>
-            <li>Copy: Copies the content of the editor to the clipboard.</li>
-            <li>Send: This will send the current recording to the API, start a new recording and insert the transcription at the cursor position.</li>
-            <li>Replace: Replaces the text in the editor according to the ruleset.</li>
-            <li>"Tr. again": Transcribes the current recording and inserts the transcription at the cursor position.</li>
-            <li>"+ replace": Add a replace-rule with the currently selected text.</li>
-          </ul>
-        </div>
-      </info-button></button>
-      <button id="clearButton"><span class="greenFilter">🧹</span> Clear</button>
-      <span class="record-spinner-group">
-        <button id="recordButton">‖ Paused</button>
-        <span id="recordSpinner" class="spinner" style="display: none;"></span>
-      </span>
-      <button id="pauseButton">⬤ Record</button>
+    <wc-menu-wrapper>
+      <!-- https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper -->
+      <div class='heading'>Menu</div>
+      <div class='item'>
+        <a id="cropHighlightsButton">Crop == highlights</a>
+      </div>
+    </wc-menu-wrapper>
+    <button>  <info-button>
+      <div style="position: fixed;
+        left: 0; background-color: black; border: 1px solid green; padding: 5px;
+        width: 6cm">
+        The buttons:
+        <ul>
+          <li>Copy: Copies the content of the editor to the clipboard.</li>
+          <li>Send: This will send the current recording to the API, start a new recording and insert the transcription at the cursor position.</li>
+          <li>Replace: Replaces the text in the editor according to the ruleset.</li>
+          <li>"Tr. again": Transcribes the current recording and inserts the transcription at the cursor position.</li>
+          <li>"+ replace": Add a replace-rule with the currently selected text.</li>
+        </ul>
+      </div>
+    </info-button></button>
+    <button id="clearButton"><span class="greenFilter">🧹</span> Clear</button>
+    <button id="copyButton" style="height: 55.5px">⎘ Copy</button>
+    <span class="record-spinner-group">
+      <button id="recordButton">‖ Paused</button>
+      <span id="recordSpinner" class="spinner" style="display: none;"></span>
     </span>
-  </span>
+    <button id="pauseButton">⬤ Record</button>
+    <button id="undoButtonOfEditor" style="">Un-<br>do</button>
+    <button id="abortButton" style="">🗙 Abort</button>
+    <button id="saveEditorButton" style="display: none;">
+      <span class="greenFilter">💾</span> Save editor
+    </button>
 
-  <span class="flexRightAndWrapContent">
-    <span class="flexRight">
-      <button id="copyButton" style="height: 55.5px">⎘ Copy</button>
-      <button id="undoButtonOfEditor" style="">⎌ Undo</button>
-      <button id="abortButton" style="">🗙 Abort</button>
-      <button id="saveEditorButton" style="display: none;">
-        <span class="greenFilter">💾</span> Save editor
-      </button>
-    </span>
-    <span class="flexRight">
-      <button id="cropHighlightsButton">Crop ==</button>
-      <button id="addReplaceRuleButton"><span style="font-size: 16px">""->""</span></button>
-      <button id="replaceAgainButton">♻ Replace</button>
-      <button id="transcribeAgainButton">↻ Tr. again</button>
-      <button id="sendButton">✉ Send</button>
-    </span>
+
+    <button id="replaceAgainButton">♻<br>Rpl</button>
+    <button id="transcribeAgainButton">↻ Tr.<br>again</button>
+    <button id="sendButton">✉ Send</button>
+  </span>
   </span>
   <div>
     <a id="downloadLink" style="display:none; margin-left: 2cm">Download audio</a>
@@ -102,6 +102,7 @@
           <option value="tmp">tmp</option>
         </select>
 <!-- ############## Replace buttons ###############-->
+      <button id="addReplaceRuleButton"><span style="font-size: 16px">""->""</span></button>
         <button id="copyReplaceRulesButton">⎘ Copy</button>
         <button id="undoButtonOfReplaceRules">⎌ Undo</button>
       </span>
