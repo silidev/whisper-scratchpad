@@ -58,10 +58,10 @@ var UI;
 })(UI || (UI = {}));
 // ############## addButtonEventListeners ##############
 // noinspection SpellCheckingInspection
-export var ButtonEventListeners;
-(function (ButtonEventListeners) {
-    let MediaButtons;
-    (function (MediaButtons) {
+export var Buttons;
+(function (Buttons) {
+    let Media;
+    (function (Media) {
         let mediaRecorder;
         let audioChunks = [];
         let audioBlob;
@@ -99,7 +99,7 @@ export var ButtonEventListeners;
                     setStopped();
                 }
             };
-        })(StateIndicator = MediaButtons.StateIndicator || (MediaButtons.StateIndicator = {}));
+        })(StateIndicator = Media.StateIndicator || (Media.StateIndicator = {}));
         const transcribeAndHandleResultAsync = async (audioBlob) => {
             sending = true;
             StateIndicator.setPaused();
@@ -205,8 +205,8 @@ export var ButtonEventListeners;
             transcribeAndHandleResultAsync(audioBlob).then(UI.hideSpinner);
         });
         StateIndicator.update();
-    })(MediaButtons = ButtonEventListeners.MediaButtons || (ButtonEventListeners.MediaButtons = {})); // End of media buttons
-    ButtonEventListeners.addButtonEventListeners = () => {
+    })(Media = Buttons.Media || (Buttons.Media = {})); // End of media buttons
+    Buttons.addButtonEventListeners = () => {
         // ############## Crop Highlights Button ##############
         HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
             editorTextarea.value = HelgeUtils.extractHighlights(editorTextarea.value).join(' ');
@@ -292,7 +292,7 @@ export var ButtonEventListeners;
             HtmlUtils.Cookies.set('apiSelector', apiSelector.value);
         });
     };
-})(ButtonEventListeners || (ButtonEventListeners = {}));
+})(Buttons || (Buttons = {}));
 const getApiKey = () => HtmlUtils.Cookies.get(apiSelector.value + 'ApiKey');
 const setApiKeyCookie = (apiKey) => {
     HtmlUtils.Cookies.set(apiSelector.value + 'ApiKey', apiKey);
@@ -315,7 +315,7 @@ export const registerServiceWorker = () => {
     }
 };
 const init = () => {
-    ButtonEventListeners.addButtonEventListeners();
+    Buttons.addButtonEventListeners();
     registerServiceWorker();
     loadFormData();
 };

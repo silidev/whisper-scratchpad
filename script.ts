@@ -71,8 +71,8 @@ namespace UI {
 
 // ############## addButtonEventListeners ##############
 // noinspection SpellCheckingInspection
-export namespace ButtonEventListeners {
-  export namespace MediaButtons {
+export namespace Buttons {
+  export namespace Media {
 
     let mediaRecorder: MediaRecorder;
     let audioChunks = [];
@@ -356,7 +356,7 @@ export const registerServiceWorker = () => {
 };
 
 const init = () => {
-  ButtonEventListeners.addButtonEventListeners();
+  Buttons.addButtonEventListeners();
   registerServiceWorker();
   loadFormData();
 }
