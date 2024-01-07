@@ -70,39 +70,39 @@ export var ButtonEventListeners;
         let sending = false;
         let StateIndicator;
         (function (StateIndicator) {
+            const setHtmlOfButtonStop = (html) => {
+                buttonWithId("stopButton").innerHTML = html;
+            };
+            const setHtmlOfButtonPauseRecord = (html) => {
+                buttonWithId("pauseRecordButton").innerHTML = html;
+            };
+            const setRecording = () => {
+                setHtmlOfButtonStop(blinkFast('🔴') + (sending ? 'Sending' : 'Stop'));
+                setHtmlOfButtonPauseRecord(blinkFast('||') + ' Pause');
+            };
+            StateIndicator.setPaused = () => {
+                setHtmlOfButtonStop(blinkSlow('◼') + ' Stop');
+                setHtmlOfButtonPauseRecord(blinkSlow('⬤') + ' Cont.');
+            };
+            const setStopped = () => {
+                setHtmlOfButtonStop(sending ? blinkFast('◼') + ' Sending' : ' Stopped');
+                setHtmlOfButtonPauseRecord('⬤ Record');
+            };
             StateIndicator.update = () => {
-                const setHtmlOfButtonStop = (html) => {
-                    buttonWithId("stopButton").innerHTML = html;
-                };
-                const setHtmlOfButtonPauseRecord = (html) => {
-                    buttonWithId("pauseRecordButton").innerHTML = html;
-                };
-                const setRecordingIndicator = () => {
-                    setHtmlOfButtonStop(blinkFast('🔴') + (sending ? 'Sending' : 'Stop'));
-                    setHtmlOfButtonPauseRecord(blinkFast('||') + ' Pause');
-                };
-                const setPausedIndicator = () => {
-                    setHtmlOfButtonStop(blinkSlow('◼') + ' Stop');
-                    setHtmlOfButtonPauseRecord(blinkSlow('⬤') + ' Cont.');
-                };
-                const setStoppedIndicator = () => {
-                    setHtmlOfButtonStop(sending ? blinkFast('◼') + ' Sending' : ' Stopped');
-                    setHtmlOfButtonPauseRecord('⬤ Record');
-                };
                 if (mediaRecorder?.state === 'recording') {
-                    setRecordingIndicator();
+                    setRecording();
                 }
                 else if (mediaRecorder?.state === 'paused') {
-                    setPausedIndicator();
+                    StateIndicator.setPaused();
                 }
                 else {
-                    setStoppedIndicator();
+                    setStopped();
                 }
             };
         })(StateIndicator = MediaButtons.StateIndicator || (MediaButtons.StateIndicator = {}));
         const transcribeAndHandleResultAsync = async (audioBlob) => {
             sending = true;
-            StateIndicator.update();
+            StateIndicator.setPaused();
             const apiName = getApiSelectedInUi();
             if (!apiName) {
                 insertAtCursor("You must select an API below.");
