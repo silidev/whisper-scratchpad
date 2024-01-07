@@ -4,8 +4,6 @@ import {HelgeUtils} from "./HelgeUtils.js";
 // ############## AfterInit ##############
 import TextAreas = HtmlUtils.TextAreas;
 import buttonWithId = HtmlUtils.buttonWithId;
-import Cookies = HtmlUtils.Cookies;
-import Audio = HelgeUtils.Audio;
 import blinkFast = HtmlUtils.blinkFast;
 import blinkSlow = HtmlUtils.blinkSlow;
 
@@ -45,7 +43,7 @@ const editorTextarea = document.getElementById('editorTextarea') as HTMLTextArea
 const transcriptionPrompt = document.getElementById('transcriptionPrompt') as HTMLTextAreaElement;
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement;
 
-const saveEditor = () => Cookies.set("editorText", HtmlUtils.textAreaWithId("editorTextarea").value);
+const saveEditor = () => HtmlUtils.Cookies.set("editorText", HtmlUtils.textAreaWithId("editorTextarea").value);
 
 TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea');
 TextAreas.setAutoSave('editorText', 'editorTextarea');
@@ -125,7 +123,7 @@ export namespace ButtonEventListeners {
         important because the last words of the last transcription should always be included to avoid hallucinations
          if it otherwise would be an incomplete sentence. */
           - transcriptionPrompt.value.length)) : "";
-      const result = async () => await Audio.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper());
+      const result = async () => await HelgeUtils.Audio.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper());
       const replacedOutput = HelgeUtils.replaceByRules(await result(), replaceRulesTextArea.value);
       if (editorTextarea.value.length > 0)
         insertAtCursor(" ");
@@ -259,17 +257,17 @@ export namespace ButtonEventListeners {
 
     // saveEditorButton
     HtmlUtils.addButtonClickListener(buttonWithId("saveEditorButton"), () => {
-      Cookies.set("editorText", editorTextarea.value);
+      HtmlUtils.Cookies.set("editorText", editorTextarea.value);
     });
 
     // savePromptButton
     HtmlUtils.addButtonClickListener(buttonWithId("savePromptButton"), () => {
-      Cookies.set("prompt", transcriptionPrompt.value);
+      HtmlUtils.Cookies.set("prompt", transcriptionPrompt.value);
     });
 
     // saveRulesButton
     HtmlUtils.addButtonClickListener(buttonWithId("saveRulesButton"), () => {
-      Cookies.set("replaceRules", replaceRulesTextArea.value);
+      HtmlUtils.Cookies.set("replaceRules", replaceRulesTextArea.value);
     });
 
     function addUndoButtonEventListener(undoButtonId: string, textArea: HTMLTextAreaElement) {
@@ -323,17 +321,18 @@ export namespace ButtonEventListeners {
     });
 
     apiSelector.addEventListener('change', () => {
-      Cookies.set('apiSelector', apiSelector.value);
+      HtmlUtils.Cookies.set('apiSelector', apiSelector.value);
     });
   }
 }
-const getApiKey = () => Cookies.get(apiSelector.value + 'ApiKey');
+const getApiKey = () => HtmlUtils.Cookies.get(apiSelector.value + 'ApiKey');
 
 const setApiKeyCookie = (apiKey: string) => {
-  Cookies.set(apiSelector.value + 'ApiKey', apiKey);
+  HtmlUtils.Cookies.set(apiSelector.value + 'ApiKey', apiKey);
 };
 
 export const loadFormData = () => {
+  const Cookies = HtmlUtils.Cookies;
   editorTextarea.value = Cookies.get("editorText");
   transcriptionPrompt.value = Cookies.get("prompt");
   replaceRulesTextArea.value = Cookies.get("replaceRules");
