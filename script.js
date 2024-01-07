@@ -1,17 +1,20 @@
 import { HtmlUtils } from "./HtmlUtils.js";
 import { HelgeUtils } from "./HelgeUtils.js";
-var TextAreas = HtmlUtils.TextAreas;
-var buttonWithId = HtmlUtils.buttonWithId;
-var Cookies = HtmlUtils.Cookies;
-var Audio = HelgeUtils.Audio;
-var blinkFast = HtmlUtils.blinkFast;
-var blinkSlow = HtmlUtils.blinkSlow;
-// ############## Config ##############
-const INSERT_EDITOR_INTO_PROMPT = true;
-var Pures;
-(function (Pures) {
-    // noinspection SpellCheckingInspection
-    Pures.du2ich = (input) => HelgeUtils.replaceByRules(HelgeUtils.replaceByRules(input, `
+// ############## AfterInit ##############
+var AfterInit;
+(function (AfterInit) {
+    var TextAreas = HtmlUtils.TextAreas;
+    var buttonWithId = HtmlUtils.buttonWithId;
+    var Cookies = HtmlUtils.Cookies;
+    var Audio = HelgeUtils.Audio;
+    var blinkFast = HtmlUtils.blinkFast;
+    var blinkSlow = HtmlUtils.blinkSlow;
+    // ############## Config ##############
+    const INSERT_EDITOR_INTO_PROMPT = true;
+    let Pures;
+    (function (Pures) {
+        // noinspection SpellCheckingInspection
+        Pures.du2ich = (input) => HelgeUtils.replaceByRules(HelgeUtils.replaceByRules(input, `
 "st\\b"->""
 `), `
 "Du"->"Ich"
@@ -27,10 +30,7 @@ var Pures;
 "I"->"Ist"
 "i"->"ist"
 `, true);
-})(Pures || (Pures = {}));
-// ############## AfterInit ##############
-var AfterInit;
-(function (AfterInit) {
+    })(Pures || (Pures = {}));
     var inputElementWithId = HtmlUtils.inputElementWithId;
     const downloadLink = document.getElementById('downloadLink');
     const spinner1 = document.getElementById('spinner1');

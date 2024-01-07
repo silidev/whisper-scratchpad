@@ -1,22 +1,25 @@
 import {HtmlUtils} from "./HtmlUtils.js";
 import {HelgeUtils} from "./HelgeUtils.js";
-import TextAreas = HtmlUtils.TextAreas;
-import buttonWithId = HtmlUtils.buttonWithId;
-import Cookies = HtmlUtils.Cookies;
-import Audio = HelgeUtils.Audio;
-import blinkFast = HtmlUtils.blinkFast;
-import blinkSlow = HtmlUtils.blinkSlow;
 
-// ############## Config ##############
-const INSERT_EDITOR_INTO_PROMPT = true;
+// ############## AfterInit ##############
+namespace AfterInit {
+  import TextAreas = HtmlUtils.TextAreas;
+  import buttonWithId = HtmlUtils.buttonWithId;
+  import Cookies = HtmlUtils.Cookies;
+  import Audio = HelgeUtils.Audio;
+  import blinkFast = HtmlUtils.blinkFast;
+  import blinkSlow = HtmlUtils.blinkSlow;
 
-namespace Pures {
-  // noinspection SpellCheckingInspection
-  export const du2ich = (input: string) => HelgeUtils.replaceByRules(HelgeUtils.replaceByRules(input
-          , `
+  // ############## Config ##############
+  const INSERT_EDITOR_INTO_PROMPT = true;
+
+  namespace Pures {
+    // noinspection SpellCheckingInspection
+    export const du2ich = (input: string) => HelgeUtils.replaceByRules(HelgeUtils.replaceByRules(input
+            , `
 "st\\b"->""
 `)
-      , `
+        , `
 "Du"->"Ich"
 "du""->"ich"
 "dich"->"mich"
@@ -30,11 +33,8 @@ namespace Pures {
 "I"->"Ist"
 "i"->"ist"
 `, true);
-}
+  }
 
-
-// ############## AfterInit ##############
-namespace AfterInit {
 
   import inputElementWithId = HtmlUtils.inputElementWithId;
   const downloadLink = document.getElementById('downloadLink') as HTMLAnchorElement;
