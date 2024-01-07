@@ -81,49 +81,53 @@ export namespace ButtonEventListeners {
     let stream: MediaStream;
     let sending = false;
 
-    const updateStateIndicator = () => {
-      const setHtmlOfButtonStop = (html: string) => {
-        buttonWithId("stopButton").innerHTML = html;
-      };
-      const setHtmlOfButtonPauseRecord = (html: string) => {
-        buttonWithId("pauseRecordButton").innerHTML = html;
-      };
-      const setRecordingIndicator = () => {
-        setHtmlOfButtonStop(blinkFast('🔴') + (sending ? 'Sending' : 'Stop'));
-        setHtmlOfButtonPauseRecord(blinkFast('||') + ' Pause');
-      };
-      const setPausedIndicator = () => {
-        setHtmlOfButtonStop(blinkSlow('◼') + ' Stop');
-        setHtmlOfButtonPauseRecord(blinkSlow('⬤') + ' Cont.');
-      };
-      const setStoppedIndicator = () => {
-        setHtmlOfButtonStop(sending ? blinkFast('◼') + ' Sending' : ' Stopped');
-        setHtmlOfButtonPauseRecord('⬤ Record');
-      };
+    export namespace StateIndicator {
+      export const update = () => {
+        const setHtmlOfButtonStop = (html: string) => {
+          buttonWithId("stopButton").innerHTML = html;
+        };
+        const setHtmlOfButtonPauseRecord = (html: string) => {
+          buttonWithId("pauseRecordButton").innerHTML = html;
+        };
+        const setRecordingIndicator = () => {
+          setHtmlOfButtonStop(blinkFast('🔴') + (sending ? 'Sending' : 'Stop'));
+          setHtmlOfButtonPauseRecord(blinkFast('||') + ' Pause');
+        };
+        const setPausedIndicator = () => {
+          setHtmlOfButtonStop(blinkSlow('◼') + ' Stop');
+          setHtmlOfButtonPauseRecord(blinkSlow('⬤') + ' Cont.');
+        };
+        const setStoppedIndicator = () => {
+          setHtmlOfButtonStop(sending ? blinkFast('◼') + ' Sending' : ' Stopped');
+          setHtmlOfButtonPauseRecord('⬤ Record');
+        };
 
-      if (mediaRecorder?.state === 'recording') {
-        setRecordingIndicator();
-      } else if (mediaRecorder?.state === 'paused') {
-        setPausedIndicator();
-      } else {
-        setStoppedIndicator();
+        if (mediaRecorder?.state === 'recording') {
+          setRecordingIndicator();
+        } else if (mediaRecorder?.state === 'paused') {
+          setPausedIndicator();
+        } else {
+          setStoppedIndicator();
+        }
       }
     }
 
     const transcribeAndHandleResultAsync = async (audioBlob: Blob) => {
       sending = true;
-      updateStateIndicator();
+      StateIndicator.update();
       const apiName = getApiSelectedInUi();
       if (!apiName) {
         insertAtCursor("You must select an API below.");
         return;
       }
-      const promptForWhisper = () => transcriptionPrompt.value + INSERT_EDITOR_INTO_PROMPT ? editorTextarea.value.slice(-(
+      const promptForWhisper = () => transcriptionPrompt.value 
+          + INSERT_EDITOR_INTO_PROMPT ? editorTextarea.value.slice(-(
           750 /* Taking the last 750 chars is for sure less than the max 250 tokens whisper is considering. This is
-        important because the last words of the last transcription should always be included to avoid hallucinations
-         if it otherwise would be an incomplete sentence. */
+          important because the last words of the last transcription should always be included to avoid hallucinations
+          if it otherwise would be an incomplete sentence. */
           - transcriptionPrompt.value.length)) : "";
-      const result = async () => await HelgeUtils.Audio.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper());
+      const result = async () => await HelgeUtils.Audio.transcribe(
+          apiName, audioBlob, getApiKey(), promptForWhisper());
       const replacedOutput = HelgeUtils.replaceByRules(await result(), replaceRulesTextArea.value);
       if (editorTextarea.value.length > 0)
         insertAtCursor(" ");
@@ -131,7 +135,7 @@ export namespace ButtonEventListeners {
       saveEditor()
       navigator.clipboard.writeText(editorTextarea.value).then();
       sending = false;
-      updateStateIndicator();
+      StateIndicator.update();
     };
 
     const stopCallback = () => {
@@ -152,7 +156,7 @@ export namespace ButtonEventListeners {
         audioChunks = [];
         mediaRecorder.start();
         isRecording = true;
-        updateStateIndicator();
+        StateIndicator.update();
         mediaRecorder.ondataavailable = event => {
           audioChunks.push(event.data);
         };
@@ -167,7 +171,7 @@ export namespace ButtonEventListeners {
     const stopRecording = () => {
       mediaRecorder.onstop = stopCallback;
       mediaRecorder.stop();
-      updateStateIndicator();
+      StateIndicator.update();
       isRecording = false;
       HtmlUtils.Media.releaseMicrophone(stream);
     };
@@ -199,10 +203,10 @@ export namespace ButtonEventListeners {
     const pauseRecordButton = () => {
       if (mediaRecorder?.state === 'recording') {
         mediaRecorder.pause();
-        updateStateIndicator();
+        StateIndicator.update();
       } else if (mediaRecorder?.state === 'paused') {
         mediaRecorder.resume();
-        updateStateIndicator();
+        StateIndicator.update();
       } else {
         buttonWithId("stopButton").click();
       }
@@ -219,7 +223,7 @@ export namespace ButtonEventListeners {
       transcribeAndHandleResultAsync(audioBlob).then(UI.hideSpinner);
     });
 
-    updateStateIndicator();
+    StateIndicator.update();
   } // End of media buttons
 
   export const addButtonEventListeners = () => {
