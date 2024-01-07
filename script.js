@@ -76,12 +76,12 @@ export var Buttons;
             const setHtmlOfButtonPauseRecord = (html) => {
                 buttonWithId("pauseRecordButton").innerHTML = html;
             };
-            const setRecording = () => {
-                setHtmlOfButtonStop(blinkFast('🔴') + (sending ? 'Sending' : 'Stop'));
+            const setRecording = (sendingParam) => {
+                setHtmlOfButtonStop(blinkFast('🔴') + (sendingParam ? 'Sending' : 'Stop'));
                 setHtmlOfButtonPauseRecord(blinkFast('||') + ' Pause');
             };
-            StateIndicator.setPaused = () => {
-                setHtmlOfButtonStop(blinkSlow('◼') + ' Stop');
+            StateIndicator.setPaused = (sendingParam = sending) => {
+                setHtmlOfButtonStop(blinkSlow('◼ ') + (sendingParam ? 'Sending' : 'Stop'));
                 setHtmlOfButtonPauseRecord(blinkSlow('⬤') + ' Cont.');
             };
             const setStopped = () => {
@@ -90,10 +90,10 @@ export var Buttons;
             };
             StateIndicator.update = () => {
                 if (mediaRecorder?.state === 'recording') {
-                    setRecording();
+                    setRecording(sending);
                 }
                 else if (mediaRecorder?.state === 'paused') {
-                    StateIndicator.setPaused();
+                    StateIndicator.setPaused(sending);
                 }
                 else {
                     setStopped();
@@ -102,7 +102,7 @@ export var Buttons;
         })(StateIndicator = Media.StateIndicator || (Media.StateIndicator = {}));
         const transcribeAndHandleResultAsync = async (audioBlob) => {
             sending = true;
-            StateIndicator.setPaused();
+            StateIndicator.setPaused(true);
             const apiName = getApiSelectedInUi();
             if (!apiName) {
                 insertAtCursor("You must select an API below.");
