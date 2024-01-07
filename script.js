@@ -8,6 +8,26 @@ var blinkFast = HtmlUtils.blinkFast;
 var blinkSlow = HtmlUtils.blinkSlow;
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
+var Pures;
+(function (Pures) {
+    // noinspection SpellCheckingInspection
+    Pures.du2ich = (input) => HelgeUtils.replaceByRules(HelgeUtils.replaceByRules(input, `
+"st\\b"->""
+`), `
+"Du"->"Ich"
+"du""->"ich"
+"dich"->"mich"
+"Dich"->"Mich"
+"dir"->"mir"
+"Dir"->"Mir"
+"dein"->"mein"
+"Dein"->"Mein"
+"bist"->"bin"
+"hast"->"habe"
+"I"->"Ist"
+"i"->"ist"
+`, true);
+})(Pures || (Pures = {}));
 // ############## AfterInit ##############
 var AfterInit;
 (function (AfterInit) {
@@ -29,10 +49,23 @@ var AfterInit;
     function getApiSelectedInUi() {
         return apiSelector.value;
     }
+    let UI;
+    (function (UI) {
+        UI.showSpinner = () => {
+            // probably not needed anymore, delete later
+            // spinner1.style.display = 'block';
+        };
+        // probably not needed anymore, delete later
+        UI.hideSpinner = () => {
+            spinner1.style.display = 'none';
+        };
+    })(UI || (UI = {}));
     // ############## addButtonEventListeners ##############
     // noinspection SpellCheckingInspection
-    AfterInit.addButtonEventListeners = () => {
-        { // Media buttons
+    let ButtonEventListeners;
+    (function (ButtonEventListeners) {
+        let MediaButtons;
+        (function (MediaButtons) {
             let mediaRecorder;
             let audioChunks = [];
             let audioBlob;
@@ -77,8 +110,8 @@ var AfterInit;
                     return;
                 }
                 const promptForWhisper = () => transcriptionPrompt.value + INSERT_EDITOR_INTO_PROMPT ? editorTextarea.value.slice(-(750 /* Taking the last 750 chars is for sure less than the max 250 tokens whisper is considering. This is
-                important because the last words of the last transcription should always be included to avoid hallucinations
-                 if it otherwise would be an incomplete sentence. */
+              important because the last words of the last transcription should always be included to avoid hallucinations
+               if it otherwise would be an incomplete sentence. */
                     - transcriptionPrompt.value.length)) : "";
                 const result = async () => await Audio.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper());
                 const replacedOutput = HelgeUtils.replaceByRules(await result(), replaceRulesTextArea.value);
@@ -98,7 +131,7 @@ var AfterInit;
                     downloadLink.download = 'recording.wav';
                     downloadLink.style.display = 'block';
                 }
-                transcribeAndHandleResultAsync(audioBlob).then(hideSpinner);
+                transcribeAndHandleResultAsync(audioBlob).then(UI.hideSpinner);
             };
             const getOnStreamReady = (beginPaused) => {
                 return (streamParam) => {
@@ -131,7 +164,7 @@ var AfterInit;
                     stopRecording();
                 }
                 else {
-                    showSpinner();
+                    UI.showSpinner();
                     startRecording();
                 }
             });
@@ -140,7 +173,7 @@ var AfterInit;
                     mediaRecorder.onstop = () => {
                         audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                         audioChunks = [];
-                        transcribeAndHandleResultAsync(audioBlob).then(hideSpinner);
+                        transcribeAndHandleResultAsync(audioBlob).then(UI.hideSpinner);
                         startRecording(true);
                     };
                     mediaRecorder.stop();
@@ -149,8 +182,6 @@ var AfterInit;
                     pauseRecordButton();
                 }
             };
-            // ############## sendButton ##############
-            buttonWithId("sendButton").addEventListener('click', sendButton);
             // ############## pauseRecordButton ##############
             const pauseRecordButton = () => {
                 if (mediaRecorder?.state === 'recording') {
@@ -165,127 +196,103 @@ var AfterInit;
                     buttonWithId("stopButton").click();
                 }
             };
+            // ############## sendButton ##############
+            buttonWithId("sendButton").addEventListener('click', sendButton);
             buttonWithId("pauseRecordButton").addEventListener('click', pauseRecordButton);
             // ############## transcribeAgainButton ##############
             HtmlUtils.addButtonClickListener(buttonWithId("transcribeAgainButton"), () => {
-                showSpinner();
-                transcribeAndHandleResultAsync(audioBlob).then(hideSpinner);
+                UI.showSpinner();
+                transcribeAndHandleResultAsync(audioBlob).then(UI.hideSpinner);
             });
             updateStateIndicator();
-        } // End of media buttons
-        // ############## Crop Highlights Button ##############
-        HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
-            editorTextarea.value = HelgeUtils.extractHighlights(editorTextarea.value).join(' ');
-            saveEditor();
-        });
-        // noinspection SpellCheckingInspection
-        const du2ich = (input) => HelgeUtils.replaceByRules(HelgeUtils.replaceByRules(input, `
-"st\\b"->""
-`), `
-"Du"->"Ich"
-"du""->"ich"
-"dich"->"mich"
-"Dich"->"Mich"
-"dir"->"mir"
-"Dir"->"Mir"
-"dein"->"mein"
-"Dein"->"Mein"
-"bist"->"bin"
-"hast"->"habe"
-"I"->"Ist"
-"i"->"ist"
-`, true);
-        // noinspection SpellCheckingInspection
-        /*
-        * */
-        // ############## Crop Highlights Button ##############
-        HtmlUtils.addButtonClickListener(buttonWithId("du2ichMenuItem"), () => {
-            const value = du2ich(editorTextarea.value);
-            console.log(value);
-            editorTextarea.value = value;
-            saveEditor();
-        });
-        // ############## saveAPIKeyButton ##############
-        HtmlUtils.addButtonClickListener(buttonWithId("saveAPIKeyButton"), () => {
-            setApiKeyCookie(apiKeyInput.value);
-            apiKeyInput.value = '';
-        });
-        // clearButton
-        HtmlUtils.addButtonClickListener(buttonWithId("clearButton"), () => {
-            editorTextarea.value = '';
-            saveEditor();
-        });
-        // replaceAgainButton
-        HtmlUtils.addButtonClickListener(buttonWithId("replaceAgainButton"), () => {
-            editorTextarea.value = HelgeUtils.replaceByRules(editorTextarea.value, replaceRulesTextArea.value);
-        });
-        // saveEditorButton
-        HtmlUtils.addButtonClickListener(buttonWithId("saveEditorButton"), () => {
-            Cookies.set("editorText", editorTextarea.value);
-        });
-        // savePromptButton
-        HtmlUtils.addButtonClickListener(buttonWithId("savePromptButton"), () => {
-            Cookies.set("prompt", transcriptionPrompt.value);
-        });
-        // saveRulesButton
-        HtmlUtils.addButtonClickListener(buttonWithId("saveRulesButton"), () => {
-            Cookies.set("replaceRules", replaceRulesTextArea.value);
-        });
-        function addUndoButtonEventListener(undoButtonId, textArea) {
-            HtmlUtils.addButtonClickListener(buttonWithId(undoButtonId), () => {
-                textArea.focus();
-                document.execCommand('undo'); // Yes, deprecated, but works. I will replace it when it fails. Docs: https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
+        })(MediaButtons = ButtonEventListeners.MediaButtons || (ButtonEventListeners.MediaButtons = {})); // End of media buttons
+        ButtonEventListeners.addButtonEventListeners = () => {
+            // ############## Crop Highlights Button ##############
+            HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
+                editorTextarea.value = HelgeUtils.extractHighlights(editorTextarea.value).join(' ');
+                saveEditor();
             });
-        }
-        // undoButtonOfEditor
-        addUndoButtonEventListener("undoButtonOfEditor", editorTextarea);
-        addUndoButtonEventListener("undoButtonOfReplaceRules", replaceRulesTextArea);
-        addUndoButtonEventListener("undoButtonOfPrompt", transcriptionPrompt);
-        // addReplaceRuleButton
-        HtmlUtils.addButtonClickListener(buttonWithId("addReplaceRuleButton"), () => {
-            // add TextArea.selectedText() to the start of the replaceRulesTextArea
-            TextAreas.setCursor(replaceRulesTextArea, 0);
-            const selectedText = TextAreas.selectedText(editorTextarea);
-            TextAreas.insertTextAtCursor(replaceRulesTextArea, `"${selectedText}"->"${selectedText}"\n`);
-            TextAreas.setCursor(replaceRulesTextArea, 5 + selectedText.length);
-            replaceRulesTextArea.focus();
-        });
-        // aboutButton
-        HtmlUtils.addButtonClickListener(buttonWithId("cancelButton"), () => {
-            saveEditor();
-            window.location.reload();
-        });
-        // copyButton
-        /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
-        function addEventListenerForCopyButton(buttonId, inputElementId) {
-            buttonWithId(buttonId).addEventListener('click', () => {
-                navigator.clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
-                    buttonWithId(buttonId).textContent = '⎘ Copied!';
-                    setTimeout(() => {
-                        buttonWithId(buttonId).textContent = '⎘ Copy';
-                    }, 2000);
+            // ############## Crop Highlights Button ##############
+            HtmlUtils.addButtonClickListener(buttonWithId("du2ichMenuItem"), () => {
+                const value = Pures.du2ich(editorTextarea.value);
+                console.log(value);
+                editorTextarea.value = value;
+                saveEditor();
+            });
+            // ############## saveAPIKeyButton ##############
+            HtmlUtils.addButtonClickListener(buttonWithId("saveAPIKeyButton"), () => {
+                setApiKeyCookie(apiKeyInput.value);
+                apiKeyInput.value = '';
+            });
+            // clearButton
+            HtmlUtils.addButtonClickListener(buttonWithId("clearButton"), () => {
+                editorTextarea.value = '';
+                saveEditor();
+            });
+            // replaceAgainButton
+            HtmlUtils.addButtonClickListener(buttonWithId("replaceAgainButton"), () => {
+                editorTextarea.value = HelgeUtils.replaceByRules(editorTextarea.value, replaceRulesTextArea.value);
+            });
+            // saveEditorButton
+            HtmlUtils.addButtonClickListener(buttonWithId("saveEditorButton"), () => {
+                Cookies.set("editorText", editorTextarea.value);
+            });
+            // savePromptButton
+            HtmlUtils.addButtonClickListener(buttonWithId("savePromptButton"), () => {
+                Cookies.set("prompt", transcriptionPrompt.value);
+            });
+            // saveRulesButton
+            HtmlUtils.addButtonClickListener(buttonWithId("saveRulesButton"), () => {
+                Cookies.set("replaceRules", replaceRulesTextArea.value);
+            });
+            function addUndoButtonEventListener(undoButtonId, textArea) {
+                HtmlUtils.addButtonClickListener(buttonWithId(undoButtonId), () => {
+                    textArea.focus();
+                    document.execCommand('undo'); // Yes, deprecated, but works. I will replace it when it fails. Docs: https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
                 });
+            }
+            // undoButtonOfEditor
+            addUndoButtonEventListener("undoButtonOfEditor", editorTextarea);
+            addUndoButtonEventListener("undoButtonOfReplaceRules", replaceRulesTextArea);
+            addUndoButtonEventListener("undoButtonOfPrompt", transcriptionPrompt);
+            // addReplaceRuleButton
+            HtmlUtils.addButtonClickListener(buttonWithId("addReplaceRuleButton"), () => {
+                // add TextArea.selectedText() to the start of the replaceRulesTextArea
+                TextAreas.setCursor(replaceRulesTextArea, 0);
+                const selectedText = TextAreas.selectedText(editorTextarea);
+                TextAreas.insertTextAtCursor(replaceRulesTextArea, `"${selectedText}"->"${selectedText}"\n`);
+                TextAreas.setCursor(replaceRulesTextArea, 5 + selectedText.length);
+                replaceRulesTextArea.focus();
             });
-        }
-        // copyButtons
-        addEventListenerForCopyButton("copyButton", "editorTextarea");
-        addEventListenerForCopyButton("copyReplaceRulesButton", "replaceRulesTextArea");
-        addEventListenerForCopyButton("copyPromptButton", "transcriptionPrompt");
-        buttonWithId("saveAPIKeyButton").addEventListener('click', function () {
-            inputElementWithId('apiKey').value = ''; // Clear the input field
-        });
-        apiSelector.addEventListener('change', () => {
-            Cookies.set('apiSelector', apiSelector.value);
-        });
-        const showSpinner = () => {
-            // probably not needed anymore, delete later
-            // spinner1.style.display = 'block';
+            // aboutButton
+            HtmlUtils.addButtonClickListener(buttonWithId("cancelButton"), () => {
+                saveEditor();
+                window.location.reload();
+            });
+            // copyButton
+            /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
+            function addEventListenerForCopyButton(buttonId, inputElementId) {
+                buttonWithId(buttonId).addEventListener('click', () => {
+                    navigator.clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
+                        buttonWithId(buttonId).textContent = '⎘ Copied!';
+                        setTimeout(() => {
+                            buttonWithId(buttonId).textContent = '⎘ Copy';
+                        }, 2000);
+                    });
+                });
+            }
+            // copyButtons
+            addEventListenerForCopyButton("copyButton", "editorTextarea");
+            addEventListenerForCopyButton("copyReplaceRulesButton", "replaceRulesTextArea");
+            addEventListenerForCopyButton("copyPromptButton", "transcriptionPrompt");
+            buttonWithId("saveAPIKeyButton").addEventListener('click', function () {
+                inputElementWithId('apiKey').value = ''; // Clear the input field
+            });
+            apiSelector.addEventListener('change', () => {
+                Cookies.set('apiSelector', apiSelector.value);
+            });
         };
-        // probably not needed anymore, delete later
-        const hideSpinner = () => {
-            spinner1.style.display = 'none';
-        };
-    };
+    })(ButtonEventListeners = AfterInit.ButtonEventListeners || (AfterInit.ButtonEventListeners = {}));
     const getApiKey = () => Cookies.get(apiSelector.value + 'ApiKey');
     const setApiKeyCookie = (apiKey) => {
         Cookies.set(apiSelector.value + 'ApiKey', apiKey);
@@ -308,7 +315,7 @@ var AfterInit;
     };
 })(AfterInit || (AfterInit = {}));
 const init = () => {
-    AfterInit.addButtonEventListeners();
+    AfterInit.ButtonEventListeners.addButtonEventListeners();
     AfterInit.registerServiceWorker();
     AfterInit.loadFormData();
 };
