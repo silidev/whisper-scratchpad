@@ -256,14 +256,15 @@ export var Buttons;
         addUndoButtonEventListener("undoButtonOfReplaceRules", replaceRulesTextArea);
         addUndoButtonEventListener("undoButtonOfPrompt", transcriptionPrompt);
         // addReplaceRuleButton
-        HtmlUtils.addButtonClickListener(buttonWithId("addReplaceRuleButton"), () => {
+        const addReplaceRule = () => {
             // add TextArea.selectedText() to the start of the replaceRulesTextArea
             TextAreas.setCursor(replaceRulesTextArea, 0);
             const selectedText = TextAreas.selectedText(editorTextarea);
-            TextAreas.insertTextAtCursor(replaceRulesTextArea, `"${selectedText}"->"${selectedText}"\n`);
+            TextAreas.insertTextAtCursor(replaceRulesTextArea, `"\\b${selectedText}\\b"->"${selectedText}"\n`);
             TextAreas.setCursor(replaceRulesTextArea, 5 + selectedText.length);
             replaceRulesTextArea.focus();
-        });
+        };
+        HtmlUtils.addButtonClickListener(buttonWithId("addReplaceRuleButton"), addReplaceRule);
         // aboutButton
         HtmlUtils.addButtonClickListener(buttonWithId("cancelButton"), () => {
             saveEditor();
