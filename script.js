@@ -83,14 +83,8 @@ export var Buttons;
                     setStopped();
                 }
             };
-            const setHtmlOfButtonStop = (html) => {
-                buttonWithId("stopButton").innerHTML = html;
-            };
-            const setHtmlOfButtonPauseRecord = (html) => {
-                buttonWithId("pauseRecordButton").innerHTML = html;
-            };
             const setRecording = (sendingParam) => {
-                setHtmlOfButtonStop(blinkFast('🔴') + (sendingParam ? 'Sending' : 'Stop'));
+                setHtmlOfButtonStop(blinkFast('🔴') + (sendingParam ? 'Sending' : '◼ Stop'));
                 setHtmlOfButtonPauseRecord(blinkFast('||') + ' Pause');
             };
             StateIndicator.setPaused = (sendingParam = sending) => {
@@ -100,6 +94,12 @@ export var Buttons;
             const setStopped = () => {
                 setHtmlOfButtonStop(sending ? blinkFast('◼') + ' Sending' : ' Stopped');
                 setHtmlOfButtonPauseRecord('⬤ Record');
+            };
+            const setHtmlOfButtonStop = (html) => {
+                buttonWithId("stopButton").innerHTML = html;
+            };
+            const setHtmlOfButtonPauseRecord = (html) => {
+                buttonWithId("pauseRecordButton").innerHTML = html;
             };
         })(StateIndicator = Media.StateIndicator || (Media.StateIndicator = {}));
         const transcribeAndHandleResult = async (audioBlob) => {

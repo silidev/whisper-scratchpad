@@ -94,15 +94,8 @@ export namespace Buttons {
           setStopped();
         }
       }
-
-      const setHtmlOfButtonStop = (html: string) => {
-        buttonWithId("stopButton").innerHTML = html;
-      };
-      const setHtmlOfButtonPauseRecord = (html: string) => {
-        buttonWithId("pauseRecordButton").innerHTML = html;
-      };
       const setRecording = (sendingParam: boolean) => {
-        setHtmlOfButtonStop(blinkFast('🔴') + (sendingParam ? 'Sending' : 'Stop'));
+        setHtmlOfButtonStop(blinkFast('🔴') + (sendingParam ? 'Sending' : '◼ Stop'));
         setHtmlOfButtonPauseRecord(blinkFast('||') + ' Pause');
       };
       export const setPaused = (sendingParam: boolean = sending) => {
@@ -113,6 +106,13 @@ export namespace Buttons {
         setHtmlOfButtonStop(sending ? blinkFast('◼') + ' Sending' : ' Stopped');
         setHtmlOfButtonPauseRecord('⬤ Record');
       };
+      const setHtmlOfButtonStop = (html: string) => {
+        buttonWithId("stopButton").innerHTML = html;
+      };
+      const setHtmlOfButtonPauseRecord = (html: string) => {
+        buttonWithId("pauseRecordButton").innerHTML = html;
+      };
+
     }
 
     const transcribeAndHandleResult = async (audioBlob: Blob) => {
