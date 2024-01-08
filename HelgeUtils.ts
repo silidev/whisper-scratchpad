@@ -7,7 +7,16 @@ export namespace HelgeUtils {
     }
   };
 
-  export namespace Audio {
+  export namespace Transcription {
+
+    export class TranscriptionError extends Error {
+      public payload: {};
+      constructor(payload: {}) {
+        super("TranscriptionError");
+        this.name = "TranscriptionError";
+        this.payload = payload;
+      }
+    }
 
     export type ApiName = "OpenAI" | "Gladia";
 
@@ -71,10 +80,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
               await withOpenAi(audioBlob, apiKey, prompt)
               : await withGladia(audioBlob, apiKey, prompt);
       if (typeof output === "string") return output;
-      else return JSON.stringify(output, null, 2)
-          + '\nYou need an API key. You can get one at https://platform.openai.com/api-keys">.' +
-          ' If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS' +
-          ' apps for free without API key.\n\n';
+      throw new TranscriptionError(output);
     }
   }
 

@@ -6,8 +6,16 @@ export var HelgeUtils;
             console.log(args);
         }
     };
-    let Audio;
-    (function (Audio) {
+    let Transcription;
+    (function (Transcription) {
+        class TranscriptionError extends Error {
+            constructor(payload) {
+                super("TranscriptionError");
+                this.name = "TranscriptionError";
+                this.payload = payload;
+            }
+        }
+        Transcription.TranscriptionError = TranscriptionError;
         const withOpenAi = async (audioBlob, apiKey, prompt) => {
             const formData = new FormData();
             formData.append('file', audioBlob);
@@ -55,7 +63,7 @@ export var HelgeUtils;
                 return resultText;
             return result;
         };
-        Audio.transcribe = async (api, audioBlob, apiKey, prompt = '') => {
+        Transcription.transcribe = async (api, audioBlob, apiKey, prompt = '') => {
             if (!audioBlob)
                 return "";
             const output = api === "OpenAI" ?
@@ -63,13 +71,9 @@ export var HelgeUtils;
                 : await withGladia(audioBlob, apiKey, prompt);
             if (typeof output === "string")
                 return output;
-            else
-                return JSON.stringify(output, null, 2)
-                    + '\nYou need an API key. You can get one at https://platform.openai.com/api-keys">.' +
-                    ' If you want to try it out beforehand, you can try it in the ChatGPT Android and iOS' +
-                    ' apps for free without API key.\n\n';
+            throw new TranscriptionError(output);
         };
-    })(Audio = HelgeUtils.Audio || (HelgeUtils.Audio = {}));
+    })(Transcription = HelgeUtils.Transcription || (HelgeUtils.Transcription = {}));
     HelgeUtils.replaceByRules = (subject, ruleText, wholewords = false) => {
         const wordBoundaryMarker = wholewords ? '\\b' : '';
         let count = 0;

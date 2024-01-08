@@ -53,9 +53,7 @@ const insertAtCursor = (text: string) => {
   TextAreas.insertTextAtCursor(editorTextarea, text);
 };
 
-function getApiSelectedInUi() {
-  return apiSelector.value as HelgeUtils.Audio.ApiName;
-}
+const getApiSelectedInUi = () => (apiSelector.value as HelgeUtils.Transcription.ApiName);
 
 namespace NotInUse {
   export const showSpinner = () => {
@@ -69,7 +67,34 @@ namespace NotInUse {
   };
 }
 
-// ############## addButtonEventListeners ##############
+namespace Log {
+  import textAreaWithId = HtmlUtils.textAreaWithId;
+  const MAX_LOG_LEN = 1000;
+
+  export const log = (message: string) => {
+    const logTextArea = textAreaWithId("logTextArea");
+    const oldLog = logTextArea.value;
+    logTextArea.value = (oldLog + "\n" + message).slice(- MAX_LOG_LEN);
+    logTextArea.scrollTop = logTextArea.scrollHeight;
+  }
+
+  export const showLog = () => {
+    textAreaWithId("logTextArea").style.display = "block";
+  }
+
+  export const addToggleLogButtonClickListener =
+      (textAreaWithId: (id: string) => (HTMLTextAreaElement | null)) => {
+    HtmlUtils.addButtonClickListener(buttonWithId("toggleLogButton"), () => {
+      const log = textAreaWithId("logTextArea");
+      if (log.style.display === "none") {
+        log.style.display = "block";
+      } else {
+        log.style.display = "none";
+      }
+    });
+  };
+}
+
 // noinspection SpellCheckingInspection
 export namespace Buttons {
   import textAreaWithId = HtmlUtils.textAreaWithId;
@@ -133,14 +158,25 @@ export namespace Buttons {
           important because the last words of the last transcription should always be included to avoid hallucinations
           if it otherwise would be an incomplete sentence. */
           - transcriptionPrompt.value.length)) : "";
-      const result = async () => await HelgeUtils.Audio.transcribe(
-          apiName, audioBlob, getApiKey(), promptForWhisper());
-      const replacedOutput = HelgeUtils.replaceByRules(await result(), replaceRulesTextArea.value);
-      if (editorTextarea.value.length > 0)
-        insertAtCursor(" ");
-      insertAtCursor(replacedOutput);
-      saveEditor()
-      navigator.clipboard.writeText(editorTextarea.value).then();
+      try {
+        const result = async () => await HelgeUtils.Transcription.transcribe(
+            apiName, audioBlob, getApiKey(), promptForWhisper());
+        const replacedOutput = HelgeUtils.replaceByRules(await result(), replaceRulesTextArea.value);
+        if (editorTextarea.value.length > 0)
+          insertAtCursor(" ");
+        insertAtCursor(replacedOutput);
+        saveEditor()
+        navigator.clipboard.writeText(editorTextarea.value).then();
+      } catch (error) {
+        if (error instanceof HelgeUtils.Transcription.TranscriptionError) {
+          Log.log(JSON.stringify(error.payload, null, 2));
+          Log.showLog();
+        } else {
+          // Handle other types of errors or rethrow
+          throw error;
+        }
+      }
+
       sending = false;
       StateIndicator.update();
     };
@@ -237,14 +273,7 @@ export namespace Buttons {
   export const addButtonEventListeners = () => {
 
     // ############## Toggle Log Button ##############
-    HtmlUtils.addButtonClickListener(buttonWithId("toggleLogButton"), () => {
-      const log = textAreaWithId("logTextArea");
-      if (log.style.display === "none") {
-        log.style.display = "block";
-      } else {
-        log.style.display = "none";
-      }
-    });
+    Log.addToggleLogButtonClickListener(textAreaWithId);
 
     // ############## Crop Highlights Button ##############
     HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsMenuItem"), () => {

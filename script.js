@@ -42,9 +42,7 @@ TextAreas.setAutoSave('prompt', 'transcriptionPrompt');
 const insertAtCursor = (text) => {
     TextAreas.insertTextAtCursor(editorTextarea, text);
 };
-function getApiSelectedInUi() {
-    return apiSelector.value;
-}
+const getApiSelectedInUi = () => apiSelector.value;
 var NotInUse;
 (function (NotInUse) {
     NotInUse.showSpinner = () => {
@@ -56,7 +54,31 @@ var NotInUse;
         spinner1.style.display = 'none';
     };
 })(NotInUse || (NotInUse = {}));
-// ############## addButtonEventListeners ##############
+var Log;
+(function (Log) {
+    var textAreaWithId = HtmlUtils.textAreaWithId;
+    const MAX_LOG_LEN = 1000;
+    Log.log = (message) => {
+        const logTextArea = textAreaWithId("logTextArea");
+        const oldLog = logTextArea.value;
+        logTextArea.value = (oldLog + "\n" + message).slice(-MAX_LOG_LEN);
+        logTextArea.scrollTop = logTextArea.scrollHeight;
+    };
+    Log.showLog = () => {
+        textAreaWithId("logTextArea").style.display = "block";
+    };
+    Log.addToggleLogButtonClickListener = (textAreaWithId) => {
+        HtmlUtils.addButtonClickListener(buttonWithId("toggleLogButton"), () => {
+            const log = textAreaWithId("logTextArea");
+            if (log.style.display === "none") {
+                log.style.display = "block";
+            }
+            else {
+                log.style.display = "none";
+            }
+        });
+    };
+})(Log || (Log = {}));
 // noinspection SpellCheckingInspection
 export var Buttons;
 (function (Buttons) {
@@ -117,13 +139,25 @@ export var Buttons;
             important because the last words of the last transcription should always be included to avoid hallucinations
             if it otherwise would be an incomplete sentence. */
                 - transcriptionPrompt.value.length)) : "";
-            const result = async () => await HelgeUtils.Audio.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper());
-            const replacedOutput = HelgeUtils.replaceByRules(await result(), replaceRulesTextArea.value);
-            if (editorTextarea.value.length > 0)
-                insertAtCursor(" ");
-            insertAtCursor(replacedOutput);
-            saveEditor();
-            navigator.clipboard.writeText(editorTextarea.value).then();
+            try {
+                const result = async () => await HelgeUtils.Transcription.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper());
+                const replacedOutput = HelgeUtils.replaceByRules(await result(), replaceRulesTextArea.value);
+                if (editorTextarea.value.length > 0)
+                    insertAtCursor(" ");
+                insertAtCursor(replacedOutput);
+                saveEditor();
+                navigator.clipboard.writeText(editorTextarea.value).then();
+            }
+            catch (error) {
+                if (error instanceof HelgeUtils.Transcription.TranscriptionError) {
+                    Log.log(JSON.stringify(error.payload, null, 2));
+                    Log.showLog();
+                }
+                else {
+                    // Handle other types of errors or rethrow
+                    throw error;
+                }
+            }
             sending = false;
             StateIndicator.update();
         };
@@ -213,15 +247,7 @@ export var Buttons;
     })(Media = Buttons.Media || (Buttons.Media = {})); // End of media buttons
     Buttons.addButtonEventListeners = () => {
         // ############## Toggle Log Button ##############
-        HtmlUtils.addButtonClickListener(buttonWithId("toggleLogButton"), () => {
-            const log = textAreaWithId("logTextArea");
-            if (log.style.display === "none") {
-                log.style.display = "block";
-            }
-            else {
-                log.style.display = "none";
-            }
-        });
+        Log.addToggleLogButtonClickListener(textAreaWithId);
         // ############## Crop Highlights Button ##############
         HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
             editorTextarea.value = HelgeUtils.extractHighlights(editorTextarea.value).join(' ');
