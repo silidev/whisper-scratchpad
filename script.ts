@@ -57,7 +57,7 @@ function getApiSelectedInUi() {
   return apiSelector.value as HelgeUtils.Audio.ApiName;
 }
 
-namespace UI {
+namespace NotInUse {
   export const showSpinner = () => {
     // probably not needed anymore, delete later
     // spinner1.style.display = 'block';
@@ -83,6 +83,18 @@ export namespace Buttons {
 
     export namespace StateIndicator {
 
+      /** Updates the recorder state display. That consists of the text
+       * and color of the stop button and the pause record button. */
+      export const update = () => {
+        if (mediaRecorder?.state === 'recording') {
+          setRecording(sending);
+        } else if (mediaRecorder?.state === 'paused') {
+          setPaused(sending);
+        } else {
+          setStopped();
+        }
+      }
+
       const setHtmlOfButtonStop = (html: string) => {
         buttonWithId("stopButton").innerHTML = html;
       };
@@ -101,19 +113,9 @@ export namespace Buttons {
         setHtmlOfButtonStop(sending ? blinkFast('◼') + ' Sending' : ' Stopped');
         setHtmlOfButtonPauseRecord('⬤ Record');
       };
-
-      export const update = () => {
-        if (mediaRecorder?.state === 'recording') {
-          setRecording(sending);
-        } else if (mediaRecorder?.state === 'paused') {
-          setPaused(sending);
-        } else {
-          setStopped();
-        }
-      }
     }
 
-    const transcribeAndHandleResultAsync = async (audioBlob: Blob) => {
+    const transcribeAndHandleResult = async (audioBlob: Blob) => {
       sending = true;
       StateIndicator.setPaused(true);
       const apiName = getApiSelectedInUi();
@@ -122,7 +124,10 @@ export namespace Buttons {
         return;
       }
       const promptForWhisper = () => transcriptionPrompt.value 
-          + INSERT_EDITOR_INTO_PROMPT ? editorTextarea.value.slice(-(
+          + INSERT_EDITOR_INTO_PROMPT ? editorTextarea.value.substring(0
+          , editorTextarea.selectionStart /*The start is relevant b/c the selection will be overwritten by the
+                                            new text. */
+          ).slice(-(
           750 /* Taking the last 750 chars is for sure less than the max 250 tokens whisper is considering. This is
           important because the last words of the last transcription should always be included to avoid hallucinations
           if it otherwise would be an incomplete sentence. */
@@ -147,7 +152,7 @@ export namespace Buttons {
         downloadLink.download = 'recording.wav';
         downloadLink.style.display = 'block';
       }
-      transcribeAndHandleResultAsync(audioBlob).then(UI.hideSpinner);
+      transcribeAndHandleResult(audioBlob).then(NotInUse.hideSpinner);
     };
 
     const getOnStreamReady = (beginPaused: boolean) => {
@@ -178,21 +183,22 @@ export namespace Buttons {
     };
 
     // ############## stopButton ##############
-    buttonWithId("stopButton").addEventListener('click', () => {
+    const stopButton = () => {
       if (isRecording) {
         stopRecording();
       } else {
-        UI.showSpinner();
+        NotInUse.showSpinner();
         startRecording();
       }
-    });
+    }
+    buttonWithId("stopButton").addEventListener('click', stopButton);
 
     const sendButton = () => {
       if (mediaRecorder?.state === 'recording') {
         mediaRecorder.onstop = () => {
           audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
           audioChunks = [];
-          transcribeAndHandleResultAsync(audioBlob).then(UI.hideSpinner);
+          transcribeAndHandleResult(audioBlob).then(NotInUse.hideSpinner);
           startRecording(true);
         };
         mediaRecorder.stop();
@@ -220,8 +226,8 @@ export namespace Buttons {
 
     // ############## transcribeAgainButton ##############
     HtmlUtils.addButtonClickListener(buttonWithId("transcribeAgainButton"), () => {
-      UI.showSpinner();
-      transcribeAndHandleResultAsync(audioBlob).then(UI.hideSpinner);
+      NotInUse.showSpinner();
+      transcribeAndHandleResult(audioBlob).then(NotInUse.hideSpinner);
     });
 
     StateIndicator.update();

@@ -39,6 +39,9 @@ export var HtmlUtils;
                 Cookies.set(cookieName, HtmlUtils.textAreaWithId(id).value);
             });
         };
+        TextAreas.getCursor = (textarea) => {
+            return textarea.selectionStart;
+        };
         TextAreas.setCursor = (textarea, position) => {
             textarea.setSelectionRange(position, position);
         };
