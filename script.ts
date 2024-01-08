@@ -72,6 +72,7 @@ namespace NotInUse {
 // ############## addButtonEventListeners ##############
 // noinspection SpellCheckingInspection
 export namespace Buttons {
+  import textAreaWithId = HtmlUtils.textAreaWithId;
   export namespace Media {
 
     let mediaRecorder: MediaRecorder;
@@ -234,6 +235,16 @@ export namespace Buttons {
   } // End of media buttons
 
   export const addButtonEventListeners = () => {
+
+    // ############## Toggle Log Button ##############
+    HtmlUtils.addButtonClickListener(buttonWithId("toggleLogButton"), () => {
+      const log = textAreaWithId("logTextArea");
+      if (log.style.display === "none") {
+        log.style.display = "block";
+      } else {
+        log.style.display = "none";
+      }
+    });
 
     // ############## Crop Highlights Button ##############
     HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsMenuItem"), () => {

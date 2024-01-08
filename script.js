@@ -60,6 +60,7 @@ var NotInUse;
 // noinspection SpellCheckingInspection
 export var Buttons;
 (function (Buttons) {
+    var textAreaWithId = HtmlUtils.textAreaWithId;
     let Media;
     (function (Media) {
         let mediaRecorder;
@@ -211,6 +212,16 @@ export var Buttons;
         StateIndicator.update();
     })(Media = Buttons.Media || (Buttons.Media = {})); // End of media buttons
     Buttons.addButtonEventListeners = () => {
+        // ############## Toggle Log Button ##############
+        HtmlUtils.addButtonClickListener(buttonWithId("toggleLogButton"), () => {
+            const log = textAreaWithId("logTextArea");
+            if (log.style.display === "none") {
+                log.style.display = "block";
+            }
+            else {
+                log.style.display = "none";
+            }
+        });
         // ############## Crop Highlights Button ##############
         HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
             editorTextarea.value = HelgeUtils.extractHighlights(editorTextarea.value).join(' ');
