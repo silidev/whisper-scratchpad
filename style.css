@@ -18,6 +18,7 @@ body,html {
  background-color: black;
  color: var(--myGreen);
  max-width: 20cm;
+ overscroll-behavior: none;
 }
 
 div {
