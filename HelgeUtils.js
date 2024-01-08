@@ -64,7 +64,7 @@ export var HelgeUtils;
             return result;
         };
         Transcription.transcribe = async (api, audioBlob, apiKey, prompt = '') => {
-            if (!audioBlob)
+            if (!audioBlob || audioBlob.size === 0)
                 return "";
             const output = api === "OpenAI" ?
                 await withOpenAi(audioBlob, apiKey, prompt)

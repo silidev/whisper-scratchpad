@@ -74,7 +74,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
 
     export const transcribe = async (api: ApiName, audioBlob: Blob, apiKey: string
         , prompt: string = '') => {
-      if (!audioBlob) return "";
+      if (!audioBlob || audioBlob.size===0) return "";
       const output =
           api === "OpenAI" ?
               await withOpenAi(audioBlob, apiKey, prompt)
