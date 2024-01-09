@@ -31,10 +31,9 @@ namespace Pures {
 `, true) as string;
 }
 
-namespace uiFunctions {
+namespace UiFunctions {
   export const replaceRulesTextAreaOnInput = () => {
     /**
-     *
      * Do correct regex escaping with the following and modify the rule accordingly:
      *`Das hier ist ein ziemlich langer ganz normaler Text, an dem die "Rules" nichts verändern sollten. Dadurch fail'en auch Rules wie zB "e"->"a" und das ist auch gut so.`
      */
@@ -68,7 +67,7 @@ const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as 
 const saveEditor = () => HtmlUtils.Cookies.set("editorText", HtmlUtils.textAreaWithId("editorTextarea").value);
 
 TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea');
-HtmlUtils.textAreaWithId('replaceRulesTextArea').addEventListener('input', uiFunctions.replaceRulesTextAreaOnInput);
+HtmlUtils.textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions.replaceRulesTextAreaOnInput);
 TextAreas.setAutoSave('editorText', 'editorTextarea');
 TextAreas.setAutoSave('prompt', 'transcriptionPrompt');
 

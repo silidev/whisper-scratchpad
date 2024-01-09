@@ -26,11 +26,10 @@ var Pures;
 "i"->"ist"
 `, true);
 })(Pures || (Pures = {}));
-var uiFunctions;
-(function (uiFunctions) {
-    uiFunctions.replaceRulesTextAreaOnInput = () => {
+var UiFunctions;
+(function (UiFunctions) {
+    UiFunctions.replaceRulesTextAreaOnInput = () => {
         /**
-         *
          * Do correct regex escaping with the following and modify the rule accordingly:
          *`Das hier ist ein ziemlich langer ganz normaler Text, an dem die "Rules" nichts verändern sollten. Dadurch fail'en auch Rules wie zB "e"->"a" und das ist auch gut so.`
          */
@@ -48,7 +47,7 @@ var uiFunctions;
             replaceResult === ''
                 ? "none" : "block";
     };
-})(uiFunctions || (uiFunctions = {}));
+})(UiFunctions || (UiFunctions = {}));
 var inputElementWithId = HtmlUtils.inputElementWithId;
 const downloadLink = document.getElementById('downloadLink');
 const spinner1 = document.getElementById('spinner1');
@@ -59,7 +58,7 @@ const transcriptionPrompt = document.getElementById('transcriptionPrompt');
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea');
 const saveEditor = () => HtmlUtils.Cookies.set("editorText", HtmlUtils.textAreaWithId("editorTextarea").value);
 TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea');
-HtmlUtils.textAreaWithId('replaceRulesTextArea').addEventListener('input', uiFunctions.replaceRulesTextAreaOnInput);
+HtmlUtils.textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions.replaceRulesTextAreaOnInput);
 TextAreas.setAutoSave('editorText', 'editorTextarea');
 TextAreas.setAutoSave('prompt', 'transcriptionPrompt');
 const insertAtCursor = (text) => {
