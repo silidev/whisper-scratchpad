@@ -1,7 +1,6 @@
 import {HtmlUtils} from "./HtmlUtils.js";
 import {HelgeUtils} from "./HelgeUtils.js";
 
-// ############## AfterInit ##############
 import TextAreas = HtmlUtils.TextAreas;
 import buttonWithId = HtmlUtils.buttonWithId;
 import blinkFast = HtmlUtils.blinkFast;
@@ -32,6 +31,18 @@ namespace Pures {
 `, true) as string;
 }
 
+namespace uiFunctions {
+  export const replaceRulesTextAreaOnInput = () => {
+    // noinspection SpellCheckingInspection
+    const magicWord = "zrgjsfgbjmfhsl";
+    const testRules = replaceRulesTextArea.value
+        +`\n"${magicWord}"->""`;
+    const replaceResult = HelgeUtils.replaceByRulesAsString(magicWord, testRules);
+    buttonWithId("testFailIndicatorOfReplaceRules").style.display =
+        replaceResult===''
+            ? "none" : "block";
+  };
+}
 
 import inputElementWithId = HtmlUtils.inputElementWithId;
 const downloadLink = document.getElementById('downloadLink') as HTMLAnchorElement;
@@ -46,19 +57,9 @@ const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as 
 const saveEditor = () => HtmlUtils.Cookies.set("editorText", HtmlUtils.textAreaWithId("editorTextarea").value);
 
 TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea');
+HtmlUtils.textAreaWithId('replaceRulesTextArea').addEventListener('input', () => uiFunctions.replaceRulesTextAreaOnInput);
 TextAreas.setAutoSave('editorText', 'editorTextarea');
 TextAreas.setAutoSave('prompt', 'transcriptionPrompt');
-
-HtmlUtils.textAreaWithId('replaceRulesTextArea').addEventListener('input', () => {
-  // noinspection SpellCheckingInspection
-  const magicWord = "zrgjsfgbjmfhsl";
-  const testRules = replaceRulesTextArea.value
-      +`\n"${magicWord}"->""`;
-  const replaceResult = HelgeUtils.replaceByRulesAsString(magicWord, testRules);
-  buttonWithId("testFailIndicatorOfReplaceRules").style.display =
-        replaceResult===''
-        ? "none" : "block";
-});
 
 const insertAtCursor = (text: string) => {
   TextAreas.insertTextAtCursor(editorTextarea, text);

@@ -1,6 +1,5 @@
 import { HtmlUtils } from "./HtmlUtils.js";
 import { HelgeUtils } from "./HelgeUtils.js";
-// ############## AfterInit ##############
 var TextAreas = HtmlUtils.TextAreas;
 var buttonWithId = HtmlUtils.buttonWithId;
 var blinkFast = HtmlUtils.blinkFast;
@@ -27,6 +26,19 @@ var Pures;
 "i"->"ist"
 `, true);
 })(Pures || (Pures = {}));
+var uiFunctions;
+(function (uiFunctions) {
+    uiFunctions.replaceRulesTextAreaOnInput = () => {
+        // noinspection SpellCheckingInspection
+        const magicWord = "zrgjsfgbjmfhsl";
+        const testRules = replaceRulesTextArea.value
+            + `\n"${magicWord}"->""`;
+        const replaceResult = HelgeUtils.replaceByRulesAsString(magicWord, testRules);
+        buttonWithId("testFailIndicatorOfReplaceRules").style.display =
+            replaceResult === ''
+                ? "none" : "block";
+    };
+})(uiFunctions || (uiFunctions = {}));
 var inputElementWithId = HtmlUtils.inputElementWithId;
 const downloadLink = document.getElementById('downloadLink');
 const spinner1 = document.getElementById('spinner1');
@@ -37,18 +49,9 @@ const transcriptionPrompt = document.getElementById('transcriptionPrompt');
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea');
 const saveEditor = () => HtmlUtils.Cookies.set("editorText", HtmlUtils.textAreaWithId("editorTextarea").value);
 TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea');
+HtmlUtils.textAreaWithId('replaceRulesTextArea').addEventListener('input', () => uiFunctions.replaceRulesTextAreaOnInput);
 TextAreas.setAutoSave('editorText', 'editorTextarea');
 TextAreas.setAutoSave('prompt', 'transcriptionPrompt');
-HtmlUtils.textAreaWithId('replaceRulesTextArea').addEventListener('input', () => {
-    // noinspection SpellCheckingInspection
-    const magicWord = "zrgjsfgbjmfhsl";
-    const testRules = replaceRulesTextArea.value
-        + `\n"${magicWord}"->""`;
-    const replaceResult = HelgeUtils.replaceByRulesAsString(magicWord, testRules);
-    buttonWithId("testFailIndicatorOfReplaceRules").style.display =
-        replaceResult === ''
-            ? "none" : "block";
-});
 const insertAtCursor = (text) => {
     TextAreas.insertTextAtCursor(editorTextarea, text);
 };
