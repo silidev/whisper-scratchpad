@@ -15,7 +15,7 @@
   <script defer src='wc-menu-wrapper.min.js'></script>
 </head>
 <body>
-<textarea id="editorTextarea" wrap="soft" placeholder="ICH ICH ICH" style="margin-bottom: -6px">
+<textarea id="mainEditorTextarea" wrap="soft" placeholder="ICH ICH ICH" style="margin-bottom: -6px">
 </textarea>
 <textarea id="logTextArea" wrap="soft" placeholder="" style="display: none; height: 6cm">
 </textarea>
@@ -136,11 +136,11 @@
       <label for="logReplaceRulesCheckbox">Log</label>
     </span>
   </span>
-<!--  <div class="editorTextAreaContainer">-->
+<!--  <div class="mainEditorTextareaContainer">-->
 <!--      <textarea id="testReplaceRulesTextArea" style="height: 2cm" wrap="soft" placeholder="Optional. &quot;SEARCH&quot;-&gt;&quot;REPLACE&quot;" >-->
 <!--      </textarea>-->
 <!--  </div>-->
-  <div class="editorTextAreaContainer">
+  <div class="mainEditorTextareaContainer">
       <textarea id="replaceRulesTextArea" wrap="soft" placeholder="Optional. &quot;SEARCH&quot;-&gt;&quot;REPLACE&quot;" >
       </textarea>
   </div>
@@ -161,7 +161,7 @@
         <button id="copyPromptButton">⎘ Copy</button>
         <button id="undoButtonOfPrompt">⎌ Undo</button>
       </span>
-  <div class="editorTextAreaContainer">
+  <div class="mainEditorTextareaContainer">
     <textarea id="transcriptionPrompt" wrap="soft" placeholder="Optional prompt especially for hinting unusual names if they are not recognized by default."></textarea>
   </div>
   <button id="savePromptButton" style="margin-top: 5mm; display: none;">
