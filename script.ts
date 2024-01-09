@@ -34,7 +34,7 @@ namespace Pures {
 
 namespace UiFunctions {
   export const applyReplaceRulesToMainEditor = () => {
-    mainmainEditorTextarea.value = replaceWithNormalParameters(mainmainEditorTextarea.value) as string;
+    mainEditorTextarea.value = replaceWithNormalParameters(mainEditorTextarea.value) as string;
   };
 
   export const replaceRulesTextAreaOnInput = () => {
@@ -65,19 +65,19 @@ const spinner1 = document.getElementById('spinner1') as HTMLElement;
 const apiSelector = document.getElementById('apiSelector') as HTMLSelectElement;
 
 const apiKeyInput = document.getElementById('apiKeyInputField') as HTMLTextAreaElement;
-const mainmainEditorTextarea = document.getElementById('mainmainEditorTextarea') as HTMLTextAreaElement;
+const mainEditorTextarea = document.getElementById('mainEditorTextarea') as HTMLTextAreaElement;
 const transcriptionPrompt = document.getElementById('transcriptionPrompt') as HTMLTextAreaElement;
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement;
 
-const saveEditor = () => HtmlUtils.Cookies.set("editorText", HtmlUtils.textAreaWithId("mainmainEditorTextarea").value);
+const saveEditor = () => HtmlUtils.Cookies.set("editorText", HtmlUtils.textAreaWithId("mainEditorTextarea").value);
 
 TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea');
 HtmlUtils.textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions.replaceRulesTextAreaOnInput);
-TextAreas.setAutoSave('editorText', 'mainmainEditorTextarea');
+TextAreas.setAutoSave('editorText', 'mainEditorTextarea');
 TextAreas.setAutoSave('prompt', 'transcriptionPrompt');
 
 const insertAtCursor = (text: string) => {
-  TextAreas.insertTextAtCursor(mainmainEditorTextarea, text);
+  TextAreas.insertTextAtCursor(mainEditorTextarea, text);
 };
 
 const getApiSelectedInUi = () => (apiSelector.value as HelgeUtils.Transcription.ApiName);
@@ -182,8 +182,8 @@ export namespace Buttons {
         return;
       }
       const promptForWhisper = () => transcriptionPrompt.value 
-          + INSERT_EDITOR_INTO_PROMPT ? mainmainEditorTextarea.value.substring(0
-          , mainmainEditorTextarea.selectionStart /*The start is relevant b/c the selection will be overwritten by the
+          + INSERT_EDITOR_INTO_PROMPT ? mainEditorTextarea.value.substring(0
+          , mainEditorTextarea.selectionStart /*The start is relevant b/c the selection will be overwritten by the
                                             new text. */
           ).slice(-(
           750 /* Taking the last 750 chars is for sure less than the max 250 tokens whisper is considering. This is
@@ -200,16 +200,16 @@ export namespace Buttons {
         const result = async () => await HelgeUtils.Transcription.transcribe(
             apiName, audioBlob, getApiKey(), promptForWhisper());
         const removeLastDotIfApplicable = (input: string): string => {
-          if (mainmainEditorTextarea.selectionStart < mainmainEditorTextarea.value.length) {
+          if (mainEditorTextarea.selectionStart < mainEditorTextarea.value.length) {
             return removeLastDot(input);
           }
           return input;
         }
-        if (mainmainEditorTextarea.selectionStart > 0) insertAtCursor(" ");
+        if (mainEditorTextarea.selectionStart > 0) insertAtCursor(" ");
         insertAtCursor(removeLastDotIfApplicable(await result()));
         UiFunctions.applyReplaceRulesToMainEditor();
         saveEditor()
-        navigator.clipboard.writeText(mainmainEditorTextarea.value).then();
+        navigator.clipboard.writeText(mainEditorTextarea.value).then();
       } catch (error) {
         if (error instanceof HelgeUtils.Transcription.TranscriptionError) {
           Log.log(JSON.stringify(error.payload, null, 2));
@@ -320,15 +320,15 @@ export namespace Buttons {
 
     // ############## Crop Highlights Button ##############
     HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
-      mainmainEditorTextarea.value = HelgeUtils.extractHighlights(mainmainEditorTextarea.value).join(' ');
+      mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ');
       saveEditor();
     });
 
     // ############## Crop Highlights Button ##############
     HtmlUtils.addButtonClickListener(buttonWithId("du2ichMenuItem"), () => {
-      const value = Pures.du2ich(mainmainEditorTextarea.value);
+      const value = Pures.du2ich(mainEditorTextarea.value);
       console.log(value);
-      mainmainEditorTextarea.value = value;
+      mainEditorTextarea.value = value;
       saveEditor();
     });
 
@@ -340,7 +340,7 @@ export namespace Buttons {
 
     // clearButton
     HtmlUtils.addButtonClickListener(buttonWithId("clearButton"), () => {
-      mainmainEditorTextarea.value = '';
+      mainEditorTextarea.value = '';
       saveEditor();
     });
 
@@ -351,7 +351,7 @@ export namespace Buttons {
 
     // saveEditorButton
     HtmlUtils.addButtonClickListener(buttonWithId("saveEditorButton"), () => {
-      HtmlUtils.Cookies.set("editorText", mainmainEditorTextarea.value);
+      HtmlUtils.Cookies.set("editorText", mainEditorTextarea.value);
     });
 
     // savePromptButton
@@ -373,7 +373,7 @@ export namespace Buttons {
     }
 
     // undoButtonOfEditor
-    addUndoButtonEventListener("undoButtonOfEditor", mainmainEditorTextarea);
+    addUndoButtonEventListener("undoButtonOfEditor", mainEditorTextarea);
     addUndoButtonEventListener("undoButtonOfReplaceRules", replaceRulesTextArea);
     addUndoButtonEventListener("undoButtonOfPrompt", transcriptionPrompt);
 
@@ -381,7 +381,7 @@ export namespace Buttons {
     const addReplaceRule = () => {
       // add TextArea.selectedText() to the start of the replaceRulesTextArea
       TextAreas.setCursor(replaceRulesTextArea, 0);
-      const selectedText = TextAreas.selectedText(mainmainEditorTextarea);
+      const selectedText = TextAreas.selectedText(mainEditorTextarea);
       TextAreas.insertTextAtCursor(replaceRulesTextArea, `"\\b${selectedText}\\b"gmu->"${selectedText}"\n`);
       TextAreas.setCursor(replaceRulesTextArea, 5 + selectedText.length);
       replaceRulesTextArea.focus();
@@ -408,7 +408,7 @@ export namespace Buttons {
     }
 
     // copyButtons
-    addEventListenerForCopyButton("copyButton", "mainmainEditorTextarea");
+    addEventListenerForCopyButton("copyButton", "mainEditorTextarea");
     addEventListenerForCopyButton("copyReplaceRulesButton", "replaceRulesTextArea");
     addEventListenerForCopyButton("copyPromptButton", "transcriptionPrompt");
 
@@ -429,7 +429,7 @@ const setApiKeyCookie = (apiKey: string) => {
 
 export const loadFormData = () => {
   const Cookies = HtmlUtils.Cookies;
-  mainmainEditorTextarea.value = Cookies.get("editorText");
+  mainEditorTextarea.value = Cookies.get("editorText");
   transcriptionPrompt.value = Cookies.get("prompt");
   replaceRulesTextArea.value = Cookies.get("replaceRules");
   apiSelector.value = Cookies.get("apiSelector")??'OpenAI';
