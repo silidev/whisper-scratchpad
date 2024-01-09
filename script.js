@@ -35,8 +35,11 @@ var uiFunctions;
          *`Das hier ist ein ziemlich langer ganz normaler Text, an dem die "Rules" nichts verändern sollten. Dadurch fail'en auch Rules wie zB "e"->"a" und das ist auch gut so.`
          */
         // noinspection SpellCheckingInspection
-        const magicText = (i) => `Das hier ist ein ziemlich langer ganz normaler Text an dem die Rules nichts verändern sollten Dadurch failen auch Rules wie zB  und das ist auch gut so` + i;
-        const createTestRule = (i) => `\n\n"${magicText(i)}"gmu->""\n\n`;
+        const magicText = (numberToMakeItUnique) => {
+            return `Das hier ist ein ziemlich langer ganz normaler Text an dem die Rules nichts verändern sollten Dadurch failen auch Rules wie zB und das ist auch gut so`
+                + numberToMakeItUnique;
+        };
+        const createTestRule = (numberToMakeItUnique) => `\n\n"${magicText(numberToMakeItUnique)}"gmu->""\n\n`;
         const testRules = createTestRule(1)
             + replaceRulesTextArea.value
             + createTestRule(2);
