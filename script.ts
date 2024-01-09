@@ -33,6 +33,10 @@ namespace Pures {
 }
 
 namespace UiFunctions {
+  export const applyReplaceRulesToMainEditor = () => {
+    editorTextarea.value = replaceWithNormalParameters(editorTextarea.value) as string;
+  };
+
   export const replaceRulesTextAreaOnInput = () => {
     /**
      * Do correct regex escaping with the following and modify the rule accordingly:
@@ -118,7 +122,7 @@ namespace Log {
   };
 }
 
-const standardReplace = (subject: string) => {
+const replaceWithNormalParameters = (subject: string) => {
   return HelgeUtils.replaceByRules(subject, replaceRulesTextArea.value,false
       ,inputElementWithId("logReplaceRulesCheckbox").checked);
 };
@@ -203,7 +207,7 @@ export namespace Buttons {
         }
         if (editorTextarea.selectionStart > 0) insertAtCursor(" ");
         insertAtCursor(removeLastDotIfApplicable(await result()));
-        editorTextarea.value = standardReplace(editorTextarea.value) as string;
+        UiFunctions.applyReplaceRulesToMainEditor();
         saveEditor()
         navigator.clipboard.writeText(editorTextarea.value).then();
       } catch (error) {
@@ -342,7 +346,7 @@ export namespace Buttons {
 
     // replaceAgainButton
     HtmlUtils.addButtonClickListener(buttonWithId("replaceAgainButton"), () => {
-      editorTextarea.value = HelgeUtils.replaceByRules(editorTextarea.value, replaceRulesTextArea.value) as string;
+      UiFunctions.applyReplaceRulesToMainEditor();
     });
 
     // saveEditorButton

@@ -29,6 +29,9 @@ var Pures;
 })(Pures || (Pures = {}));
 var UiFunctions;
 (function (UiFunctions) {
+    UiFunctions.applyReplaceRulesToMainEditor = () => {
+        editorTextarea.value = replaceWithNormalParameters(editorTextarea.value);
+    };
     UiFunctions.replaceRulesTextAreaOnInput = () => {
         /**
          * Do correct regex escaping with the following and modify the rule accordingly:
@@ -101,7 +104,7 @@ var Log;
         });
     };
 })(Log || (Log = {}));
-const standardReplace = (subject) => {
+const replaceWithNormalParameters = (subject) => {
     return HelgeUtils.replaceByRules(subject, replaceRulesTextArea.value, false, inputElementWithId("logReplaceRulesCheckbox").checked);
 };
 // noinspection SpellCheckingInspection
@@ -181,7 +184,7 @@ export var Buttons;
                 if (editorTextarea.selectionStart > 0)
                     insertAtCursor(" ");
                 insertAtCursor(removeLastDotIfApplicable(await result()));
-                editorTextarea.value = standardReplace(editorTextarea.value);
+                UiFunctions.applyReplaceRulesToMainEditor();
                 saveEditor();
                 navigator.clipboard.writeText(editorTextarea.value).then();
             }
@@ -309,7 +312,7 @@ export var Buttons;
         });
         // replaceAgainButton
         HtmlUtils.addButtonClickListener(buttonWithId("replaceAgainButton"), () => {
-            editorTextarea.value = HelgeUtils.replaceByRules(editorTextarea.value, replaceRulesTextArea.value);
+            UiFunctions.applyReplaceRulesToMainEditor();
         });
         // saveEditorButton
         HtmlUtils.addButtonClickListener(buttonWithId("saveEditorButton"), () => {
