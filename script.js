@@ -289,11 +289,22 @@ export var Buttons;
         // ############## Toggle Log Button ##############
         Log.addToggleLogButtonClickListener(textAreaWithId);
         // ############## Crop Highlights Button ##############
-        HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
+        const cropHighlights = () => {
             mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ');
             saveEditor();
+        };
+        HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
+            cropHighlights();
         });
-        // ############## Crop Highlights Button ##############
+        // ############## Copy Backup to clipboard ##############
+        const copyBackupToClipboard = () => {
+            navigator.clipboard.writeText("## Replace Rules\n" + replaceRulesTextArea.value + "\n"
+                + "## Prompt\n" + transcriptionPrompt.value).then();
+        };
+        HtmlUtils.addButtonClickListener(buttonWithId("copyBackupMenuItem"), () => {
+            copyBackupToClipboard();
+        });
+        // ############## Du2Ich Button ##############
         HtmlUtils.addButtonClickListener(buttonWithId("du2ichMenuItem"), () => {
             const value = Pures.du2ich(mainEditorTextarea.value);
             console.log(value);

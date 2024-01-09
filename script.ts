@@ -317,14 +317,28 @@ export namespace Buttons {
 
     // ############## Toggle Log Button ##############
     Log.addToggleLogButtonClickListener(textAreaWithId);
-
-    // ############## Crop Highlights Button ##############
-    HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
+    
+// ############## Crop Highlights Button ##############
+    const cropHighlights = () => {
       mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ');
       saveEditor();
+    };
+    HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
+      cropHighlights();
+    });
+    
+    // ############## Copy Backup to clipboard ##############
+    const copyBackupToClipboard = () => {
+      navigator.clipboard.writeText(
+        "## Replace Rules\n" + replaceRulesTextArea.value + "\n"
+        + "## Prompt\n" + transcriptionPrompt.value
+      ).then();
+    };
+    HtmlUtils.addButtonClickListener(buttonWithId("copyBackupMenuItem"), () => {
+      copyBackupToClipboard();
     });
 
-    // ############## Crop Highlights Button ##############
+    // ############## Du2Ich Button ##############
     HtmlUtils.addButtonClickListener(buttonWithId("du2ichMenuItem"), () => {
       const value = Pures.du2ich(mainEditorTextarea.value);
       console.log(value);
