@@ -30,7 +30,7 @@ var Pures;
 var UiFunctions;
 (function (UiFunctions) {
     UiFunctions.applyReplaceRulesToMainEditor = () => {
-        editorTextarea.value = replaceWithNormalParameters(editorTextarea.value);
+        mainEditorTextarea.value = replaceWithNormalParameters(mainEditorTextarea.value);
     };
     UiFunctions.replaceRulesTextAreaOnInput = () => {
         /**
@@ -56,16 +56,16 @@ const downloadLink = document.getElementById('downloadLink');
 const spinner1 = document.getElementById('spinner1');
 const apiSelector = document.getElementById('apiSelector');
 const apiKeyInput = document.getElementById('apiKeyInputField');
-const editorTextarea = document.getElementById('editorTextarea');
+const mainEditorTextarea = document.getElementById('mainEditorTextarea');
 const transcriptionPrompt = document.getElementById('transcriptionPrompt');
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea');
-const saveEditor = () => HtmlUtils.Cookies.set("editorText", HtmlUtils.textAreaWithId("editorTextarea").value);
+const saveEditor = () => HtmlUtils.Cookies.set("editorText", HtmlUtils.textAreaWithId("mainEditorTextarea").value);
 TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea');
 HtmlUtils.textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions.replaceRulesTextAreaOnInput);
-TextAreas.setAutoSave('editorText', 'editorTextarea');
+TextAreas.setAutoSave('editorText', 'mainEditorTextarea');
 TextAreas.setAutoSave('prompt', 'transcriptionPrompt');
 const insertAtCursor = (text) => {
-    TextAreas.insertTextAtCursor(editorTextarea, text);
+    TextAreas.insertTextAtCursor(mainEditorTextarea, text);
 };
 const getApiSelectedInUi = () => apiSelector.value;
 var NotInUse;
@@ -162,7 +162,7 @@ export var Buttons;
                 return;
             }
             const promptForWhisper = () => transcriptionPrompt.value
-                + INSERT_EDITOR_INTO_PROMPT ? editorTextarea.value.substring(0, editorTextarea.selectionStart /*The start is relevant b/c the selection will be overwritten by the
+                + INSERT_EDITOR_INTO_PROMPT ? mainEditorTextarea.value.substring(0, mainEditorTextarea.selectionStart /*The start is relevant b/c the selection will be overwritten by the
                                               new text. */).slice(-(750 /* Taking the last 750 chars is for sure less than the max 250 tokens whisper is considering. This is
             important because the last words of the last transcription should always be included to avoid hallucinations
             if it otherwise would be an incomplete sentence. */
@@ -176,17 +176,17 @@ export var Buttons;
             try {
                 const result = async () => await HelgeUtils.Transcription.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper());
                 const removeLastDotIfApplicable = (input) => {
-                    if (editorTextarea.selectionStart < editorTextarea.value.length) {
+                    if (mainEditorTextarea.selectionStart < mainEditorTextarea.value.length) {
                         return removeLastDot(input);
                     }
                     return input;
                 };
-                if (editorTextarea.selectionStart > 0)
+                if (mainEditorTextarea.selectionStart > 0)
                     insertAtCursor(" ");
                 insertAtCursor(removeLastDotIfApplicable(await result()));
                 UiFunctions.applyReplaceRulesToMainEditor();
                 saveEditor();
-                navigator.clipboard.writeText(editorTextarea.value).then();
+                navigator.clipboard.writeText(mainEditorTextarea.value).then();
             }
             catch (error) {
                 if (error instanceof HelgeUtils.Transcription.TranscriptionError) {
@@ -290,14 +290,14 @@ export var Buttons;
         Log.addToggleLogButtonClickListener(textAreaWithId);
         // ############## Crop Highlights Button ##############
         HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
-            editorTextarea.value = HelgeUtils.extractHighlights(editorTextarea.value).join(' ');
+            mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ');
             saveEditor();
         });
         // ############## Crop Highlights Button ##############
         HtmlUtils.addButtonClickListener(buttonWithId("du2ichMenuItem"), () => {
-            const value = Pures.du2ich(editorTextarea.value);
+            const value = Pures.du2ich(mainEditorTextarea.value);
             console.log(value);
-            editorTextarea.value = value;
+            mainEditorTextarea.value = value;
             saveEditor();
         });
         // ############## saveAPIKeyButton ##############
@@ -307,7 +307,7 @@ export var Buttons;
         });
         // clearButton
         HtmlUtils.addButtonClickListener(buttonWithId("clearButton"), () => {
-            editorTextarea.value = '';
+            mainEditorTextarea.value = '';
             saveEditor();
         });
         // replaceAgainButton
@@ -316,7 +316,7 @@ export var Buttons;
         });
         // saveEditorButton
         HtmlUtils.addButtonClickListener(buttonWithId("saveEditorButton"), () => {
-            HtmlUtils.Cookies.set("editorText", editorTextarea.value);
+            HtmlUtils.Cookies.set("editorText", mainEditorTextarea.value);
         });
         // savePromptButton
         HtmlUtils.addButtonClickListener(buttonWithId("savePromptButton"), () => {
@@ -334,14 +334,14 @@ export var Buttons;
             });
         }
         // undoButtonOfEditor
-        addUndoButtonEventListener("undoButtonOfEditor", editorTextarea);
+        addUndoButtonEventListener("undoButtonOfEditor", mainEditorTextarea);
         addUndoButtonEventListener("undoButtonOfReplaceRules", replaceRulesTextArea);
         addUndoButtonEventListener("undoButtonOfPrompt", transcriptionPrompt);
         // addReplaceRuleButton
         const addReplaceRule = () => {
             // add TextArea.selectedText() to the start of the replaceRulesTextArea
             TextAreas.setCursor(replaceRulesTextArea, 0);
-            const selectedText = TextAreas.selectedText(editorTextarea);
+            const selectedText = TextAreas.selectedText(mainEditorTextarea);
             TextAreas.insertTextAtCursor(replaceRulesTextArea, `"\\b${selectedText}\\b"gmu->"${selectedText}"\n`);
             TextAreas.setCursor(replaceRulesTextArea, 5 + selectedText.length);
             replaceRulesTextArea.focus();
@@ -365,7 +365,7 @@ export var Buttons;
             });
         }
         // copyButtons
-        addEventListenerForCopyButton("copyButton", "editorTextarea");
+        addEventListenerForCopyButton("copyButton", "mainEditorTextarea");
         addEventListenerForCopyButton("copyReplaceRulesButton", "replaceRulesTextArea");
         addEventListenerForCopyButton("copyPromptButton", "transcriptionPrompt");
         buttonWithId("saveAPIKeyButton").addEventListener('click', function () {
@@ -382,7 +382,7 @@ const setApiKeyCookie = (apiKey) => {
 };
 export const loadFormData = () => {
     const Cookies = HtmlUtils.Cookies;
-    editorTextarea.value = Cookies.get("editorText");
+    mainEditorTextarea.value = Cookies.get("editorText");
     transcriptionPrompt.value = Cookies.get("prompt");
     replaceRulesTextArea.value = Cookies.get("replaceRules");
     apiSelector.value = Cookies.get("apiSelector") ?? 'OpenAI';
