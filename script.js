@@ -30,12 +30,12 @@ var uiFunctions;
 (function (uiFunctions) {
     uiFunctions.replaceRulesTextAreaOnInput = () => {
         // noinspection SpellCheckingInspection
-        const magicWord = (i) => "Gürkenküchen" + i;
-        const createTestRule = (i) => `\n\n"${magicWord(i)}"->""\n\n`;
+        const magicText = (i) => `Das hier ist ein ziemlich langer ganz normaler Text, an dem die "Rules" nichts verändern sollten. Dadurch fail'en auch Rules wie zB "e"->"a" und das ist auch gut so.` + i;
+        const createTestRule = (i) => `\n\n"${magicText(i)}"->""\n\n`;
         const testRules = createTestRule(1)
             + replaceRulesTextArea.value
             + createTestRule(2);
-        const replaceResult = HelgeUtils.replaceByRulesAsString(magicWord(1) + magicWord(2), testRules);
+        const replaceResult = HelgeUtils.replaceByRulesAsString(magicText(1) + magicText(2), testRules);
         buttonWithId("testFailIndicatorOfReplaceRules").style.display =
             replaceResult === ''
                 ? "none" : "block";
