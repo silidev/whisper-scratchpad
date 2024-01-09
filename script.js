@@ -157,9 +157,21 @@ export var Buttons;
             important because the last words of the last transcription should always be included to avoid hallucinations
             if it otherwise would be an incomplete sentence. */
                 - transcriptionPrompt.value.length)) : "";
+            const removeLastDot = (text) => {
+                if (text.endsWith('.')) {
+                    return text.slice(0, -1);
+                }
+                return text;
+            };
             try {
                 const result = async () => await HelgeUtils.Transcription.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper());
-                const replacedOutput = standardReplace(await result());
+                const removeLastDotIfApplicable = (input) => {
+                    if (editorTextarea.selectionStart < editorTextarea.value.length) {
+                        return removeLastDot(input);
+                    }
+                    return input;
+                };
+                const replacedOutput = removeLastDotIfApplicable(standardReplace(await result()));
                 if (editorTextarea.value.length > 0)
                     insertAtCursor(" ");
                 insertAtCursor(replacedOutput);
