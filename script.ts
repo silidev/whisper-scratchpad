@@ -5,6 +5,7 @@ import TextAreas = HtmlUtils.TextAreas;
 import buttonWithId = HtmlUtils.buttonWithId;
 import blinkFast = HtmlUtils.blinkFast;
 import blinkSlow = HtmlUtils.blinkSlow;
+import inputElementWithId = HtmlUtils.inputElementWithId;
 
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
@@ -54,7 +55,7 @@ namespace UiFunctions {
   };
 }
 
-import inputElementWithId = HtmlUtils.inputElementWithId;
+
 const downloadLink = document.getElementById('downloadLink') as HTMLAnchorElement;
 const spinner1 = document.getElementById('spinner1') as HTMLElement;
 const apiSelector = document.getElementById('apiSelector') as HTMLSelectElement;
@@ -200,9 +201,9 @@ export namespace Buttons {
           }
           return input;
         }
-        const replacedOutput = removeLastDotIfApplicable(standardReplace(await result()) as string);
-        if (editorTextarea.value.length > 0) insertAtCursor(" ");
-        insertAtCursor(replacedOutput);
+        if (editorTextarea.selectionStart > 0) insertAtCursor(" ");
+        insertAtCursor(removeLastDotIfApplicable(await result()));
+        editorTextarea.value = standardReplace(editorTextarea.value) as string;
         saveEditor()
         navigator.clipboard.writeText(editorTextarea.value).then();
       } catch (error) {

@@ -4,6 +4,7 @@ var TextAreas = HtmlUtils.TextAreas;
 var buttonWithId = HtmlUtils.buttonWithId;
 var blinkFast = HtmlUtils.blinkFast;
 var blinkSlow = HtmlUtils.blinkSlow;
+var inputElementWithId = HtmlUtils.inputElementWithId;
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
 var Pures;
@@ -48,7 +49,6 @@ var UiFunctions;
                 ? "none" : "block";
     };
 })(UiFunctions || (UiFunctions = {}));
-var inputElementWithId = HtmlUtils.inputElementWithId;
 const downloadLink = document.getElementById('downloadLink');
 const spinner1 = document.getElementById('spinner1');
 const apiSelector = document.getElementById('apiSelector');
@@ -178,10 +178,10 @@ export var Buttons;
                     }
                     return input;
                 };
-                const replacedOutput = removeLastDotIfApplicable(standardReplace(await result()));
-                if (editorTextarea.value.length > 0)
+                if (editorTextarea.selectionStart > 0)
                     insertAtCursor(" ");
-                insertAtCursor(replacedOutput);
+                insertAtCursor(removeLastDotIfApplicable(await result()));
+                editorTextarea.value = standardReplace(editorTextarea.value);
                 saveEditor();
                 navigator.clipboard.writeText(editorTextarea.value).then();
             }
