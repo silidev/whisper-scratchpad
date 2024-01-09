@@ -84,6 +84,10 @@ Please note that certain strong accents can possibly cause this mode to transcri
     }
   }
 
+  export const replaceByRulesAsString = (subject: string, allRules: string) => {
+    return replaceByRules(subject, allRules, false, false) as string;
+  }
+
   /**
    * Do NOT change the syntax of the rules, because they must be kept compatible with https://github.com/No3371/obsidian-regex-pipeline#readme
    */

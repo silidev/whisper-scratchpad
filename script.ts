@@ -49,6 +49,17 @@ TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea');
 TextAreas.setAutoSave('editorText', 'editorTextarea');
 TextAreas.setAutoSave('prompt', 'transcriptionPrompt');
 
+HtmlUtils.textAreaWithId('replaceRulesTextArea').addEventListener('input', () => {
+  // noinspection SpellCheckingInspection
+  const magicWord = "zrgjsfgbjmfhsl";
+  const testRules = replaceRulesTextArea.value
+      +`\n"${magicWord}"->""`;
+  const replaceResult = HelgeUtils.replaceByRulesAsString(magicWord, testRules);
+  buttonWithId("testFailIndicatorOfReplaceRules").style.display =
+        replaceResult===''
+        ? "none" : "block";
+});
+
 const insertAtCursor = (text: string) => {
   TextAreas.insertTextAtCursor(editorTextarea, text);
 };

@@ -74,6 +74,9 @@ export var HelgeUtils;
             throw new TranscriptionError(output);
         };
     })(Transcription = HelgeUtils.Transcription || (HelgeUtils.Transcription = {}));
+    HelgeUtils.replaceByRulesAsString = (subject, allRules) => {
+        return HelgeUtils.replaceByRules(subject, allRules, false, false);
+    };
     /**
      * Do NOT change the syntax of the rules, because they must be kept compatible with https://github.com/No3371/obsidian-regex-pipeline#readme
      */

@@ -117,22 +117,27 @@
       </pre>
   </info-button>
   <span id="replaceRulesButtons">
-      <span class="flexRightAndWrapContent">
-        <select id="replaceRulesSelector" style="width: 15mm; display: none">
-          <option value="normal">normal</option>
-          <option value="du2ich">du2ich</option>
-          <option value="comma2newlines">comma2newlines</option>
-          <option value="tmp">tmp</option>
-        </select>
-        <!-- ############## Replace-rules buttons ###############-->
-        <button id="addReplaceRuleButton"><span style="font-size: 16px">""->""</span></button>
-        <button id="copyReplaceRulesButton">⎘ Copy</button>
-        <button id="undoButtonOfReplaceRules">⎌ Undo</button>
+    <span class="flexRightAndWrapContent">
+      <button id="testFailIndicatorOfReplaceRules" style="display: block">❌FAIL❌</button>
+      <select id="replaceRulesSelector" style="width: 15mm; display: none">
+        <option value="normal">normal</option>
+        <option value="du2ich">du2ich</option>
+        <option value="comma2newlines">comma2newlines</option>
+        <option value="tmp">tmp</option>
+      </select>
+      <!-- ############## Replace-rules buttons ###############-->
+      <button id="addReplaceRuleButton"><span style="font-size: 16px">""->""</span></button>
+      <button id="copyReplaceRulesButton">⎘ Copy</button>
+      <button id="undoButtonOfReplaceRules">⎌ Undo</button>
 <!--        checkbox-->
-        <input type="checkbox" id="logReplaceRulesCheckbox">
-        <label for="logReplaceRulesCheckbox">Log</label>
-      </span>
+      <input type="checkbox" id="logReplaceRulesCheckbox">
+      <label for="logReplaceRulesCheckbox">Log</label>
     </span>
+  </span>
+<!--  <div class="editorTextAreaContainer">-->
+<!--      <textarea id="testReplaceRulesTextArea" style="height: 2cm" wrap="soft" placeholder="Optional. &quot;SEARCH&quot;-&gt;&quot;REPLACE&quot;" >-->
+<!--      </textarea>-->
+<!--  </div>-->
   <div class="editorTextAreaContainer">
       <textarea id="replaceRulesTextArea" wrap="soft" placeholder="Optional. &quot;SEARCH&quot;-&gt;&quot;REPLACE&quot;" >
       </textarea>
