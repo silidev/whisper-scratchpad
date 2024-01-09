@@ -18,7 +18,7 @@ namespace Pures {
 `) as string
       , `
 "Du"->"Ich"
-"du""->"ich"
+"du"->"ich"
 "dich"->"mich"
 "Dich"->"Mich"
 "dir"->"mir"

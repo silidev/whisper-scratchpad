@@ -14,7 +14,7 @@ var Pures;
 "st\\b"->""
 `), `
 "Du"->"Ich"
-"du""->"ich"
+"du"->"ich"
 "dich"->"mich"
 "Dich"->"Mich"
 "dir"->"mir"
