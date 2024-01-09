@@ -34,10 +34,13 @@ namespace Pures {
 namespace uiFunctions {
   export const replaceRulesTextAreaOnInput = () => {
     // noinspection SpellCheckingInspection
-    const magicWord = "zrgjsfgbjmfhsl";
-    const testRules = replaceRulesTextArea.value
-        +`\n"${magicWord}"->""`;
-    const replaceResult = HelgeUtils.replaceByRulesAsString(magicWord, testRules);
+    const magicWord = (i: number) => "Gürkenküchen"+i;
+    const createTestRule = (i: number) => `\n\n"${magicWord(i)}"->""\n\n`;
+    const testRules =
+        createTestRule(1)
+        + replaceRulesTextArea.value
+        + createTestRule(2);
+    const replaceResult = HelgeUtils.replaceByRulesAsString(magicWord(1)+magicWord(2), testRules);
     buttonWithId("testFailIndicatorOfReplaceRules").style.display =
         replaceResult===''
             ? "none" : "block";
@@ -57,7 +60,7 @@ const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as 
 const saveEditor = () => HtmlUtils.Cookies.set("editorText", HtmlUtils.textAreaWithId("editorTextarea").value);
 
 TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea');
-HtmlUtils.textAreaWithId('replaceRulesTextArea').addEventListener('input', () => uiFunctions.replaceRulesTextAreaOnInput);
+HtmlUtils.textAreaWithId('replaceRulesTextArea').addEventListener('input', uiFunctions.replaceRulesTextAreaOnInput);
 TextAreas.setAutoSave('editorText', 'editorTextarea');
 TextAreas.setAutoSave('prompt', 'transcriptionPrompt');
 
