@@ -33,9 +33,14 @@ namespace Pures {
 
 namespace uiFunctions {
   export const replaceRulesTextAreaOnInput = () => {
+    /**
+     *
+     * Do correct regex escaping with the following and modify the rule accordingly:
+     *`Das hier ist ein ziemlich langer ganz normaler Text, an dem die "Rules" nichts verändern sollten. Dadurch fail'en auch Rules wie zB "e"->"a" und das ist auch gut so.`
+     */
     // noinspection SpellCheckingInspection
-    const magicText = (i: number) => `Das hier ist ein ziemlich langer ganz normaler Text, an dem die "Rules" nichts verändern sollten. Dadurch fail'en auch Rules wie zB "e"->"a" und das ist auch gut so.`+i;
-    const createTestRule = (i: number) => `\n\n"${magicText(i)}"->""\n\n`;
+    const magicText = (i: number) => `Das hier ist ein ziemlich langer ganz normaler Text an dem die Rules nichts verändern sollten Dadurch failen auch Rules wie zB  und das ist auch gut so`+i;
+    const createTestRule = (i: number) => `\n\n"${magicText(i)}"gmu->""\n\n`;
     const testRules =
         createTestRule(1)
         + replaceRulesTextArea.value
