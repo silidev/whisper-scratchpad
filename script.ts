@@ -15,7 +15,7 @@ namespace Pures {
   export const du2ich = (input: string) => HelgeUtils.replaceByRules(HelgeUtils.replaceByRules(input
           , `
 "st\\b"->""
-`)
+`) as string
       , `
 "Du"->"Ich"
 "du""->"ich"
@@ -29,7 +29,7 @@ namespace Pures {
 "hast"->"habe"
 "I"->"Ist"
 "i"->"ist"
-`, true);
+`, true) as string;
 }
 
 
@@ -94,6 +94,11 @@ namespace Log {
     });
   };
 }
+
+const standardReplace = (subject: string) => {
+  return HelgeUtils.replaceByRules(subject, replaceRulesTextArea.value,false
+      ,inputElementWithId("logReplaceRulesCheckbox").checked);
+};
 
 // noinspection SpellCheckingInspection
 export namespace Buttons {
@@ -161,7 +166,7 @@ export namespace Buttons {
       try {
         const result = async () => await HelgeUtils.Transcription.transcribe(
             apiName, audioBlob, getApiKey(), promptForWhisper());
-        const replacedOutput = HelgeUtils.replaceByRules(await result(), replaceRulesTextArea.value);
+        const replacedOutput = standardReplace(await result()) as string;
         if (editorTextarea.value.length > 0)
           insertAtCursor(" ");
         insertAtCursor(replacedOutput);
@@ -303,7 +308,7 @@ export namespace Buttons {
 
     // replaceAgainButton
     HtmlUtils.addButtonClickListener(buttonWithId("replaceAgainButton"), () => {
-      editorTextarea.value = HelgeUtils.replaceByRules(editorTextarea.value, replaceRulesTextArea.value);
+      editorTextarea.value = HelgeUtils.replaceByRules(editorTextarea.value, replaceRulesTextArea.value) as string;
     });
 
     // saveEditorButton
@@ -324,6 +329,7 @@ export namespace Buttons {
     function addUndoButtonEventListener(undoButtonId: string, textArea: HTMLTextAreaElement) {
       HtmlUtils.addButtonClickListener(buttonWithId(undoButtonId), () => {
         textArea.focus();
+        //@ts-ignore
         document.execCommand('undo'); // Yes, deprecated, but works. I will replace it when it fails. Docs: https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
       });
     }
@@ -338,7 +344,7 @@ export namespace Buttons {
       // add TextArea.selectedText() to the start of the replaceRulesTextArea
       TextAreas.setCursor(replaceRulesTextArea, 0);
       const selectedText = TextAreas.selectedText(editorTextarea);
-      TextAreas.insertTextAtCursor(replaceRulesTextArea, `"\\b${selectedText}\\b"->"${selectedText}"\n`);
+      TextAreas.insertTextAtCursor(replaceRulesTextArea, `"\\b${selectedText}\\b"gmu->"${selectedText}"\n`);
       TextAreas.setCursor(replaceRulesTextArea, 5 + selectedText.length);
       replaceRulesTextArea.focus();
     };

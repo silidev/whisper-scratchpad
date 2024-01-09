@@ -74,22 +74,39 @@ export var HelgeUtils;
             throw new TranscriptionError(output);
         };
     })(Transcription = HelgeUtils.Transcription || (HelgeUtils.Transcription = {}));
-    HelgeUtils.replaceByRules = (subject, ruleText, wholewords = false) => {
-        const wordBoundaryMarker = wholewords ? '\\b' : '';
+    /**
+     * Do NOT change the syntax of the rules, because they must be kept compatible with https://github.com/No3371/obsidian-regex-pipeline#readme
+     */
+    HelgeUtils.replaceByRules = (subject, allRules, wholeWords = false, logReplacements = false) => {
+        const possiblyWordBoundaryMarker = wholeWords ? '\\b' : '';
         let count = 0;
-        let ruleMatches;
+        let rule;
         const ruleParser = /^"(.+?)"([a-z]*?)(?:\r\n|\r|\n)?->(?:\r\n|\r|\n)?"(.*?)"([a-z]*?)(?:\r\n|\r|\n)?$/gmus;
-        while (ruleMatches = ruleParser.exec(ruleText)) {
-            const target = wordBoundaryMarker + ruleMatches[1] + wordBoundaryMarker;
-            console.log("\n" + target + "\n↓↓↓↓↓\n" + ruleMatches[3]);
-            let matchRule = ruleMatches[2].length == 0 ?
-                new RegExp(target, 'gmu')
-                : new RegExp(target, ruleMatches[2]);
-            if (ruleMatches[4] == 'x')
-                subject = subject.replace(matchRule, '');
+        let log = '';
+        while (rule = ruleParser.exec(allRules)) {
+            const target = possiblyWordBoundaryMarker + rule[1] + possiblyWordBoundaryMarker;
+            const regexFlags = rule[2];
+            const replacement = rule[3];
+            const replacementFlags = rule[4];
+            // console.log("\n" + target + "\n↓↓↓↓↓\n"+ replacement);
+            let regex = regexFlags.length == 0 ?
+                new RegExp(target, 'gm') // Noted that gm flags are basically necessary for this plugin to be useful, you seldom want to replace only 1 occurrence or operate on a note only contains 1 line.
+                : new RegExp(target, regexFlags);
+            if (subject.search(regex) !== -1) {
+                // A match was found
+                log += `${count} ${rule}\n`;
+            }
+            if (replacementFlags == 'x')
+                subject = subject.replace(regex, '');
             else
-                subject = subject.replace(matchRule, ruleMatches[3]);
+                subject = subject.replace(regex, replacement);
             count++;
+        }
+        if (logReplacements) {
+            return {
+                result: subject,
+                log: log
+            };
         }
         return subject;
     };

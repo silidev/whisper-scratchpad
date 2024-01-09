@@ -79,6 +79,9 @@ var Log;
         });
     };
 })(Log || (Log = {}));
+const standardReplace = (subject) => {
+    return HelgeUtils.replaceByRules(subject, replaceRulesTextArea.value, false, inputElementWithId("logReplaceRulesCheckbox").checked);
+};
 // noinspection SpellCheckingInspection
 export var Buttons;
 (function (Buttons) {
@@ -141,7 +144,7 @@ export var Buttons;
                 - transcriptionPrompt.value.length)) : "";
             try {
                 const result = async () => await HelgeUtils.Transcription.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper());
-                const replacedOutput = HelgeUtils.replaceByRules(await result(), replaceRulesTextArea.value);
+                const replacedOutput = standardReplace(await result());
                 if (editorTextarea.value.length > 0)
                     insertAtCursor(" ");
                 insertAtCursor(replacedOutput);
@@ -289,6 +292,7 @@ export var Buttons;
         function addUndoButtonEventListener(undoButtonId, textArea) {
             HtmlUtils.addButtonClickListener(buttonWithId(undoButtonId), () => {
                 textArea.focus();
+                //@ts-ignore
                 document.execCommand('undo'); // Yes, deprecated, but works. I will replace it when it fails. Docs: https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
             });
         }
@@ -301,7 +305,7 @@ export var Buttons;
             // add TextArea.selectedText() to the start of the replaceRulesTextArea
             TextAreas.setCursor(replaceRulesTextArea, 0);
             const selectedText = TextAreas.selectedText(editorTextarea);
-            TextAreas.insertTextAtCursor(replaceRulesTextArea, `"\\b${selectedText}\\b"->"${selectedText}"\n`);
+            TextAreas.insertTextAtCursor(replaceRulesTextArea, `"\\b${selectedText}\\b"gmu->"${selectedText}"\n`);
             TextAreas.setCursor(replaceRulesTextArea, 5 + selectedText.length);
             replaceRulesTextArea.focus();
         };
