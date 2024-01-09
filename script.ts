@@ -380,21 +380,7 @@ export namespace Buttons {
       replaceAgainButton();
     });
 
-  // saveEditorButton
-    HtmlUtils.addButtonClickListener(buttonWithId("saveEditorButton"), () => {
-      HtmlUtils.Cookies.set("editorText", mainEditorTextarea.value);
-    });
-
-  // savePromptButton
-    HtmlUtils.addButtonClickListener(buttonWithId("savePromptButton"), () => {
-      HtmlUtils.Cookies.set("prompt", transcriptionPrompt.value);
-    });
-
-  // saveRulesButton
-    HtmlUtils.addButtonClickListener(buttonWithId("saveRulesButton"), () => {
-      HtmlUtils.Cookies.set("replaceRules", replaceRulesTextArea.value);
-    });
-
+// ############## undoButtons ##############
     const addUndoButtonEventListener = (undoButtonId: string, textArea: HTMLTextAreaElement) => {
       HtmlUtils.addButtonClickListener(buttonWithId(undoButtonId), () => {
         textArea.focus();
