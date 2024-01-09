@@ -301,13 +301,15 @@ export namespace Buttons {
 
     // ############## sendButton ##############
     buttonWithId("sendButton").addEventListener('click', sendButton);
-
     buttonWithId("pauseRecordButton").addEventListener('click', pauseRecordButton);
 
-    // ############## transcribeAgainButton ##############
-    HtmlUtils.addButtonClickListener(buttonWithId("transcribeAgainButton"), () => {
+// ############## transcribeAgainButton ##############
+    function transcribeAgainButton() {
       NotInUse.showSpinner();
       transcribeAndHandleResult(audioBlob).then(NotInUse.hideSpinner);
+    }
+    HtmlUtils.addButtonClickListener(buttonWithId("transcribeAgainButton"), () => {
+      transcribeAgainButton();
     });
 
     StateIndicator.update();
@@ -315,7 +317,7 @@ export namespace Buttons {
 
   export const addButtonEventListeners = () => {
 
-    // ############## Toggle Log Button ##############
+// ############## Toggle Log Button ##############
     Log.addToggleLogButtonClickListener(textAreaWithId);
     
 // ############## Crop Highlights Button ##############
@@ -327,7 +329,7 @@ export namespace Buttons {
       cropHighlights();
     });
     
-    // ############## Copy Backup to clipboard ##############
+// ############## Copy Backup to clipboard ##############
     const copyBackupToClipboard = () => {
       navigator.clipboard.writeText(
         "## Replace Rules\n" + replaceRulesTextArea.value + "\n"
@@ -338,60 +340,75 @@ export namespace Buttons {
       copyBackupToClipboard();
     });
 
-    // ############## Du2Ich Button ##############
-    HtmlUtils.addButtonClickListener(buttonWithId("du2ichMenuItem"), () => {
+// ############## Du2Ich Button ##############
+    function du2ichMenuItem() {
       const value = Pures.du2ich(mainEditorTextarea.value);
       console.log(value);
       mainEditorTextarea.value = value;
       saveEditor();
+    }
+    HtmlUtils.addButtonClickListener(buttonWithId("du2ichMenuItem"), () => {
+      du2ichMenuItem();
     });
 
-    // ############## saveAPIKeyButton ##############
-    HtmlUtils.addButtonClickListener(buttonWithId("saveAPIKeyButton"), () => {
+
+// ############## saveAPIKeyButton ##############
+    function saveAPIKeyButton() {
       setApiKeyCookie(apiKeyInput.value);
       apiKeyInput.value = '';
+    }
+    HtmlUtils.addButtonClickListener(buttonWithId("saveAPIKeyButton"), () => {
+      saveAPIKeyButton();
     });
 
-    // clearButton
-    HtmlUtils.addButtonClickListener(buttonWithId("clearButton"), () => {
+    function clearButton() {
       mainEditorTextarea.value = '';
       saveEditor();
+    }
+
+// clearButton
+    HtmlUtils.addButtonClickListener(buttonWithId("clearButton"), () => {
+      clearButton();
     });
 
-    // replaceAgainButton
-    HtmlUtils.addButtonClickListener(buttonWithId("replaceAgainButton"), () => {
+    function replaceAgainButton() {
       UiFunctions.applyReplaceRulesToMainEditor();
+    }
+
+// replaceAgainButton
+    HtmlUtils.addButtonClickListener(buttonWithId("replaceAgainButton"), () => {
+      replaceAgainButton();
     });
 
-    // saveEditorButton
+  // saveEditorButton
     HtmlUtils.addButtonClickListener(buttonWithId("saveEditorButton"), () => {
       HtmlUtils.Cookies.set("editorText", mainEditorTextarea.value);
     });
 
-    // savePromptButton
+  // savePromptButton
     HtmlUtils.addButtonClickListener(buttonWithId("savePromptButton"), () => {
       HtmlUtils.Cookies.set("prompt", transcriptionPrompt.value);
     });
 
-    // saveRulesButton
+  // saveRulesButton
     HtmlUtils.addButtonClickListener(buttonWithId("saveRulesButton"), () => {
       HtmlUtils.Cookies.set("replaceRules", replaceRulesTextArea.value);
     });
 
-    function addUndoButtonEventListener(undoButtonId: string, textArea: HTMLTextAreaElement) {
+    const addUndoButtonEventListener = (undoButtonId: string, textArea: HTMLTextAreaElement) => {
       HtmlUtils.addButtonClickListener(buttonWithId(undoButtonId), () => {
         textArea.focus();
         //@ts-ignore
         document.execCommand('undo'); // Yes, deprecated, but works. I will replace it when it fails. Docs: https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
       });
-    }
+    };
 
-    // undoButtonOfEditor
+  // undoButtonOfEditor
     addUndoButtonEventListener("undoButtonOfEditor", mainEditorTextarea);
     addUndoButtonEventListener("undoButtonOfReplaceRules", replaceRulesTextArea);
     addUndoButtonEventListener("undoButtonOfPrompt", transcriptionPrompt);
 
-    // addReplaceRuleButton
+  // addReplaceRuleButton
     const addReplaceRule = () => {
       // add TextArea.selectedText() to the start of the replaceRulesTextArea
       TextAreas.setCursor(replaceRulesTextArea, 0);
@@ -402,15 +419,19 @@ export namespace Buttons {
     };
     HtmlUtils.addButtonClickListener(buttonWithId("addReplaceRuleButton"), addReplaceRule);
 
-    // aboutButton
-    HtmlUtils.addButtonClickListener(buttonWithId("cancelButton"), () => {
+    function cancelButton() {
       saveEditor()
       window.location.reload();
+    }
+
+// aboutButton
+    HtmlUtils.addButtonClickListener(buttonWithId("cancelButton"), () => {
+      cancelButton();
     });
 
-    // copyButton
+// copyButton
     /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
-    function addEventListenerForCopyButton(buttonId: string, inputElementId: string) {
+    const addEventListenerForCopyButton = (buttonId: string, inputElementId: string) => {
       buttonWithId(buttonId).addEventListener('click', () => {
         navigator.clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
           buttonWithId(buttonId).textContent = '⎘ Copied!';
@@ -419,9 +440,9 @@ export namespace Buttons {
           }, 2000);
         });
       });
-    }
+    };
 
-    // copyButtons
+  // copyButtons
     addEventListenerForCopyButton("copyButton", "mainEditorTextarea");
     addEventListenerForCopyButton("copyReplaceRulesButton", "replaceRulesTextArea");
     addEventListenerForCopyButton("copyPromptButton", "transcriptionPrompt");

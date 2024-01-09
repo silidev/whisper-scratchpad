@@ -279,9 +279,12 @@ export var Buttons;
         buttonWithId("sendButton").addEventListener('click', sendButton);
         buttonWithId("pauseRecordButton").addEventListener('click', pauseRecordButton);
         // ############## transcribeAgainButton ##############
-        HtmlUtils.addButtonClickListener(buttonWithId("transcribeAgainButton"), () => {
+        function transcribeAgainButton() {
             NotInUse.showSpinner();
             transcribeAndHandleResult(audioBlob).then(NotInUse.hideSpinner);
+        }
+        HtmlUtils.addButtonClickListener(buttonWithId("transcribeAgainButton"), () => {
+            transcribeAgainButton();
         });
         StateIndicator.update();
     })(Media = Buttons.Media || (Buttons.Media = {})); // End of media buttons
@@ -305,25 +308,37 @@ export var Buttons;
             copyBackupToClipboard();
         });
         // ############## Du2Ich Button ##############
-        HtmlUtils.addButtonClickListener(buttonWithId("du2ichMenuItem"), () => {
+        function du2ichMenuItem() {
             const value = Pures.du2ich(mainEditorTextarea.value);
             console.log(value);
             mainEditorTextarea.value = value;
             saveEditor();
+        }
+        HtmlUtils.addButtonClickListener(buttonWithId("du2ichMenuItem"), () => {
+            du2ichMenuItem();
         });
         // ############## saveAPIKeyButton ##############
-        HtmlUtils.addButtonClickListener(buttonWithId("saveAPIKeyButton"), () => {
+        function saveAPIKeyButton() {
             setApiKeyCookie(apiKeyInput.value);
             apiKeyInput.value = '';
+        }
+        HtmlUtils.addButtonClickListener(buttonWithId("saveAPIKeyButton"), () => {
+            saveAPIKeyButton();
         });
-        // clearButton
-        HtmlUtils.addButtonClickListener(buttonWithId("clearButton"), () => {
+        function clearButton() {
             mainEditorTextarea.value = '';
             saveEditor();
+        }
+        // clearButton
+        HtmlUtils.addButtonClickListener(buttonWithId("clearButton"), () => {
+            clearButton();
         });
+        function replaceAgainButton() {
+            UiFunctions.applyReplaceRulesToMainEditor();
+        }
         // replaceAgainButton
         HtmlUtils.addButtonClickListener(buttonWithId("replaceAgainButton"), () => {
-            UiFunctions.applyReplaceRulesToMainEditor();
+            replaceAgainButton();
         });
         // saveEditorButton
         HtmlUtils.addButtonClickListener(buttonWithId("saveEditorButton"), () => {
@@ -337,13 +352,13 @@ export var Buttons;
         HtmlUtils.addButtonClickListener(buttonWithId("saveRulesButton"), () => {
             HtmlUtils.Cookies.set("replaceRules", replaceRulesTextArea.value);
         });
-        function addUndoButtonEventListener(undoButtonId, textArea) {
+        const addUndoButtonEventListener = (undoButtonId, textArea) => {
             HtmlUtils.addButtonClickListener(buttonWithId(undoButtonId), () => {
                 textArea.focus();
                 //@ts-ignore
                 document.execCommand('undo'); // Yes, deprecated, but works. I will replace it when it fails. Docs: https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
             });
-        }
+        };
         // undoButtonOfEditor
         addUndoButtonEventListener("undoButtonOfEditor", mainEditorTextarea);
         addUndoButtonEventListener("undoButtonOfReplaceRules", replaceRulesTextArea);
@@ -358,14 +373,17 @@ export var Buttons;
             replaceRulesTextArea.focus();
         };
         HtmlUtils.addButtonClickListener(buttonWithId("addReplaceRuleButton"), addReplaceRule);
-        // aboutButton
-        HtmlUtils.addButtonClickListener(buttonWithId("cancelButton"), () => {
+        function cancelButton() {
             saveEditor();
             window.location.reload();
+        }
+        // aboutButton
+        HtmlUtils.addButtonClickListener(buttonWithId("cancelButton"), () => {
+            cancelButton();
         });
         // copyButton
         /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
-        function addEventListenerForCopyButton(buttonId, inputElementId) {
+        const addEventListenerForCopyButton = (buttonId, inputElementId) => {
             buttonWithId(buttonId).addEventListener('click', () => {
                 navigator.clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
                     buttonWithId(buttonId).textContent = '⎘ Copied!';
@@ -374,7 +392,7 @@ export var Buttons;
                     }, 2000);
                 });
             });
-        }
+        };
         // copyButtons
         addEventListenerForCopyButton("copyButton", "mainEditorTextarea");
         addEventListenerForCopyButton("copyReplaceRulesButton", "replaceRulesTextArea");
