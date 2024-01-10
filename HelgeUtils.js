@@ -1,5 +1,59 @@
 export var HelgeUtils;
 (function (HelgeUtils) {
+    let Exceptions;
+    (function (Exceptions) {
+        /**
+         * Reporting of exceptions in callbacks is sometimes very bad.
+         * Therefore, exceptions should always be caught and then passed
+         * to this function, which alerts in a useful way.
+         *
+         * This also used to re-throw, but sometimes that is not good,
+         * thus think about if you want to do this after calling this.
+         *
+         * Use this to throw an exception with a stack trace:
+         *    throw new Error("Some useful error message");
+         *
+         * @return void
+         *
+         * @param e {Error} The exception, preferably of type Error,
+         *        because then a stack trace will be displayed.
+         <pre>
+         IntelliJ Live Template
+         <template name="try-catch-unhandled-exception" value="try {&#10;    $SELECTION$&#10;} catch(e) {&#10;    unhandledExceptionAlert(e);&#10;}" description="" toReformat="true" toShortenFQNames="true">
+         <context>
+         <option name="JAVA_SCRIPT" value="true" />
+         <option name="JSX_HTML" value="false" />
+         <option name="JS_CLASS" value="false" />
+         <option name="JS_DOT_PROPERTY_ACCESS" value="false" />
+         <option name="JS_EXPRESSION" value="false" />
+         </context>
+         </template>
+         </pre>*/
+        Exceptions.unhandledExceptionAlert = (e) => {
+            let str = "Unhandled EXCEPTION! :" + e;
+            if (e instanceof Error) {
+                str += ", Stack trace:\n";
+                str += e.stack;
+            }
+            /* Do NOT call console.trace() here because the stack trace
+               of this place here is not helpful, but instead very
+               confusing. */
+            console.log(str);
+            alert(str);
+            return str;
+        };
+        /**
+         * Calls the function and swallows any exceptions. */
+        Exceptions.callSwallowingExceptions = (f) => {
+            try {
+                f();
+            }
+            catch (err) {
+                console.log("Ignored: ");
+                console.log(err);
+            }
+        };
+    })(Exceptions = HelgeUtils.Exceptions || (HelgeUtils.Exceptions = {}));
     HelgeUtils.suppressUnusedWarning = (...args) => {
         const flag = false;
         if (flag) {

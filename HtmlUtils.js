@@ -95,5 +95,25 @@ export var HtmlUtils;
             }, 500);
         });
     };
+    /**
+     * This outputs aggressively on top of everything to the user. */
+    HtmlUtils.printError = (str) => {
+        console.log(str);
+        HelgeUtils.Exceptions.callSwallowingExceptions(() => {
+            document.body.insertAdjacentHTML('afterbegin', `<div 
+              style="position: fixed; z-index: 9999; background-color: #000000; color:red;"> 
+            <p style="font-size: 30px;">###### printDebug</p>
+            <p style="font-size:18px;">${HtmlUtils.escapeHtml(str)}</p>`
+                + `########</div>`);
+        });
+    };
+    HtmlUtils.escapeHtml = (input) => {
+        const element = document.createElement("div");
+        element.innerText = input;
+        return element.innerHTML;
+    };
+    HtmlUtils.putIntoClipboard = (str) => {
+        navigator.clipboard.writeText(str).then();
+    };
 })(HtmlUtils || (HtmlUtils = {}));
 //# sourceMappingURL=HtmlUtils.js.map

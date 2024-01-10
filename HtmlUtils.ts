@@ -110,4 +110,28 @@ export namespace HtmlUtils {
       }, 500);
     });
   };
+
+  /**
+   * This outputs aggressively on top of everything to the user. */
+  export const printError = (str: string) => {
+    console.log(str);
+    HelgeUtils.Exceptions.callSwallowingExceptions(() => {
+      document.body.insertAdjacentHTML('afterbegin',
+          `<div 
+              style="position: fixed; z-index: 9999; background-color: #000000; color:red;"> 
+            <p style="font-size: 30px;">###### printDebug</p>
+            <p style="font-size:18px;">${escapeHtml(str)}</p>`
+          + `########</div>`);
+    });
+  };
+
+  export const escapeHtml = (input: string): string => {
+    const element = document.createElement("div");
+    element.innerText = input;
+    return element.innerHTML;
+  };
+
+  export const putIntoClipboard = (str: string) => {
+    navigator.clipboard.writeText(str).then();
+  }
 }

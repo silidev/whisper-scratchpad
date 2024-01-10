@@ -415,7 +415,23 @@ export namespace Buttons {
       cancelButton();
     });
 
-// copyButton
+// cutButton
+    /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
+    const addEventListenerForCutButton = (buttonId: string, inputElementId: string) => {
+      buttonWithId(buttonId).addEventListener('click', () => {
+        navigator.clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
+          buttonWithId(buttonId).textContent = '✂ Done';
+          setTimeout(() => {
+            buttonWithId(buttonId).textContent = '✂ Cut';
+          }, 2000);
+          mainEditorTextarea.value = '';
+          saveEditor();
+        });
+      });
+    };
+    addEventListenerForCutButton("cutButton", "mainEditorTextarea");
+
+// copyButtons
     /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
     const addEventListenerForCopyButton = (buttonId: string, inputElementId: string) => {
       buttonWithId(buttonId).addEventListener('click', () => {
@@ -429,7 +445,6 @@ export namespace Buttons {
     };
 
   // copyButtons
-    addEventListenerForCopyButton("copyButton", "mainEditorTextarea");
     addEventListenerForCopyButton("copyReplaceRulesButton", "replaceRulesTextArea");
     addEventListenerForCopyButton("copyPromptButton", "transcriptionPrompt");
 

@@ -370,7 +370,22 @@ export var Buttons;
         HtmlUtils.addButtonClickListener(buttonWithId("cancelButton"), () => {
             cancelButton();
         });
-        // copyButton
+        // cutButton
+        /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
+        const addEventListenerForCutButton = (buttonId, inputElementId) => {
+            buttonWithId(buttonId).addEventListener('click', () => {
+                navigator.clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
+                    buttonWithId(buttonId).textContent = '✂ Done';
+                    setTimeout(() => {
+                        buttonWithId(buttonId).textContent = '✂ Cut';
+                    }, 2000);
+                    mainEditorTextarea.value = '';
+                    saveEditor();
+                });
+            });
+        };
+        addEventListenerForCutButton("cutButton", "mainEditorTextarea");
+        // copyButtons
         /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
         const addEventListenerForCopyButton = (buttonId, inputElementId) => {
             buttonWithId(buttonId).addEventListener('click', () => {
@@ -383,7 +398,6 @@ export var Buttons;
             });
         };
         // copyButtons
-        addEventListenerForCopyButton("copyButton", "mainEditorTextarea");
         addEventListenerForCopyButton("copyReplaceRulesButton", "replaceRulesTextArea");
         addEventListenerForCopyButton("copyPromptButton", "transcriptionPrompt");
         buttonWithId("saveAPIKeyButton").addEventListener('click', function () {
