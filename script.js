@@ -254,7 +254,7 @@ export var Buttons;
             }
         };
         buttonWithId("stopButton").addEventListener('click', stopButton);
-        const sendButton = () => {
+        const transcribeButton = () => {
             if (mediaRecorder?.state === 'recording') {
                 mediaRecorder.onstop = () => {
                     audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
@@ -282,8 +282,8 @@ export var Buttons;
                 buttonWithId("stopButton").click();
             }
         };
-        // ############## sendButton ##############
-        buttonWithId("sendButton").addEventListener('click', sendButton);
+        // ############## transcribeButton ##############
+        buttonWithId("transcribeButton").addEventListener('click', transcribeButton);
         buttonWithId("pauseRecordButton").addEventListener('click', pauseRecordButton);
         // ############## transcribeAgainButton ##############
         const transcribeAgainButton = () => {
