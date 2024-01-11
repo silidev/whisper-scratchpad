@@ -35,6 +35,10 @@ var Functions;
 })(Functions || (Functions = {}));
 var UiFunctions;
 (function (UiFunctions) {
+    var elementWithId = HtmlUtils.elementWithId;
+    UiFunctions.closeEditorMenu = () => {
+        elementWithId("editorMenuHeading").dispatchEvent(new CustomEvent('rootMenuClose'));
+    };
     UiFunctions.replaceRulesTextAreaOnInput = () => {
         /**
          * Do correct regex escaping with the following and modify the rule accordingly:
@@ -71,17 +75,17 @@ const insertAtCursor = (text) => {
     TextAreas.insertTextAtCursor(mainEditorTextarea, text);
 };
 const getApiSelectedInUi = () => apiSelector.value;
-var NotInUse;
-(function (NotInUse) {
-    NotInUse.showSpinner = () => {
+var TurnedOffAtThisTime;
+(function (TurnedOffAtThisTime) {
+    TurnedOffAtThisTime.showSpinner = () => {
         // probably not needed anymore, delete later
         // spinner1.style.display = 'block';
     };
     // probably not needed anymore, delete later
-    NotInUse.hideSpinner = () => {
+    TurnedOffAtThisTime.hideSpinner = () => {
         spinner1.style.display = 'none';
     };
-})(NotInUse || (NotInUse = {}));
+})(TurnedOffAtThisTime || (TurnedOffAtThisTime = {}));
 var Log;
 (function (Log) {
     var textAreaWithId = HtmlUtils.textAreaWithId;
@@ -212,7 +216,7 @@ export var Buttons;
                 downloadLink.download = 'recording.wav';
                 downloadLink.style.display = 'block';
             }
-            transcribeAndHandleResult(audioBlob).then(NotInUse.hideSpinner);
+            transcribeAndHandleResult(audioBlob).then(TurnedOffAtThisTime.hideSpinner);
         };
         const getOnStreamReady = (beginPaused) => {
             return (streamParam) => {
@@ -245,7 +249,7 @@ export var Buttons;
                 stopRecording();
             }
             else {
-                NotInUse.showSpinner();
+                TurnedOffAtThisTime.showSpinner();
                 startRecording();
             }
         };
@@ -255,7 +259,7 @@ export var Buttons;
                 mediaRecorder.onstop = () => {
                     audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                     audioChunks = [];
-                    transcribeAndHandleResult(audioBlob).then(NotInUse.hideSpinner);
+                    transcribeAndHandleResult(audioBlob).then(TurnedOffAtThisTime.hideSpinner);
                     startRecording(true);
                 };
                 mediaRecorder.stop();
@@ -282,13 +286,12 @@ export var Buttons;
         buttonWithId("sendButton").addEventListener('click', sendButton);
         buttonWithId("pauseRecordButton").addEventListener('click', pauseRecordButton);
         // ############## transcribeAgainButton ##############
-        function transcribeAgainButton() {
-            NotInUse.showSpinner();
-            transcribeAndHandleResult(audioBlob).then(NotInUse.hideSpinner);
-        }
-        HtmlUtils.addButtonClickListener(buttonWithId("transcribeAgainButton"), () => {
-            transcribeAgainButton();
-        });
+        const transcribeAgainButton = () => {
+            UiFunctions.closeEditorMenu();
+            TurnedOffAtThisTime.showSpinner();
+            transcribeAndHandleResult(audioBlob).then(TurnedOffAtThisTime.hideSpinner);
+        };
+        HtmlUtils.addButtonClickListener(buttonWithId("transcribeAgainButton"), transcribeAgainButton);
         StateIndicator.update();
     })(Media = Buttons.Media || (Buttons.Media = {})); // End of media buttons
     Buttons.addButtonEventListeners = () => {
@@ -301,6 +304,7 @@ export var Buttons;
         };
         HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
             cropHighlights();
+            UiFunctions.closeEditorMenu();
         });
         // ############## Copy Backup to clipboard ##############
         const copyBackupToClipboard = () => {
@@ -309,6 +313,7 @@ export var Buttons;
         };
         HtmlUtils.addButtonClickListener(buttonWithId("copyBackupMenuItem"), () => {
             copyBackupToClipboard();
+            UiFunctions.closeEditorMenu();
         });
         // ############## Du2Ich Button ##############
         function du2ichMenuItem() {
@@ -316,6 +321,7 @@ export var Buttons;
             console.log(value);
             mainEditorTextarea.value = value;
             saveEditor();
+            UiFunctions.closeEditorMenu();
         }
         HtmlUtils.addButtonClickListener(buttonWithId("du2ichMenuItem"), () => {
             du2ichMenuItem();

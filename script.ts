@@ -39,6 +39,12 @@ namespace Functions {
 }
 
 namespace UiFunctions {
+  import elementWithId = HtmlUtils.elementWithId;
+
+  export const closeEditorMenu = () => {
+    elementWithId("editorMenuHeading").dispatchEvent(new CustomEvent('rootMenuClose'));
+  };
+
   export const replaceRulesTextAreaOnInput = () => {
     /**
      * Do correct regex escaping with the following and modify the rule accordingly:
@@ -84,7 +90,7 @@ const insertAtCursor = (text: string) => {
 
 const getApiSelectedInUi = () => (apiSelector.value as HelgeUtils.Transcription.ApiName);
 
-namespace NotInUse {
+namespace TurnedOffAtThisTime {
   export const showSpinner = () => {
     // probably not needed anymore, delete later
     // spinner1.style.display = 'block';
@@ -133,7 +139,6 @@ const replaceWithNormalParameters = (subject: string) => {
 export namespace Buttons {
   import textAreaWithId = HtmlUtils.textAreaWithId;
   export namespace Media {
-
     let mediaRecorder: MediaRecorder;
     let audioChunks = [];
     let audioBlob: Blob;
@@ -234,7 +239,7 @@ export namespace Buttons {
         downloadLink.download = 'recording.wav';
         downloadLink.style.display = 'block';
       }
-      transcribeAndHandleResult(audioBlob).then(NotInUse.hideSpinner);
+      transcribeAndHandleResult(audioBlob).then(TurnedOffAtThisTime.hideSpinner);
     };
 
     const getOnStreamReady = (beginPaused: boolean) => {
@@ -269,7 +274,7 @@ export namespace Buttons {
       if (isRecording) {
         stopRecording();
       } else {
-        NotInUse.showSpinner();
+        TurnedOffAtThisTime.showSpinner();
         startRecording();
       }
     }
@@ -280,7 +285,7 @@ export namespace Buttons {
         mediaRecorder.onstop = () => {
           audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
           audioChunks = [];
-          transcribeAndHandleResult(audioBlob).then(NotInUse.hideSpinner);
+          transcribeAndHandleResult(audioBlob).then(TurnedOffAtThisTime.hideSpinner);
           startRecording(true);
         };
         mediaRecorder.stop();
@@ -301,18 +306,17 @@ export namespace Buttons {
       }
     }
 
-    // ############## sendButton ##############
+// ############## sendButton ##############
     buttonWithId("sendButton").addEventListener('click', sendButton);
     buttonWithId("pauseRecordButton").addEventListener('click', pauseRecordButton);
 
 // ############## transcribeAgainButton ##############
-    function transcribeAgainButton() {
-      NotInUse.showSpinner();
-      transcribeAndHandleResult(audioBlob).then(NotInUse.hideSpinner);
-    }
-    HtmlUtils.addButtonClickListener(buttonWithId("transcribeAgainButton"), () => {
-      transcribeAgainButton();
-    });
+    const transcribeAgainButton = () => {
+      UiFunctions.closeEditorMenu();
+      TurnedOffAtThisTime.showSpinner();
+      transcribeAndHandleResult(audioBlob).then(TurnedOffAtThisTime.hideSpinner);
+    };
+    HtmlUtils.addButtonClickListener(buttonWithId("transcribeAgainButton"), transcribeAgainButton);
 
     StateIndicator.update();
   } // End of media buttons
@@ -329,6 +333,7 @@ export namespace Buttons {
     };
     HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
       cropHighlights();
+      UiFunctions.closeEditorMenu();
     });
     
 // ############## Copy Backup to clipboard ##############
@@ -340,6 +345,7 @@ export namespace Buttons {
     };
     HtmlUtils.addButtonClickListener(buttonWithId("copyBackupMenuItem"), () => {
       copyBackupToClipboard();
+      UiFunctions.closeEditorMenu();
     });
 
 // ############## Du2Ich Button ##############
@@ -348,6 +354,7 @@ export namespace Buttons {
       console.log(value);
       mainEditorTextarea.value = value;
       saveEditor();
+      UiFunctions.closeEditorMenu();
     }
     HtmlUtils.addButtonClickListener(buttonWithId("du2ichMenuItem"), () => {
       du2ichMenuItem();
