@@ -371,9 +371,9 @@ export namespace Buttons {
       clearButton();
     });
 
-    function replaceAgainButton() {
+    const replaceAgainButton = () => {
       UiFunctions.applyReplaceRulesToMainEditor();
-    }
+    };
 
 // replaceAgainButton
     HtmlUtils.addButtonClickListener(buttonWithId("replaceAgainButton"), () => {

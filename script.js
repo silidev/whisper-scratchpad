@@ -333,9 +333,9 @@ export var Buttons;
         HtmlUtils.addButtonClickListener(buttonWithId("clearButton"), () => {
             clearButton();
         });
-        function replaceAgainButton() {
+        const replaceAgainButton = () => {
             UiFunctions.applyReplaceRulesToMainEditor();
-        }
+        };
         // replaceAgainButton
         HtmlUtils.addButtonClickListener(buttonWithId("replaceAgainButton"), () => {
             replaceAgainButton();
