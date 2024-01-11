@@ -42,7 +42,9 @@
       </div>
     </wc-menu-wrapper></div>
   <!-- ########### row1EditorButtons ############# -->
-  <button id="clearButton" style="line-height: 20px"><span class="greenFilter">🧹</span> Clear</button>
+  <button id="clearButton" style="display: none; line-height: 20px"><span class="greenFilter">🧹</span> Clear
+    <!--TODOh: Remove this button -->
+  </button>
   <button id="cutButton" style="height: 55.5px">✂ Cut</button> <!--Copy icon was ⎘-->
   <span class="spinnerGroup">
       <button id="stopButton" style="width: 90px; line-height: 20px">
@@ -77,7 +79,7 @@
     </div>
   </info-button></button>
   <button id="toggleLogButton" style="">Log</button>
-  <button id="undoButtonOfEditor" style="">Un-<br>do</button>
+  <button id="undoButtonOfEditor" style="display: none">Un-<br>do</button><!--TODOh: Remove this button -->
   <button id="cancelButton" style="">x Cancel</button>
 
   <button id="replaceAgainButton">♻<br>Rpl</button>
@@ -125,7 +127,7 @@
       <!-- ############## Replace-rules buttons ###############-->
       <button id="addReplaceRuleButton"><span style="font-size: 16px">""->""</span></button>
       <button id="copyReplaceRulesButton">⎘ Copy</button>
-      <button id="undoButtonOfReplaceRules">⎌ Undo</button>
+      <button id="undoButtonOfReplaceRules">⎌ Ctrl-z</button>
 <!--        checkbox-->
       <input type="checkbox" id="logReplaceRulesCheckbox">
       <label for="logReplaceRulesCheckbox">Log</label>
@@ -148,9 +150,9 @@
   <info-button>
     Since Whisper wasn't trained using instruction-following techniques, Whisper operates more like a base GPT model. The content of the editor is appended to the prompt. It's important to keep in mind that Whisper only considers the first 244 tokens of the prompt. <a target="_blank" href="https://platform.openai.com/docs/guides/speech-to-text/prompting">More info</a>
   </info-button>
-  <span class="flexRightAndWrapContent">
+  <span id="buttonsTPrompt" class="flexRightAndWrapContent">
         <button id="copyPromptButton">⎘ Copy</button>
-        <button id="undoButtonOfPrompt">⎌ Undo</button>
+        <button id="undoButtonOfPrompt">⎌ Ctrl-z</button>
       </span>
   <div class="mainEditorTextareaContainer">
     <textarea id="transcriptionPrompt" wrap="soft" placeholder="Optional prompt especially for hinting unusual names if they are not recognized by default."></textarea>
