@@ -27,11 +27,14 @@ var Pures;
 "i"->"ist"
 `, true);
 })(Pures || (Pures = {}));
-var UiFunctions;
-(function (UiFunctions) {
-    UiFunctions.applyReplaceRulesToMainEditor = () => {
+var Functions;
+(function (Functions) {
+    Functions.applyReplaceRulesToMainEditor = () => {
         mainEditorTextarea.value = replaceWithNormalParameters(mainEditorTextarea.value);
     };
+})(Functions || (Functions = {}));
+var UiFunctions;
+(function (UiFunctions) {
     UiFunctions.replaceRulesTextAreaOnInput = () => {
         /**
          * Do correct regex escaping with the following and modify the rule accordingly:
@@ -184,7 +187,7 @@ export var Buttons;
                 if (mainEditorTextarea.selectionStart > 0)
                     insertAtCursor(" ");
                 insertAtCursor(removeLastDotIfApplicable(await result()));
-                UiFunctions.applyReplaceRulesToMainEditor();
+                Functions.applyReplaceRulesToMainEditor();
                 saveEditor();
                 navigator.clipboard.writeText(mainEditorTextarea.value).then();
             }
@@ -334,7 +337,8 @@ export var Buttons;
             clearButton();
         });
         const replaceAgainButton = () => {
-            UiFunctions.applyReplaceRulesToMainEditor();
+            Functions.applyReplaceRulesToMainEditor();
+            window.scrollBy(0, -100000);
         };
         // replaceAgainButton
         HtmlUtils.addButtonClickListener(buttonWithId("replaceAgainButton"), () => {

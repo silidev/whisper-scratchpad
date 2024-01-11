@@ -32,11 +32,13 @@ namespace Pures {
 `, true) as string;
 }
 
-namespace UiFunctions {
+namespace Functions {
   export const applyReplaceRulesToMainEditor = () => {
     mainEditorTextarea.value = replaceWithNormalParameters(mainEditorTextarea.value) as string;
   };
+}
 
+namespace UiFunctions {
   export const replaceRulesTextAreaOnInput = () => {
     /**
      * Do correct regex escaping with the following and modify the rule accordingly:
@@ -207,7 +209,7 @@ export namespace Buttons {
         }
         if (mainEditorTextarea.selectionStart > 0) insertAtCursor(" ");
         insertAtCursor(removeLastDotIfApplicable(await result()));
-        UiFunctions.applyReplaceRulesToMainEditor();
+        Functions.applyReplaceRulesToMainEditor();
         saveEditor()
         navigator.clipboard.writeText(mainEditorTextarea.value).then();
       } catch (error) {
@@ -372,7 +374,8 @@ export namespace Buttons {
     });
 
     const replaceAgainButton = () => {
-      UiFunctions.applyReplaceRulesToMainEditor();
+      Functions.applyReplaceRulesToMainEditor();
+      window.scrollBy(0,-100000);
     };
 
 // replaceAgainButton
