@@ -75,17 +75,17 @@ const insertAtCursor = (text) => {
     TextAreas.insertTextAtCursor(mainEditorTextarea, text);
 };
 const getApiSelectedInUi = () => apiSelector.value;
-var TurnedOffAtThisTime;
-(function (TurnedOffAtThisTime) {
-    TurnedOffAtThisTime.showSpinner = () => {
+var NotVisibleAtThisTime;
+(function (NotVisibleAtThisTime) {
+    NotVisibleAtThisTime.showSpinner = () => {
         // probably not needed anymore, delete later
         // spinner1.style.display = 'block';
     };
     // probably not needed anymore, delete later
-    TurnedOffAtThisTime.hideSpinner = () => {
+    NotVisibleAtThisTime.hideSpinner = () => {
         spinner1.style.display = 'none';
     };
-})(TurnedOffAtThisTime || (TurnedOffAtThisTime = {}));
+})(NotVisibleAtThisTime || (NotVisibleAtThisTime = {}));
 var Log;
 (function (Log) {
     var textAreaWithId = HtmlUtils.textAreaWithId;
@@ -222,7 +222,7 @@ export var Buttons;
                 downloadLink.download = 'recording.wav';
                 downloadLink.style.display = 'block';
             }
-            transcribeAndHandleResult(audioBlob).then(TurnedOffAtThisTime.hideSpinner);
+            transcribeAndHandleResult(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
         };
         const getOnStreamReady = (beginPaused) => {
             return (streamParam) => {
@@ -255,7 +255,7 @@ export var Buttons;
                 stopRecording();
             }
             else {
-                TurnedOffAtThisTime.showSpinner();
+                NotVisibleAtThisTime.showSpinner();
                 startRecording();
             }
         };
@@ -265,7 +265,7 @@ export var Buttons;
                 mediaRecorder.onstop = () => {
                     audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                     audioChunks = [];
-                    transcribeAndHandleResult(audioBlob).then(TurnedOffAtThisTime.hideSpinner);
+                    transcribeAndHandleResult(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
                     startRecording(true);
                 };
                 mediaRecorder.stop();
@@ -294,8 +294,8 @@ export var Buttons;
         // ############## transcribeAgainButton ##############
         const transcribeAgainButton = () => {
             UiFunctions.closeEditorMenu();
-            TurnedOffAtThisTime.showSpinner();
-            transcribeAndHandleResult(audioBlob).then(TurnedOffAtThisTime.hideSpinner);
+            NotVisibleAtThisTime.showSpinner();
+            transcribeAndHandleResult(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
         };
         HtmlUtils.addButtonClickListener(buttonWithId("transcribeAgainButton"), transcribeAgainButton);
         StateIndicator.update();

@@ -90,7 +90,7 @@ const insertAtCursor = (text: string) => {
 
 const getApiSelectedInUi = () => (apiSelector.value as HelgeUtils.Transcription.ApiName);
 
-namespace TurnedOffAtThisTime {
+namespace NotVisibleAtThisTime {
   export const showSpinner = () => {
     // probably not needed anymore, delete later
     // spinner1.style.display = 'block';
@@ -245,7 +245,7 @@ export namespace Buttons {
         downloadLink.download = 'recording.wav';
         downloadLink.style.display = 'block';
       }
-      transcribeAndHandleResult(audioBlob).then(TurnedOffAtThisTime.hideSpinner);
+      transcribeAndHandleResult(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
     };
 
     const getOnStreamReady = (beginPaused: boolean) => {
@@ -280,7 +280,7 @@ export namespace Buttons {
       if (isRecording) {
         stopRecording();
       } else {
-        TurnedOffAtThisTime.showSpinner();
+        NotVisibleAtThisTime.showSpinner();
         startRecording();
       }
     }
@@ -291,7 +291,7 @@ export namespace Buttons {
         mediaRecorder.onstop = () => {
           audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
           audioChunks = [];
-          transcribeAndHandleResult(audioBlob).then(TurnedOffAtThisTime.hideSpinner);
+          transcribeAndHandleResult(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
           startRecording(true);
         };
         mediaRecorder.stop();
@@ -319,8 +319,8 @@ export namespace Buttons {
 // ############## transcribeAgainButton ##############
     const transcribeAgainButton = () => {
       UiFunctions.closeEditorMenu();
-      TurnedOffAtThisTime.showSpinner();
-      transcribeAndHandleResult(audioBlob).then(TurnedOffAtThisTime.hideSpinner);
+      NotVisibleAtThisTime.showSpinner();
+      transcribeAndHandleResult(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
     };
     HtmlUtils.addButtonClickListener(buttonWithId("transcribeAgainButton"), transcribeAgainButton);
 
