@@ -421,8 +421,6 @@ export namespace Buttons {
       });
     };
 
-  // ctrlZButtonOfEditor
-    addCtrlZButtonEventListener("ctrlZButtonOfEditor", mainEditorTextarea); //TODOhStu: Rename all CtrlZ to Ctrl-z
     addCtrlZButtonEventListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea);
     addCtrlZButtonEventListener("ctrlZButtonOfPrompt", transcriptionPromptEditor);
 
