@@ -182,7 +182,7 @@ export var Buttons;
                 - transcriptionPrompt.value.length)) : "";
             const removeLastDot = (text) => {
                 if (text.endsWith('.')) {
-                    return text.slice(0, -1);
+                    return text.slice(0, -1) + " ";
                 }
                 return text;
             };

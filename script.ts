@@ -205,7 +205,7 @@ export namespace Buttons {
           - transcriptionPrompt.value.length)) : "";
       const removeLastDot = (text: string): string => {
         if (text.endsWith('.')) {
-          return text.slice(0, -1);
+          return text.slice(0, -1)+" ";
         }
         return text;
       };
