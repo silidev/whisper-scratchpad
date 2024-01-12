@@ -266,6 +266,7 @@ export namespace Buttons {
           audioChunks.push(event.data);
         };
         if (beginPaused) mediaRecorder.pause();
+        StateIndicator.update();
       };
     }
 
@@ -296,6 +297,7 @@ export namespace Buttons {
       mediaRecorder.onstop = () => {
         audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
         audioChunks = [];
+        sending = true;
         transcribeAndHandleResult(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
         startRecording(true);
       };
