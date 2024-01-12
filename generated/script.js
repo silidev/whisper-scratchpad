@@ -142,16 +142,22 @@ export var Buttons;
                 }
             };
             const setRecording = (sendingParam) => {
-                setHtmlOfButtonStop(blinkFast('🔴') + (sendingParam ? 'Sending' : '◼ Stop'));
-                setHtmlOfButtonPauseRecord(blinkFast('||') + ' Pause');
+                setHtmlOfButtonStop(blinkFast('🔴') + (sendingParam
+                    ? '<br>Sending'
+                    : '<br>◼ Stop'));
+                setHtmlOfButtonPauseRecord(blinkFast('🔴') + '<br>|| Pause');
             };
             StateIndicator.setPaused = (sendingParam = sending) => {
-                setHtmlOfButtonStop(blinkSlow('◼ ') + (sendingParam ? 'Sending' : 'Stop'));
-                setHtmlOfButtonPauseRecord(blinkSlow('⬤') + ' Cont.');
+                setHtmlOfButtonStop(blinkSlow('⬤') + (sendingParam
+                    ? '<br>Sending'
+                    : '<br>◼ Stop'));
+                setHtmlOfButtonPauseRecord(blinkSlow('⬤') + '<br>▶ Cont.');
             };
             const setStopped = () => {
-                setHtmlOfButtonStop(sending ? blinkFast('◼') + ' Sending' : ' Stopped');
-                setHtmlOfButtonPauseRecord('⬤ Record');
+                setHtmlOfButtonStop(sending
+                    ? blinkFast('◼') + '<br>Sending'
+                    : '◼<br>Stopped');
+                setHtmlOfButtonPauseRecord('⬤<br>Record');
             };
             const setHtmlOfButtonStop = (html) => {
                 buttonWithId("stopButton").innerHTML = html;
@@ -368,8 +374,8 @@ export var Buttons;
             // add TextArea.selectedText() to the start of the replaceRulesTextArea
             TextAreas.setCursor(replaceRulesTextArea, 0);
             const selectedText = TextAreas.selectedText(mainEditorTextarea);
-            TextAreas.insertTextAtCursor(replaceRulesTextArea, `"\\b${selectedText}\\b"gmu->"${selectedText}"\n`);
-            TextAreas.setCursor(replaceRulesTextArea, 5 + selectedText.length);
+            TextAreas.insertTextAtCursor(replaceRulesTextArea, `"\\b${selectedText}\\b"gm->"${selectedText}"\n`);
+            TextAreas.setCursor(replaceRulesTextArea, 12 + selectedText.length);
             replaceRulesTextArea.focus();
         };
         HtmlUtils.addButtonClickListener(buttonWithId("addReplaceRuleButton"), addReplaceRule);
@@ -386,12 +392,13 @@ export var Buttons;
         const addEventListenerForCutButton = (buttonId, inputElementId) => {
             buttonWithId(buttonId).addEventListener('click', () => {
                 navigator.clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
-                    buttonWithId(buttonId).textContent = '✂ Done';
+                    buttonWithId(buttonId).textContent = '✂<br>Done';
                     setTimeout(() => {
-                        buttonWithId(buttonId).textContent = '✂ Cut';
+                        buttonWithId(buttonId).textContent = '✂<br>Cut';
                     }, 2000);
                     mainEditorTextarea.value = '';
                     saveEditor();
+                    mainEditorTextarea.focus();
                 });
             });
         };
