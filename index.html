@@ -23,9 +23,9 @@
 <!--############## Buttons ##############-->
 
 <div class="flexRightAndWrapContent">
-  <!-- ########### editorMenu ############# -->
+  <!-- ########### mainEditorMenu ############# -->
 
-  <div id="editorMenu" style="z-index: 99999">
+  <div id="mainEditorMenu" style="z-index: 99999">
     <wc-menu-wrapper>
       <!-- https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper -->
       <div id="editorMenuHeading" class='heading'>☰</div>
@@ -60,8 +60,8 @@
 
 <!-- This division is important to keep the stopButton on the right side, good reachable for the thumb.   -->
 
-<div class="flexRightAndWrapContent">
-  <!-- ########### row2EditorButtons ############# -->
+<!-- ########### row2EditorButtons ############# -->
+<div id="row2EditorButtons" class="flexRightAndWrapContent">
   <!-- ########### infoButton ############# -->
   <button>  <info-button>
     <div style="position: fixed;
@@ -79,6 +79,7 @@
       </ul>
     </div>
   </info-button></button>
+  <button id="addReplaceRuleButton"><span style="font-size: 16px">""->""</span></button>
   <button id="toggleLogButton" style="">Log</button>
   <button id="undoButtonOfEditor" style="display: none">Un-<br>do</button><!--TODOh: Remove this button -->
   <button id="cancelButton" style="">x Cancel</button>
@@ -124,7 +125,6 @@
       </select>
       <!-- ############## Replace-rules buttons ###############-->
       <button id="replaceAgainButton">♻<br>Rpl</button>
-      <button id="addReplaceRuleButton"><span style="font-size: 16px">""->""</span></button>
       <button id="copyReplaceRulesButton">⎘ Copy</button>
       <button id="undoButtonOfReplaceRules">⎌ Ctrl-z</button>
 <!--        checkbox-->
