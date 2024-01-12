@@ -152,10 +152,10 @@ export var Buttons;
                 setHtmlOfButtonPauseRecord(blinkFast('🔴') + '<br>|| Pause');
             };
             StateIndicator.setPaused = (sendingParam = sending) => {
-                setHtmlOfButtonStop(blinkSlow('⬤') + (sendingParam
-                    ? '<br>Sending'
+                setHtmlOfButtonStop(blinkSlow('⬤ Paused') + (sendingParam
+                    ? '<br>✎Scribing'
                     : '<br>◼ Stop'));
-                setHtmlOfButtonPauseRecord(blinkSlow('⬤') + '<br>▶ Cont.');
+                setHtmlOfButtonPauseRecord(blinkSlow('⬤ Paused') + '<br>▶ Cont.');
             };
             const setStopped = () => {
                 setHtmlOfButtonStop(sending
@@ -264,19 +264,14 @@ export var Buttons;
             }
         };
         buttonWithId("stopButton").addEventListener('click', stopButton);
-        const transcribeButton = () => {
-            if (mediaRecorder?.state === 'recording') {
-                mediaRecorder.onstop = () => {
-                    audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                    audioChunks = [];
-                    transcribeAndHandleResult(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
-                    startRecording(true);
-                };
-                mediaRecorder.stop();
-            }
-            else {
-                pauseRecordButton();
-            }
+        const stop_transcribe_startNewRecording_and_pause = () => {
+            mediaRecorder.onstop = () => {
+                audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                audioChunks = [];
+                transcribeAndHandleResult(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
+                startRecording(true);
+            };
+            mediaRecorder.stop();
         };
         // ############## pauseRecordButton ##############
         const pauseRecordButton = () => {
@@ -291,6 +286,15 @@ export var Buttons;
             else {
                 buttonWithId("stopButton").click();
             }
+        };
+        const transcribeButton = () => {
+            if (mediaRecorder?.state === 'recording'
+                || (mediaRecorder?.state === 'paused'
+                    && audioChunks.length > 0)) {
+                stop_transcribe_startNewRecording_and_pause();
+                return;
+            }
+            pauseRecordButton();
         };
         // ############## transcribeButton ##############
         buttonWithId("transcribeButton").addEventListener('click', transcribeButton);
@@ -396,9 +400,9 @@ export var Buttons;
         const addEventListenerForCutButton = (buttonId, inputElementId) => {
             buttonWithId(buttonId).addEventListener('click', () => {
                 navigator.clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
-                    buttonWithId(buttonId).textContent = '✂<br>Done';
+                    buttonWithId(buttonId).innerHTML = '✂<br>Done';
                     setTimeout(() => {
-                        buttonWithId(buttonId).textContent = '✂<br>Cut';
+                        buttonWithId(buttonId).innerHTML = '✂<br>Cut';
                     }, 2000);
                     mainEditorTextarea.value = '';
                     saveEditor();

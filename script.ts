@@ -172,10 +172,10 @@ export namespace Buttons {
         setHtmlOfButtonPauseRecord(blinkFast('🔴') + '<br>|| Pause');
       };
       export const setPaused = (sendingParam: boolean = sending) => {
-        setHtmlOfButtonStop(blinkSlow('⬤') + (sendingParam
-            ? '<br>Sending'
+        setHtmlOfButtonStop(blinkSlow('⬤ Paused') + (sendingParam
+            ? '<br>✎Scribing'
             : '<br>◼ Stop'));
-        setHtmlOfButtonPauseRecord(blinkSlow('⬤') +'<br>▶ Cont.');
+        setHtmlOfButtonPauseRecord(blinkSlow('⬤ Paused') +'<br>▶ Cont.');
       };
       const setStopped = () => {
         setHtmlOfButtonStop(sending
@@ -292,19 +292,16 @@ export namespace Buttons {
     }
     buttonWithId("stopButton").addEventListener('click', stopButton);
 
-    const transcribeButton = () => {
-      if (mediaRecorder?.state === 'recording') {
-        mediaRecorder.onstop = () => {
-          audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
-          audioChunks = [];
-          transcribeAndHandleResult(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
-          startRecording(true);
-        };
-        mediaRecorder.stop();
-      } else {
-        pauseRecordButton();
-      }
-    }
+    const stop_transcribe_startNewRecording_and_pause = () => {
+      mediaRecorder.onstop = () => {
+        audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
+        audioChunks = [];
+        transcribeAndHandleResult(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
+        startRecording(true);
+      };
+      mediaRecorder.stop();
+    };
+
     // ############## pauseRecordButton ##############
     const pauseRecordButton = () => {
       if (mediaRecorder?.state === 'recording') {
@@ -316,6 +313,16 @@ export namespace Buttons {
       } else {
         buttonWithId("stopButton").click();
       }
+    }
+
+    const transcribeButton = () => {
+      if (mediaRecorder?.state === 'recording'
+        || (mediaRecorder?.state === 'paused'
+          && audioChunks.length > 0)) {
+        stop_transcribe_startNewRecording_and_pause();
+        return;
+      }
+      pauseRecordButton();
     }
 
 // ############## transcribeButton ##############
@@ -443,9 +450,9 @@ export namespace Buttons {
     const addEventListenerForCutButton = (buttonId: string, inputElementId: string) => {
       buttonWithId(buttonId).addEventListener('click', () => {
         navigator.clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
-          buttonWithId(buttonId).textContent = '✂<br>Done';
+          buttonWithId(buttonId).innerHTML = '✂<br>Done';
           setTimeout(() => {
-            buttonWithId(buttonId).textContent = '✂<br>Cut';
+            buttonWithId(buttonId).innerHTML = '✂<br>Cut';
           }, 2000);
           mainEditorTextarea.value = '';
           saveEditor();
