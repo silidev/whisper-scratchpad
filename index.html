@@ -74,14 +74,14 @@
         <li>Replace: Replaces the text in the editor according to the ruleset.</li>
         <li>"Tr. again": Transcribes the current recording and inserts the transcription at the cursor position.</li>
         <li>"+ replace": Add a replace-rule with the currently selected text.</li>
-        <li>Undo: This just send Ctrl-z, which es a global undo over everything in the browser, especially
+        <li>CtrlZ: This just send Ctrl-z, which es a global ctrlZ over everything in the browser, especially
           also the other TextAreas.</li>
       </ul>
     </div>
   </info-button></button>
   <button id="addReplaceRuleButton"><span style="font-size: 16px">""->""</span></button>
-  <button id="toggleLogButton" style="">Log</button>
-  <button id="undoButtonOfEditor" style="display: none">Un-<br>do</button><!--TODOh: Remove this button -->
+  <button id="toggleLogButton" style="">🗎<br>Log</button>
+  <button id="ctrlZButtonOfEditor" style="display: none">Un-<br>do</button><!--TODOh: Remove this button -->
   <button id="cancelButton" style="">x<br>Cancel</button>
   <button id="transcribeButton">✎ <br>T-scribe</button>
 </div>
@@ -125,8 +125,8 @@
       </select>
       <!-- ############## Replace-rules buttons ###############-->
       <button id="replaceAgainButton">♻<br>Rpl</button>
-      <button id="copyReplaceRulesButton">⎘ Copy</button>
-      <button id="undoButtonOfReplaceRules">⎌<br>Ctrl-z</button>
+      <button id="copyReplaceRulesButton">⎘<br>Copy</button>
+      <button id="ctrlZButtonOfReplaceRules">⎌<br>Ctrl-z</button>
 <!--        checkbox-->
       <input type="checkbox" id="logReplaceRulesCheckbox">
       <label for="logReplaceRulesCheckbox">Log</label>
@@ -143,18 +143,18 @@
 </div>
 
 
-<!--############## transcriptionPrompt ##############-->
-<div>
+<!--############## transcriptionPromptEditor ##############-->
+<div id="transcriptionPromptDiv">
   <h4>Transcription Prompt:</h4>
   <info-button>
     Since Whisper wasn't trained using instruction-following techniques, Whisper operates more like a base GPT model. The content of the editor is appended to the prompt. It's important to keep in mind that Whisper only considers the first 244 tokens of the prompt. <a target="_blank" href="https://platform.openai.com/docs/guides/speech-to-text/prompting">More info</a>
   </info-button>
   <span id="buttonsTPrompt" class="flexRightAndWrapContent">
         <button id="copyPromptButton">⎘ Copy</button>
-        <button id="undoButtonOfPrompt">⎌ Ctrl-z</button>
+        <button id="ctrlZButtonOfPrompt">⎌ Ctrl-z</button>
       </span>
   <div class="mainEditorTextareaContainer">
-    <textarea id="transcriptionPrompt" wrap="soft" placeholder="Optional prompt especially for hinting unusual names if they are not recognized by default."></textarea>
+    <textarea id="transcriptionPromptEditor" wrap="soft" placeholder="Optional prompt especially for hinting unusual names if they are not recognized by default."></textarea>
   </div>
 </div>
 

@@ -68,13 +68,13 @@ const spinner1 = document.getElementById('spinner1');
 const apiSelector = document.getElementById('apiSelector');
 const apiKeyInput = document.getElementById('apiKeyInputField');
 const mainEditorTextarea = document.getElementById('mainEditorTextarea');
-const transcriptionPrompt = document.getElementById('transcriptionPrompt');
+const transcriptionPromptEditor = document.getElementById('transcriptionPromptEditor');
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea');
 const saveEditor = () => HtmlUtils.Cookies.set("editorText", HtmlUtils.textAreaWithId("mainEditorTextarea").value);
 TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea');
 HtmlUtils.textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions.replaceRulesTextAreaOnInput);
 TextAreas.setAutoSave('editorText', 'mainEditorTextarea');
-TextAreas.setAutoSave('prompt', 'transcriptionPrompt');
+TextAreas.setAutoSave('prompt', 'transcriptionPromptEditor');
 const insertAtCursor = (text) => {
     TextAreas.insertTextAtCursor(mainEditorTextarea, text);
 };
@@ -178,12 +178,12 @@ export var Buttons;
                 insertAtCursor("You must select an API below.");
                 return;
             }
-            const promptForWhisper = () => transcriptionPrompt.value
+            const promptForWhisper = () => transcriptionPromptEditor.value
                 + INSERT_EDITOR_INTO_PROMPT ? mainEditorTextarea.value.substring(0, mainEditorTextarea.selectionStart /*The start is relevant b/c the selection will be overwritten by the
                                               new text. */).slice(-(750 /* Taking the last 750 chars is for sure less than the max 250 tokens whisper is considering. This is
             important because the last words of the last transcription should always be included to avoid hallucinations
             if it otherwise would be an incomplete sentence. */
-                - transcriptionPrompt.value.length)) : "";
+                - transcriptionPromptEditor.value.length)) : "";
             const removeLastDot = (text) => {
                 if (text.endsWith('.')) {
                     return text.slice(0, -1) + " ";
@@ -325,7 +325,7 @@ export var Buttons;
         // ############## Copy Backup to clipboard ##############
         const copyBackupToClipboard = () => {
             navigator.clipboard.writeText("## Replace Rules\n" + replaceRulesTextArea.value + "\n"
-                + "## Prompt\n" + transcriptionPrompt.value).then();
+                + "## Prompt\n" + transcriptionPromptEditor.value).then();
         };
         HtmlUtils.addButtonClickListener(buttonWithId("copyBackupMenuItem"), () => {
             copyBackupToClipboard();
@@ -367,18 +367,18 @@ export var Buttons;
         HtmlUtils.addButtonClickListener(buttonWithId("replaceAgainButton"), () => {
             replaceAgainButton();
         });
-        // ############## undoButtons ##############
-        const addUndoButtonEventListener = (undoButtonId, textArea) => {
-            HtmlUtils.addButtonClickListener(buttonWithId(undoButtonId), () => {
+        // ############## ctrlZButtons ##############
+        const addCtrlZButtonEventListener = (ctrlZButtonId, textArea) => {
+            HtmlUtils.addButtonClickListener(buttonWithId(ctrlZButtonId), () => {
                 textArea.focus();
                 //@ts-ignore
                 document.execCommand('undo'); // Yes, deprecated, but works. I will replace it when it fails. Docs: https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
             });
         };
-        // undoButtonOfEditor
-        addUndoButtonEventListener("undoButtonOfEditor", mainEditorTextarea); //TODOhStu: Rename all Undo to Ctrl-z
-        addUndoButtonEventListener("undoButtonOfReplaceRules", replaceRulesTextArea);
-        addUndoButtonEventListener("undoButtonOfPrompt", transcriptionPrompt);
+        // ctrlZButtonOfEditor
+        addCtrlZButtonEventListener("ctrlZButtonOfEditor", mainEditorTextarea); //TODOhStu: Rename all CtrlZ to Ctrl-z
+        addCtrlZButtonEventListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea);
+        addCtrlZButtonEventListener("ctrlZButtonOfPrompt", transcriptionPromptEditor);
         // addReplaceRuleButton
         const addReplaceRule = () => {
             // add TextArea.selectedText() to the start of the replaceRulesTextArea
@@ -427,7 +427,7 @@ export var Buttons;
         };
         // copyButtons
         addEventListenerForCopyButton("copyReplaceRulesButton", "replaceRulesTextArea");
-        addEventListenerForCopyButton("copyPromptButton", "transcriptionPrompt");
+        addEventListenerForCopyButton("copyPromptButton", "transcriptionPromptEditor");
         buttonWithId("saveAPIKeyButton").addEventListener('click', function () {
             inputElementWithId('apiKey').value = ''; // Clear the input field
         });
@@ -443,7 +443,7 @@ const setApiKeyCookie = (apiKey) => {
 export const loadFormData = () => {
     const Cookies = HtmlUtils.Cookies;
     mainEditorTextarea.value = Cookies.get("editorText");
-    transcriptionPrompt.value = Cookies.get("prompt");
+    transcriptionPromptEditor.value = Cookies.get("prompt");
     replaceRulesTextArea.value = Cookies.get("replaceRules");
     apiSelector.value = Cookies.get("apiSelector") ?? 'OpenAI';
 };
