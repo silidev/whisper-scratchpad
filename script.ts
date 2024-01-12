@@ -45,6 +45,355 @@ namespace Functions {
 }
 
 namespace UiFunctions {
+  // noinspection SpellCheckingInspection
+  export namespace Buttons {
+    import textAreaWithId = HtmlUtils.textAreaWithId;
+    export namespace Media {
+      let mediaRecorder: MediaRecorder;
+      let audioChunks = [];
+      let audioBlob: Blob;
+      let isRecording = false;
+      let stream: MediaStream;
+      let sending = false;
+
+      export namespace StateIndicator {
+
+        /** Updates the recorder state display. That consists of the text
+         * and color of the stop button and the pause record button. */
+        export const update = () => {
+          if (mediaRecorder?.state === 'recording') {
+            setRecording(sending);
+          } else if (mediaRecorder?.state === 'paused') {
+            setPaused(sending);
+          } else {
+            setStopped();
+          }
+        }
+        const setRecording = (sendingParam: boolean) => {
+          setHtmlOfButtonStop(blinkFast('🔴') + (sendingParam
+              ? '<br>Sending'
+              : '<br>◼ Stop'));
+          setHtmlOfButtonPauseRecord(blinkFast('🔴') + '<br>|| Pause');
+        };
+        export const setPaused = (sendingParam: boolean = sending) => {
+          setHtmlOfButtonStop(blinkSlow('⬤ Paused') + (sendingParam
+              ? '<br>✎Scribing'
+              : '<br>◼ Stop'));
+          setHtmlOfButtonPauseRecord(blinkSlow('⬤ Paused') +'<br>▶ Cont.');
+        };
+        const setStopped = () => {
+          setHtmlOfButtonStop(sending
+              ? blinkFast('◼') + '<br>Sending'
+              : '◼<br>Stopped');
+          setHtmlOfButtonPauseRecord('⬤<br>Record');
+        };
+        const setHtmlOfButtonStop = (html: string) => {
+          buttonWithId("stopButton").innerHTML = html;
+        };
+        const setHtmlOfButtonPauseRecord = (html: string) => {
+          buttonWithId("pauseRecordButton").innerHTML = html;
+        };
+
+      }
+
+      const transcribeAndHandleResult = async (audioBlob: Blob) => {
+        sending = true;
+        StateIndicator.setPaused(true);
+        const apiName = getApiSelectedInUi();
+        if (!apiName) {
+          insertAtCursor("You must select an API below.");
+          return;
+        }
+        const promptForWhisper = () => transcriptionPromptEditor.value
+        + INSERT_EDITOR_INTO_PROMPT ? mainEditorTextarea.value.substring(0
+            , mainEditorTextarea.selectionStart /*The start is relevant b/c the selection will be overwritten by the
+                                            new text. */
+        ).slice(-(
+            750 /* Taking the last 750 chars is for sure less than the max 250 tokens whisper is considering. This is
+          important because the last words of the last transcription should always be included to avoid hallucinations
+          if it otherwise would be an incomplete sentence. */
+            - transcriptionPromptEditor.value.length)) : "";
+        const removeLastDot = (text: string): string => {
+          if (text.endsWith('.')) {
+            return text.slice(0, -1)+" ";
+          }
+          return text;
+        };
+        try {
+          const result = async () => await HelgeUtils.Transcription.transcribe(
+              apiName, audioBlob, getApiKey(), promptForWhisper());
+          const removeLastDotIfApplicable = (input: string): string => {
+            if (mainEditorTextarea.selectionStart < mainEditorTextarea.value.length) {
+              return removeLastDot(input);
+            }
+            return input;
+          }
+          if (mainEditorTextarea.selectionStart > 0) insertAtCursor(" ");
+          insertAtCursor(removeLastDotIfApplicable(await result()));
+          Functions.applyReplaceRulesToMainEditor();
+          saveEditor();
+          navigator.clipboard.writeText(mainEditorTextarea.value).then();
+        } catch (error) {
+          if (error instanceof HelgeUtils.Transcription.TranscriptionError) {
+            Log.log(JSON.stringify(error.payload, null, 2));
+            Log.showLog();
+          } else {
+            // Handle other types of errors or rethrow
+            throw error;
+          }
+        }
+
+        sending = false;
+        StateIndicator.update();
+      };
+
+      const stopCallback = () => {
+        audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
+        audioChunks = [];
+        { // Download button
+          downloadLink.href = URL.createObjectURL(audioBlob);
+          downloadLink.download = 'recording.wav';
+          downloadLink.style.display = 'block';
+        }
+        transcribeAndHandleResult(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
+      };
+
+      const getOnStreamReady = (beginPaused: boolean) => {
+        return (streamParam: MediaStream) => {
+          stream = streamParam;
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+          mediaRecorder.start();
+          isRecording = true;
+          StateIndicator.update();
+          mediaRecorder.ondataavailable = event => {
+            audioChunks.push(event.data);
+          };
+          if (beginPaused) mediaRecorder.pause();
+          StateIndicator.update();
+        };
+      }
+
+      const startRecording = (beginPaused: boolean = false) => {
+        navigator.mediaDevices.getUserMedia({audio: true}).then(getOnStreamReady(beginPaused));
+      };
+
+      const stopRecording = () => {
+        mediaRecorder.onstop = stopCallback;
+        mediaRecorder.stop();
+        StateIndicator.update();
+        isRecording = false;
+        HtmlUtils.Media.releaseMicrophone(stream);
+      };
+
+      // ############## stopButton ##############
+      const stopButton = () => {
+        if (isRecording) {
+          stopRecording();
+        } else {
+          NotVisibleAtThisTime.showSpinner();
+          startRecording();
+        }
+      }
+      buttonWithId("stopButton").addEventListener('click', stopButton);
+
+      const stop_transcribe_startNewRecording_and_pause = () => {
+        mediaRecorder.onstop = () => {
+          audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
+          audioChunks = [];
+          sending = true;
+          transcribeAndHandleResult(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
+          startRecording(true);
+        };
+        mediaRecorder.stop();
+      };
+
+      // ############## pauseRecordButton ##############
+      const pauseRecordButton = () => {
+        if (mediaRecorder?.state === 'recording') {
+          mediaRecorder.pause();
+          StateIndicator.update();
+        } else if (mediaRecorder?.state === 'paused') {
+          mediaRecorder.resume();
+          StateIndicator.update();
+        } else {
+          buttonWithId("stopButton").click();
+        }
+      }
+
+      const transcribeButton = () => {
+        if (mediaRecorder?.state === 'recording'
+            || (mediaRecorder?.state === 'paused'
+                && audioChunks.length > 0)) {
+          stop_transcribe_startNewRecording_and_pause();
+          return;
+        }
+        pauseRecordButton();
+      }
+
+// ############## transcribeButton ##############
+      buttonWithId("transcribeButton").addEventListener('click', transcribeButton);
+      buttonWithId("pauseRecordButton").addEventListener('click', pauseRecordButton);
+
+// ############## transcribeAgainButton ##############
+      const transcribeAgainButton = () => {
+        UiFunctions.closeEditorMenu();
+        NotVisibleAtThisTime.showSpinner();
+        transcribeAndHandleResult(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
+      };
+      HtmlUtils.addButtonClickListener(buttonWithId("transcribeAgainButton"), transcribeAgainButton);
+
+      StateIndicator.update();
+    } // End of media buttons
+
+    export const addButtonEventListeners = () => {
+
+// ############## Toggle Log Button ##############
+      Log.addToggleLogButtonClickListener(textAreaWithId);
+
+// ############## Crop Highlights Button ##############
+      const cropHighlights = () => {
+        mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ');
+        saveEditor();
+      };
+      HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
+        cropHighlights();
+        UiFunctions.closeEditorMenu();
+      });
+
+// ############## Copy Backup to clipboard ##############
+      const copyBackupToClipboard = () => {
+        navigator.clipboard.writeText(
+            "## Replace Rules\n" + replaceRulesTextArea.value + "\n"
+            + "## Prompt\n" + transcriptionPromptEditor.value
+        ).then();
+      };
+      HtmlUtils.addButtonClickListener(buttonWithId("copyBackupMenuItem"), () => {
+        copyBackupToClipboard();
+        UiFunctions.closeEditorMenu();
+      });
+
+// ############## Du2Ich Button ##############
+      function du2ichMenuItem() {
+        const value = Pures.du2ich(mainEditorTextarea.value);
+        console.log(value);
+        mainEditorTextarea.value = value;
+        saveEditor();
+        UiFunctions.closeEditorMenu();
+      }
+      HtmlUtils.addButtonClickListener(buttonWithId("du2ichMenuItem"), () => {
+        du2ichMenuItem();
+      });
+
+
+// ############## saveAPIKeyButton ##############
+      function saveAPIKeyButton() {
+        setApiKeyCookie(apiKeyInput.value);
+        apiKeyInput.value = '';
+      }
+      HtmlUtils.addButtonClickListener(buttonWithId("saveAPIKeyButton"), () => {
+        saveAPIKeyButton();
+      });
+
+      function clearButton() {
+        mainEditorTextarea.value = '';
+        saveEditor();
+      }
+
+// clearButton
+      HtmlUtils.addButtonClickListener(buttonWithId("clearButton"), () => {
+        clearButton();
+      });
+
+      const replaceAgainButton = () => {
+        Functions.applyReplaceRulesToMainEditor();
+        mainEditorTextarea.focus();
+        // window.scrollBy(0,-100000);
+      };
+
+// replaceAgainButton
+      HtmlUtils.addButtonClickListener(buttonWithId("replaceAgainButton"), () => {
+        replaceAgainButton();
+      });
+
+// ############## ctrlZButtons ##############
+      const addCtrlZButtonEventListener = (ctrlZButtonId: string, textArea: HTMLTextAreaElement) => {
+        HtmlUtils.addButtonClickListener(buttonWithId(ctrlZButtonId), () => {
+          textArea.focus();
+          //@ts-ignore
+          document.execCommand('undo'); // Yes, deprecated, but works. I will replace it when it fails. Docs: https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
+        });
+      };
+
+      addCtrlZButtonEventListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea);
+      addCtrlZButtonEventListener("ctrlZButtonOfPrompt", transcriptionPromptEditor);
+
+      // addReplaceRuleButton
+      const addReplaceRule = () => {
+        // add TextArea.selectedText() to the start of the replaceRulesTextArea
+        TextAreas.setCursor(replaceRulesTextArea, 0);
+        const selectedText = TextAreas.selectedText(mainEditorTextarea);
+        TextAreas.insertTextAtCursor(replaceRulesTextArea, `"\\b${selectedText}\\b"gm->"${selectedText}"\n`);
+        TextAreas.setCursor(replaceRulesTextArea, 12 + selectedText.length);
+        replaceRulesTextArea.focus();
+      };
+      HtmlUtils.addButtonClickListener(buttonWithId("addReplaceRuleButton"), addReplaceRule);
+
+      function cancelButton() {
+        saveEditor()
+        window.location.reload();
+      }
+
+// aboutButton
+      HtmlUtils.addButtonClickListener(buttonWithId("cancelButton"), () => {
+        cancelButton();
+      });
+
+// cutButton
+      /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
+      const addEventListenerForCutButton = (buttonId: string, inputElementId: string) => {
+        buttonWithId(buttonId).addEventListener('click', () => {
+          navigator.clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
+            buttonWithId(buttonId).innerHTML = '✂<br>Done';
+            setTimeout(() => {
+              buttonWithId(buttonId).innerHTML = '✂<br>Cut';
+            }, 2000);
+            mainEditorTextarea.value = '';
+            saveEditor();
+            mainEditorTextarea.focus();
+          });
+        });
+      };
+      addEventListenerForCutButton("cutButton", "mainEditorTextarea");
+
+// copyButtons
+      /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
+      const addEventListenerForCopyButton = (buttonId: string, inputElementId: string) => {
+        buttonWithId(buttonId).addEventListener('click', () => {
+          navigator.clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
+            buttonWithId(buttonId).innerHTML = '⎘<br>Copied!';
+            setTimeout(() => {
+              buttonWithId(buttonId).innerHTML = '⎘<br>Copy';
+            }, 2000);
+          });
+        });
+      };
+
+      // copyButtons
+      addEventListenerForCopyButton("copyReplaceRulesButton", "replaceRulesTextArea");
+      addEventListenerForCopyButton("copyPromptButton", "transcriptionPromptEditor");
+
+      buttonWithId("saveAPIKeyButton").addEventListener('click', function () {
+        inputElementWithId('apiKey').value = ''; // Clear the input field
+      });
+
+      apiSelector.addEventListener('change', () => {
+        HtmlUtils.Cookies.set('apiSelector', apiSelector.value);
+      });
+    }
+  }
+
+
   import elementWithId = HtmlUtils.elementWithId;
 
   export const closeEditorMenu = () => {
@@ -141,353 +490,6 @@ const replaceWithNormalParameters = (subject: string) => {
       ,inputElementWithId("logReplaceRulesCheckbox").checked);
 };
 
-// noinspection SpellCheckingInspection
-export namespace Buttons {
-  import textAreaWithId = HtmlUtils.textAreaWithId;
-  export namespace Media {
-    let mediaRecorder: MediaRecorder;
-    let audioChunks = [];
-    let audioBlob: Blob;
-    let isRecording = false;
-    let stream: MediaStream;
-    let sending = false;
-
-    export namespace StateIndicator {
-
-      /** Updates the recorder state display. That consists of the text
-       * and color of the stop button and the pause record button. */
-      export const update = () => {
-        if (mediaRecorder?.state === 'recording') {
-          setRecording(sending);
-        } else if (mediaRecorder?.state === 'paused') {
-          setPaused(sending);
-        } else {
-          setStopped();
-        }
-      }
-      const setRecording = (sendingParam: boolean) => {
-        setHtmlOfButtonStop(blinkFast('🔴') + (sendingParam
-            ? '<br>Sending'
-            : '<br>◼ Stop'));
-        setHtmlOfButtonPauseRecord(blinkFast('🔴') + '<br>|| Pause');
-      };
-      export const setPaused = (sendingParam: boolean = sending) => {
-        setHtmlOfButtonStop(blinkSlow('⬤ Paused') + (sendingParam
-            ? '<br>✎Scribing'
-            : '<br>◼ Stop'));
-        setHtmlOfButtonPauseRecord(blinkSlow('⬤ Paused') +'<br>▶ Cont.');
-      };
-      const setStopped = () => {
-        setHtmlOfButtonStop(sending
-            ? blinkFast('◼') + '<br>Sending'
-            : '◼<br>Stopped');
-        setHtmlOfButtonPauseRecord('⬤<br>Record');
-      };
-      const setHtmlOfButtonStop = (html: string) => {
-        buttonWithId("stopButton").innerHTML = html;
-      };
-      const setHtmlOfButtonPauseRecord = (html: string) => {
-        buttonWithId("pauseRecordButton").innerHTML = html;
-      };
-
-    }
-
-    const transcribeAndHandleResult = async (audioBlob: Blob) => {
-      sending = true;
-      StateIndicator.setPaused(true);
-      const apiName = getApiSelectedInUi();
-      if (!apiName) {
-        insertAtCursor("You must select an API below.");
-        return;
-      }
-      const promptForWhisper = () => transcriptionPromptEditor.value 
-          + INSERT_EDITOR_INTO_PROMPT ? mainEditorTextarea.value.substring(0
-          , mainEditorTextarea.selectionStart /*The start is relevant b/c the selection will be overwritten by the
-                                            new text. */
-          ).slice(-(
-          750 /* Taking the last 750 chars is for sure less than the max 250 tokens whisper is considering. This is
-          important because the last words of the last transcription should always be included to avoid hallucinations
-          if it otherwise would be an incomplete sentence. */
-          - transcriptionPromptEditor.value.length)) : "";
-      const removeLastDot = (text: string): string => {
-        if (text.endsWith('.')) {
-          return text.slice(0, -1)+" ";
-        }
-        return text;
-      };
-      try {
-        const result = async () => await HelgeUtils.Transcription.transcribe(
-            apiName, audioBlob, getApiKey(), promptForWhisper());
-        const removeLastDotIfApplicable = (input: string): string => {
-          if (mainEditorTextarea.selectionStart < mainEditorTextarea.value.length) {
-            return removeLastDot(input);
-          }
-          return input;
-        }
-        if (mainEditorTextarea.selectionStart > 0) insertAtCursor(" ");
-        insertAtCursor(removeLastDotIfApplicable(await result()));
-        Functions.applyReplaceRulesToMainEditor();
-        saveEditor();
-        navigator.clipboard.writeText(mainEditorTextarea.value).then();
-      } catch (error) {
-        if (error instanceof HelgeUtils.Transcription.TranscriptionError) {
-          Log.log(JSON.stringify(error.payload, null, 2));
-          Log.showLog();
-        } else {
-          // Handle other types of errors or rethrow
-          throw error;
-        }
-      }
-
-      sending = false;
-      StateIndicator.update();
-    };
-
-    const stopCallback = () => {
-      audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
-      audioChunks = [];
-      { // Download button
-        downloadLink.href = URL.createObjectURL(audioBlob);
-        downloadLink.download = 'recording.wav';
-        downloadLink.style.display = 'block';
-      }
-      transcribeAndHandleResult(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
-    };
-
-    const getOnStreamReady = (beginPaused: boolean) => {
-      return (streamParam: MediaStream) => {
-        stream = streamParam;
-        mediaRecorder = new MediaRecorder(stream);
-        audioChunks = [];
-        mediaRecorder.start();
-        isRecording = true;
-        StateIndicator.update();
-        mediaRecorder.ondataavailable = event => {
-          audioChunks.push(event.data);
-        };
-        if (beginPaused) mediaRecorder.pause();
-        StateIndicator.update();
-      };
-    }
-
-    const startRecording = (beginPaused: boolean = false) => {
-      navigator.mediaDevices.getUserMedia({audio: true}).then(getOnStreamReady(beginPaused));
-    };
-
-    const stopRecording = () => {
-      mediaRecorder.onstop = stopCallback;
-      mediaRecorder.stop();
-      StateIndicator.update();
-      isRecording = false;
-      HtmlUtils.Media.releaseMicrophone(stream);
-    };
-
-    // ############## stopButton ##############
-    const stopButton = () => {
-      if (isRecording) {
-        stopRecording();
-      } else {
-        NotVisibleAtThisTime.showSpinner();
-        startRecording();
-      }
-    }
-    buttonWithId("stopButton").addEventListener('click', stopButton);
-
-    const stop_transcribe_startNewRecording_and_pause = () => {
-      mediaRecorder.onstop = () => {
-        audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
-        audioChunks = [];
-        sending = true;
-        transcribeAndHandleResult(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
-        startRecording(true);
-      };
-      mediaRecorder.stop();
-    };
-
-    // ############## pauseRecordButton ##############
-    const pauseRecordButton = () => {
-      if (mediaRecorder?.state === 'recording') {
-        mediaRecorder.pause();
-        StateIndicator.update();
-      } else if (mediaRecorder?.state === 'paused') {
-        mediaRecorder.resume();
-        StateIndicator.update();
-      } else {
-        buttonWithId("stopButton").click();
-      }
-    }
-
-    const transcribeButton = () => {
-      if (mediaRecorder?.state === 'recording'
-        || (mediaRecorder?.state === 'paused'
-          && audioChunks.length > 0)) {
-        stop_transcribe_startNewRecording_and_pause();
-        return;
-      }
-      pauseRecordButton();
-    }
-
-// ############## transcribeButton ##############
-    buttonWithId("transcribeButton").addEventListener('click', transcribeButton);
-    buttonWithId("pauseRecordButton").addEventListener('click', pauseRecordButton);
-
-// ############## transcribeAgainButton ##############
-    const transcribeAgainButton = () => {
-      UiFunctions.closeEditorMenu();
-      NotVisibleAtThisTime.showSpinner();
-      transcribeAndHandleResult(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
-    };
-    HtmlUtils.addButtonClickListener(buttonWithId("transcribeAgainButton"), transcribeAgainButton);
-
-    StateIndicator.update();
-  } // End of media buttons
-
-  export const addButtonEventListeners = () => {
-
-// ############## Toggle Log Button ##############
-    Log.addToggleLogButtonClickListener(textAreaWithId);
-    
-// ############## Crop Highlights Button ##############
-    const cropHighlights = () => {
-      mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ');
-      saveEditor();
-    };
-    HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
-      cropHighlights();
-      UiFunctions.closeEditorMenu();
-    });
-    
-// ############## Copy Backup to clipboard ##############
-    const copyBackupToClipboard = () => {
-      navigator.clipboard.writeText(
-        "## Replace Rules\n" + replaceRulesTextArea.value + "\n"
-        + "## Prompt\n" + transcriptionPromptEditor.value
-      ).then();
-    };
-    HtmlUtils.addButtonClickListener(buttonWithId("copyBackupMenuItem"), () => {
-      copyBackupToClipboard();
-      UiFunctions.closeEditorMenu();
-    });
-
-// ############## Du2Ich Button ##############
-    function du2ichMenuItem() {
-      const value = Pures.du2ich(mainEditorTextarea.value);
-      console.log(value);
-      mainEditorTextarea.value = value;
-      saveEditor();
-      UiFunctions.closeEditorMenu();
-    }
-    HtmlUtils.addButtonClickListener(buttonWithId("du2ichMenuItem"), () => {
-      du2ichMenuItem();
-    });
-
-
-// ############## saveAPIKeyButton ##############
-    function saveAPIKeyButton() {
-      setApiKeyCookie(apiKeyInput.value);
-      apiKeyInput.value = '';
-    }
-    HtmlUtils.addButtonClickListener(buttonWithId("saveAPIKeyButton"), () => {
-      saveAPIKeyButton();
-    });
-
-    function clearButton() {
-      mainEditorTextarea.value = '';
-      saveEditor();
-    }
-
-// clearButton
-    HtmlUtils.addButtonClickListener(buttonWithId("clearButton"), () => {
-      clearButton();
-    });
-
-    const replaceAgainButton = () => {
-      Functions.applyReplaceRulesToMainEditor();
-      mainEditorTextarea.focus();
-      // window.scrollBy(0,-100000);
-    };
-
-// replaceAgainButton
-    HtmlUtils.addButtonClickListener(buttonWithId("replaceAgainButton"), () => {
-      replaceAgainButton();
-    });
-
-// ############## ctrlZButtons ##############
-    const addCtrlZButtonEventListener = (ctrlZButtonId: string, textArea: HTMLTextAreaElement) => {
-      HtmlUtils.addButtonClickListener(buttonWithId(ctrlZButtonId), () => {
-        textArea.focus();
-        //@ts-ignore
-        document.execCommand('undo'); // Yes, deprecated, but works. I will replace it when it fails. Docs: https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
-      });
-    };
-
-    addCtrlZButtonEventListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea);
-    addCtrlZButtonEventListener("ctrlZButtonOfPrompt", transcriptionPromptEditor);
-
-  // addReplaceRuleButton
-    const addReplaceRule = () => {
-      // add TextArea.selectedText() to the start of the replaceRulesTextArea
-      TextAreas.setCursor(replaceRulesTextArea, 0);
-      const selectedText = TextAreas.selectedText(mainEditorTextarea);
-      TextAreas.insertTextAtCursor(replaceRulesTextArea, `"\\b${selectedText}\\b"gm->"${selectedText}"\n`);
-      TextAreas.setCursor(replaceRulesTextArea, 12 + selectedText.length);
-      replaceRulesTextArea.focus();
-    };
-    HtmlUtils.addButtonClickListener(buttonWithId("addReplaceRuleButton"), addReplaceRule);
-
-    function cancelButton() {
-      saveEditor()
-      window.location.reload();
-    }
-
-// aboutButton
-    HtmlUtils.addButtonClickListener(buttonWithId("cancelButton"), () => {
-      cancelButton();
-    });
-
-// cutButton
-    /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
-    const addEventListenerForCutButton = (buttonId: string, inputElementId: string) => {
-      buttonWithId(buttonId).addEventListener('click', () => {
-        navigator.clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
-          buttonWithId(buttonId).innerHTML = '✂<br>Done';
-          setTimeout(() => {
-            buttonWithId(buttonId).innerHTML = '✂<br>Cut';
-          }, 2000);
-          mainEditorTextarea.value = '';
-          saveEditor();
-          mainEditorTextarea.focus();
-        });
-      });
-    };
-    addEventListenerForCutButton("cutButton", "mainEditorTextarea");
-
-// copyButtons
-    /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
-    const addEventListenerForCopyButton = (buttonId: string, inputElementId: string) => {
-      buttonWithId(buttonId).addEventListener('click', () => {
-        navigator.clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
-          buttonWithId(buttonId).innerHTML = '⎘<br>Copied!';
-          setTimeout(() => {
-            buttonWithId(buttonId).innerHTML = '⎘<br>Copy';
-          }, 2000);
-        });
-      });
-    };
-
-  // copyButtons
-    addEventListenerForCopyButton("copyReplaceRulesButton", "replaceRulesTextArea");
-    addEventListenerForCopyButton("copyPromptButton", "transcriptionPromptEditor");
-
-    buttonWithId("saveAPIKeyButton").addEventListener('click', function () {
-      inputElementWithId('apiKey').value = ''; // Clear the input field
-    });
-
-    apiSelector.addEventListener('change', () => {
-      HtmlUtils.Cookies.set('apiSelector', apiSelector.value);
-    });
-  }
-}
 const getApiKey = () => HtmlUtils.Cookies.get(apiSelector.value + 'ApiKey');
 
 const setApiKeyCookie = (apiKey: string) => {
@@ -514,7 +516,7 @@ export const registerServiceWorker = () => {
 };
 
 const init = () => {
-  Buttons.addButtonEventListeners();
+  UiFunctions.Buttons.addButtonEventListeners();
   registerServiceWorker();
   loadFormData();
 }
