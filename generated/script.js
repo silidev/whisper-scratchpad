@@ -344,6 +344,7 @@ export var Buttons;
         });
         const replaceAgainButton = () => {
             Functions.applyReplaceRulesToMainEditor();
+            mainEditorTextarea.focus();
             window.scrollBy(0, -100000);
         };
         // replaceAgainButton
