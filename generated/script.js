@@ -418,9 +418,9 @@ export var Buttons;
         const addEventListenerForCopyButton = (buttonId, inputElementId) => {
             buttonWithId(buttonId).addEventListener('click', () => {
                 navigator.clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
-                    buttonWithId(buttonId).textContent = '⎘ Copied!';
+                    buttonWithId(buttonId).innerHTML = '⎘<br>Copied!';
                     setTimeout(() => {
-                        buttonWithId(buttonId).textContent = '⎘ Copy';
+                        buttonWithId(buttonId).innerHTML = '⎘<br>Copy';
                     }, 2000);
                 });
             });
