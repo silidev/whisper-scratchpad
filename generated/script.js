@@ -360,7 +360,7 @@ export var Buttons;
             });
         };
         // undoButtonOfEditor
-        addUndoButtonEventListener("undoButtonOfEditor", mainEditorTextarea);
+        addUndoButtonEventListener("undoButtonOfEditor", mainEditorTextarea); //TODOhStu: Rename all Undo to Ctrl-z
         addUndoButtonEventListener("undoButtonOfReplaceRules", replaceRulesTextArea);
         addUndoButtonEventListener("undoButtonOfPrompt", transcriptionPrompt);
         // addReplaceRuleButton
