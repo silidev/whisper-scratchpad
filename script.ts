@@ -34,7 +34,13 @@ namespace Pures {
 
 namespace Functions {
   export const applyReplaceRulesToMainEditor = () => {
+    const selectionStart = mainEditorTextarea.selectionStart;
+    const selectionEnd = mainEditorTextarea.selectionEnd;
+
     mainEditorTextarea.value = replaceWithNormalParameters(mainEditorTextarea.value) as string;
+
+    mainEditorTextarea.selectionStart = selectionStart;
+    mainEditorTextarea.selectionEnd = selectionEnd;
   };
 }
 
@@ -221,7 +227,7 @@ export namespace Buttons {
         if (mainEditorTextarea.selectionStart > 0) insertAtCursor(" ");
         insertAtCursor(removeLastDotIfApplicable(await result()));
         Functions.applyReplaceRulesToMainEditor();
-        saveEditor()
+        saveEditor();
         navigator.clipboard.writeText(mainEditorTextarea.value).then();
       } catch (error) {
         if (error instanceof HelgeUtils.Transcription.TranscriptionError) {

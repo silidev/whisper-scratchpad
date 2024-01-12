@@ -30,7 +30,11 @@ var Pures;
 var Functions;
 (function (Functions) {
     Functions.applyReplaceRulesToMainEditor = () => {
+        const selectionStart = mainEditorTextarea.selectionStart;
+        const selectionEnd = mainEditorTextarea.selectionEnd;
         mainEditorTextarea.value = replaceWithNormalParameters(mainEditorTextarea.value);
+        mainEditorTextarea.selectionStart = selectionStart;
+        mainEditorTextarea.selectionEnd = selectionEnd;
     };
 })(Functions || (Functions = {}));
 var UiFunctions;
