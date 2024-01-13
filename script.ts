@@ -126,19 +126,19 @@ namespace UiFunctions {
           return text;
         };
         try {
-          const removeLastDotIfApplicable = (input: string): string => {
+          const removeLastDotIfNotAtEnd = (input: string): string => {
             if (mainEditorTextarea.selectionStart < mainEditorTextarea.value.length) {
               return removeLastDot(input);
             }
             return input;
           }
-          const transcriptionText = removeLastDotIfApplicable((await HelgeUtils.Transcription.transcribe(
-              apiName, audioBlob, getApiKey(), promptForWhisper())));
+          const transcriptionText = await HelgeUtils.Transcription.transcribe(
+              apiName, audioBlob, getApiKey(), promptForWhisper());
           if (INSERT_TRANSCRIPTION_AT_CURSOR) {
             insertAtCursor(
                 mainEditorTextarea.selectionStart > 0
                 ? " " : ""
-                + transcriptionText);
+                + removeLastDotIfNotAtEnd(transcriptionText));
           } else {
             mainEditorTextarea.value += " " + transcriptionText;
           }
@@ -263,7 +263,7 @@ namespace UiFunctions {
 // ############## Toggle Log Button ##############
       Log.addToggleLogButtonClickListener(textAreaWithId);
 
-// ############## Crop Highlights Button ##############
+// ############## Crop Highlights Menu Item ##############
       const cropHighlights = () => {
         mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ');
         saveEditor();
@@ -273,19 +273,25 @@ namespace UiFunctions {
         UiFunctions.closeEditorMenu();
       });
 
-// ############## Copy Backup to clipboard ##############
+// ############## Copy Backup to clipboard Menu Item ##############
       const copyBackupToClipboard = () => {
         navigator.clipboard.writeText(
             "## Replace Rules\n" + replaceRulesTextArea.value + "\n"
             + "## Prompt\n" + transcriptionPromptEditor.value
         ).then();
       };
-      HtmlUtils.addButtonClickListener(buttonWithId("copyBackupMenuItem"), () => {
+      HtmlUtils.addButtonClickListener(buttonWithId("copyBackupMenuItem"), () => { //TODOhStu: If I enjoy it, I could make a method "addMenuItem".
         copyBackupToClipboard();
         UiFunctions.closeEditorMenu();
       });
 
-// ############## Du2Ich Button ##############
+// ############## Focus the main editor textarea Menu Item ##############
+      HtmlUtils.addButtonClickListener(buttonWithId("focusMainEditorMenuItem"), () => {
+        mainEditorTextarea.focus();
+        UiFunctions.closeEditorMenu();
+      });
+
+// ############## Du2Ich Menu Item ##############
       function du2ichMenuItem() {
         const value = Pures.du2ich(mainEditorTextarea.value);
         console.log(value);
