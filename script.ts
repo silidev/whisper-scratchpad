@@ -96,6 +96,7 @@ namespace UiFunctions {
 
       }
       /**
+       * @param audioBlob
        * @param insertAtCursorFlag
        * - If true, the transcription is inserted at the cursor position
        * in the main editor, but often it is inserted at the beginning of the text instead.
