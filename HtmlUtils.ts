@@ -54,19 +54,21 @@ export namespace HtmlUtils {
       textarea.setSelectionRange(position, position);
     }
 
+    /**
+     * Inserts text at the cursor position in a text area. If something is selected it will be overwritten.
+     */
     export const insertTextAtCursor = (
         textarea: HTMLTextAreaElement,
         addedText: string) => {
 
       if (!addedText)
         return;
-      const cursorPosition = textarea.selectionStart;
-      const textBeforeCursor = textarea.value.substring(0, cursorPosition);
-      const textAfterCursor = textarea.value.substring(cursorPosition);
 
-      textarea.value = textBeforeCursor + addedText + textAfterCursor;
-      const newCursorPosition = cursorPosition + addedText.length;
-      setCursor(textarea, newCursorPosition);
+      const textBeforeSelection = textarea.value.substring(0, textarea.selectionStart);
+      const textAfterSelection = textarea.value.substring(textarea.selectionEnd);
+
+      textarea.value = textBeforeSelection + addedText + textAfterSelection;
+      setCursor(textarea, textarea.selectionStart + addedText.length);
     };
   }
 

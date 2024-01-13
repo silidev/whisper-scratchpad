@@ -45,15 +45,16 @@ export var HtmlUtils;
         TextAreas.setCursor = (textarea, position) => {
             textarea.setSelectionRange(position, position);
         };
+        /**
+         * Inserts text at the cursor position in a text area. If something is selected it will be overwritten.
+         */
         TextAreas.insertTextAtCursor = (textarea, addedText) => {
             if (!addedText)
                 return;
-            const cursorPosition = textarea.selectionStart;
-            const textBeforeCursor = textarea.value.substring(0, cursorPosition);
-            const textAfterCursor = textarea.value.substring(cursorPosition);
-            textarea.value = textBeforeCursor + addedText + textAfterCursor;
-            const newCursorPosition = cursorPosition + addedText.length;
-            TextAreas.setCursor(textarea, newCursorPosition);
+            const textBeforeSelection = textarea.value.substring(0, textarea.selectionStart);
+            const textAfterSelection = textarea.value.substring(textarea.selectionEnd);
+            textarea.value = textBeforeSelection + addedText + textAfterSelection;
+            TextAreas.setCursor(textarea, textarea.selectionStart + addedText.length);
         };
     })(TextAreas = HtmlUtils.TextAreas || (HtmlUtils.TextAreas = {}));
     let Media;
