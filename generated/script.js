@@ -8,11 +8,11 @@ var inputElementWithId = HtmlUtils.inputElementWithId;
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
 /**
- * - If true, is BUGGY. The transcription SHOULD be inserted at the cursor position
+ * - If true, the transcription is inserted at the cursor position
  * in the main editor, but often it is inserted at the beginning of the text instead.
  * - If false, it will be appended.
  */
-const INSERT_TRANSCRIPTION_AT_CURSOR = false;
+const INSERT_TRANSCRIPTION_AT_CURSOR = true;
 var Pures;
 (function (Pures) {
     // noinspection SpellCheckingInspection
