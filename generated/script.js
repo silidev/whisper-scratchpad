@@ -458,7 +458,7 @@ export const loadFormData = () => {
     const Cookies = HtmlUtils.Cookies;
     mainEditorTextarea.value = Cookies.get("editorText");
     transcriptionPromptEditor.value = Cookies.get("prompt");
-    replaceRulesTextArea.value = Cookies.get("replaceRules");
+    replaceRulesTextArea.value = Cookies.get("replaceRules") ?? `""->""\n`;
     apiSelector.value = Cookies.get("apiSelector") ?? 'OpenAI';
 };
 export const registerServiceWorker = () => {
