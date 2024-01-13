@@ -9,6 +9,12 @@ import inputElementWithId = HtmlUtils.inputElementWithId;
 
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
+/**
+ * - If true, is BUGGY. The transcription SHOULD be inserted at the cursor position
+ * in the main editor, but often it is inserted at the beginning of the text instead.
+ * - If false, it will be appended.
+ */
+const INSERT_TRANSCRIPTION_AT_CURSOR = false;
 
 namespace Pures {
   // noinspection SpellCheckingInspection
@@ -120,16 +126,22 @@ namespace UiFunctions {
           return text;
         };
         try {
-          const result = async () => await HelgeUtils.Transcription.transcribe(
-              apiName, audioBlob, getApiKey(), promptForWhisper());
           const removeLastDotIfApplicable = (input: string): string => {
             if (mainEditorTextarea.selectionStart < mainEditorTextarea.value.length) {
               return removeLastDot(input);
             }
             return input;
           }
-          if (mainEditorTextarea.selectionStart > 0) insertAtCursor(" ");
-          insertAtCursor(removeLastDotIfApplicable(await result()));
+          const transcriptionText = removeLastDotIfApplicable((await HelgeUtils.Transcription.transcribe(
+              apiName, audioBlob, getApiKey(), promptForWhisper())));
+          if (INSERT_TRANSCRIPTION_AT_CURSOR) {
+            insertAtCursor(
+                mainEditorTextarea.selectionStart > 0
+                ? " " : ""
+                + transcriptionText);
+          } else {
+            mainEditorTextarea.value += " " + transcriptionText;
+          }
           Functions.applyReplaceRulesToMainEditor();
           saveEditor();
           navigator.clipboard.writeText(mainEditorTextarea.value).then();
