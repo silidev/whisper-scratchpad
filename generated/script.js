@@ -7,12 +7,6 @@ var blinkSlow = HtmlUtils.blinkSlow;
 var inputElementWithId = HtmlUtils.inputElementWithId;
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
-/**
- * - If true, the transcription is inserted at the cursor position
- * in the main editor, but often it is inserted at the beginning of the text instead.
- * - If false, it will be appended.
- */
-const INSERT_TRANSCRIPTION_AT_CURSOR = true;
 var Pures;
 (function (Pures) {
     // noinspection SpellCheckingInspection
@@ -97,7 +91,13 @@ var UiFunctions;
                     buttonWithId("pauseRecordButton").innerHTML = html;
                 };
             })(StateIndicator = Media.StateIndicator || (Media.StateIndicator = {}));
-            const transcribeAndHandleResult = async (audioBlob) => {
+            /**
+             * @param insertAtCursorFlag
+             * - If true, the transcription is inserted at the cursor position
+             * in the main editor, but often it is inserted at the beginning of the text instead.
+             * - If false, it will be appended.
+             */
+            const transcribeAndHandleResult = async (audioBlob, insertAtCursorFlag) => {
                 sending = true;
                 StateIndicator.setPaused(true);
                 const apiName = getApiSelectedInUi();
@@ -117,6 +117,11 @@ var UiFunctions;
                     }
                     return text;
                 };
+                function aSpaceIfNeeded() {
+                    return mainEditorTextarea.selectionStart > 0
+                        && !mainEditorTextarea.value.charAt(mainEditorTextarea.selectionStart - 1).match(/\s/)
+                        ? " " : "";
+                }
                 try {
                     const removeLastDotIfNotAtEnd = (input) => {
                         if (mainEditorTextarea.selectionStart < mainEditorTextarea.value.length) {
@@ -125,10 +130,8 @@ var UiFunctions;
                         return input;
                     };
                     const transcriptionText = await HelgeUtils.Transcription.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper());
-                    if (INSERT_TRANSCRIPTION_AT_CURSOR) {
-                        insertAtCursor(mainEditorTextarea.selectionStart > 0
-                            ? " " : ""
-                            + removeLastDotIfNotAtEnd(transcriptionText));
+                    if (insertAtCursorFlag) {
+                        insertAtCursor(aSpaceIfNeeded() + removeLastDotIfNotAtEnd(transcriptionText));
                     }
                     else {
                         mainEditorTextarea.value += " " + transcriptionText;
@@ -158,7 +161,7 @@ var UiFunctions;
                     downloadLink.download = 'recording.wav';
                     downloadLink.style.display = 'block';
                 }
-                transcribeAndHandleResult(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
+                transcribeAndHandleResult(audioBlob, true).then(NotVisibleAtThisTime.hideSpinner);
             };
             const getOnStreamReady = (beginPaused) => {
                 return (streamParam) => {
@@ -202,7 +205,7 @@ var UiFunctions;
                     audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                     audioChunks = [];
                     sending = true;
-                    transcribeAndHandleResult(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
+                    transcribeAndHandleResult(audioBlob, false).then(NotVisibleAtThisTime.hideSpinner);
                     startRecording(true);
                 };
                 mediaRecorder.stop();
@@ -237,7 +240,7 @@ var UiFunctions;
             const transcribeAgainButton = () => {
                 UiFunctions.closeEditorMenu();
                 NotVisibleAtThisTime.showSpinner();
-                transcribeAndHandleResult(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
+                transcribeAndHandleResult(audioBlob, true).then(NotVisibleAtThisTime.hideSpinner);
             };
             HtmlUtils.addButtonClickListener(buttonWithId("transcribeAgainButton"), transcribeAgainButton);
             StateIndicator.update();
