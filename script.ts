@@ -116,7 +116,7 @@ namespace UiFunctions {
             , mainEditorTextarea.selectionStart /*The start is relevant b/c the selection will be overwritten by the
                                             new text. */
         ).slice(-(
-            750 /* Taking the last 750 chars is for sure less than the max 250 tokens whisper is considering. This is
+            750 /* Taking the last 750 CHARS is for sure less than the max 250 TOKENS whisper is considering. This is
           important because the last words of the last transcription should always be included to avoid hallucinations
           if it otherwise would be an incomplete sentence. */
             - transcriptionPromptEditor.value.length)) : "";
