@@ -100,7 +100,7 @@ var UiFunctions;
              */
             const transcribeAndHandleResult = async (audioBlob, insertAtCursorFlag) => {
                 sending = true;
-                StateIndicator.setPaused(true);
+                StateIndicator.update();
                 const apiName = getApiSelectedInUi();
                 if (!apiName) {
                     insertAtCursor("You must select an API below.");
@@ -153,6 +153,9 @@ var UiFunctions;
                 StateIndicator.update();
             };
             const stopCallback = () => {
+                HtmlUtils.Media.releaseMicrophone(stream);
+                isRecording = false;
+                StateIndicator.update();
                 audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                 audioChunks = [];
                 { // Download button
@@ -184,9 +187,6 @@ var UiFunctions;
             const stopRecording = () => {
                 mediaRecorder.onstop = stopCallback;
                 mediaRecorder.stop();
-                StateIndicator.update();
-                isRecording = false;
-                HtmlUtils.Media.releaseMicrophone(stream);
             };
             // ############## stopButton ##############
             const stopButton = () => {
