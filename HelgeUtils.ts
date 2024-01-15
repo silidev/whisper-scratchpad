@@ -101,7 +101,7 @@ export namespace HelgeUtils {
       formData.append('audio', audioBlob);
       /*Value	Description
 manual	manually define the language of the transcription using the language parameter
-automatic single language	default value and recommended choice for most cases - the model will auto detect the prominent language in the audio, then transcribe the full audio to that language. Segments in other languages will automatically be translated to the prominent language. The mode is also recommended for scenarios where the audio starts in one language for a short while and then switches to another for the majority of the duration
+automatic single language	default value and recommended choice for most cases - the model will auto-detect the prominent language in the audio, then transcribe the full audio to that language. Segments in other languages will automatically be translated to the prominent language. The mode is also recommended for scenarios where the audio starts in one language for a short while and then switches to another for the majority of the duration
 automatic multiple languages	For specific scenarios where language is changed multiple times throughout the audio (e.g. a conversation between 2 people, each speaking a different language.).
 The model will continuously detect the spoken language and switch the transcription language accordingly.
 Please note that certain strong accents can possibly cause this mode to transcribe to the wrong language.
@@ -208,4 +208,10 @@ Please note that certain strong accents can possibly cause this mode to transcri
 
     return matches;
   };
+
+  export namespace Strings {
+    export const escapeRegExp = (str: string): string => {
+      return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+    };
+  }
 }

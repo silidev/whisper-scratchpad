@@ -5,6 +5,7 @@ var buttonWithId = HtmlUtils.buttonWithId;
 var blinkFast = HtmlUtils.blinkFast;
 var blinkSlow = HtmlUtils.blinkSlow;
 var inputElementWithId = HtmlUtils.inputElementWithId;
+var escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
 var Pures;
@@ -68,7 +69,7 @@ var UiFunctions;
                 };
                 const setRecording = (sendingParam) => {
                     setHtmlOfButtonStop(blinkFast('🔴') + (sendingParam
-                        ? '<br>Sending'
+                        ? 'Sending<br>◼ Stop'
                         : '<br>◼ Stop'));
                     setHtmlOfButtonPauseRecord(blinkFast('🔴') + '<br>|| Pause');
                 };
@@ -80,9 +81,9 @@ var UiFunctions;
                 };
                 const setStopped = () => {
                     setHtmlOfButtonStop(sending
-                        ? blinkFast('◼') + '<br>Sending'
-                        : '◼<br>Stopped');
-                    setHtmlOfButtonPauseRecord('⬤<br>Record');
+                        ? blinkFast('Sending') + '<br>◼ Stop'
+                        : 'Stopped<br>◼ Stop');
+                    setHtmlOfButtonPauseRecord('<br>⬤ Record');
                 };
                 const setHtmlOfButtonStop = (html) => {
                     buttonWithId("stopButton").innerHTML = html;
@@ -384,16 +385,12 @@ var UiFunctions;
         elementWithId("editorMenuHeading").dispatchEvent(new CustomEvent('rootMenuClose'));
     };
     UiFunctions.replaceRulesTextAreaOnInput = () => {
-        /**
-         * Do correct regex escaping with the following and modify the rule accordingly:
-         *`Das hier ist ein ziemlich langer ganz normaler Text, an dem die "Rules" nichts verändern sollten. Dadurch fail'en auch Rules wie zB "e"->"a" und das ist auch gut so.`
-         */
         // noinspection SpellCheckingInspection
         const magicText = (numberToMakeItUnique) => {
-            return `Das hier ist ein ziemlich langer ganz normaler Text an dem die Rules nichts verändern sollten Dadurch failen auch Rules wie zB und das ist auch gut so`
+            return `Das hier ist ein ziemlich langer ganz normaler Text an, dem die Rules nichts verändern sollten! Dadurch failen auch Rules wie z. B. "e"->"a" und das ist auch gut so.`
                 + numberToMakeItUnique;
         };
-        const createTestRule = (numberToMakeItUnique) => `\n\n"${magicText(numberToMakeItUnique)}"gmu->""\n\n`;
+        const createTestRule = (numberToMakeItUnique) => `\n\n"${escapeRegExp(magicText(numberToMakeItUnique))}"gm->""\n\n`;
         const testRules = createTestRule(1)
             + replaceRulesTextArea.value
             + createTestRule(2);

@@ -6,6 +6,7 @@ import buttonWithId = HtmlUtils.buttonWithId;
 import blinkFast = HtmlUtils.blinkFast;
 import blinkSlow = HtmlUtils.blinkSlow;
 import inputElementWithId = HtmlUtils.inputElementWithId;
+import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
@@ -71,7 +72,7 @@ namespace UiFunctions {
         }
         const setRecording = (sendingParam: boolean) => {
           setHtmlOfButtonStop(blinkFast('🔴') + (sendingParam
-              ? '<br>Sending'
+              ? 'Sending<br>◼ Stop'
               : '<br>◼ Stop'));
           setHtmlOfButtonPauseRecord(blinkFast('🔴') + '<br>|| Pause');
         };
@@ -83,9 +84,9 @@ namespace UiFunctions {
         };
         const setStopped = () => {
           setHtmlOfButtonStop(sending
-              ? blinkFast('◼') + '<br>Sending'
-              : '◼<br>Stopped');
-          setHtmlOfButtonPauseRecord('⬤<br>Record');
+              ? blinkFast('Sending') + '<br>◼ Stop'
+              : 'Stopped<br>◼ Stop');
+          setHtmlOfButtonPauseRecord('<br>⬤ Record');
         };
         const setHtmlOfButtonStop = (html: string) => {
           buttonWithId("stopButton").innerHTML = html;
@@ -430,16 +431,13 @@ namespace UiFunctions {
   };
 
   export const replaceRulesTextAreaOnInput = () => {
-    /**
-     * Do correct regex escaping with the following and modify the rule accordingly:
-     *`Das hier ist ein ziemlich langer ganz normaler Text, an dem die "Rules" nichts verändern sollten. Dadurch fail'en auch Rules wie zB "e"->"a" und das ist auch gut so.`
-     */
     // noinspection SpellCheckingInspection
     const magicText = (numberToMakeItUnique: number) => {
-      return `Das hier ist ein ziemlich langer ganz normaler Text an dem die Rules nichts verändern sollten Dadurch failen auch Rules wie zB und das ist auch gut so`
+      return `Das hier ist ein ziemlich langer ganz normaler Text an, dem die Rules nichts verändern sollten! Dadurch failen auch Rules wie z. B. "e"->"a" und das ist auch gut so.`
       + numberToMakeItUnique;
     }
-    const createTestRule = (numberToMakeItUnique: number) => `\n\n"${magicText(numberToMakeItUnique)}"gmu->""\n\n`;
+
+    const createTestRule = (numberToMakeItUnique: number) => `\n\n"${escapeRegExp(magicText(numberToMakeItUnique))}"gm->""\n\n`;
     const testRules =
         createTestRule(1)
         + replaceRulesTextArea.value
