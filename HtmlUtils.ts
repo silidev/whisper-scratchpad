@@ -29,15 +29,15 @@ export namespace HtmlUtils {
 
   export namespace TextAreas {
 
-    export const appendText = (textarea: HTMLTextAreaElement, text: string) => {
-      textarea.value += " " + text;
-      setCursor(textarea, textarea.value.length);
+    export const appendText = (textArea: HTMLTextAreaElement, text: string) => {
+      textArea.value += " " + text;
+      setCursor(textArea, textArea.value.length);
     };
 
-    export const selectedText = (textarea) => {
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      return textarea.value.substring(start, end);
+    export const selectedText = (textArea: HTMLTextAreaElement) => {
+      const start = textArea.selectionStart;
+      const end = textArea.selectionEnd;
+      return textArea.value.substring(start, end);
     };
 
     /**
@@ -51,12 +51,12 @@ export namespace HtmlUtils {
       });
     }
 
-    export const getCursor = (textarea: HTMLTextAreaElement) => {
-      return textarea.selectionStart;
+    export const getCursor = (textArea: HTMLTextAreaElement) => {
+      return textArea.selectionStart;
     }
 
-    export const setCursor = (textarea: HTMLTextAreaElement, position: number) => {
-      textarea.setSelectionRange(position, position);
+    export const setCursor = (textArea: HTMLTextAreaElement, position: number) => {
+      textArea.setSelectionRange(position, position);
     }
 
     /**

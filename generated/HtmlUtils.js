@@ -24,14 +24,14 @@ export var HtmlUtils;
     HtmlUtils.inputElementWithId = HtmlUtils.elementWithId;
     let TextAreas;
     (function (TextAreas) {
-        TextAreas.appendText = (textarea, text) => {
-            textarea.value += " " + text;
-            TextAreas.setCursor(textarea, textarea.value.length);
+        TextAreas.appendText = (textArea, text) => {
+            textArea.value += " " + text;
+            TextAreas.setCursor(textArea, textArea.value.length);
         };
-        TextAreas.selectedText = (textarea) => {
-            const start = textarea.selectionStart;
-            const end = textarea.selectionEnd;
-            return textarea.value.substring(start, end);
+        TextAreas.selectedText = (textArea) => {
+            const start = textArea.selectionStart;
+            const end = textArea.selectionEnd;
+            return textArea.value.substring(start, end);
         };
         /**
          * Makes a text area element auto-save its content to a cookie after each modified character (input event).
@@ -43,11 +43,11 @@ export var HtmlUtils;
                 Cookies.set(cookieName, HtmlUtils.textAreaWithId(id).value);
             });
         };
-        TextAreas.getCursor = (textarea) => {
-            return textarea.selectionStart;
+        TextAreas.getCursor = (textArea) => {
+            return textArea.selectionStart;
         };
-        TextAreas.setCursor = (textarea, position) => {
-            textarea.setSelectionRange(position, position);
+        TextAreas.setCursor = (textArea, position) => {
+            textArea.setSelectionRange(position, position);
         };
         /**
          * Inserts text at the cursor position in a text area. If something is selected it will be overwritten.
