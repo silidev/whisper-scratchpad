@@ -371,6 +371,13 @@ namespace UiFunctions {
         cancelButton();
       });
 
+// aboutButton
+      HtmlUtils.addButtonClickListener(buttonWithId("pasteButton"), () => {
+        navigator.clipboard.readText().then(text => {
+          insertAtCursor(text);
+        });
+      });
+
 // cutButton
       /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
       const addEventListenerForCutButton = (buttonId: string, inputElementId: string) => {
