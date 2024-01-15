@@ -29,6 +29,11 @@ export namespace HtmlUtils {
 
   export namespace TextAreas {
 
+    export const appendText = (textarea: HTMLTextAreaElement, text: string) => {
+      textarea.value += " " + text;
+      setCursor(textarea, textarea.value.length);
+    };
+
     export const selectedText = (textarea) => {
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;

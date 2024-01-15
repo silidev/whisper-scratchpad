@@ -142,11 +142,10 @@ namespace UiFunctions {
           }
           const transcriptionText = await HelgeUtils.Transcription.transcribe(
               apiName, audioBlob, getApiKey(), promptForWhisper());
-          if (insertAtCursorFlag) {
+          if (insertAtCursorFlag)
             insertAtCursor(aSpaceIfNeeded() + removeLastDotIfNotAtEnd(transcriptionText));
-          } else {
-            mainEditorTextarea.value += " " + transcriptionText;
-          }
+          else
+            TextAreas.appendText(mainEditorTextarea, transcriptionText);
           Functions.applyReplaceRulesToMainEditor();
           saveEditor();
           navigator.clipboard.writeText(mainEditorTextarea.value).then();

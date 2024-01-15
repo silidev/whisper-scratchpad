@@ -24,6 +24,10 @@ export var HtmlUtils;
     HtmlUtils.inputElementWithId = HtmlUtils.elementWithId;
     let TextAreas;
     (function (TextAreas) {
+        TextAreas.appendText = (textarea, text) => {
+            textarea.value += " " + text;
+            TextAreas.setCursor(textarea, textarea.value.length);
+        };
         TextAreas.selectedText = (textarea) => {
             const start = textarea.selectionStart;
             const end = textarea.selectionEnd;
