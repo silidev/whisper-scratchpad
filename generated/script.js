@@ -73,7 +73,7 @@ var UiFunctions;
                 };
                 StateIndicator.setPaused = () => {
                     setHtmlOfButtonStop('◼<br>Stop');
-                    setHtmlOfButtonPauseRecord(blinkSlow('⬤ Paused') + '<br>▶ Cont.');
+                    setHtmlOfButtonPauseRecord(blinkSlow('|| Paused') + '<br>⬤▶ Cont. Rec');
                 };
                 const setStopped = () => {
                     setHtmlOfButtonStop('◼<br>Stop');
