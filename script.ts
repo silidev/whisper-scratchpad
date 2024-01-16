@@ -63,30 +63,26 @@ namespace UiFunctions {
          * and color of the stop button and the pause record button. */
         export const update = () => {
           if (mediaRecorder?.state === 'recording') {
-            setRecording(sending);
+            setRecording();
           } else if (mediaRecorder?.state === 'paused') {
-            setPaused(sending);
+            setPaused();
           } else {
             setStopped();
           }
         }
-        const setRecording = (sendingParam: boolean) => {
-          setHtmlOfButtonStop(blinkFast('🔴') + (sendingParam
-              ? 'Sending<br>◼ Stop'
-              : '<br>◼ Stop'));
-          setHtmlOfButtonPauseRecord(blinkFast('🔴') + '<br>|| Pause');
+        const setRecording = () => {
+          setHtmlOfButtonStop('◼<br>Stop');
+          setHtmlOfButtonPauseRecord(blinkFast('🔴 Recording') + '<br>|| Pause');
         };
-        export const setPaused = (sendingParam: boolean = sending) => {
-          setHtmlOfButtonStop(blinkSlow('⬤ Paused') + (sendingParam
-              ? '<br>✎Scribing'
-              : '<br>◼ Stop'));
+        export const setPaused = () => {
+          setHtmlOfButtonStop('◼<br>Stop');
           setHtmlOfButtonPauseRecord(blinkSlow('⬤ Paused') +'<br>▶ Cont.');
         };
         const setStopped = () => {
-          setHtmlOfButtonStop(sending
-              ? blinkFast('✎ Scribing') + '<br>◼ Stop'
-              : '<br>◼ Stop');
-          setHtmlOfButtonPauseRecord('Stopped<br>⬤ Record');
+          setHtmlOfButtonStop('◼<br>Stop');
+          setHtmlOfButtonPauseRecord(sending
+              ? blinkFast('✎ Scribing') + '<br>⬤ Record'
+              : '<br>⬤ Record');
         };
         const setHtmlOfButtonStop = (html: string) => {
           buttonWithId("stopButton").innerHTML = html;

@@ -58,32 +58,28 @@ var UiFunctions;
                  * and color of the stop button and the pause record button. */
                 StateIndicator.update = () => {
                     if (mediaRecorder?.state === 'recording') {
-                        setRecording(sending);
+                        setRecording();
                     }
                     else if (mediaRecorder?.state === 'paused') {
-                        StateIndicator.setPaused(sending);
+                        StateIndicator.setPaused();
                     }
                     else {
                         setStopped();
                     }
                 };
-                const setRecording = (sendingParam) => {
-                    setHtmlOfButtonStop(blinkFast('🔴') + (sendingParam
-                        ? 'Sending<br>◼ Stop'
-                        : '<br>◼ Stop'));
-                    setHtmlOfButtonPauseRecord(blinkFast('🔴') + '<br>|| Pause');
+                const setRecording = () => {
+                    setHtmlOfButtonStop('◼<br>Stop');
+                    setHtmlOfButtonPauseRecord(blinkFast('🔴 Recording') + '<br>|| Pause');
                 };
-                StateIndicator.setPaused = (sendingParam = sending) => {
-                    setHtmlOfButtonStop(blinkSlow('⬤ Paused') + (sendingParam
-                        ? '<br>✎Scribing'
-                        : '<br>◼ Stop'));
+                StateIndicator.setPaused = () => {
+                    setHtmlOfButtonStop('◼<br>Stop');
                     setHtmlOfButtonPauseRecord(blinkSlow('⬤ Paused') + '<br>▶ Cont.');
                 };
                 const setStopped = () => {
-                    setHtmlOfButtonStop(sending
-                        ? blinkFast('✎ Scribing') + '<br>◼ Stop'
-                        : '<br>◼ Stop');
-                    setHtmlOfButtonPauseRecord('Stopped<br>⬤ Record');
+                    setHtmlOfButtonStop('◼<br>Stop');
+                    setHtmlOfButtonPauseRecord(sending
+                        ? blinkFast('✎ Scribing') + '<br>⬤ Record'
+                        : '<br>⬤ Record');
                 };
                 const setHtmlOfButtonStop = (html) => {
                     buttonWithId("stopButton").innerHTML = html;
