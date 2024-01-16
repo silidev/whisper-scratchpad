@@ -81,9 +81,9 @@ var UiFunctions;
                 };
                 const setStopped = () => {
                     setHtmlOfButtonStop(sending
-                        ? blinkFast('Sending') + '<br>◼ Stop'
-                        : 'Stopped<br>◼ Stop');
-                    setHtmlOfButtonPauseRecord('<br>⬤ Record');
+                        ? blinkFast('✎ Scribing') + '<br>◼ Stop'
+                        : '<br>◼ Stop');
+                    setHtmlOfButtonPauseRecord('Stopped<br>⬤ Record');
                 };
                 const setHtmlOfButtonStop = (html) => {
                     buttonWithId("stopButton").innerHTML = html;
