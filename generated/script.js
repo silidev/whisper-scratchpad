@@ -46,6 +46,7 @@ var UiFunctions;
     let Buttons;
     (function (Buttons) {
         var textAreaWithId = HtmlUtils.textAreaWithId;
+        var insertTextAtCursor = HtmlUtils.TextAreas.insertTextAtCursor;
         let Media;
         (function (Media) {
             let mediaRecorder;
@@ -304,6 +305,10 @@ var UiFunctions;
             // replaceAgainButton
             HtmlUtils.addButtonClickListener(buttonWithId("replaceAgainButton"), () => {
                 replaceAgainButton();
+            });
+            // ############## backslashButton ##############
+            HtmlUtils.addButtonClickListener(buttonWithId("backslashButton"), () => {
+                insertTextAtCursor(replaceRulesTextArea, "\\");
             });
             // ############## ctrlZButtons ##############
             const addCtrlZButtonEventListener = (ctrlZButtonId, textArea) => {

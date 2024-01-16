@@ -51,6 +51,7 @@ namespace UiFunctions {
   // noinspection SpellCheckingInspection
   export namespace Buttons {
     import textAreaWithId = HtmlUtils.textAreaWithId;
+    import insertTextAtCursor = HtmlUtils.TextAreas.insertTextAtCursor;
     export namespace Media {
       let mediaRecorder: MediaRecorder;
       let audioChunks = [];
@@ -335,6 +336,11 @@ namespace UiFunctions {
 // replaceAgainButton
       HtmlUtils.addButtonClickListener(buttonWithId("replaceAgainButton"), () => {
         replaceAgainButton();
+      });
+
+// ############## backslashButton ##############
+      HtmlUtils.addButtonClickListener(buttonWithId("backslashButton"), () => {
+        insertTextAtCursor(replaceRulesTextArea,"\\");
       });
 
 // ############## ctrlZButtons ##############

@@ -73,7 +73,8 @@ export namespace HtmlUtils {
       const textAfterSelection = textarea.value.substring(textarea.selectionEnd);
 
       textarea.value = textBeforeSelection + addedText + textAfterSelection;
-      setCursor(textarea, textarea.selectionStart + addedText.length);
+      textarea.focus();
+      setCursor(textarea, textBeforeSelection.length + addedText.length);
     };
   }
 
