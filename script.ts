@@ -354,7 +354,7 @@ namespace UiFunctions {
         // add TextArea.selectedText() to the start of the replaceRulesTextArea
         TextAreas.setCursor(replaceRulesTextArea, 0);
         const selectedText = TextAreas.selectedText(mainEditorTextarea);
-        TextAreas.insertTextAtCursor(replaceRulesTextArea, `"\\b${selectedText}\\b"gm->"${selectedText}"\n`);
+        TextAreas.insertTextAtCursor(replaceRulesTextArea, `"\\b${escapeRegExp(selectedText)}\\b"gm->"${selectedText}"\n`);
         TextAreas.setCursor(replaceRulesTextArea, 12 + selectedText.length);
         replaceRulesTextArea.focus();
       };
