@@ -29,6 +29,7 @@
     <wc-menu-wrapper>
       <!-- https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper -->
       <div id="editorMenuHeading" class='heading'>☰</div>
+      <div class='item'><button id="toggleLogButton">Show<br>Log</button></div>
       <div class='item'>
         <a id="du2ichMenuItem">du2ich</a>
       </div>
@@ -77,7 +78,6 @@
     </div>
   </info-button></button>
   <button id="addReplaceRuleButton"><span style="font-size: 16px">""->""</span></button>
-  <button id="toggleLogButton" style="">🗎<br>Log</button>
   <button id="cancelButton" style="">x<br>Cancel</button>
   <button id="transcribeButton">✎ <br>T-scribe</button>
 </div>
@@ -124,8 +124,10 @@
       <button id="copyReplaceRulesButton">⎘<br>Copy</button>
       <button id="ctrlZButtonOfReplaceRules">⎌<br>Ctrl-z</button>
 <!--        checkbox-->
-      <input type="checkbox" id="logReplaceRulesCheckbox">
-      <label for="logReplaceRulesCheckbox">Log</label>
+      <span style="display: flex; align-items: center; border: 1px solid var(--myGreen)">
+        <input type="checkbox" id="logReplaceRulesCheckbox" style="margin-right: 8px" class="greenFilter">
+        <label for="logReplaceRulesCheckbox">Log</label>
+      </span>
     </span>
   </span>
 <!--  <div class="mainEditorTextareaContainer">-->

@@ -139,7 +139,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
   }
 
   export const replaceByRulesAsString = (subject: string, allRules: string) => {
-    return replaceByRules(subject, allRules, false, false) as string;
+    return replaceByRules(subject, allRules, false, false).resultingText;
   }
 
   /**
@@ -163,8 +163,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
       let regex = regexFlags.length == 0 ?
           new RegExp(target, 'gm') // Noted that gm flags are basically necessary for this plugin to be useful, you seldom want to replace only 1 occurrence or operate on a note only contains 1 line.
           : new RegExp(target, regexFlags);
-      if (subject.search(regex) !== -1) {
-        // A match was found
+      if (logReplacements && subject.search(regex) !== -1) {
         log += `${count} ${rule}\n`;
       }
       if (replacementFlags == 'x')
@@ -173,13 +172,10 @@ Please note that certain strong accents can possibly cause this mode to transcri
         subject = subject.replace(regex, replacement);
       count++;
     }
-    if (logReplacements) {
-      return {
-        result: subject,
-        log: log
-      };
-    }
-    return subject;
+    return {
+      resultingText: subject,
+      log: log
+    };
   }
 
   export const memoize = <T, R>(func: (...args: T[]) => R): (...args: T[]) => R => {

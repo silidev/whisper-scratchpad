@@ -15,7 +15,7 @@ const VERSION = "Florida";
 
 namespace Pures {
   // noinspection SpellCheckingInspection
-  export const du2ich = (input: string) => HelgeUtils.replaceByRules(HelgeUtils.replaceByRules(input
+  export const du2ich = (input: string) => HelgeUtils.replaceByRulesAsString(HelgeUtils.replaceByRulesAsString(input
           , `
 "st\\b"->""
 `) as string
@@ -32,7 +32,7 @@ namespace Pures {
 "hast"->"habe"
 "I"->"Ist"
 "i"->"ist"
-`, true) as string;
+`) as string;
 }
 
 namespace Functions {
@@ -40,7 +40,7 @@ namespace Functions {
     const selectionStart = mainEditorTextarea.selectionStart;
     const selectionEnd = mainEditorTextarea.selectionEnd;
 
-    mainEditorTextarea.value = replaceWithNormalParameters(mainEditorTextarea.value) as string;
+    mainEditorTextarea.value = replaceWithNormalParameters(mainEditorTextarea.value);
 
     mainEditorTextarea.selectionStart = selectionStart;
     mainEditorTextarea.selectionEnd = selectionEnd;
@@ -502,19 +502,24 @@ namespace Log {
   export const addToggleLogButtonClickListener =
       (textAreaWithId: (id: string) => (HTMLTextAreaElement | null)) => {
     HtmlUtils.addButtonClickListener(buttonWithId("toggleLogButton"), () => {
+      UiFunctions.closeEditorMenu();
       const log = textAreaWithId("logTextArea");
       if (log.style.display === "none") {
         log.style.display = "block";
+        inputElementWithId("logReplaceRulesCheckbox").checked = true;
       } else {
         log.style.display = "none";
+        inputElementWithId("logReplaceRulesCheckbox").checked = false;
       }
     });
   };
 }
 
 const replaceWithNormalParameters = (subject: string) => {
-  return HelgeUtils.replaceByRules(subject, replaceRulesTextArea.value,false
-      ,inputElementWithId("logReplaceRulesCheckbox").checked);
+  const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked;
+  const retVal = HelgeUtils.replaceByRules(subject, replaceRulesTextArea.value, false, logFlag);
+  Log.write(retVal.log);
+  return retVal.resultingText;
 };
 
 const getApiKey = () => HtmlUtils.Cookies.get(apiSelector.value + 'ApiKey');

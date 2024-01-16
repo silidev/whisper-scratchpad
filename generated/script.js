@@ -13,7 +13,7 @@ const VERSION = "Florida";
 var Pures;
 (function (Pures) {
     // noinspection SpellCheckingInspection
-    Pures.du2ich = (input) => HelgeUtils.replaceByRules(HelgeUtils.replaceByRules(input, `
+    Pures.du2ich = (input) => HelgeUtils.replaceByRulesAsString(HelgeUtils.replaceByRulesAsString(input, `
 "st\\b"->""
 `), `
 "Du"->"Ich"
@@ -28,7 +28,7 @@ var Pures;
 "hast"->"habe"
 "I"->"Ist"
 "i"->"ist"
-`, true);
+`);
 })(Pures || (Pures = {}));
 var Functions;
 (function (Functions) {
@@ -443,18 +443,24 @@ var Log;
     };
     Log.addToggleLogButtonClickListener = (textAreaWithId) => {
         HtmlUtils.addButtonClickListener(buttonWithId("toggleLogButton"), () => {
+            UiFunctions.closeEditorMenu();
             const log = textAreaWithId("logTextArea");
             if (log.style.display === "none") {
                 log.style.display = "block";
+                inputElementWithId("logReplaceRulesCheckbox").checked = true;
             }
             else {
                 log.style.display = "none";
+                inputElementWithId("logReplaceRulesCheckbox").checked = false;
             }
         });
     };
 })(Log || (Log = {}));
 const replaceWithNormalParameters = (subject) => {
-    return HelgeUtils.replaceByRules(subject, replaceRulesTextArea.value, false, inputElementWithId("logReplaceRulesCheckbox").checked);
+    const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked;
+    const retVal = HelgeUtils.replaceByRules(subject, replaceRulesTextArea.value, false, logFlag);
+    Log.write(retVal.log);
+    return retVal.resultingText;
 };
 const getApiKey = () => HtmlUtils.Cookies.get(apiSelector.value + 'ApiKey');
 const setApiKeyCookie = (apiKey) => {

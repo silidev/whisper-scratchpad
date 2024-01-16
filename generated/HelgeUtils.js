@@ -129,7 +129,7 @@ export var HelgeUtils;
         };
     })(Transcription = HelgeUtils.Transcription || (HelgeUtils.Transcription = {}));
     HelgeUtils.replaceByRulesAsString = (subject, allRules) => {
-        return HelgeUtils.replaceByRules(subject, allRules, false, false);
+        return HelgeUtils.replaceByRules(subject, allRules, false, false).resultingText;
     };
     /**
      * Do NOT change the syntax of the rules, because they must be kept compatible with https://github.com/No3371/obsidian-regex-pipeline#readme
@@ -149,8 +149,7 @@ export var HelgeUtils;
             let regex = regexFlags.length == 0 ?
                 new RegExp(target, 'gm') // Noted that gm flags are basically necessary for this plugin to be useful, you seldom want to replace only 1 occurrence or operate on a note only contains 1 line.
                 : new RegExp(target, regexFlags);
-            if (subject.search(regex) !== -1) {
-                // A match was found
+            if (logReplacements && subject.search(regex) !== -1) {
                 log += `${count} ${rule}\n`;
             }
             if (replacementFlags == 'x')
@@ -159,13 +158,10 @@ export var HelgeUtils;
                 subject = subject.replace(regex, replacement);
             count++;
         }
-        if (logReplacements) {
-            return {
-                result: subject,
-                log: log
-            };
-        }
-        return subject;
+        return {
+            resultingText: subject,
+            log: log
+        };
     };
     HelgeUtils.memoize = (func) => {
         const cache = new Map();
