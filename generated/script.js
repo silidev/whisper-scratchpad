@@ -6,8 +6,10 @@ var blinkFast = HtmlUtils.blinkFast;
 var blinkSlow = HtmlUtils.blinkSlow;
 var inputElementWithId = HtmlUtils.inputElementWithId;
 var escapeRegExp = HelgeUtils.Strings.escapeRegExp;
+var elementWithId = HtmlUtils.elementWithId;
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
+const VERSION = "Florida";
 var Pures;
 (function (Pures) {
     // noinspection SpellCheckingInspection
@@ -138,7 +140,7 @@ var UiFunctions;
                 }
                 catch (error) {
                     if (error instanceof HelgeUtils.Transcription.TranscriptionError) {
-                        Log.log(JSON.stringify(error.payload, null, 2));
+                        Log.write(JSON.stringify(error.payload, null, 2));
                         Log.showLog();
                     }
                     else {
@@ -383,7 +385,7 @@ var UiFunctions;
     UiFunctions.replaceRulesTextAreaOnInput = () => {
         // noinspection SpellCheckingInspection
         const magicText = (numberToMakeItUnique) => {
-            return `Das hier ist ein ziemlich langer ganz normaler Text an, dem die Rules nichts verändern sollten! Dadurch failen auch Rules wie z. B. "e"->"a" und das ist auch gut so.`
+            return `Das hier ist ein ziemlich langer ganz normaler Text, an dem die Rules nichts verändern sollten! Dadurch failen auch Rules. und das ist auch gut so.`
                 + numberToMakeItUnique;
         };
         const createTestRule = (numberToMakeItUnique) => `\n\n"${escapeRegExp(magicText(numberToMakeItUnique))}"gm->""\n\n`;
@@ -391,6 +393,7 @@ var UiFunctions;
             + replaceRulesTextArea.value
             + createTestRule(2);
         const replaceResult = HelgeUtils.replaceByRulesAsString(magicText(1) + magicText(2), testRules);
+        Log.write(replaceResult);
         buttonWithId("testFailIndicatorOfReplaceRules").style.display =
             replaceResult === ''
                 ? "none" : "block";
@@ -427,7 +430,9 @@ var Log;
 (function (Log) {
     var textAreaWithId = HtmlUtils.textAreaWithId;
     const MAX_LOG_LEN = 1000;
-    Log.log = (message) => {
+    Log.write = (message) => {
+        if (!inputElementWithId("logReplaceRulesCheckbox").checked)
+            return;
         const logTextArea = textAreaWithId("logTextArea");
         const oldLog = logTextArea.value;
         logTextArea.value = (oldLog + "\n" + message).slice(-MAX_LOG_LEN);
@@ -476,6 +481,7 @@ const init = () => {
     UiFunctions.Buttons.addButtonEventListeners();
     registerServiceWorker();
     loadFormData();
+    elementWithId("versionSpan").innerHTML = VERSION;
 };
 init();
 //# sourceMappingURL=script.js.map
