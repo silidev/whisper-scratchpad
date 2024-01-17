@@ -340,9 +340,11 @@ var UiFunctions;
                 // add TextArea.selectedText() to the start of the replaceRulesTextArea
                 TextAreas.setCursor(replaceRulesTextArea, 0);
                 const selectedText = TextAreas.selectedText(mainEditorTextarea);
-                TextAreas.insertTextAtCursor(replaceRulesTextArea, `"\\b${escapeRegExp(selectedText)}\\b"gm->"${selectedText}"\n`);
-                TextAreas.setCursor(replaceRulesTextArea, 12 + selectedText.length);
-                replaceRulesTextArea.focus();
+                const insertedString = `"\\b${escapeRegExp(selectedText)}\\b"gm->"${selectedText}"\n`;
+                TextAreas.insertTextAtCursor(replaceRulesTextArea, insertedString);
+                replaceRulesTextArea.selectionStart = 0;
+                replaceRulesTextArea.selectionEnd = insertedString.length; // was, delete on day: setCursor(12 + selectedText.length);
+                // replaceRulesTextArea.focus(); // Taken out b/c this jumps way too much down on mobile.
             };
             HtmlUtils.addButtonClickListener(buttonWithId("addReplaceRuleButton"), addReplaceRule);
             function cancelButton() {
