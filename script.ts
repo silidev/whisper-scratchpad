@@ -15,23 +15,23 @@ const VERSION = "Florida";
 
 namespace Pures {
   // noinspection SpellCheckingInspection
-  export const du2ich = (input: string) => replaceByRulesWithUiLog(replaceByRulesWithUiLog(input
+  export const du2ich = (input: string) => replaceByRulesWithUiLog(`
+  "Du"->"Ich"
+  "du"->"ich"
+  "dich"->"mich"
+  "Dich"->"Mich"
+  "dir"->"mir"
+  "Dir"->"Mir"
+  "dein"->"mein"
+  "Dein"->"Mein"
+  "bist"->"bin"
+  "hast"->"habe"
+  "I"->"Ist"
+  "i"->"ist"
+  `, replaceByRulesWithUiLog(input
       , `
 "st\\b"->""
-`) as string, `
-"Du"->"Ich"
-"du"->"ich"
-"dich"->"mich"
-"Dich"->"Mich"
-"dir"->"mir"
-"Dir"->"Mir"
-"dein"->"mein"
-"Dein"->"Mein"
-"bist"->"bin"
-"hast"->"habe"
-"I"->"Ist"
-"i"->"ist"
-`, true);
+`) as string, true);
 }
 
 namespace Functions {
@@ -39,7 +39,7 @@ namespace Functions {
     const selectionStart = mainEditorTextarea.selectionStart;
     const selectionEnd = mainEditorTextarea.selectionEnd;
 
-    mainEditorTextarea.value = replaceByRulesWithUiLog(mainEditorTextarea.value, replaceRulesTextArea.value, false);
+    mainEditorTextarea.value = replaceByRulesWithUiLog(replaceRulesTextArea.value, mainEditorTextarea.value, false);
 
     mainEditorTextarea.selectionStart = selectionStart;
     mainEditorTextarea.selectionEnd = selectionEnd;
@@ -446,7 +446,7 @@ namespace UiFunctions {
         createTestRule(1)
         + replaceRulesTextArea.value
         + createTestRule(2);
-    const replaceResult = replaceByRulesWithUiLog(magicText(1)+magicText(2), testRules);
+    const replaceResult = replaceByRulesWithUiLog(testRules, magicText(1) + magicText(2));
     buttonWithId("testFailIndicatorOfReplaceRules").style.display =
         replaceResult===''
             ? "none" : "block";
@@ -522,7 +522,7 @@ namespace Log {
   };
 }
 
-const replaceByRulesWithUiLog = (subject: string, rules: string, wholeWords: boolean = false) => {
+const replaceByRulesWithUiLog = (rules: string, subject: string, wholeWords: boolean = false) => {
   const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked;
   const retVal = HelgeUtils.replaceByRules(subject, rules, wholeWords, logFlag);
   Log.write(retVal.log);

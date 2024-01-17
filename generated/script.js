@@ -13,29 +13,29 @@ const VERSION = "Florida";
 var Pures;
 (function (Pures) {
     // noinspection SpellCheckingInspection
-    Pures.du2ich = (input) => replaceByRulesWithUiLog(replaceByRulesWithUiLog(input, `
+    Pures.du2ich = (input) => replaceByRulesWithUiLog(`
+  "Du"->"Ich"
+  "du"->"ich"
+  "dich"->"mich"
+  "Dich"->"Mich"
+  "dir"->"mir"
+  "Dir"->"Mir"
+  "dein"->"mein"
+  "Dein"->"Mein"
+  "bist"->"bin"
+  "hast"->"habe"
+  "I"->"Ist"
+  "i"->"ist"
+  `, replaceByRulesWithUiLog(input, `
 "st\\b"->""
-`), `
-"Du"->"Ich"
-"du"->"ich"
-"dich"->"mich"
-"Dich"->"Mich"
-"dir"->"mir"
-"Dir"->"Mir"
-"dein"->"mein"
-"Dein"->"Mein"
-"bist"->"bin"
-"hast"->"habe"
-"I"->"Ist"
-"i"->"ist"
-`, true);
+`), true);
 })(Pures || (Pures = {}));
 var Functions;
 (function (Functions) {
     Functions.applyReplaceRulesToMainEditor = () => {
         const selectionStart = mainEditorTextarea.selectionStart;
         const selectionEnd = mainEditorTextarea.selectionEnd;
-        mainEditorTextarea.value = replaceByRulesWithUiLog(mainEditorTextarea.value, replaceRulesTextArea.value, false);
+        mainEditorTextarea.value = replaceByRulesWithUiLog(replaceRulesTextArea.value, mainEditorTextarea.value, false);
         mainEditorTextarea.selectionStart = selectionStart;
         mainEditorTextarea.selectionEnd = selectionEnd;
     };
@@ -397,7 +397,7 @@ var UiFunctions;
         const testRules = createTestRule(1)
             + replaceRulesTextArea.value
             + createTestRule(2);
-        const replaceResult = replaceByRulesWithUiLog(magicText(1) + magicText(2), testRules);
+        const replaceResult = replaceByRulesWithUiLog(testRules, magicText(1) + magicText(2));
         buttonWithId("testFailIndicatorOfReplaceRules").style.display =
             replaceResult === ''
                 ? "none" : "block";
@@ -461,7 +461,7 @@ var Log;
         });
     };
 })(Log || (Log = {}));
-const replaceByRulesWithUiLog = (subject, rules, wholeWords = false) => {
+const replaceByRulesWithUiLog = (rules, subject, wholeWords = false) => {
     const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked;
     const retVal = HelgeUtils.replaceByRules(subject, rules, wholeWords, logFlag);
     Log.write(retVal.log);
