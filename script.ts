@@ -8,6 +8,7 @@ import blinkSlow = HtmlUtils.blinkSlow;
 import inputElementWithId = HtmlUtils.inputElementWithId;
 import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 import elementWithId = HtmlUtils.elementWithId;
+import replaceByRules = HelgeUtils.replaceByRules;
 
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
@@ -15,11 +16,10 @@ const VERSION = "Florida";
 
 namespace Pures {
   // noinspection SpellCheckingInspection
-  export const du2ich = (input: string) => HelgeUtils.replaceByRulesAsString(HelgeUtils.replaceByRulesAsString(input
-          , `
-"st\\b"->""
-`) as string
+  export const du2ich = (input: string) => replaceByRules(HelgeUtils.replaceByRulesAsString(input
       , `
+"st\\b"->""
+`) as string, `
 "Du"->"Ich"
 "du"->"ich"
 "dich"->"mich"
@@ -32,7 +32,7 @@ namespace Pures {
 "hast"->"habe"
 "I"->"Ist"
 "i"->"ist"
-`) as string;
+`, true, false).resultingText as string;
 }
 
 namespace Functions {
@@ -40,7 +40,7 @@ namespace Functions {
     const selectionStart = mainEditorTextarea.selectionStart;
     const selectionEnd = mainEditorTextarea.selectionEnd;
 
-    mainEditorTextarea.value = replaceWithNormalParameters(mainEditorTextarea.value);
+    mainEditorTextarea.value = replaceByRulesAndLog(mainEditorTextarea.value, replaceRulesTextArea.value, false);
 
     mainEditorTextarea.selectionStart = selectionStart;
     mainEditorTextarea.selectionEnd = selectionEnd;
@@ -297,11 +297,12 @@ namespace UiFunctions {
 
 // ############## Du2Ich Menu Item ##############
       function du2ichMenuItem() {
+        UiFunctions.closeEditorMenu();
+
         const value = Pures.du2ich(mainEditorTextarea.value);
         console.log(value);
         mainEditorTextarea.value = value;
         saveEditor();
-        UiFunctions.closeEditorMenu();
       }
       HtmlUtils.addButtonClickListener(buttonWithId("du2ichMenuItem"), () => {
         du2ichMenuItem();
@@ -521,9 +522,9 @@ namespace Log {
   };
 }
 
-const replaceWithNormalParameters = (subject: string) => {
+const replaceByRulesAndLog = (subject: string, rules: string, wholeWords: boolean = false) => {
   const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked;
-  const retVal = HelgeUtils.replaceByRules(subject, replaceRulesTextArea.value, false, logFlag);
+  const retVal = HelgeUtils.replaceByRules(subject, rules, wholeWords, logFlag);
   Log.write(retVal.log);
   return retVal.resultingText;
 };
