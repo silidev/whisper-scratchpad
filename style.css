@@ -36,11 +36,6 @@ a {
  color: var(--myGreen);
 }
 
-.flexRight {
- display: flex;
- justify-content: flex-end;
-}
-
 .flexRightAndWrapContent {
  display: flex;
  flex-wrap: wrap;
@@ -116,16 +111,6 @@ input::placeholder, textarea::placeholder {
  filter: grayscale(100%) sepia(1) hue-rotate(90deg) brightness(0.5) saturate(10);
 }
 
-.clearfix::after {
- content: "";
- clear: both;
- display: table;
-}
-
-.hidden {
- display: none;
-}
-
 textarea {
  width: 100%;
  resize: vertical;
@@ -157,10 +142,6 @@ textarea {
  .mainEditorTextareaContainer {
   width: 100%
  }
-}
-
-.negativeRightMargin {
- margin-right: -15px;
 }
 
 .item, .heading {

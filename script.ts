@@ -1,3 +1,4 @@
+import {DontInspect} from "./DontInspect.js";
 import {HtmlUtils} from "./HtmlUtils.js";
 import {HelgeUtils} from "./HelgeUtils.js";
 
@@ -8,6 +9,7 @@ import blinkSlow = HtmlUtils.blinkSlow;
 import inputElementWithId = HtmlUtils.inputElementWithId;
 import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 import elementWithId = HtmlUtils.elementWithId;
+import sendCtrlZ = DontInspect.sendCtrlZ;
 
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
@@ -361,8 +363,7 @@ namespace UiFunctions {
       const addCtrlZButtonEventListener = (ctrlZButtonId: string, textArea: HTMLTextAreaElement) => {
         HtmlUtils.addButtonClickListener(buttonWithId(ctrlZButtonId), () => {
           textArea.focus();
-          //@ts-ignore
-          document.execCommand('undo'); //TODOhStu: Move this to a file which I take out of the scope of inspections.  // Yes, deprecated, but works. I will replace it when it fails. Docs: https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
+          sendCtrlZ();
         });
       };
 
