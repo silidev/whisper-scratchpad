@@ -335,18 +335,7 @@ var UiFunctions;
             };
             addCtrlZButtonEventListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea);
             addCtrlZButtonEventListener("ctrlZButtonOfPrompt", transcriptionPromptEditor);
-            // addReplaceRuleButton
-            const addReplaceRule = () => {
-                // add TextArea.selectedText() to the start of the replaceRulesTextArea
-                TextAreas.setCursor(replaceRulesTextArea, 0);
-                const selectedText = TextAreas.selectedText(mainEditorTextarea);
-                const insertedString = `"\\b${escapeRegExp(selectedText)}\\b"gm->"${selectedText}"\n`;
-                TextAreas.insertTextAtCursor(replaceRulesTextArea, insertedString);
-                replaceRulesTextArea.selectionStart = 0;
-                replaceRulesTextArea.selectionEnd = insertedString.length; // was, delete on day: setCursor(12 + selectedText.length);
-                // replaceRulesTextArea.focus(); // Taken out b/c this jumps way too much down on mobile.
-            };
-            HtmlUtils.addButtonClickListener(buttonWithId("addReplaceRuleButton"), addReplaceRule);
+            HtmlUtils.addButtonClickListener(buttonWithId("addReplaceRuleButton"), Buttons.addReplaceRule);
             function cancelButton() {
                 saveEditor();
                 window.location.reload();
@@ -398,6 +387,17 @@ var UiFunctions;
             apiSelector.addEventListener('change', () => {
                 HtmlUtils.Cookies.set('apiSelector', apiSelector.value);
             });
+        };
+        // addReplaceRuleButton
+        Buttons.addReplaceRule = () => {
+            // add TextArea.selectedText() to the start of the replaceRulesTextArea
+            TextAreas.setCursor(replaceRulesTextArea, 0);
+            const selectedText = TextAreas.selectedText(mainEditorTextarea);
+            const insertedString = `"\\b${escapeRegExp(selectedText)}\\b"gm->"${selectedText}"\n`;
+            TextAreas.insertTextAtCursor(replaceRulesTextArea, insertedString);
+            replaceRulesTextArea.selectionStart = 0;
+            replaceRulesTextArea.selectionEnd = insertedString.length; // was, delete on day: setCursor(12 + selectedText.length);
+            // replaceRulesTextArea.focus(); // Taken out b/c this jumps way too much down on mobile.
         };
     })(Buttons = UiFunctions.Buttons || (UiFunctions.Buttons = {}));
     var elementWithId = HtmlUtils.elementWithId;

@@ -369,17 +369,6 @@ namespace UiFunctions {
       addCtrlZButtonEventListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea);
       addCtrlZButtonEventListener("ctrlZButtonOfPrompt", transcriptionPromptEditor);
 
-      // addReplaceRuleButton
-      const addReplaceRule = () => {
-        // add TextArea.selectedText() to the start of the replaceRulesTextArea
-        TextAreas.setCursor(replaceRulesTextArea, 0);
-        const selectedText = TextAreas.selectedText(mainEditorTextarea);
-        const insertedString = `"\\b${escapeRegExp(selectedText)}\\b"gm->"${selectedText}"\n`;
-        TextAreas.insertTextAtCursor(replaceRulesTextArea, insertedString);
-        replaceRulesTextArea.selectionStart = 0;
-        replaceRulesTextArea.selectionEnd = insertedString.length; // was, delete on day: setCursor(12 + selectedText.length);
-        // replaceRulesTextArea.focus(); // Taken out b/c this jumps way too much down on mobile.
-      };
       HtmlUtils.addButtonClickListener(buttonWithId("addReplaceRuleButton"), addReplaceRule);
 
       function cancelButton() {
@@ -441,6 +430,17 @@ namespace UiFunctions {
         HtmlUtils.Cookies.set('apiSelector', apiSelector.value);
       });
     }
+    // addReplaceRuleButton
+    export const addReplaceRule = () => {
+      // add TextArea.selectedText() to the start of the replaceRulesTextArea
+      TextAreas.setCursor(replaceRulesTextArea, 0);
+      const selectedText = TextAreas.selectedText(mainEditorTextarea);
+      const insertedString = `"\\b${escapeRegExp(selectedText)}\\b"gm->"${selectedText}"\n`;
+      TextAreas.insertTextAtCursor(replaceRulesTextArea, insertedString);
+      replaceRulesTextArea.selectionStart = 0;
+      replaceRulesTextArea.selectionEnd = insertedString.length; // was, delete on day: setCursor(12 + selectedText.length);
+      // replaceRulesTextArea.focus(); // Taken out b/c this jumps way too much down on mobile.
+    };
   }
 
 

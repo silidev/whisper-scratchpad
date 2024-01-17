@@ -57,6 +57,7 @@ export var HtmlUtils;
                 return;
             const textBeforeSelection = textarea.value.substring(0, textarea.selectionStart);
             const textAfterSelection = textarea.value.substring(textarea.selectionEnd);
+            TextAreas.setCursor(textarea, 0);
             textarea.value = textBeforeSelection + addedText + textAfterSelection;
             TextAreas.setCursor(textarea, textBeforeSelection.length + addedText.length);
             textarea.focus();
