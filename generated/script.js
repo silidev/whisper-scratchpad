@@ -16,7 +16,7 @@ var Pures;
     Pures.du2ich = (input) => {
         const rules1 = `
 "\\berst\\b"=>"ö(erst)ö"
-:: Bug: The following does not work:
+:: Bug: The following does not work: //TODOh
 "st\\b"->""
 `;
         const rules2 = `
@@ -34,8 +34,8 @@ var Pures;
 "i"->"ist"
 "ö\\(erst\\)ö"->"erst"
 `;
-        const applyRules1 = (input) => replaceByRulesWithUiLog(rules1, input);
-        const applyRules2 = (input) => replaceByRulesWithUiLog(rules2, input, true);
+        const applyRules1 = (input) => ReplaceByRules.withUiLog(rules1, input);
+        const applyRules2 = (input) => ReplaceByRules.onlyWholeWordsWithUiLog(rules2, input);
         return applyRules2(applyRules1(input));
     };
 })(Pures || (Pures = {}));
@@ -44,7 +44,7 @@ var Functions;
     Functions.applyReplaceRulesToMainEditor = () => {
         const selectionStart = mainEditorTextarea.selectionStart;
         const selectionEnd = mainEditorTextarea.selectionEnd;
-        mainEditorTextarea.value = replaceByRulesWithUiLog(replaceRulesTextArea.value, mainEditorTextarea.value, false);
+        mainEditorTextarea.value = ReplaceByRules.withUiLog(replaceRulesTextArea.value, mainEditorTextarea.value, false);
         mainEditorTextarea.selectionStart = selectionStart;
         mainEditorTextarea.selectionEnd = selectionEnd;
     };
@@ -406,7 +406,7 @@ var UiFunctions;
         const testRules = createTestRule(1)
             + replaceRulesTextArea.value
             + createTestRule(2);
-        const replaceResult = replaceByRulesWithUiLog(testRules, magicText(1) + magicText(2));
+        const replaceResult = ReplaceByRules.withUiLog(testRules, magicText(1) + magicText(2));
         buttonWithId("testFailIndicatorOfReplaceRules").style.display =
             replaceResult === ''
                 ? "none" : "block";
@@ -470,12 +470,20 @@ var Log;
         });
     };
 })(Log || (Log = {}));
-const replaceByRulesWithUiLog = (rules, subject, wholeWords = false) => {
-    const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked;
-    const retVal = HelgeUtils.replaceByRules(subject, rules, wholeWords, logFlag);
-    Log.write(retVal.log);
-    return retVal.resultingText;
-};
+var ReplaceByRules;
+(function (ReplaceByRules) {
+    function withUiLog(rules, subject, wholeWords = false) {
+        const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked;
+        const retVal = HelgeUtils.replaceByRules(subject, rules, wholeWords, logFlag);
+        Log.write(retVal.log);
+        return retVal.resultingText;
+    }
+    ReplaceByRules.withUiLog = withUiLog;
+    function onlyWholeWordsWithUiLog(rules, subject) {
+        return withUiLog(rules, subject, true);
+    }
+    ReplaceByRules.onlyWholeWordsWithUiLog = onlyWholeWordsWithUiLog;
+})(ReplaceByRules || (ReplaceByRules = {}));
 const getApiKey = () => HtmlUtils.Cookies.get(apiSelector.value + 'ApiKey');
 const setApiKeyCookie = (apiKey) => {
     HtmlUtils.Cookies.set(apiSelector.value + 'ApiKey', apiKey);
