@@ -1,4 +1,4 @@
-import { DontInspect } from "./DontInspect.js";
+import { sendCtrlZ } from "./DontInspect.js";
 import { HtmlUtils } from "./HtmlUtils.js";
 import { HelgeUtils } from "./HelgeUtils.js";
 var TextAreas = HtmlUtils.TextAreas;
@@ -8,7 +8,6 @@ var blinkSlow = HtmlUtils.blinkSlow;
 var inputElementWithId = HtmlUtils.inputElementWithId;
 var escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 var elementWithId = HtmlUtils.elementWithId;
-var sendCtrlZ = DontInspect.sendCtrlZ;
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
 const VERSION = "Florida";

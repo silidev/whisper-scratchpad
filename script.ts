@@ -1,4 +1,4 @@
-import {DontInspect} from "./DontInspect.js";
+import {sendCtrlZ} from "./DontInspect.js";
 import {HtmlUtils} from "./HtmlUtils.js";
 import {HelgeUtils} from "./HelgeUtils.js";
 
@@ -9,7 +9,7 @@ import blinkSlow = HtmlUtils.blinkSlow;
 import inputElementWithId = HtmlUtils.inputElementWithId;
 import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 import elementWithId = HtmlUtils.elementWithId;
-import sendCtrlZ = DontInspect.sendCtrlZ;
+
 
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
