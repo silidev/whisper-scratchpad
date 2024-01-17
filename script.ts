@@ -10,7 +10,6 @@ import inputElementWithId = HtmlUtils.inputElementWithId;
 import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 import elementWithId = HtmlUtils.elementWithId;
 
-
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
 const VERSION = "Florida";
