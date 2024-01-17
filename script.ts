@@ -8,7 +8,6 @@ import blinkSlow = HtmlUtils.blinkSlow;
 import inputElementWithId = HtmlUtils.inputElementWithId;
 import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 import elementWithId = HtmlUtils.elementWithId;
-import replaceByRules = HelgeUtils.replaceByRules;
 
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
@@ -16,7 +15,7 @@ const VERSION = "Florida";
 
 namespace Pures {
   // noinspection SpellCheckingInspection
-  export const du2ich = (input: string) => replaceByRules(HelgeUtils.replaceByRulesAsString(input
+  export const du2ich = (input: string) => replaceByRulesWithUiLog(replaceByRulesWithUiLog(input
       , `
 "st\\b"->""
 `) as string, `
@@ -32,7 +31,7 @@ namespace Pures {
 "hast"->"habe"
 "I"->"Ist"
 "i"->"ist"
-`, true, false).resultingText as string;
+`, true);
 }
 
 namespace Functions {
@@ -40,7 +39,7 @@ namespace Functions {
     const selectionStart = mainEditorTextarea.selectionStart;
     const selectionEnd = mainEditorTextarea.selectionEnd;
 
-    mainEditorTextarea.value = replaceByRulesAndLog(mainEditorTextarea.value, replaceRulesTextArea.value, false);
+    mainEditorTextarea.value = replaceByRulesWithUiLog(mainEditorTextarea.value, replaceRulesTextArea.value, false);
 
     mainEditorTextarea.selectionStart = selectionStart;
     mainEditorTextarea.selectionEnd = selectionEnd;
@@ -349,7 +348,7 @@ namespace UiFunctions {
         HtmlUtils.addButtonClickListener(buttonWithId(ctrlZButtonId), () => {
           textArea.focus();
           //@ts-ignore
-          document.execCommand('undo'); // Yes, deprecated, but works. I will replace it when it fails. Docs: https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
+          document.execCommand('undo'); //TODOhStu: Move this to a file which I take out of the scope of inspections.  // Yes, deprecated, but works. I will replace it when it fails. Docs: https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
         });
       };
 
@@ -435,11 +434,11 @@ namespace UiFunctions {
     elementWithId("editorMenuHeading").dispatchEvent(new CustomEvent('rootMenuClose'));
   };
 
-  export const replaceRulesTextAreaOnInput = () => {
+  const replaceRulesTest = () => {
     // noinspection SpellCheckingInspection
     const magicText = (numberToMakeItUnique: number) => {
-      return `Das hier ist ein ziemlich langer ganz normaler Text, an dem die Rules nichts verändern sollten! Dadurch failen auch Rules. und das ist auch gut so.`
-      + numberToMakeItUnique;
+      return `Das hier ist ein ziemlich langer ganz normaler Text, an dem die Rules nichts verändern sollten! Dadurch fail'en auch Rules. und das ist auch gut so.`
+          + numberToMakeItUnique;
     }
 
     const createTestRule = (numberToMakeItUnique: number) => `\n\n"${escapeRegExp(magicText(numberToMakeItUnique))}"gm->""\n\n`;
@@ -447,12 +446,13 @@ namespace UiFunctions {
         createTestRule(1)
         + replaceRulesTextArea.value
         + createTestRule(2);
-    const replaceResult = HelgeUtils.replaceByRulesAsString(magicText(1)+magicText(2), testRules);
-    Log.write(replaceResult);
+    const replaceResult = replaceByRulesWithUiLog(magicText(1)+magicText(2), testRules);
     buttonWithId("testFailIndicatorOfReplaceRules").style.display =
         replaceResult===''
             ? "none" : "block";
   };
+
+  export const replaceRulesTextAreaOnInput = () => replaceRulesTest;
 }
 
 
@@ -522,7 +522,7 @@ namespace Log {
   };
 }
 
-const replaceByRulesAndLog = (subject: string, rules: string, wholeWords: boolean = false) => {
+const replaceByRulesWithUiLog = (subject: string, rules: string, wholeWords: boolean = false) => {
   const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked;
   const retVal = HelgeUtils.replaceByRules(subject, rules, wholeWords, logFlag);
   Log.write(retVal.log);

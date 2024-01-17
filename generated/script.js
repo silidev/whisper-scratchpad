@@ -7,14 +7,13 @@ var blinkSlow = HtmlUtils.blinkSlow;
 var inputElementWithId = HtmlUtils.inputElementWithId;
 var escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 var elementWithId = HtmlUtils.elementWithId;
-var replaceByRules = HelgeUtils.replaceByRules;
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
 const VERSION = "Florida";
 var Pures;
 (function (Pures) {
     // noinspection SpellCheckingInspection
-    Pures.du2ich = (input) => replaceByRules(HelgeUtils.replaceByRulesAsString(input, `
+    Pures.du2ich = (input) => replaceByRulesWithUiLog(replaceByRulesWithUiLog(input, `
 "st\\b"->""
 `), `
 "Du"->"Ich"
@@ -29,14 +28,14 @@ var Pures;
 "hast"->"habe"
 "I"->"Ist"
 "i"->"ist"
-`, true, false).resultingText;
+`, true);
 })(Pures || (Pures = {}));
 var Functions;
 (function (Functions) {
     Functions.applyReplaceRulesToMainEditor = () => {
         const selectionStart = mainEditorTextarea.selectionStart;
         const selectionEnd = mainEditorTextarea.selectionEnd;
-        mainEditorTextarea.value = replaceByRulesAndLog(mainEditorTextarea.value, replaceRulesTextArea.value, false);
+        mainEditorTextarea.value = replaceByRulesWithUiLog(mainEditorTextarea.value, replaceRulesTextArea.value, false);
         mainEditorTextarea.selectionStart = selectionStart;
         mainEditorTextarea.selectionEnd = selectionEnd;
     };
@@ -316,7 +315,7 @@ var UiFunctions;
                 HtmlUtils.addButtonClickListener(buttonWithId(ctrlZButtonId), () => {
                     textArea.focus();
                     //@ts-ignore
-                    document.execCommand('undo'); // Yes, deprecated, but works. I will replace it when it fails. Docs: https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
+                    document.execCommand('undo'); //TODOhStu: Move this to a file which I take out of the scope of inspections.  // Yes, deprecated, but works. I will replace it when it fails. Docs: https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
                 });
             };
             addCtrlZButtonEventListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea);
@@ -388,22 +387,22 @@ var UiFunctions;
     UiFunctions.closeEditorMenu = () => {
         elementWithId("editorMenuHeading").dispatchEvent(new CustomEvent('rootMenuClose'));
     };
-    UiFunctions.replaceRulesTextAreaOnInput = () => {
+    const replaceRulesTest = () => {
         // noinspection SpellCheckingInspection
         const magicText = (numberToMakeItUnique) => {
-            return `Das hier ist ein ziemlich langer ganz normaler Text, an dem die Rules nichts verändern sollten! Dadurch failen auch Rules. und das ist auch gut so.`
+            return `Das hier ist ein ziemlich langer ganz normaler Text, an dem die Rules nichts verändern sollten! Dadurch fail'en auch Rules. und das ist auch gut so.`
                 + numberToMakeItUnique;
         };
         const createTestRule = (numberToMakeItUnique) => `\n\n"${escapeRegExp(magicText(numberToMakeItUnique))}"gm->""\n\n`;
         const testRules = createTestRule(1)
             + replaceRulesTextArea.value
             + createTestRule(2);
-        const replaceResult = HelgeUtils.replaceByRulesAsString(magicText(1) + magicText(2), testRules);
-        Log.write(replaceResult);
+        const replaceResult = replaceByRulesWithUiLog(magicText(1) + magicText(2), testRules);
         buttonWithId("testFailIndicatorOfReplaceRules").style.display =
             replaceResult === ''
                 ? "none" : "block";
     };
+    UiFunctions.replaceRulesTextAreaOnInput = () => replaceRulesTest;
 })(UiFunctions || (UiFunctions = {}));
 const downloadLink = document.getElementById('downloadLink');
 const spinner1 = document.getElementById('spinner1');
@@ -462,7 +461,7 @@ var Log;
         });
     };
 })(Log || (Log = {}));
-const replaceByRulesAndLog = (subject, rules, wholeWords = false) => {
+const replaceByRulesWithUiLog = (subject, rules, wholeWords = false) => {
     const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked;
     const retVal = HelgeUtils.replaceByRules(subject, rules, wholeWords, logFlag);
     Log.write(retVal.log);
