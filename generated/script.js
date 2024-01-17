@@ -51,7 +51,7 @@ var Functions;
     Functions.applyReplaceRulesToMainEditor = () => {
         const selectionStart = mainEditorTextarea.selectionStart;
         const selectionEnd = mainEditorTextarea.selectionEnd;
-        mainEditorTextarea.value = ReplaceByRules.withUiLog(replaceRulesTextArea.value, mainEditorTextarea.value, false);
+        mainEditorTextarea.value = ReplaceByRules.withUiLog(replaceRulesTextArea.value, mainEditorTextarea.value);
         mainEditorTextarea.selectionStart = selectionStart;
         mainEditorTextarea.selectionEnd = selectionEnd;
     };
