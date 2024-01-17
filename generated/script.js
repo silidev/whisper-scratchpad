@@ -13,22 +13,31 @@ const VERSION = "Florida";
 var Pures;
 (function (Pures) {
     // noinspection SpellCheckingInspection
-    Pures.du2ich = (input) => replaceByRulesWithUiLog(`
-  "Du"->"Ich"
-  "du"->"ich"
-  "dich"->"mich"
-  "Dich"->"Mich"
-  "dir"->"mir"
-  "Dir"->"Mir"
-  "dein"->"mein"
-  "Dein"->"Mein"
-  "bist"->"bin"
-  "hast"->"habe"
-  "I"->"Ist"
-  "i"->"ist"
-  `, replaceByRulesWithUiLog(input, `
+    Pures.du2ich = (input) => {
+        const rules1 = `
+"\\berst\\b"=>"ö(erst)ö"
+:: Bug: The following does not work:
 "st\\b"->""
-`), true);
+`;
+        const rules2 = `
+"Du"->"Ich"
+"du"->"ich"
+"dich"->"mich"
+"Dich"->"Mich"
+"dir"->"mir"
+"Dir"->"Mir"
+"dein"->"mein"
+"Dein"->"Mein"
+"bist"->"bin"
+"hast"->"habe"
+"I"->"Ist"
+"i"->"ist"
+"ö\\(erst\\)ö"->"erst"
+`;
+        const applyRules1 = (input) => replaceByRulesWithUiLog(rules1, input);
+        const applyRules2 = (input) => replaceByRulesWithUiLog(rules2, input, true);
+        return applyRules2(applyRules1(input));
+    };
 })(Pures || (Pures = {}));
 var Functions;
 (function (Functions) {

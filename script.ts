@@ -15,23 +15,31 @@ const VERSION = "Florida";
 
 namespace Pures {
   // noinspection SpellCheckingInspection
-  export const du2ich = (input: string) => replaceByRulesWithUiLog(`
-  "Du"->"Ich"
-  "du"->"ich"
-  "dich"->"mich"
-  "Dich"->"Mich"
-  "dir"->"mir"
-  "Dir"->"Mir"
-  "dein"->"mein"
-  "Dein"->"Mein"
-  "bist"->"bin"
-  "hast"->"habe"
-  "I"->"Ist"
-  "i"->"ist"
-  `, replaceByRulesWithUiLog(input
-      , `
+  export const du2ich = (input: string) => {
+    const rules1 = `
+"\\berst\\b"=>"ö(erst)ö"
+:: Bug: The following does not work:
 "st\\b"->""
-`) as string, true);
+`
+    const rules2 = `
+"Du"->"Ich"
+"du"->"ich"
+"dich"->"mich"
+"Dich"->"Mich"
+"dir"->"mir"
+"Dir"->"Mir"
+"dein"->"mein"
+"Dein"->"Mein"
+"bist"->"bin"
+"hast"->"habe"
+"I"->"Ist"
+"i"->"ist"
+"ö\\(erst\\)ö"->"erst"
+`;
+    const applyRules1 = (input: string) => replaceByRulesWithUiLog(rules1, input);
+    const applyRules2 = (input: string) => replaceByRulesWithUiLog(rules2, input,true);
+    return applyRules2(applyRules1(input));
+  }
 }
 
 namespace Functions {
