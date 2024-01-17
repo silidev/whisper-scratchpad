@@ -138,44 +138,75 @@ Please note that certain strong accents can possibly cause this mode to transcri
     }
   }
 
-  /**
-   * Do NOT change the syntax of the rules, because they must be kept compatible with https://github.com/No3371/obsidian-regex-pipeline#readme
-   */
-  export const replaceByRules = (subject: string, allRules: string, wholeWords = false
-                                 , logReplacements = false) => {
-    const possiblyWordBoundaryMarker = wholeWords ? '\\b' : '';
-    let count = 0;
-    let rule: any[];
-    const ruleParser = /^"(.+?)"([a-z]*?)(?:\r\n|\r|\n)?->(?:\r\n|\r|\n)?"(.*?)"([a-z]*?)(?:\r\n|\r|\n)?$/gmus;
-    let log = '';
-    while (rule = ruleParser.exec(allRules)) {
-
-      const target = possiblyWordBoundaryMarker + rule[1] + possiblyWordBoundaryMarker;
-      const regexFlags = rule[2];
-      const replacement = rule[3];
-      const replacementFlags = rule[4];
-
-      // console.log("\n" + target + "\n↓↓↓↓↓\n"+ replacement);
-      let regex = regexFlags.length == 0 ?
-          new RegExp(target, 'gm') // Noted that gm flags are basically necessary for this plugin to be useful, you seldom want to replace only 1 occurrence or operate on a note only contains 1 line.
-          : new RegExp(target, regexFlags);
-      if (logReplacements && subject.search(regex) !== -1) {
-        log += `${count} ${rule}\n`;
+  export namespace ReplaceByRules {
+    export class ReplaceRules {
+      public constructor(private rules: string) {
       }
-      if (replacementFlags == 'x')
-        subject = subject.replace(regex, '');
-      else
-        subject = subject.replace(regex, replacement);
-      count++;
-    }
-    return {
-      resultingText: subject,
-      log: log
-    };
-  }
 
-  export const replaceByRulesAsString = (subject: string, allRules: string) => {
-    return replaceByRules(subject, allRules, false, false).resultingText;
+      public applyTo = (subject: string) => {
+        return replaceByRules(subject, this.rules, false, false).resultingText;
+      }
+      public applyToWithLog = (subject: string) => {
+        return replaceByRules(subject, this.rules, false, true);
+      }
+    }
+
+    export class WholeWordReplaceRules {
+      public constructor(private rules: string) {
+      }
+
+      public applyTo = (subject: string) => {
+        return replaceByRules(subject, this.rules, true, false).resultingText;
+      }
+      public applyToWithLog = (subject: string) => {
+        return replaceByRules(subject, this.rules, true, true);
+      }
+    }
+
+    /**
+     * Deprecated! Use ReplaceRules or WholeWordReplaceRules instead.
+     *
+     * Do NOT change the syntax of the rules, because they must be kept compatible with https://github.com/No3371/obsidian-regex-pipeline#readme
+     */
+    export const replaceByRules = (subject: string, allRules: string, wholeWords = false
+        , logReplacements = false) => {
+      const possiblyWordBoundaryMarker = wholeWords ? '\\b' : '';
+      let count = 0;
+      let rule: any[];
+      const ruleParser = /^"(.+?)"([a-z]*?)(?:\r\n|\r|\n)?->(?:\r\n|\r|\n)?"(.*?)"([a-z]*?)(?:\r\n|\r|\n)?$/gmus;
+      let log = '';
+      while (rule = ruleParser.exec(allRules)) {
+
+        const target = possiblyWordBoundaryMarker + rule[1] + possiblyWordBoundaryMarker;
+        const regexFlags = rule[2];
+        const replacement = rule[3];
+        const replacementFlags = rule[4];
+
+        // console.log("\n" + target + "\n↓↓↓↓↓\n"+ replacement);
+        let regex = regexFlags.length == 0 ?
+            new RegExp(target, 'gm') // Noted that gm flags are basically necessary for this plugin to be useful, you seldom want to replace only 1 occurrence or operate on a note only contains 1 line.
+            : new RegExp(target, regexFlags);
+        if (logReplacements && subject.search(regex) !== -1) {
+          log += `${count} ${rule}\n`;
+        }
+        if (replacementFlags == 'x')
+          subject = subject.replace(regex, '');
+        else
+          subject = subject.replace(regex, replacement);
+        count++;
+      }
+      return {
+        resultingText: subject,
+        log: log
+      };
+    }
+
+  /**
+   * Deprecated! Use ReplaceRules or WholeWordReplaceRules instead.
+   */
+    export const replaceByRulesAsString = (subject: string, allRules: string) => {
+      return replaceByRules(subject, allRules, false, false).resultingText;
+    }
   }
 
   export const memoize = <T, R>(func: (...args: T[]) => R): (...args: T[]) => R => {

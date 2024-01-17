@@ -482,7 +482,7 @@ var ReplaceByRules;
 (function (ReplaceByRules) {
     function withUiLog(rules, subject, wholeWords = false) {
         const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked;
-        const retVal = HelgeUtils.replaceByRules(subject, rules, wholeWords, logFlag);
+        const retVal = HelgeUtils.ReplaceByRules.replaceByRules(subject, rules, wholeWords, logFlag);
         Log.write(retVal.log);
         return retVal.resultingText;
     }

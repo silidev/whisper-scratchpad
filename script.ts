@@ -545,7 +545,7 @@ namespace ReplaceByRules {
 
   export function withUiLog(rules: string, subject: string, wholeWords: boolean = false): string {
     const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked;
-    const retVal = HelgeUtils.replaceByRules(subject, rules, wholeWords, logFlag);
+    const retVal = HelgeUtils.ReplaceByRules.replaceByRules(subject, rules, wholeWords, logFlag);
     Log.write(retVal.log);
     return retVal.resultingText;
   }
