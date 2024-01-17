@@ -14,11 +14,17 @@ var Pures;
 (function (Pures) {
     // noinspection SpellCheckingInspection
     Pures.du2ich = (input) => {
+        /**
+         * Here also partial words are replaced.
+         */
         const rules1 = `
 "\\berst\\b"=>"ö(erst)ö"
 :: Bug: The following does not work: //TODOh
 "st\\b"->""
 `;
+        /**
+         * Only WHOLE words are replaced.
+         */
         const rules2 = `
 "Du"->"Ich"
 "du"->"ich"

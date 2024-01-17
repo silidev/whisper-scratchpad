@@ -16,11 +16,17 @@ const VERSION = "Florida";
 namespace Pures {
   // noinspection SpellCheckingInspection
   export const du2ich = (input: string) => {
+    /**
+     * Here also partial words are replaced.
+     */
     const rules1 = `
 "\\berst\\b"=>"ö(erst)ö"
 :: Bug: The following does not work: //TODOh
 "st\\b"->""
 `
+    /**
+     * Only WHOLE words are replaced.
+     */
     const rules2 = `
 "Du"->"Ich"
 "du"->"ich"
