@@ -1,3 +1,10 @@
+// noinspection JSUnusedGlobalSymbols
+/**
+ * HelgeUtils.ts
+ * @description A collection of general utility functions not connected to a
+ * specific project.
+ *
+ * Copyright by Helge Tobias Kosuch 2024 */
 export var HelgeUtils;
 (function (HelgeUtils) {
     let Exceptions;
