@@ -78,6 +78,7 @@ var UiFunctions;
     (function (Buttons) {
         var textAreaWithId = HtmlUtils.textAreaWithId;
         var insertTextAtCursor = HtmlUtils.TextAreas.insertTextAtCursor;
+        var copyToClipboard = HtmlUtils.copyToClipboard;
         let Media;
         (function (Media) {
             let mediaRecorder;
@@ -272,7 +273,7 @@ var UiFunctions;
                 NotVisibleAtThisTime.showSpinner();
                 transcribeAndHandleResult(audioBlob, true).then(NotVisibleAtThisTime.hideSpinner);
             };
-            HtmlUtils.addButtonClickListener(buttonWithId("transcribeAgainButton"), transcribeAgainButton);
+            HtmlUtils.addClickListener(buttonWithId("transcribeAgainButton"), transcribeAgainButton);
             StateIndicator.update();
         })(Media = Buttons.Media || (Buttons.Media = {})); // End of media buttons
         Buttons.addButtonEventListeners = () => {
@@ -283,7 +284,7 @@ var UiFunctions;
                 mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ');
                 saveEditor();
             };
-            HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
+            HtmlUtils.addClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
                 cropHighlights();
                 UiFunctions.closeEditorMenu();
             });
@@ -292,24 +293,24 @@ var UiFunctions;
                 navigator.clipboard.writeText("## Replace Rules\n" + replaceRulesTextArea.value + "\n"
                     + "## Prompt\n" + transcriptionPromptEditor.value).then();
             };
-            HtmlUtils.addButtonClickListener(buttonWithId("copyBackupMenuItem"), () => {
+            HtmlUtils.addClickListener(buttonWithId("copyBackupMenuItem"), () => {
                 copyBackupToClipboard();
                 UiFunctions.closeEditorMenu();
             });
             // ############## Focus the main editor textarea Menu Item ##############
-            HtmlUtils.addButtonClickListener(buttonWithId("focusMainEditorMenuItem"), () => {
-                mainEditorTextarea.focus();
+            HtmlUtils.addClickListener(inputElementWithId("focusMainEditorMenuItem"), () => {
                 UiFunctions.closeEditorMenu();
+                mainEditorTextarea.focus();
             });
             // ############## Du2Ich Menu Item ##############
-            function du2ichMenuItem() {
+            const du2ichMenuItem = () => {
                 UiFunctions.closeEditorMenu();
-                const value = Pures.du2ich(mainEditorTextarea.value);
-                console.log(value);
-                mainEditorTextarea.value = value;
-                saveEditor();
-            }
-            HtmlUtils.addButtonClickListener(buttonWithId("du2ichMenuItem"), () => {
+                copyToClipboard(mainEditorTextarea.value).then(() => {
+                    mainEditorTextarea.value = Pures.du2ich(mainEditorTextarea.value);
+                    saveEditor();
+                });
+            };
+            HtmlUtils.addClickListener(inputElementWithId("du2ichMenuItem"), () => {
                 du2ichMenuItem();
             });
             // ############## saveAPIKeyButton ##############
@@ -317,7 +318,7 @@ var UiFunctions;
                 setApiKeyCookie(apiKeyInput.value);
                 apiKeyInput.value = '';
             }
-            HtmlUtils.addButtonClickListener(buttonWithId("saveAPIKeyButton"), () => {
+            HtmlUtils.addClickListener(buttonWithId("saveAPIKeyButton"), () => {
                 saveAPIKeyButton();
             });
             function clearButton() {
@@ -325,7 +326,7 @@ var UiFunctions;
                 saveEditor();
             }
             // clearButton
-            HtmlUtils.addButtonClickListener(buttonWithId("clearButton"), () => {
+            HtmlUtils.addClickListener(buttonWithId("clearButton"), () => {
                 clearButton();
             });
             const replaceAgainButton = () => {
@@ -334,33 +335,33 @@ var UiFunctions;
                 // window.scrollBy(0,-100000);
             };
             // replaceAgainButton
-            HtmlUtils.addButtonClickListener(buttonWithId("replaceAgainButton"), () => {
+            HtmlUtils.addClickListener(buttonWithId("replaceAgainButton"), () => {
                 replaceAgainButton();
             });
             // ############## backslashButton ##############
-            HtmlUtils.addButtonClickListener(buttonWithId("backslashButton"), () => {
+            HtmlUtils.addClickListener(buttonWithId("backslashButton"), () => {
                 insertTextAtCursor(replaceRulesTextArea, "\\");
             });
             // ############## ctrlZButtons ##############
             const addCtrlZButtonEventListener = (ctrlZButtonId, textArea) => {
-                HtmlUtils.addButtonClickListener(buttonWithId(ctrlZButtonId), () => {
+                HtmlUtils.addClickListener(buttonWithId(ctrlZButtonId), () => {
                     textArea.focus();
                     sendCtrlZ();
                 });
             };
             addCtrlZButtonEventListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea);
             addCtrlZButtonEventListener("ctrlZButtonOfPrompt", transcriptionPromptEditor);
-            HtmlUtils.addButtonClickListener(buttonWithId("addReplaceRuleButton"), Buttons.addReplaceRule);
+            HtmlUtils.addClickListener(buttonWithId("addReplaceRuleButton"), Buttons.addReplaceRule);
             function cancelButton() {
                 saveEditor();
                 window.location.reload();
             }
             // aboutButton
-            HtmlUtils.addButtonClickListener(buttonWithId("cancelButton"), () => {
+            HtmlUtils.addClickListener(buttonWithId("cancelButton"), () => {
                 cancelButton();
             });
             // aboutButton
-            HtmlUtils.addButtonClickListener(buttonWithId("pasteButton"), () => {
+            HtmlUtils.addClickListener(buttonWithId("pasteButton"), () => {
                 navigator.clipboard.readText().then(text => {
                     insertAtCursor(text);
                 });
@@ -369,7 +370,7 @@ var UiFunctions;
             /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
             const addEventListenerForCutButton = (buttonId, inputElementId) => {
                 buttonWithId(buttonId).addEventListener('click', () => {
-                    navigator.clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
+                    copyToClipboard(inputElementWithId(inputElementId).value).then(() => {
                         buttonWithId(buttonId).innerHTML = '✂<br>Done';
                         setTimeout(() => {
                             buttonWithId(buttonId).innerHTML = '✂<br>Cut';
@@ -479,7 +480,7 @@ var Log;
         textAreaWithId("logTextArea").style.display = "block";
     };
     Log.addToggleLogButtonClickListener = (textAreaWithId) => {
-        HtmlUtils.addButtonClickListener(buttonWithId("toggleLogButton"), () => {
+        HtmlUtils.addClickListener(buttonWithId("toggleLogButton"), () => {
             UiFunctions.closeEditorMenu();
             const log = textAreaWithId("logTextArea");
             if (log.style.display === "none") {

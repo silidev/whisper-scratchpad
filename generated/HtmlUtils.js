@@ -91,14 +91,14 @@ export var HtmlUtils;
     /**
      * Adds a click listener to a button that appends a checkmark to the button
      * text when clicked. */
-    HtmlUtils.addButtonClickListener = (button, callback) => {
-        const initialHTML = button.innerHTML; // Read initial HTML from the button
+    HtmlUtils.addClickListener = (element, callback) => {
+        const initialHTML = element.innerHTML; // Read initial HTML from the button
         const checkmark = ' ✔️'; // Unicode checkmark
-        button.addEventListener('click', () => {
+        element.addEventListener('click', () => {
             callback();
-            button.innerHTML += checkmark; // Append checkmark to the button HTML
+            element.innerHTML += checkmark; // Append checkmark to the button HTML
             setTimeout(() => {
-                button.innerHTML = initialHTML; // Reset the button HTML after 2 seconds
+                element.innerHTML = initialHTML; // Reset the button HTML after 2 seconds
             }, 500);
         });
     };
@@ -119,6 +119,11 @@ export var HtmlUtils;
         element.innerText = input;
         return element.innerHTML;
     };
+    HtmlUtils.copyToClipboard = (text) => navigator.clipboard.writeText(text);
+    /**
+     * Deprecated! Use copyToClipboard instead.
+     * @param str
+     */
     HtmlUtils.putIntoClipboard = (str) => {
         navigator.clipboard.writeText(str).then();
     };

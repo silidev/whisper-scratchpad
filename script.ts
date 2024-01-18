@@ -83,6 +83,7 @@ namespace UiFunctions {
   export namespace Buttons {
     import textAreaWithId = HtmlUtils.textAreaWithId;
     import insertTextAtCursor = HtmlUtils.TextAreas.insertTextAtCursor;
+    import copyToClipboard = HtmlUtils.copyToClipboard;
     export namespace Media {
       let mediaRecorder: MediaRecorder;
       let audioChunks = [];
@@ -288,7 +289,7 @@ namespace UiFunctions {
         NotVisibleAtThisTime.showSpinner();
         transcribeAndHandleResult(audioBlob, true).then(NotVisibleAtThisTime.hideSpinner);
       };
-      HtmlUtils.addButtonClickListener(buttonWithId("transcribeAgainButton"), transcribeAgainButton);
+      HtmlUtils.addClickListener(buttonWithId("transcribeAgainButton"), transcribeAgainButton);
 
       StateIndicator.update();
     } // End of media buttons
@@ -303,7 +304,7 @@ namespace UiFunctions {
         mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ');
         saveEditor();
       };
-      HtmlUtils.addButtonClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
+      HtmlUtils.addClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
         cropHighlights();
         UiFunctions.closeEditorMenu();
       });
@@ -315,37 +316,35 @@ namespace UiFunctions {
             + "## Prompt\n" + transcriptionPromptEditor.value
         ).then();
       };
-      HtmlUtils.addButtonClickListener(buttonWithId("copyBackupMenuItem"), () => { //TODOhStu: If I enjoy it, I could make a method "addMenuItem".
+      HtmlUtils.addClickListener(buttonWithId("copyBackupMenuItem"), () => { //TODOhStu: If I enjoy it, I could make a method "addMenuItem".
         copyBackupToClipboard();
         UiFunctions.closeEditorMenu();
       });
 
 // ############## Focus the main editor textarea Menu Item ##############
-      HtmlUtils.addButtonClickListener(buttonWithId("focusMainEditorMenuItem"), () => {
-        mainEditorTextarea.focus();
+      HtmlUtils.addClickListener(inputElementWithId("focusMainEditorMenuItem"), () => {
         UiFunctions.closeEditorMenu();
+        mainEditorTextarea.focus();
       });
 
 // ############## Du2Ich Menu Item ##############
-      function du2ichMenuItem() {
+      const du2ichMenuItem = () => {
         UiFunctions.closeEditorMenu();
-
-        const value = Pures.du2ich(mainEditorTextarea.value);
-        console.log(value);
-        mainEditorTextarea.value = value;
-        saveEditor();
-      }
-      HtmlUtils.addButtonClickListener(buttonWithId("du2ichMenuItem"), () => {
+        copyToClipboard(mainEditorTextarea.value).then(() => {
+          mainEditorTextarea.value = Pures.du2ich(mainEditorTextarea.value);
+          saveEditor();
+        });
+      };
+      HtmlUtils.addClickListener(inputElementWithId("du2ichMenuItem"), () => {
         du2ichMenuItem();
       });
-
 
 // ############## saveAPIKeyButton ##############
       function saveAPIKeyButton() {
         setApiKeyCookie(apiKeyInput.value);
         apiKeyInput.value = '';
       }
-      HtmlUtils.addButtonClickListener(buttonWithId("saveAPIKeyButton"), () => {
+      HtmlUtils.addClickListener(buttonWithId("saveAPIKeyButton"), () => {
         saveAPIKeyButton();
       });
 
@@ -355,7 +354,7 @@ namespace UiFunctions {
       }
 
 // clearButton
-      HtmlUtils.addButtonClickListener(buttonWithId("clearButton"), () => {
+      HtmlUtils.addClickListener(buttonWithId("clearButton"), () => {
         clearButton();
       });
 
@@ -366,18 +365,18 @@ namespace UiFunctions {
       };
 
 // replaceAgainButton
-      HtmlUtils.addButtonClickListener(buttonWithId("replaceAgainButton"), () => {
+      HtmlUtils.addClickListener(buttonWithId("replaceAgainButton"), () => {
         replaceAgainButton();
       });
 
 // ############## backslashButton ##############
-      HtmlUtils.addButtonClickListener(buttonWithId("backslashButton"), () => {
+      HtmlUtils.addClickListener(buttonWithId("backslashButton"), () => {
         insertTextAtCursor(replaceRulesTextArea,"\\");
       });
 
 // ############## ctrlZButtons ##############
       const addCtrlZButtonEventListener = (ctrlZButtonId: string, textArea: HTMLTextAreaElement) => {
-        HtmlUtils.addButtonClickListener(buttonWithId(ctrlZButtonId), () => {
+        HtmlUtils.addClickListener(buttonWithId(ctrlZButtonId), () => {
           textArea.focus();
           sendCtrlZ();
         });
@@ -386,7 +385,7 @@ namespace UiFunctions {
       addCtrlZButtonEventListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea);
       addCtrlZButtonEventListener("ctrlZButtonOfPrompt", transcriptionPromptEditor);
 
-      HtmlUtils.addButtonClickListener(buttonWithId("addReplaceRuleButton"), addReplaceRule);
+      HtmlUtils.addClickListener(buttonWithId("addReplaceRuleButton"), addReplaceRule);
 
       function cancelButton() {
         saveEditor()
@@ -394,12 +393,12 @@ namespace UiFunctions {
       }
 
 // aboutButton
-      HtmlUtils.addButtonClickListener(buttonWithId("cancelButton"), () => {
+      HtmlUtils.addClickListener(buttonWithId("cancelButton"), () => {
         cancelButton();
       });
 
 // aboutButton
-      HtmlUtils.addButtonClickListener(buttonWithId("pasteButton"), () => {
+      HtmlUtils.addClickListener(buttonWithId("pasteButton"), () => {
         navigator.clipboard.readText().then(text => {
           insertAtCursor(text);
         });
@@ -409,7 +408,7 @@ namespace UiFunctions {
       /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
       const addEventListenerForCutButton = (buttonId: string, inputElementId: string) => {
         buttonWithId(buttonId).addEventListener('click', () => {
-          navigator.clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
+          copyToClipboard(inputElementWithId(inputElementId).value).then(() => {
             buttonWithId(buttonId).innerHTML = '✂<br>Done';
             setTimeout(() => {
               buttonWithId(buttonId).innerHTML = '✂<br>Cut';
@@ -541,7 +540,7 @@ namespace Log {
 
   export const addToggleLogButtonClickListener =
       (textAreaWithId: (id: string) => (HTMLTextAreaElement | null)) => {
-    HtmlUtils.addButtonClickListener(buttonWithId("toggleLogButton"), () => {
+    HtmlUtils.addClickListener(buttonWithId("toggleLogButton"), () => {
       UiFunctions.closeEditorMenu();
       const log = textAreaWithId("logTextArea");
       if (log.style.display === "none") {

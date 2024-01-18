@@ -107,15 +107,15 @@ export namespace HtmlUtils {
   /**
    * Adds a click listener to a button that appends a checkmark to the button
    * text when clicked. */
-  export const addButtonClickListener = (button: HTMLButtonElement, callback: () => void) => {
-    const initialHTML = button.innerHTML; // Read initial HTML from the button
+  export const addClickListener = (element: HTMLElement, callback: () => void) => {
+    const initialHTML = element.innerHTML; // Read initial HTML from the button
     const checkmark = ' ✔️'; // Unicode checkmark
 
-    button.addEventListener('click', () => {
+    element.addEventListener('click', () => {
       callback();
-      button.innerHTML += checkmark; // Append checkmark to the button HTML
+      element.innerHTML += checkmark; // Append checkmark to the button HTML
       setTimeout(() => {
-        button.innerHTML = initialHTML; // Reset the button HTML after 2 seconds
+        element.innerHTML = initialHTML; // Reset the button HTML after 2 seconds
       }, 500);
     });
   };
@@ -140,6 +140,12 @@ export namespace HtmlUtils {
     return element.innerHTML;
   };
 
+  export const copyToClipboard = (text: string) => navigator.clipboard.writeText(text);
+
+  /**
+   * Deprecated! Use copyToClipboard instead.
+   * @param str
+   */
   export const putIntoClipboard = (str: string) => {
     navigator.clipboard.writeText(str).then();
   }
