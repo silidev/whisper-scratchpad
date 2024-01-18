@@ -19,28 +19,32 @@ var Pures;
          * Only WHOLE words are replaced.
          */
         const rules1 = `
-"Du"->"Ich"
-"du"->"ich"
-"dich"->"mich"
-"Dich"->"Mich"
-"dir"->"mir"
-"Dir"->"Mir"
-"dein"->"mein"
 "Dein"->"Mein"
-"bist"->"bin"
-"hast"->"habe"
-"I"->"Ist"
-"i"->"ist"
-"machst"->"mache"
-"Machst"->"Mache"
-"liest"->"lese"
+"Deine"->"Meine"
+"Dich"->"Mich"
+"Dir"->"Mir"
+"Du"->"Ich"
+"findest"->"finde"
 "Liest"->"Lese"
-"willst"->"will"
+"Machst"->"Mache"
 "Willst"->"Will"
+"bist"->"bin"
+"dein"->"mein"
+"deine"->"meine"
+"deiner"->"meiner"
+"dich"->"mich"
+"dir"->"mir"
+"du"->"ich"
+"hast"->"habe"
+"liest"->"lese"
+"machst"->"mache"
+"willst"->"will"
 `;
         /**
          * Here also partial words are replaced.*/
         // const rules2 = `
+        //     "I"->"Ist"
+        //     "i"->"ist"
         // "\\berst\\b"->"x(ersxt)x"
         // :: Bug: The following does not work for all occurrences: //TODOh
         // "st\\b"->""
