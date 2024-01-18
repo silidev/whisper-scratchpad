@@ -1,5 +1,5 @@
 :root {
- --myGreen: #0f0;
+ --myGreen: #00b2ff;
  --buttonHeight: 55px;
 }
 
@@ -107,8 +107,9 @@ input::placeholder, textarea::placeholder {
  100% { transform: rotate(360deg); }
 }
 
-.greenFilter {
- filter: grayscale(100%) sepia(1) hue-rotate(90deg) brightness(0.5) saturate(10);
+.blueFilter {
+ filter: grayscale(100%) sepia(1) hue-rotate(150deg) brightness(0.5) saturate(10);
+ /*green: filter: grayscale(100%) sepia(1) hue-rotate(90deg) brightness(0.5) saturate(10);*/
 }
 
 textarea {
@@ -164,5 +165,5 @@ textarea {
 
 select, option {
  background-color: black;
- color: green;
+ color: var(--myGreen);
 }

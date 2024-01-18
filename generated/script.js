@@ -16,17 +16,9 @@ var Pures;
     // noinspection SpellCheckingInspection
     Pures.du2ich = (input) => {
         /**
-         * Here also partial words are replaced.
-         */
-        const rules1 = `
-"\\berst\\b"=>"ö(erst)ö"
-:: Bug: The following does not work: //TODOh
-"st\\b"->""
-`;
-        /**
          * Only WHOLE words are replaced.
          */
-        const rules2 = `
+        const rules1 = `
 "Du"->"Ich"
 "du"->"ich"
 "dich"->"mich"
@@ -39,13 +31,36 @@ var Pures;
 "hast"->"habe"
 "I"->"Ist"
 "i"->"ist"
-"ö\\(erst\\)ö"->"erst"
+"machst"->"mache"
+"Machst"->"Mache"
+"liest"->"lese"
+"Liest"->"Lese"
+"willst"->"will"
+"Willst"->"Will"
 `;
-        const applyRules1 = (input) => ReplaceByRules.withUiLog(rules1, input);
-        const applyRules2 = (input) => ReplaceByRules.onlyWholeWordsWithUiLog(rules2, input);
-        return applyRules2(applyRules1(input));
-    };
-})(Pures || (Pures = {}));
+        /**
+         * Here also partial words are replaced.*/
+        // const rules2 = `
+        // "\\berst\\b"->"x(ersxt)x"
+        // :: Bug: The following does not work for all occurrences: //TODOh
+        // "st\\b"->""
+        // `;
+        // noinspection SpellCheckingInspection
+        /**
+     * Here also partial words are replaced.*/
+        // const rules3 = `
+        // "\\bx\\(ersxt\\)x\\b"->"erst"
+        // `;
+        const applyRules1 = (input) => ReplaceByRules.onlyWholeWordsWithUiLog(rules1, input);
+        // const applyRules2 = (input: string) => ReplaceByRules.withUiLog(rules2, input);
+        // const applyRules3 = (input: string) => ReplaceByRules.withUiLog(rules3, input);
+        return (
+        // applyRules3
+        (
+        // applyRules2
+        (applyRules1(input))));
+    }; //end of namespace du2ich
+})(Pures || (Pures = {})); //end of namespace Pures
 var Functions;
 (function (Functions) {
     Functions.applyReplaceRulesToMainEditor = () => {
