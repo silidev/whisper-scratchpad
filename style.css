@@ -112,7 +112,7 @@ input::placeholder, textarea::placeholder {
 /* Forces the main color on things, e.g. emojis.
 This used to be called greenFilter.*/
 .forceMainColor {
- filter: grayscale(100%) sepia(1) hue-rotate(0deg) brightness(0.5) saturate(10);
+ filter: grayscale(100%) sepia(1) hue-rotate(355deg) brightness(1) saturate(10);
  /*blue: filter: grayscale(100%) sepia(1) hue-rotate(150deg) brightness(0.5) saturate(10);*/
  /*green: filter: grayscale(100%) sepia(1) hue-rotate(90deg) brightness(0.5) saturate(10);*/
 }
