@@ -1,1 +1,1 @@
-{"version":3,"file":"DontInspect.js","sourceRoot":"","sources":["../DontInspect.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,MAAM,SAAS,GAAG,GAAG,EAAE;IAC5B,QAAQ,CAAC,WAAW,CAAC,MAAM,CAAC,CAAC,CAAA,2IAA2I;AAC1K,CAAC,CAAC"}
+{"version":3,"file":"DontInspect.js","sourceRoot":"","sources":["../DontInspect.ts"],"names":[],"mappings":"AAAA;;GAEG;AACH,MAAM,CAAC,MAAM,SAAS,GAAG,GAAG,EAAE;IAC5B,QAAQ,CAAC,WAAW,CAAC,MAAM,CAAC,CAAC,CAAA,2IAA2I;AAC1K,CAAC,CAAC"}
