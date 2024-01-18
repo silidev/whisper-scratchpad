@@ -1,5 +1,7 @@
 :root {
- --myGreen: #00b2ff;
+ --mainColor: #ff886d; /*amber*/
+ /*--mainColor: #0f0;*/
+ /*blue: --mainColor: #00b2ff;*/
  --buttonHeight: 55px;
 }
 
@@ -16,7 +18,7 @@ body,html {
  height: 100%;
  font-family: 'Courier', sans-serif;
  background-color: black;
- color: var(--myGreen);
+ color: var(--mainColor);
  max-width: 20cm;
  overscroll-behavior: none;
 }
@@ -33,7 +35,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 a {
- color: var(--myGreen);
+ color: var(--mainColor);
 }
 
 .flexRightAndWrapContent {
@@ -53,11 +55,11 @@ div {
 button, input, textarea {
  border-collapse: collapse;
  padding: 2px;
- border: 1px solid var(--myGreen);
+ border: 1px solid var(--mainColor);
  margin: 0;
  border-radius: 0;
  cursor: pointer;
- color: var(--myGreen);
+ color: var(--mainColor);
  background-color: black;
 }
 
@@ -74,18 +76,18 @@ input, textarea {
 }
 
 select, option, input:focus, textarea:focus {
- color: var(--myGreen);
- border: 1px solid var(--myGreen);
+ color: var(--mainColor);
+ border: 1px solid var(--mainColor);
  outline: none;
 }
 
 input::selection, textarea::selection {
- background-color: var(--myGreen);
+ background-color: var(--mainColor);
  color: black;
 }
 
 input::placeholder, textarea::placeholder {
- color: var(--myGreen);
+ color: var(--mainColor);
  filter: brightness(70%);
 }
 
@@ -94,7 +96,7 @@ input::placeholder, textarea::placeholder {
 /*}*/
 
 .spinner {
- border: 2px solid var(--myGreen);
+ border: 2px solid var(--mainColor);
  width: 15px;
  height: 15px;
  border-radius: 50%;
@@ -107,8 +109,11 @@ input::placeholder, textarea::placeholder {
  100% { transform: rotate(360deg); }
 }
 
-.blueFilter {
- filter: grayscale(100%) sepia(1) hue-rotate(150deg) brightness(0.5) saturate(10);
+/* Forces the main color on things, e.g. emojis.
+This used to be called greenFilter.*/
+.forceMainColor {
+ filter: grayscale(100%) sepia(1) hue-rotate(0deg) brightness(0.5) saturate(10);
+ /*blue: filter: grayscale(100%) sepia(1) hue-rotate(150deg) brightness(0.5) saturate(10);*/
  /*green: filter: grayscale(100%) sepia(1) hue-rotate(90deg) brightness(0.5) saturate(10);*/
 }
 
@@ -151,7 +156,7 @@ textarea {
  height: var(--buttonHeight);
  align-items: center;
  justify-content: center;
- border: 1px solid var(--myGreen);
+ border: 1px solid var(--mainColor);
 }
 
 .item:hover {
@@ -165,5 +170,5 @@ textarea {
 
 select, option {
  background-color: black;
- color: var(--myGreen);
+ color: var(--mainColor);
 }
