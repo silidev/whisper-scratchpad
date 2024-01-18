@@ -1,16 +1,18 @@
 const CACHE_NAME = 'whisper-scratchpad-cache-v1';
 const urlsToCache = [
     '/',
-    'index.html',
-    'manifest.json',
-    'generated/script.js',
+    'generated/DontInspect.js',
+    'generated/InfoButton.js',
     'generated/HelgeUtils.js',
     'generated/HtmlUtils.js',
-    'service-worker.js',
-    'style.css',
+    'generated/script.js',
     'icon192x192.png',
     'icon512x512.png',
+    'index.html',
     'lib/wc-menu-wrapper.min.js',
+    'manifest.json',
+    'service-worker.js',
+    'style.css',
 ];
 
 self.addEventListener('install', event => {
