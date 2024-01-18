@@ -30,8 +30,15 @@
     <wc-menu-wrapper>
       <!-- https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper -->
       <div id="editorMenuHeading" class='heading'>☰</div>
-      <div class='item' id="toggleLogButton"><button>Show<br>Log</button></div>
-      <div class='item' id="du2ichMenuItem">du2ich</div>
+      <div class='item'>
+        <button id="du2ichMenuItem">du2ich</button>
+        <button id="cancelButton" style="">x<br>Cancel</button>
+        <button id="toggleLogButton">Show<br>Log</button>
+        <span style="display: flex; align-items: center; border: 1px solid var(--mainColor)">
+          <input type="checkbox" id="logReplaceRulesCheckbox" style="margin-left: 8px" class="forceMainColor">
+          <label style="margin: 8px" for="logReplaceRulesCheckbox">Log</label>
+        </span>
+      </div>
       <div class='item' id="transcribeAgainButton"><a>Transcribe last recording again</a></div>
       <div class='item' id="focusMainEditorMenuItem"><a>Focus the main editor textarea (to debug)</a></div>
       <div class='item' id="copyBackupMenuItem"><a>Copy backup to clipboard</a></div>
@@ -76,8 +83,8 @@
       </ul>
     </div>
   </info-button></button>
+  <button id="ctrlZButtonOfReplaceRules">⎌<br>Ctrl-z</button>
   <button id="addReplaceRuleButton"><span style="font-size: 16px">""->""</span></button>
-  <button id="cancelButton" style="">x<br>Cancel</button>
   <button id="transcribeButton">✎ <br>T-scribe</button>
 </div>
 
@@ -119,15 +126,9 @@
         <option value="tmp">tmp</option>
       </select>
       <!-- ############## Replace-rules buttons ###############-->
-      <button id="backslashButton">\</button>
-      <button id="replaceAgainButton">♻<br>Rpl</button>
+      <button id="backslashButton" style="width: 60px">\</button>
+      <button id="replaceAgainButton">♻<br>Replace</button>
       <button id="copyReplaceRulesButton">⎘<br>Copy</button>
-      <button id="ctrlZButtonOfReplaceRules">⎌<br>Ctrl-z</button>
-<!--        checkbox-->
-      <span style="display: flex; align-items: center; border: 1px solid var(--mainColor)">
-        <input type="checkbox" id="logReplaceRulesCheckbox" style="margin-left: 8px" class="forceMainColor">
-        <label style="margin: 8px" for="logReplaceRulesCheckbox">Log</label>
-      </span>
     </span>
   </span>
 <!--  <div class="mainEditorTextareaContainer">-->
