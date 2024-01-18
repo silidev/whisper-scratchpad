@@ -1,5 +1,7 @@
 :root {
- --mainColor: #ff886d; /*amber*/
+ /*--mainColor: #ff0000; !*red*!*/
+ --mainColor: #f72e00; /*amber*/
+ /*--mainColor: #ff886d; !*amber*!*/
  /*--mainColor: #0f0;*/
  /*blue: --mainColor: #00b2ff;*/
  --buttonHeight: 55px;
