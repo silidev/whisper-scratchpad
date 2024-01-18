@@ -1,6 +1,14 @@
+// noinspection JSUnusedGlobalSymbols
+
+/** Copyright by Helge Tobias Kosuch 2023
+ *
+ * Should be named WebUtils... but I am used to HtmlUtils.
+ * */
 import {HelgeUtils} from "./HelgeUtils.js";
 
 export namespace HtmlUtils {
+
+  const memoize = HelgeUtils.memoize;
 
   // ########## Blinking fast and slow ##########
   // https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow
@@ -17,7 +25,6 @@ export namespace HtmlUtils {
    */
   export const blinkSlow = (message: string) => `<span class="blinkingSlow">${message}</span>`
 
-  const memoize = HelgeUtils.memoize;
 
   export const elementWithId = memoize((id: string): HTMLElement | null => {
     return document.getElementById(id) as HTMLElement;
@@ -120,6 +127,10 @@ export namespace HtmlUtils {
     });
   };
 
+  export const scrollToBottom = () => {
+    window.scrollBy(0, 100000);
+  };
+
   /**
    * This outputs aggressively on top of everything to the user. */
   export const printError = (str: string) => {
@@ -131,6 +142,19 @@ export namespace HtmlUtils {
             <p style="font-size: 30px;">###### printDebug</p>
             <p style="font-size:18px;">${escapeHtml(str)}</p>`
           + `########</div>`);
+    });
+  };
+
+  /**
+   * This outputs gently. Might not be seen by the user.  */
+  export const printDebug = (str: string) => {
+    console.log(str);
+    HelgeUtils.Exceptions.callSwallowingExceptions(() => {
+      document.body.insertAdjacentHTML('beforeend',
+          `<div 
+              style="z-index: 9999; background-color: #00000000; color:red;"> 
+            <p style="font-size:18px;">${escapeHtml(str)}</p>`
+          + `</div>`);
     });
   };
 

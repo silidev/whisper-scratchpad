@@ -1,6 +1,12 @@
+// noinspection JSUnusedGlobalSymbols
+/** Copyright by Helge Tobias Kosuch 2023
+ *
+ * Should be named WebUtils... but I am used to HtmlUtils.
+ * */
 import { HelgeUtils } from "./HelgeUtils.js";
 export var HtmlUtils;
 (function (HtmlUtils) {
+    const memoize = HelgeUtils.memoize;
     // ########## Blinking fast and slow ##########
     // https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow
     /**
@@ -15,7 +21,6 @@ export var HtmlUtils;
      * }
      */
     HtmlUtils.blinkSlow = (message) => `<span class="blinkingSlow">${message}</span>`;
-    const memoize = HelgeUtils.memoize;
     HtmlUtils.elementWithId = memoize((id) => {
         return document.getElementById(id);
     });
@@ -102,6 +107,9 @@ export var HtmlUtils;
             }, 500);
         });
     };
+    HtmlUtils.scrollToBottom = () => {
+        window.scrollBy(0, 100000);
+    };
     /**
      * This outputs aggressively on top of everything to the user. */
     HtmlUtils.printError = (str) => {
@@ -112,6 +120,17 @@ export var HtmlUtils;
             <p style="font-size: 30px;">###### printDebug</p>
             <p style="font-size:18px;">${HtmlUtils.escapeHtml(str)}</p>`
                 + `########</div>`);
+        });
+    };
+    /**
+     * This outputs gently. Might not be seen by the user.  */
+    HtmlUtils.printDebug = (str) => {
+        console.log(str);
+        HelgeUtils.Exceptions.callSwallowingExceptions(() => {
+            document.body.insertAdjacentHTML('beforeend', `<div 
+              style="z-index: 9999; background-color: #00000000; color:red;"> 
+            <p style="font-size:18px;">${HtmlUtils.escapeHtml(str)}</p>`
+                + `</div>`);
         });
     };
     HtmlUtils.escapeHtml = (input) => {
