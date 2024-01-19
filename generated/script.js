@@ -421,6 +421,7 @@ var UiFunctions;
             replaceRulesTextArea.selectionStart = 0;
             replaceRulesTextArea.selectionEnd = insertedString.length; // was, delete on day: setCursor(12 + selectedText.length);
             // replaceRulesTextArea.focus(); // Taken out b/c this jumps way too much down on mobile.
+            saveReplaceRules();
         };
         Buttons.addWordReplaceRule = () => {
             addReplaceRule(true);
@@ -456,6 +457,7 @@ const transcriptionPromptEditor = document.getElementById('transcriptionPromptEd
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea');
 const saveEditor = () => HtmlUtils.Cookies.set("editorText", HtmlUtils.textAreaWithId("mainEditorTextarea").value);
 TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea');
+const saveReplaceRules = () => HtmlUtils.Cookies.set("replaceRules", HtmlUtils.textAreaWithId("replaceRulesTextArea").value);
 HtmlUtils.textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions.replaceRulesTextAreaOnInput);
 TextAreas.setAutoSave('editorText', 'mainEditorTextarea');
 TextAreas.setAutoSave('prompt', 'transcriptionPromptEditor');
