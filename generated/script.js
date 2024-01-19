@@ -355,7 +355,8 @@ var UiFunctions;
             };
             addCtrlZButtonEventListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea);
             addCtrlZButtonEventListener("ctrlZButtonOfPrompt", transcriptionPromptEditor);
-            HtmlUtils.addClickListener(buttonWithId("addReplaceRuleButton"), Buttons.addReplaceRule);
+            HtmlUtils.addClickListener(buttonWithId("addReplaceRuleButton"), addReplaceRule);
+            HtmlUtils.addClickListener(buttonWithId("addWordReplaceRuleButton"), Buttons.addWordReplaceRule);
             function cancelButton() {
                 saveEditor();
                 window.location.reload();
@@ -409,15 +410,20 @@ var UiFunctions;
             });
         };
         // addReplaceRuleButton
-        Buttons.addReplaceRule = () => {
+        const addReplaceRule = (wordsOnly = false) => {
             // add TextArea.selectedText() to the start of the replaceRulesTextArea
             TextAreas.setCursor(replaceRulesTextArea, 0);
             const selectedText = TextAreas.selectedText(mainEditorTextarea);
-            const insertedString = `"\\b${escapeRegExp(selectedText)}\\b"gm->"${selectedText}"\n`;
+            const maybeWordBoundary = wordsOnly ? "\\b" : "";
+            const insertedString = `"${maybeWordBoundary + escapeRegExp(selectedText)
+                + maybeWordBoundary}"gm->"${selectedText}"\n`;
             TextAreas.insertTextAtCursor(replaceRulesTextArea, insertedString);
             replaceRulesTextArea.selectionStart = 0;
             replaceRulesTextArea.selectionEnd = insertedString.length; // was, delete on day: setCursor(12 + selectedText.length);
             // replaceRulesTextArea.focus(); // Taken out b/c this jumps way too much down on mobile.
+        };
+        Buttons.addWordReplaceRule = () => {
+            addReplaceRule(true);
         };
     })(Buttons = UiFunctions.Buttons || (UiFunctions.Buttons = {}));
     var elementWithId = HtmlUtils.elementWithId;
