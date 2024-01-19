@@ -231,5 +231,62 @@ export var HelgeUtils;
             return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
         };
     })(Strings = HelgeUtils.Strings || (HelgeUtils.Strings = {}));
+    let Misc;
+    (function (Misc) {
+        // noinspection SpellCheckingInspection
+        /**
+         * Converts "Du" to "Ich" and "Dein" to "Mein" and so on.
+         */
+        Misc.du2ich = (input, replaceFunction = (rules, input) => new ReplaceByRules.WholeWordReplaceRules(rules).applyTo(input)) => {
+            /**
+             * Only WHOLE words are replaced.
+             */
+            const rules1 = `
+"Dein"->"Mein"
+"Deine"->"Meine"
+"Dich"->"Mich"
+"Dir"->"Mir"
+"Du"->"Ich"
+"findest"->"finde"
+"Liest"->"Lese"
+"Machst"->"Mache"
+"Willst"->"Will"
+"bist"->"bin"
+"dein"->"mein"
+"deine"->"meine"
+"deiner"->"meiner"
+"dich"->"mich"
+"dir"->"mir"
+"du"->"ich"
+"hast"->"habe"
+"liest"->"lese"
+"machst"->"mache"
+"willst"->"will"
+`;
+            /**
+             * Here also partial words are replaced.*/
+            // const rules2 = `
+            //     "I"->"Ist"
+            //     "i"->"ist"
+            // "\\berst\\b"->"x(ersxt)x"
+            // :: Bug: The following does not work for all occurrences: //TODOh
+            // "st\\b"->""
+            // `;
+            // noinspection SpellCheckingInspection
+            /**
+             * Here also partial words are replaced.*/
+            // const rules3 = `
+            // "\\bx\\(ersxt\\)x\\b"->"erst"
+            // `;
+            const applyRules1 = (input) => replaceFunction(rules1, input);
+            // const applyRules2 = (input: string) => ReplaceByRules.withUiLog(rules2, input);
+            // const applyRules3 = (input: string) => ReplaceByRules.withUiLog(rules3, input);
+            return (
+            // applyRules3
+            (
+            // applyRules2
+            (applyRules1(input))));
+        }; //end of namespace du2ich
+    })(Misc = HelgeUtils.Misc || (HelgeUtils.Misc = {}));
 })(HelgeUtils || (HelgeUtils = {}));
 //# sourceMappingURL=HelgeUtils.js.map

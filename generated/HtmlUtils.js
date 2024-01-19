@@ -1,4 +1,4 @@
-// noinspection JSUnusedGlobalSymbols
+// noinspection JSUnusedGlobalSymbols,SpellCheckingInspection
 /** Copyright by Helge Tobias Kosuch 2023
  *
  * Should be named WebUtils... but I am used to HtmlUtils.

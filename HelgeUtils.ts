@@ -249,4 +249,66 @@ Please note that certain strong accents can possibly cause this mode to transcri
       return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
     };
   }
+
+  export namespace Misc {
+    // noinspection SpellCheckingInspection
+    /**
+     * Converts "Du" to "Ich" and "Dein" to "Mein" and so on.
+     */
+    export const du2ich = (input: string,
+         replaceFunction = (rules: string,input: string) =>
+         new ReplaceByRules.WholeWordReplaceRules(rules).applyTo(input)
+    ) => {
+/**
+ * Only WHOLE words are replaced.
+ */
+const rules1 = `
+"Dein"->"Mein"
+"Deine"->"Meine"
+"Dich"->"Mich"
+"Dir"->"Mir"
+"Du"->"Ich"
+"findest"->"finde"
+"Liest"->"Lese"
+"Machst"->"Mache"
+"Willst"->"Will"
+"bist"->"bin"
+"dein"->"mein"
+"deine"->"meine"
+"deiner"->"meiner"
+"dich"->"mich"
+"dir"->"mir"
+"du"->"ich"
+"hast"->"habe"
+"liest"->"lese"
+"machst"->"mache"
+"willst"->"will"
+`;
+      /**
+       * Here also partial words are replaced.*/
+// const rules2 = `
+//     "I"->"Ist"
+//     "i"->"ist"
+// "\\berst\\b"->"x(ersxt)x"
+// :: Bug: The following does not work for all occurrences: //TODOh
+// "st\\b"->""
+// `;
+// noinspection SpellCheckingInspection
+      /**
+       * Here also partial words are replaced.*/
+// const rules3 = `
+// "\\bx\\(ersxt\\)x\\b"->"erst"
+// `;
+      const applyRules1 = (input: string) => replaceFunction(rules1, input);
+// const applyRules2 = (input: string) => ReplaceByRules.withUiLog(rules2, input);
+// const applyRules3 = (input: string) => ReplaceByRules.withUiLog(rules3, input);
+      return (
+// applyRules3
+          (
+// applyRules2
+          (
+              applyRules1(input))));
+    } //end of namespace du2ich
+
+  }
 }

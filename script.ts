@@ -14,62 +14,6 @@ import elementWithId = HtmlUtils.elementWithId;
 const INSERT_EDITOR_INTO_PROMPT = true;
 const VERSION = "Florida";
 
-namespace Pures {
-  // noinspection SpellCheckingInspection
-  export const du2ich = (input: string) => {
-/**
- * Only WHOLE words are replaced.
- */
-const rules1 = `
-"Dein"->"Mein"
-"Deine"->"Meine"
-"Dich"->"Mich"
-"Dir"->"Mir"
-"Du"->"Ich"
-"findest"->"finde"
-"Liest"->"Lese"
-"Machst"->"Mache"
-"Willst"->"Will"
-"bist"->"bin"
-"dein"->"mein"
-"deine"->"meine"
-"deiner"->"meiner"
-"dich"->"mich"
-"dir"->"mir"
-"du"->"ich"
-"hast"->"habe"
-"liest"->"lese"
-"machst"->"mache"
-"willst"->"will"
-`;
-/**
- * Here also partial words are replaced.*/
-// const rules2 = `
-//     "I"->"Ist"
-//     "i"->"ist"
-// "\\berst\\b"->"x(ersxt)x"
-// :: Bug: The following does not work for all occurrences: //TODOh
-// "st\\b"->""
-// `;
-// noinspection SpellCheckingInspection
-    /**
- * Here also partial words are replaced.*/
-// const rules3 = `
-// "\\bx\\(ersxt\\)x\\b"->"erst"
-// `;
-const applyRules1 = (input: string) => ReplaceByRules.onlyWholeWordsWithUiLog(rules1, input);
-// const applyRules2 = (input: string) => ReplaceByRules.withUiLog(rules2, input);
-// const applyRules3 = (input: string) => ReplaceByRules.withUiLog(rules3, input);
-return (
-// applyRules3
-(
-// applyRules2
-(
-applyRules1(input))));
-} //end of namespace du2ich
-
-} //end of namespace Pures
-
 namespace Functions {
   export const applyReplaceRulesToMainEditor = () => {
     const selectionStart = mainEditorTextarea.selectionStart;
@@ -335,7 +279,8 @@ namespace UiFunctions {
       const du2ichMenuItem = () => {
         UiFunctions.closeEditorMenu();
         copyToClipboard(mainEditorTextarea.value).then(() => {
-          mainEditorTextarea.value = Pures.du2ich(mainEditorTextarea.value);
+          mainEditorTextarea.value = HelgeUtils.Misc.du2ich(
+              mainEditorTextarea.value, ReplaceByRules.onlyWholeWordsWithUiLog);
           saveEditor();
         });
       };
