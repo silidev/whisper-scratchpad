@@ -283,6 +283,10 @@ const rules1 = `
 "liest"->"lese"
 "machst"->"mache"
 "willst"->"will"
+"Würdest"->"Würde"
+"Würdest"->"Würde"
+"Kannst"->"Kann"
+"kannst"->"kann"
 `;
       /**
        * Here also partial words are replaced.*/

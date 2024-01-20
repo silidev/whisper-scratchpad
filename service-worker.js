@@ -6,7 +6,7 @@ const urlsToCache = [
     'generated/HelgeUtils.js',
     'generated/HtmlUtils.js',
     'generated/script.js',
-    'icon192x192.png',
+    // 'icon192x192.png',
     'icon512x512.png',
     'index.html',
     'lib/wc-menu-wrapper.min.js',
