@@ -287,6 +287,8 @@ const rules1 = `
 "Würdest"->"Würde"
 "Kannst"->"Kann"
 "kannst"->"kann"
+"wirst"->"werde"
+"Wirst"->"Werde"
 `;
       /**
        * Here also partial words are replaced.*/
