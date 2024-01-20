@@ -161,21 +161,30 @@ export var HelgeUtils;
             }
         }
         ReplaceByRules.WholeWordReplaceRules = WholeWordReplaceRules;
+        class WholeWordPreserveCaseReplaceRules {
+            constructor(rules) {
+                this.rules = rules;
+                this.applyTo = (subject) => {
+                    return ReplaceByRules.replaceByRules(subject, this.rules, true, false, true).resultingText;
+                };
+                this.applyToWithLog = (subject) => {
+                    return ReplaceByRules.replaceByRules(subject, this.rules, true, true, true);
+                };
+            }
+        }
+        ReplaceByRules.WholeWordPreserveCaseReplaceRules = WholeWordPreserveCaseReplaceRules;
         /**
          * Deprecated! Use ReplaceRules or WholeWordReplaceRules instead.
          *
          * Do NOT change the syntax of the rules, because they must be kept compatible with https://github.com/No3371/obsidian-regex-pipeline#readme
          */
-        ReplaceByRules.replaceByRules = (subject, allRules, wholeWords = false, logReplacements = false) => {
+        ReplaceByRules.replaceByRules = (subject, allRules, wholeWords = false, logReplacements = false, preserveCase = false) => {
             const possiblyWordBoundaryMarker = wholeWords ? '\\b' : '';
             let count = 0;
             const ruleParser = /^"(.+?)"([a-z]*?)(?:\r\n|\r|\n)?->(?:\r\n|\r|\n)?"(.*?)"([a-z]*?)(?:\r\n|\r|\n)?$/gmus;
             let log = '';
-            function applyRule(rule) {
-                const target = possiblyWordBoundaryMarker + rule[1] + possiblyWordBoundaryMarker;
-                const regexFlags = rule[2];
-                const replacement = rule[3];
-                const replacementFlags = rule[4];
+            function applyRule(rawTarget, regexFlags, replacementString, replacementFlags) {
+                const target = possiblyWordBoundaryMarker + rawTarget + possiblyWordBoundaryMarker;
                 // console.log("\n" + target + "\n↓↓↓↓↓\n"+ replacement);
                 let regex = regexFlags.length == 0 ?
                     new RegExp(target, 'gm') // Noted that gm flags are basically necessary for this plugin to be useful, you seldom want to replace only 1 occurrence or operate on a note only contains 1 line.
@@ -186,12 +195,16 @@ export var HelgeUtils;
                 if (replacementFlags == 'x')
                     subject = subject.replace(regex, '');
                 else
-                    subject = subject.replace(regex, replacement);
+                    subject = subject.replace(regex, replacementString);
                 count++;
             }
             let rule;
             while (rule = ruleParser.exec(allRules)) {
-                applyRule(rule);
+                const [, target, regexFlags, replacementString, replacementFlags] = rule;
+                applyRule(target, regexFlags, replacementString, replacementFlags);
+                if (preserveCase) {
+                    applyRule(target.toUpperCase(), regexFlags, replacementString.toUpperCase(), replacementFlags);
+                }
             }
             return {
                 resultingText: subject,
@@ -230,6 +243,18 @@ export var HelgeUtils;
     };
     let Strings;
     (function (Strings) {
+        Strings.uppercaseFirstChar = (input) => {
+            if (input.length === 0)
+                return input;
+            const specialChars = {
+                'ü': 'Ü',
+                'ö': 'Ö',
+                'ä': 'Ä'
+            };
+            const firstChar = input.charAt(0);
+            const upperFirstChar = specialChars[firstChar] || firstChar.toLocaleUpperCase();
+            return upperFirstChar + input.slice(1);
+        };
         Strings.escapeRegExp = (str) => {
             return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
         };
@@ -240,24 +265,11 @@ export var HelgeUtils;
         /**
          * Converts "Du" to "Ich" and "Dein" to "Mein" and so on.
          */
-        Misc.du2ich = (input, replaceFunction = (rules, input) => new ReplaceByRules.WholeWordReplaceRules(rules).applyTo(input)) => {
+        Misc.du2ich = (input, replaceFunction = (rules, input) => new ReplaceByRules.WholeWordPreserveCaseReplaceRules(rules).applyTo(input)) => {
             /**
              * Only WHOLE words are replaced.
              */
             const rules1 = `
-"Dein"->"Mein"
-"Deine"->"Meine"
-"Dich"->"Mich"
-"Liest"->"Lese"
-"Dir"->"Mir"
-"Du"->"Ich"
-"Willst"->"Will"
-"Machst"->"Mache"
-"Würdest"->"Würde"
-"Würdest"->"Würde"
-"Kannst"->"Kann"
-"Wirst"->"Werde"
-
 "findest"->"finde"
 "bist"->"bin"
 "dein"->"mein"
@@ -272,7 +284,7 @@ export var HelgeUtils;
 "willst"->"will"
 "kannst"->"kann"
 "wirst"->"werde"
-
+:: by GPT-4:
 "bist"->"bin"
 "hast"->"habe"
 "sagst"->"sage"
@@ -448,8 +460,6 @@ export var HelgeUtils;
 "logisierst"->"logisiere"
 "mathematisierst"->"mathematisiere"
 "digitalisierst"->"digitalisiere"
-
-
 `;
             /**
              * Here also partial words are replaced.*/

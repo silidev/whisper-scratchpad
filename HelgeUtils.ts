@@ -171,24 +171,32 @@ Please note that certain strong accents can possibly cause this mode to transcri
       }
     }
 
+    export class WholeWordPreserveCaseReplaceRules {
+      public constructor(private rules: string) {
+      }
+
+      public applyTo = (subject: string) => {
+        return replaceByRules(subject, this.rules, true, false, true).resultingText;
+      }
+      public applyToWithLog = (subject: string) => {
+        return replaceByRules(subject, this.rules, true, true, true);
+      }
+    }
+
     /**
      * Deprecated! Use ReplaceRules or WholeWordReplaceRules instead.
      *
      * Do NOT change the syntax of the rules, because they must be kept compatible with https://github.com/No3371/obsidian-regex-pipeline#readme
      */
     export const replaceByRules = (subject: string, allRules: string, wholeWords = false
-        , logReplacements = false) => {
+        , logReplacements = false, preserveCase = false) => {
       const possiblyWordBoundaryMarker = wholeWords ? '\\b' : '';
       let count = 0;
       const ruleParser = /^"(.+?)"([a-z]*?)(?:\r\n|\r|\n)?->(?:\r\n|\r|\n)?"(.*?)"([a-z]*?)(?:\r\n|\r|\n)?$/gmus;
       let log = '';
 
-      function applyRule(rule: RegExpExecArray) {
-        const target = possiblyWordBoundaryMarker + rule[1] + possiblyWordBoundaryMarker;
-        const regexFlags = rule[2];
-        const replacement = rule[3];
-        const replacementFlags = rule[4];
-
+      function applyRule(rawTarget: string, regexFlags: string, replacementString: string, replacementFlags: string) {
+        const target = possiblyWordBoundaryMarker + rawTarget + possiblyWordBoundaryMarker;
         // console.log("\n" + target + "\n↓↓↓↓↓\n"+ replacement);
         let regex = regexFlags.length == 0 ?
             new RegExp(target, 'gm') // Noted that gm flags are basically necessary for this plugin to be useful, you seldom want to replace only 1 occurrence or operate on a note only contains 1 line.
@@ -199,13 +207,22 @@ Please note that certain strong accents can possibly cause this mode to transcri
         if (replacementFlags == 'x')
           subject = subject.replace(regex, '');
         else
-          subject = subject.replace(regex, replacement);
+          subject = subject.replace(regex, replacementString);
         count++;
       }
 
       let rule: RegExpExecArray;
       while (rule = ruleParser.exec(allRules)) {
-        applyRule(rule);
+        const [
+          , target
+          , regexFlags
+          , replacementString
+          , replacementFlags
+        ] = rule;
+        applyRule(target, regexFlags, replacementString, replacementFlags);
+        if (preserveCase) {
+          applyRule(target.toUpperCase(), regexFlags, replacementString.toUpperCase(), replacementFlags);
+        }
       }
       return {
         resultingText: subject,
@@ -249,6 +266,21 @@ Please note that certain strong accents can possibly cause this mode to transcri
   };
 
   export namespace Strings {
+    export const uppercaseFirstChar = (input: string): string => {
+      if (input.length === 0) return input;
+
+      const specialChars: { [key: string]: string } = {
+        'ü': 'Ü',
+        'ö': 'Ö',
+        'ä': 'Ä'
+      };
+
+      const firstChar = input.charAt(0);
+      const upperFirstChar = specialChars[firstChar] || firstChar.toLocaleUpperCase();
+
+      return upperFirstChar + input.slice(1);
+    };
+
     export const escapeRegExp = (str: string): string => {
       return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
     };
@@ -261,25 +293,12 @@ Please note that certain strong accents can possibly cause this mode to transcri
      */
     export const du2ich = (input: string,
          replaceFunction = (rules: string,input: string) =>
-         new ReplaceByRules.WholeWordReplaceRules(rules).applyTo(input)
+         new ReplaceByRules.WholeWordPreserveCaseReplaceRules(rules).applyTo(input)
     ) => {
 /**
  * Only WHOLE words are replaced.
  */
 const rules1 = `
-"Dein"->"Mein"
-"Deine"->"Meine"
-"Dich"->"Mich"
-"Liest"->"Lese"
-"Dir"->"Mir"
-"Du"->"Ich"
-"Willst"->"Will"
-"Machst"->"Mache"
-"Würdest"->"Würde"
-"Würdest"->"Würde"
-"Kannst"->"Kann"
-"Wirst"->"Werde"
-
 "findest"->"finde"
 "bist"->"bin"
 "dein"->"mein"
@@ -294,7 +313,7 @@ const rules1 = `
 "willst"->"will"
 "kannst"->"kann"
 "wirst"->"werde"
-
+:: by GPT-4:
 "bist"->"bin"
 "hast"->"habe"
 "sagst"->"sage"
@@ -470,8 +489,6 @@ const rules1 = `
 "logisierst"->"logisiere"
 "mathematisierst"->"mathematisiere"
 "digitalisierst"->"digitalisiere"
-
-
 `;
       /**
        * Here also partial words are replaced.*/
