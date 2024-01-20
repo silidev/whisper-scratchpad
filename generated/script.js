@@ -10,7 +10,7 @@ var escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 var elementWithId = HtmlUtils.elementWithId;
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
-const VERSION = "Florida";
+const VERSION = "Bunny";
 var Functions;
 (function (Functions) {
     Functions.applyReplaceRulesToMainEditor = () => {
