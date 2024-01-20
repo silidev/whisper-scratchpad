@@ -256,7 +256,7 @@ var UiFunctions;
             const du2ichMenuItem = () => {
                 UiFunctions.closeEditorMenu();
                 copyToClipboard(mainEditorTextarea.value).then(() => {
-                    mainEditorTextarea.value = HelgeUtils.Misc.du2ich(mainEditorTextarea.value, ReplaceByRules.onlyWholeWordsWithUiLog);
+                    mainEditorTextarea.value = HelgeUtils.Misc.du2ich(mainEditorTextarea.value, ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog);
                     saveEditor();
                 });
             };
@@ -454,9 +454,9 @@ var Log;
 })(Log || (Log = {}));
 var ReplaceByRules;
 (function (ReplaceByRules) {
-    function withUiLog(rules, subject, wholeWords = false) {
+    function withUiLog(rules, subject, wholeWords = false, preserveCase = false) {
         const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked;
-        const retVal = HelgeUtils.ReplaceByRules.replaceByRules(subject, rules, wholeWords, logFlag);
+        const retVal = HelgeUtils.ReplaceByRules.replaceByRules(subject, rules, wholeWords, logFlag, preserveCase);
         Log.write(retVal.log);
         return retVal.resultingText;
     }
@@ -465,6 +465,10 @@ var ReplaceByRules;
         return withUiLog(rules, subject, true);
     }
     ReplaceByRules.onlyWholeWordsWithUiLog = onlyWholeWordsWithUiLog;
+    function onlyWholeWordsPreserveCaseWithUiLog(rules, subject) {
+        return withUiLog(rules, subject, true, true);
+    }
+    ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog = onlyWholeWordsPreserveCaseWithUiLog;
 })(ReplaceByRules || (ReplaceByRules = {}));
 const getApiKey = () => HtmlUtils.Cookies.get(apiSelector.value + 'ApiKey');
 const setApiKeyCookie = (apiKey) => {

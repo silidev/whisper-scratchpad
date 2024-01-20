@@ -221,7 +221,9 @@ Please note that certain strong accents can possibly cause this mode to transcri
         ] = rule;
         applyRule(target, regexFlags, replacementString, replacementFlags);
         if (preserveCase) {
-          applyRule(target.toUpperCase(), regexFlags, replacementString.toUpperCase(), replacementFlags);
+          applyRule(
+              Strings.toUppercaseFirstChar(target), regexFlags,
+              Strings.toUppercaseFirstChar(replacementString), replacementFlags);
         }
       }
       return {
@@ -266,7 +268,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
   };
 
   export namespace Strings {
-    export const uppercaseFirstChar = (input: string): string => {
+    export const toUppercaseFirstChar = (input: string): string => {
       if (input.length === 0) return input;
 
       const specialChars: { [key: string]: string } = {
@@ -276,9 +278,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
       };
 
       const firstChar = input.charAt(0);
-      const upperFirstChar = specialChars[firstChar] || firstChar.toLocaleUpperCase();
-
-      return upperFirstChar + input.slice(1);
+      return (specialChars[firstChar] || firstChar.toLocaleUpperCase()) + input.slice(1);
     };
 
     export const escapeRegExp = (str: string): string => {

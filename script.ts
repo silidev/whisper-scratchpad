@@ -280,7 +280,7 @@ namespace UiFunctions {
         UiFunctions.closeEditorMenu();
         copyToClipboard(mainEditorTextarea.value).then(() => {
           mainEditorTextarea.value = HelgeUtils.Misc.du2ich(
-              mainEditorTextarea.value, ReplaceByRules.onlyWholeWordsWithUiLog);
+              mainEditorTextarea.value, ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog);
           saveEditor();
         });
       };
@@ -518,16 +518,20 @@ namespace ReplaceByRules {
   // Overload signatures
   export function withUiLog(rules: string, subject: string): string;
   export function withUiLog(rules: string, subject: string, wholeWords: boolean): string;
+  export function withUiLog(rules: string, subject: string, wholeWords: boolean, preserveCase: boolean): string;
 
-  export function withUiLog(rules: string, subject: string, wholeWords: boolean = false): string {
+  export function withUiLog(rules: string, subject: string, wholeWords = false, preserveCase = false): string {
     const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked;
-    const retVal = HelgeUtils.ReplaceByRules.replaceByRules(subject, rules, wholeWords, logFlag);
+    const retVal = HelgeUtils.ReplaceByRules.replaceByRules(subject, rules, wholeWords, logFlag, preserveCase);
     Log.write(retVal.log);
     return retVal.resultingText;
   }
 
   export function onlyWholeWordsWithUiLog(rules: string, subject: string) {
     return withUiLog(rules, subject, true);
+  }
+  export function onlyWholeWordsPreserveCaseWithUiLog(rules: string, subject: string) {
+    return withUiLog(rules, subject, true, true);
   }
 }
 

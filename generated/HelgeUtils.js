@@ -203,7 +203,7 @@ export var HelgeUtils;
                 const [, target, regexFlags, replacementString, replacementFlags] = rule;
                 applyRule(target, regexFlags, replacementString, replacementFlags);
                 if (preserveCase) {
-                    applyRule(target.toUpperCase(), regexFlags, replacementString.toUpperCase(), replacementFlags);
+                    applyRule(Strings.toUppercaseFirstChar(target), regexFlags, Strings.toUppercaseFirstChar(replacementString), replacementFlags);
                 }
             }
             return {
@@ -243,7 +243,7 @@ export var HelgeUtils;
     };
     let Strings;
     (function (Strings) {
-        Strings.uppercaseFirstChar = (input) => {
+        Strings.toUppercaseFirstChar = (input) => {
             if (input.length === 0)
                 return input;
             const specialChars = {
@@ -252,8 +252,7 @@ export var HelgeUtils;
                 'ä': 'Ä'
             };
             const firstChar = input.charAt(0);
-            const upperFirstChar = specialChars[firstChar] || firstChar.toLocaleUpperCase();
-            return upperFirstChar + input.slice(1);
+            return (specialChars[firstChar] || firstChar.toLocaleUpperCase()) + input.slice(1);
         };
         Strings.escapeRegExp = (str) => {
             return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
