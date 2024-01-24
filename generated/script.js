@@ -364,14 +364,15 @@ var UiFunctions;
         let CutButton;
         (function (CutButton) {
             //** The text that is expected before and after the text that is cut. */
+            var assertEquals = HelgeUtils.assertEquals;
             const marker = ')))---(((\n';
             /**
              * text.substring(leftIndex, rightIndex) is the string between the markers. */
             let MarkerSearch;
             (function (MarkerSearch) {
                 var assertEquals = HelgeUtils.assertEquals;
-                MarkerSearch.leftIndex = (text, startIndex) => index(text, startIndex, true);
-                MarkerSearch.rightIndex = (text, startIndex) => index(text, startIndex, false);
+                MarkerSearch.leftIndex = (text, startIndex) => index(text, startIndex, false);
+                MarkerSearch.rightIndex = (text, startIndex) => index(text, startIndex, true);
                 /** If search backwards the position after the marker is */
                 const index = (text, startIndex, searchForward) => {
                     const searchBackward = !searchForward;
@@ -409,28 +410,49 @@ var UiFunctions;
                 };
             })(MarkerSearch || (MarkerSearch = {}));
             //** Returns the positions of the adjacent cut markers or the start and end of the text if is no cut marker in that direction. */
-            const positionsOfAdjacentCutMarkersOrEnd = (textArea) => {
+            const toBeCut = (textArea) => {
                 const text = textArea.value;
                 const cursorPosition = textArea.selectionStart;
                 return {
-                    prev: MarkerSearch.leftIndex(text, cursorPosition),
-                    next: MarkerSearch.rightIndex(text, cursorPosition)
+                    left: MarkerSearch.leftIndex(text, cursorPosition),
+                    right: MarkerSearch.rightIndex(text, cursorPosition)
                 };
             };
+            const deleteBetweenMarkers = (left, right, input) => {
+                // Special cases:
+                if (left === 0 && right === input.length)
+                    return '';
+                else if (left === 0)
+                    return input.substring(0, right);
+                else if (right === input.length)
+                    return input.substring(left, input.length);
+                return input.substring(0, left)
+                    + input.substring(right);
+            };
+            const testDeleteBetweenMarkers = () => {
+                const test = (cursorPosition, input, expected) => {
+                    const left = MarkerSearch.leftIndex(input, cursorPosition);
+                    const right = MarkerSearch.rightIndex(input, cursorPosition);
+                    assertEquals(deleteBetweenMarkers(left, right, input), expected);
+                };
+                test(0, "abc" + marker, "abc");
+                // assertEquals(deleteBetweenMarkers(0, 3, "abc"), "abc");
+                // assertEquals(deleteBetweenMarkers(0, 3, "abc" + marker), "abc");
+                // assertEquals(deleteBetweenMarkers(marker.length, marker.length+3, marker + "abc"), "abc");
+            };
             const clickListener = () => {
-                const markerPositions = positionsOfAdjacentCutMarkersOrEnd(mainEditorTextarea);
-                copyToClipboard(inputElementWithId("mainEditorTextarea")
-                    .value.substring(markerPositions.prev + marker.length, markerPositions.next - marker.length)).then(() => {
+                const signalToUserThatItWasCopied = () => {
                     const button = buttonWithId("cutButton");
                     button.innerHTML = '✂<br>✔️';
                     setTimeout(() => {
                         button.innerHTML = '✂<br>Cut';
                     }, 500);
-                    // Delete the text between the markers
-                    mainEditorTextarea.value =
-                        mainEditorTextarea.value.substring(0, markerPositions.prev)
-                            + mainEditorTextarea.value.substring(markerPositions.next - marker.length);
-                    // mainEditorTextarea.value = '';
+                };
+                const indices = toBeCut(mainEditorTextarea);
+                copyToClipboard(inputElementWithId("mainEditorTextarea")
+                    .value.substring(indices.left, indices.right)).then(() => {
+                    signalToUserThatItWasCopied();
+                    mainEditorTextarea.value = deleteBetweenMarkers(indices.left, indices.right, mainEditorTextarea.value);
                     saveEditor();
                     mainEditorTextarea.focus();
                 });
@@ -440,6 +462,7 @@ var UiFunctions;
             };
             CutButton.runTests = () => {
                 MarkerSearch.runTests();
+                testDeleteBetweenMarkers();
             };
         })(CutButton = Buttons.CutButton || (Buttons.CutButton = {}));
     })(Buttons = UiFunctions.Buttons || (UiFunctions.Buttons = {})); // End of Buttons namespace

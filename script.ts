@@ -410,6 +410,7 @@ namespace UiFunctions {
 
     export namespace CutButton {
       //** The text that is expected before and after the text that is cut. */
+      import assertEquals = HelgeUtils.assertEquals;
       const marker = ')))---(((\n';
 
       /**
@@ -417,9 +418,9 @@ namespace UiFunctions {
       namespace MarkerSearch {
         import assertEquals = HelgeUtils.assertEquals;
         export const leftIndex = (text: string, startIndex: number) =>
-            index(text, startIndex, true);
-        export const rightIndex = (text: string, startIndex: number) =>
             index(text, startIndex, false);
+        export const rightIndex = (text: string, startIndex: number) =>
+            index(text, startIndex, true);
 
         /** If search backwards the position after the marker is */
         const index = (text: string, startIndex: number, searchForward: boolean) => {
@@ -463,33 +464,59 @@ namespace UiFunctions {
       }
 
       //** Returns the positions of the adjacent cut markers or the start and end of the text if is no cut marker in that direction. */
-      const positionsOfAdjacentCutMarkersOrEnd = (textArea: HTMLTextAreaElement) => {
+      const toBeCut = (textArea: HTMLTextAreaElement) => {
         const text = textArea.value;
         const cursorPosition = textArea.selectionStart;
 
         return {
-          prev: MarkerSearch.leftIndex(text, cursorPosition),
-          next: MarkerSearch.rightIndex(text, cursorPosition)
+          left: MarkerSearch.leftIndex(text, cursorPosition),
+          right: MarkerSearch.rightIndex(text, cursorPosition)
         };
       };
 
+      const deleteBetweenMarkers = (left: number, right: number , input: string) => {
+        // Special cases:
+        if (left === 0 && right === input.length)
+          return '';
+        else if (left === 0)
+          return input.substring(0,right);
+        else if (right === input.length)
+          return input.substring(left, input.length);
+
+        return input.substring(0, left)
+             + input.substring(right);
+      };
+
+      const testDeleteBetweenMarkers = () => {
+        const test = (cursorPosition: number, input: string, expected: string) => {
+          const left = MarkerSearch.leftIndex(input, cursorPosition);
+          const right = MarkerSearch.rightIndex(input, cursorPosition);
+          assertEquals(deleteBetweenMarkers(left, right, input), expected);
+        }
+        test(0, "abc" + marker, "abc");
+
+        // assertEquals(deleteBetweenMarkers(0, 3, "abc"), "abc");
+        // assertEquals(deleteBetweenMarkers(0, 3, "abc" + marker), "abc");
+        // assertEquals(deleteBetweenMarkers(marker.length, marker.length+3, marker + "abc"), "abc");
+      }
+
       const clickListener = () => {
-        const markerPositions = positionsOfAdjacentCutMarkersOrEnd(mainEditorTextarea);
-        copyToClipboard(inputElementWithId("mainEditorTextarea")
-            .value.substring(
-                markerPositions.prev + marker.length,
-                markerPositions.next - marker.length)
-        ).then(() => {
+
+        const signalToUserThatItWasCopied = () => {
           const button = buttonWithId("cutButton");
           button.innerHTML = '✂<br>✔️';
           setTimeout(() => {
             button.innerHTML = '✂<br>Cut';
           }, 500);
-          // Delete the text between the markers
-          mainEditorTextarea.value =
-              mainEditorTextarea.value.substring(0, markerPositions.prev)
-              + mainEditorTextarea.value.substring(markerPositions.next - marker.length);
-          // mainEditorTextarea.value = '';
+        };
+
+        const indices = toBeCut(mainEditorTextarea);
+        copyToClipboard(inputElementWithId("mainEditorTextarea")
+            .value.substring(indices.left,indices.right)
+        ).then(() => {
+          signalToUserThatItWasCopied();
+
+          mainEditorTextarea.value = deleteBetweenMarkers(indices.left, indices.right, mainEditorTextarea.value);
           saveEditor();
           mainEditorTextarea.focus();
         });
@@ -501,6 +528,7 @@ namespace UiFunctions {
 
       export const runTests = () => {
         MarkerSearch.runTests();
+        testDeleteBetweenMarkers();
       }
     }
   } // End of Buttons namespace
