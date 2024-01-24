@@ -60,11 +60,45 @@ export var HelgeUtils;
                 console.log(err);
             }
         };
+        /**
+         * Displays an alert with the given message and throws the message as an exception.
+         *
+         * @param msg {String} */
+        Exceptions.alertAndThrow = (...msg) => {
+            console.trace();
+            alert(msg);
+            throw new Error(...msg);
+        };
     })(Exceptions = HelgeUtils.Exceptions || (HelgeUtils.Exceptions = {}));
     HelgeUtils.suppressUnusedWarning = (...args) => {
         const flag = false;
         if (flag) {
             console.log(args);
+        }
+    };
+    HelgeUtils.assert = (condition, ...output) => {
+        if (condition)
+            // Everything is fine, just return:
+            return;
+        // It is NOT fine! Throw an error:
+        console.log(...output);
+        HelgeUtils.Exceptions.alertAndThrow(...output);
+    };
+    HelgeUtils.assertEquals = (actual, expected, message = null) => {
+        if (actual !== expected) {
+            if (actual instanceof Date && expected instanceof Date
+                && actual.getTime() === expected.getTime())
+                return;
+            console.log("*************** expected:\n" + expected);
+            console.log("*************** actual  :\n" + actual);
+            if (typeof expected === 'string' && typeof actual === 'string') {
+                const expectedShortened = expected.substring(0, 20).replace(/\n/g, '');
+                const actualShortened = actual.substring(0, 20).replace(/\n/g, '');
+                HelgeUtils.Exceptions.alertAndThrow(message
+                    || `Assertion failed: Expected ${expectedShortened}, but got ${actualShortened}`);
+            }
+            HelgeUtils.Exceptions.alertAndThrow(message
+                || `Assertion failed: Expected ${expected}, but got ${actual}`);
         }
     };
     let Transcription;

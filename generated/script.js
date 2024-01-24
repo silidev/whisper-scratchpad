@@ -29,6 +29,9 @@ var UiFunctions;
         var textAreaWithId = HtmlUtils.textAreaWithId;
         var insertTextAtCursor = HtmlUtils.TextAreas.insertTextAtCursor;
         var copyToClipboard = HtmlUtils.copyToClipboard;
+        Buttons.runTests = () => {
+            CutButton.runTests();
+        };
         let Media;
         (function (Media) {
             let mediaRecorder;
@@ -318,45 +321,7 @@ var UiFunctions;
                 });
             });
             // cutButton
-            const cutButton = () => {
-                //** The text that is expected before and after the text that is cut. */
-                const cutMarker = ')))---(((\n';
-                //** Returns the positions of the adjacent cut markers or the start and end of the text if is no cut marker in that direction. */
-                const positionsOfAdjacentCutMarkersOrEnd = (textArea) => {
-                    const text = textArea.value;
-                    const cursorPosition = textArea.selectionStart;
-                    const findNearestMarker = (startIndex, searchForward) => {
-                        const step = searchForward ? 1 : -1;
-                        for (let i = startIndex; searchForward ? i < text.length : i >= 0; i += step) {
-                            if (text.substring(i, i + cutMarker.length) === cutMarker) {
-                                return i + (searchForward ? cutMarker.length : 0);
-                            }
-                        }
-                        return searchForward ? text.length : 0;
-                    };
-                    return {
-                        prev: findNearestMarker(cursorPosition, false),
-                        next: findNearestMarker(cursorPosition, true)
-                    };
-                };
-                const markerPositions = positionsOfAdjacentCutMarkersOrEnd(mainEditorTextarea);
-                copyToClipboard(inputElementWithId("mainEditorTextarea")
-                    .value.substring(markerPositions.prev + cutMarker.length, markerPositions.next - cutMarker.length)).then(() => {
-                    const button = buttonWithId("cutButton");
-                    button.innerHTML = '✂<br>✔️';
-                    setTimeout(() => {
-                        button.innerHTML = '✂<br>Cut';
-                    }, 500);
-                    // Delete the text between the markers
-                    mainEditorTextarea.value =
-                        mainEditorTextarea.value.substring(0, markerPositions.prev)
-                            + mainEditorTextarea.value.substring(markerPositions.next - cutMarker.length);
-                    // mainEditorTextarea.value = '';
-                    saveEditor();
-                    mainEditorTextarea.focus();
-                });
-            };
-            buttonWithId("cutButton").addEventListener('click', cutButton);
+            UiFunctions.Buttons.CutButton.init();
             // copyButtons
             /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
             const addEventListenerForCopyButton = (buttonId, inputElementId) => {
@@ -396,7 +361,88 @@ var UiFunctions;
         Buttons.addWordReplaceRule = () => {
             addReplaceRule(true);
         };
-    })(Buttons = UiFunctions.Buttons || (UiFunctions.Buttons = {}));
+        let CutButton;
+        (function (CutButton) {
+            //** The text that is expected before and after the text that is cut. */
+            const marker = ')))---(((\n';
+            /**
+             * text.substring(leftIndex, rightIndex) is the string between the markers. */
+            let MarkerSearch;
+            (function (MarkerSearch) {
+                var assertEquals = HelgeUtils.assertEquals;
+                MarkerSearch.leftIndex = (text, startIndex) => index(text, startIndex, true);
+                MarkerSearch.rightIndex = (text, startIndex) => index(text, startIndex, false);
+                /** If search backwards the position after the marker is */
+                const index = (text, startIndex, searchForward) => {
+                    const searchBackward = !searchForward;
+                    if (searchBackward) {
+                        if (startIndex === 0)
+                            return 0;
+                        // If the starIndex is at the start of a marker we want to return the index of the start of the string before this marker:
+                        startIndex--;
+                    }
+                    const step = searchForward ? 1 : -1;
+                    for (let i = startIndex; searchForward ? i < text.length : i >= 0; i += step) {
+                        if (text.substring(i, i + marker.length) === marker) {
+                            return i
+                                + (searchForward ? 0 : marker.length);
+                        }
+                    }
+                    return searchForward ? text.length : 0;
+                };
+                MarkerSearch.runTests = () => {
+                    const test = (input, index, expected) => assertEquals(input.substring(MarkerSearch.leftIndex(input, index), MarkerSearch.rightIndex(input, index)), expected);
+                    {
+                        const inputStr = "abc" + marker;
+                        test(inputStr, 0, "abc");
+                        test(inputStr, 3, "abc");
+                        test(inputStr, 4, "");
+                        test(inputStr, 3 + marker.length, "");
+                        test(inputStr, 3 + marker.length + 1, "");
+                    }
+                    {
+                        const inputStr = marker + "abc";
+                        test(inputStr, 0, "");
+                        test(inputStr, marker.length, "abc");
+                        test(inputStr, marker.length + 3, "abc");
+                    }
+                };
+            })(MarkerSearch || (MarkerSearch = {}));
+            //** Returns the positions of the adjacent cut markers or the start and end of the text if is no cut marker in that direction. */
+            const positionsOfAdjacentCutMarkersOrEnd = (textArea) => {
+                const text = textArea.value;
+                const cursorPosition = textArea.selectionStart;
+                return {
+                    prev: MarkerSearch.leftIndex(text, cursorPosition),
+                    next: MarkerSearch.rightIndex(text, cursorPosition)
+                };
+            };
+            const clickListener = () => {
+                const markerPositions = positionsOfAdjacentCutMarkersOrEnd(mainEditorTextarea);
+                copyToClipboard(inputElementWithId("mainEditorTextarea")
+                    .value.substring(markerPositions.prev + marker.length, markerPositions.next - marker.length)).then(() => {
+                    const button = buttonWithId("cutButton");
+                    button.innerHTML = '✂<br>✔️';
+                    setTimeout(() => {
+                        button.innerHTML = '✂<br>Cut';
+                    }, 500);
+                    // Delete the text between the markers
+                    mainEditorTextarea.value =
+                        mainEditorTextarea.value.substring(0, markerPositions.prev)
+                            + mainEditorTextarea.value.substring(markerPositions.next - marker.length);
+                    // mainEditorTextarea.value = '';
+                    saveEditor();
+                    mainEditorTextarea.focus();
+                });
+            };
+            CutButton.init = () => {
+                buttonWithId("cutButton").addEventListener('click', clickListener);
+            };
+            CutButton.runTests = () => {
+                MarkerSearch.runTests();
+            };
+        })(CutButton = Buttons.CutButton || (Buttons.CutButton = {}));
+    })(Buttons = UiFunctions.Buttons || (UiFunctions.Buttons = {})); // End of Buttons namespace
     var elementWithId = HtmlUtils.elementWithId;
     UiFunctions.closeEditorMenu = () => {
         elementWithId("editorMenuHeading").dispatchEvent(new CustomEvent('rootMenuClose'));
@@ -515,7 +561,11 @@ export const registerServiceWorker = () => {
         });
     }
 };
+const runTests = () => {
+    UiFunctions.Buttons.runTests();
+};
 const init = () => {
+    runTests();
     UiFunctions.Buttons.addButtonEventListeners();
     registerServiceWorker();
     loadFormData();
