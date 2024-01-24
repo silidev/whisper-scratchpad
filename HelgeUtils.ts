@@ -83,8 +83,8 @@ export namespace HelgeUtils {
   export namespace Tests {
     /** Inline this function! */
     export const runTestsOnlyToday = () => {
-      // noinspection JSUnusedLocalSymbols
       const RUN_TESTS = new Date().toISOString().slice(0, 10) === "2024-01-24";
+      suppressUnusedWarning(RUN_TESTS)
     }
 
     export const assert = (condition: boolean, ...output: any[]) => {

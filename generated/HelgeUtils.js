@@ -80,8 +80,8 @@ export var HelgeUtils;
     (function (Tests) {
         /** Inline this function! */
         Tests.runTestsOnlyToday = () => {
-            // noinspection JSUnusedLocalSymbols
             const RUN_TESTS = new Date().toISOString().slice(0, 10) === "2024-01-24";
+            HelgeUtils.suppressUnusedWarning(RUN_TESTS);
         };
         Tests.assert = (condition, ...output) => {
             if (condition)
