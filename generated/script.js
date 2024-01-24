@@ -8,9 +8,12 @@ var blinkSlow = HtmlUtils.blinkSlow;
 var inputElementWithId = HtmlUtils.inputElementWithId;
 var escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 var elementWithId = HtmlUtils.elementWithId;
+/** Inlined from HelgeUtils.Test.runTestsOnlyToday */
+const RUN_TESTS = new Date().toISOString().slice(0, 10) === "2024-01-24";
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
-const VERSION = "Holdemaid";
+// noinspection SpellCheckingInspection
+const VERSION = "Hodor";
 var Functions;
 (function (Functions) {
     Functions.applyReplaceRulesToMainEditor = () => {
@@ -364,13 +367,13 @@ var UiFunctions;
         let CutButton;
         (function (CutButton) {
             //** The text that is expected before and after the text that is cut. */
-            var assertEquals = HelgeUtils.assertEquals;
+            var assertEquals = HelgeUtils.Tests.assertEquals;
             const marker = ')))---(((\n';
             /**
              * text.substring(leftIndex, rightIndex) is the string between the markers. */
             let MarkerSearch;
             (function (MarkerSearch) {
-                var assertEquals = HelgeUtils.assertEquals;
+                var assertEquals = HelgeUtils.Tests.assertEquals;
                 MarkerSearch.leftIndex = (text, startIndex) => index(text, startIndex, false);
                 MarkerSearch.rightIndex = (text, startIndex) => index(text, startIndex, true);
                 /** If search backwards the position after the marker is */
@@ -586,6 +589,8 @@ export const registerServiceWorker = () => {
     }
 };
 const runTests = () => {
+    if (!RUN_TESTS)
+        return;
     UiFunctions.Buttons.runTests();
 };
 const init = () => {

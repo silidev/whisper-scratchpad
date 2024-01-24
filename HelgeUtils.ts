@@ -80,32 +80,40 @@ export namespace HelgeUtils {
     }
   };
 
-  export const assert = (condition: boolean, ...output: any[]) => {
-    if (condition)
-        // Everything is fine, just return:
-      return;
-    // It is NOT fine! Throw an error:
-    console.log(...output);
-    HelgeUtils.Exceptions.alertAndThrow(...output);
-  };
-
-  export const assertEquals = (actual: any, expected: any, message: string = null) => {
-    if (actual !== expected) {
-      if (actual instanceof Date && expected instanceof Date
-          && actual.getTime()===expected.getTime())
-        return;
-      console.log("*************** expected:\n" + expected);
-      console.log("*************** actual  :\n" + actual);
-      if (typeof expected === 'string' && typeof actual === 'string') {
-        const expectedShortened = expected.substring(0, 20).replace(/\n/g, '');
-        const actualShortened = actual.substring(0, 20).replace(/\n/g, '');
-        HelgeUtils.Exceptions.alertAndThrow(message
-            || `Assertion failed: Expected ${expectedShortened}, but got ${actualShortened}`);
-      }
-      HelgeUtils.Exceptions.alertAndThrow(message
-          || `Assertion failed: Expected ${expected}, but got ${actual}`);
+  export namespace Tests {
+    /** Inline this function! */
+    export const runTestsOnlyToday = () => {
+      // noinspection JSUnusedLocalSymbols
+      const RUN_TESTS = new Date().toISOString().slice(0, 10) === "2024-01-24";
     }
-  };
+
+    export const assert = (condition: boolean, ...output: any[]) => {
+      if (condition)
+          // Everything is fine, just return:
+        return;
+      // It is NOT fine! Throw an error:
+      console.log(...output);
+      HelgeUtils.Exceptions.alertAndThrow(...output);
+    };
+
+    export const assertEquals = (actual: any, expected: any, message: string = null) => {
+      if (actual !== expected) {
+        if (actual instanceof Date && expected instanceof Date
+            && actual.getTime()===expected.getTime())
+          return;
+        console.log("*************** expected:\n" + expected);
+        console.log("*************** actual  :\n" + actual);
+        if (typeof expected === 'string' && typeof actual === 'string') {
+          const expectedShortened = expected.substring(0, 20).replace(/\n/g, '');
+          const actualShortened = actual.substring(0, 20).replace(/\n/g, '');
+          HelgeUtils.Exceptions.alertAndThrow(message
+              || `Assertion failed: Expected ${expectedShortened}, but got ${actualShortened}`);
+        }
+        HelgeUtils.Exceptions.alertAndThrow(message
+            || `Assertion failed: Expected ${expected}, but got ${actual}`);
+      }
+    };
+  }
 
   export namespace Transcription {
 

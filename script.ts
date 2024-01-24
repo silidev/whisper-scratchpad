@@ -10,9 +10,13 @@ import inputElementWithId = HtmlUtils.inputElementWithId;
 import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 import elementWithId = HtmlUtils.elementWithId;
 
+/** Inlined from HelgeUtils.Test.runTestsOnlyToday */
+const RUN_TESTS = new Date().toISOString().slice(0, 10) === "2024-01-24";
+
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
-const VERSION = "Holdemaid";
+// noinspection SpellCheckingInspection
+const VERSION = "Hodor";
 
 namespace Functions {
   export const applyReplaceRulesToMainEditor = () => {
@@ -410,13 +414,13 @@ namespace UiFunctions {
 
     export namespace CutButton {
       //** The text that is expected before and after the text that is cut. */
-      import assertEquals = HelgeUtils.assertEquals;
+      import assertEquals = HelgeUtils.Tests.assertEquals;
       const marker = ')))---(((\n';
 
       /**
        * text.substring(leftIndex, rightIndex) is the string between the markers. */
       namespace MarkerSearch {
-        import assertEquals = HelgeUtils.assertEquals;
+        import assertEquals = HelgeUtils.Tests.assertEquals;
         export const leftIndex = (text: string, startIndex: number) =>
             index(text, startIndex, false);
         export const rightIndex = (text: string, startIndex: number) =>
@@ -673,6 +677,7 @@ export const registerServiceWorker = () => {
 };
 
 const runTests = () => {
+  if (!RUN_TESTS) return;
   UiFunctions.Buttons.runTests();
 }
 
