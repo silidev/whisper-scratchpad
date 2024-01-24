@@ -1,3 +1,5 @@
+// noinspection SpellCheckingInspection
+const VERSION = "Saltburn";
 import { sendCtrlZ } from "./DontInspect.js";
 import { HtmlUtils } from "./HtmlUtils.js";
 import { HelgeUtils } from "./HelgeUtils.js";
@@ -12,8 +14,6 @@ var elementWithId = HtmlUtils.elementWithId;
 const RUN_TESTS = new Date().toISOString().slice(0, 10) === "2024-01-24";
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
-// noinspection SpellCheckingInspection
-const VERSION = "Hodor";
 var Functions;
 (function (Functions) {
     Functions.applyReplaceRulesToMainEditor = () => {
@@ -452,11 +452,14 @@ var UiFunctions;
                         button.innerHTML = '✂<br>Cut';
                     }, 500);
                 };
-                const indices = toBeCut(mainEditorTextarea);
+                const copiedRange = toBeCut(mainEditorTextarea);
                 copyToClipboard(inputElementWithId("mainEditorTextarea")
-                    .value.substring(indices.left, indices.right)).then(() => {
+                    .value.substring(copiedRange.left, copiedRange.right)).then(() => {
                     signalToUserThatItWasCopied();
-                    mainEditorTextarea.value = deleteBetweenMarkers(indices.left, indices.right, mainEditorTextarea.value);
+                    // mainEditorTextarea.value = deleteBetweenMarkers(copiedRange.left, copiedRange.right, mainEditorTextarea.value);
+                    const selectionStart = copiedRange.left - (copiedRange.left > marker.length ? marker.length : 0);
+                    const selectionEnd = copiedRange.right;
+                    mainEditorTextarea.setSelectionRange(selectionStart, selectionEnd);
                     saveEditor();
                     mainEditorTextarea.focus();
                 });
