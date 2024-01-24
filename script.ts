@@ -354,22 +354,55 @@ namespace UiFunctions {
         });
       });
 
+
+
 // cutButton
-      /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
-      const addEventListenerForCutButton = (buttonId: string, inputElementId: string) => {
-        buttonWithId(buttonId).addEventListener('click', () => {
-          copyToClipboard(inputElementWithId(inputElementId).value).then(() => {
-            buttonWithId(buttonId).innerHTML = '✂<br>Done';
-            setTimeout(() => {
-              buttonWithId(buttonId).innerHTML = '✂<br>Cut';
-            }, 2000);
-            mainEditorTextarea.value = '';
-            saveEditor();
-            mainEditorTextarea.focus();
-          });
+      const cutButton = () => {
+        //** The text that is expected before and after the text that is cut. */
+        const cutMarker = ')))---(((\n';
+
+        //** Returns the positions of the adjacent cut markers or the start and end of the text if is no cut marker in that direction. */
+        const positionsOfAdjacentCutMarkersOrEnd = (textArea: HTMLTextAreaElement) => {
+          const text = textArea.value;
+          const cursorPosition = textArea.selectionStart;
+
+          const findNearestMarker = (startIndex: number, searchForward: boolean) => {
+            const step = searchForward ? 1 : -1;
+            for (let i = startIndex; searchForward ? i < text.length : i >= 0; i += step) {
+              if (text.substring(i, i + cutMarker.length) === cutMarker) {
+                return i + (searchForward ? cutMarker.length : 0);
+              }
+            }
+            return searchForward ? text.length : 0;
+          };
+
+          return {
+            prev: findNearestMarker(cursorPosition, false),
+            next: findNearestMarker(cursorPosition, true)
+          };
+        };
+
+        const markerPositions = positionsOfAdjacentCutMarkersOrEnd(mainEditorTextarea);
+        copyToClipboard(inputElementWithId("mainEditorTextarea")
+          .value.substring(
+              markerPositions.prev+cutMarker.length,
+              markerPositions.next-cutMarker.length)
+        ).then(() => {
+          const button = buttonWithId("cutButton");
+          button.innerHTML = '✂<br>✔️';
+          setTimeout(() => {
+            button.innerHTML = '✂<br>Cut';
+          }, 500);
+          // Delete the text between the markers
+          mainEditorTextarea.value =
+              mainEditorTextarea.value.substring(0, markerPositions.prev)
+              + mainEditorTextarea.value.substring(markerPositions.next-cutMarker.length);
+          // mainEditorTextarea.value = '';
+          saveEditor();
+          mainEditorTextarea.focus();
         });
       };
-      addEventListenerForCutButton("cutButton", "mainEditorTextarea");
+      buttonWithId("cutButton").addEventListener('click', cutButton);
 
 // copyButtons
       /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
