@@ -463,7 +463,9 @@ namespace UiFunctions {
         }
       }
 
-      //** Returns the positions of the adjacent cut markers or the start and end of the text if is no cut marker in that direction. */
+      /** Returns the positions of the adjacent cut markers or
+       * the start and end of the text if is no cut marker in
+       * that direction. */
       const toBeCut = (textArea: HTMLTextAreaElement) => {
         const text = textArea.value;
         const cursorPosition = textArea.selectionStart;
@@ -475,16 +477,11 @@ namespace UiFunctions {
       };
 
       const deleteBetweenMarkers = (left: number, right: number , input: string) => {
-        // Special cases:
-        if (left === 0 && right === input.length)
-          return '';
-        else if (left === 0)
-          return input.substring(0,right);
-        else if (right === input.length)
-          return input.substring(left, input.length);
-
-        return input.substring(0, left)
-             + input.substring(right);
+        const v1 = (input.substring(0, left) + input.substring(right)).replaceAll(marker+marker, marker)
+        if (v1===marker+marker) return "";
+        if (v1.startsWith(marker)) return v1.substring(marker.length);
+        if (v1.endsWith(marker)) return v1.substring(0, v1.length - marker.length);
+        return v1;
       };
 
       const testDeleteBetweenMarkers = () => {
@@ -493,11 +490,10 @@ namespace UiFunctions {
           const right = MarkerSearch.rightIndex(input, cursorPosition);
           assertEquals(deleteBetweenMarkers(left, right, input), expected);
         }
-        test(0, "abc" + marker, "abc");
-
-        // assertEquals(deleteBetweenMarkers(0, 3, "abc"), "abc");
-        // assertEquals(deleteBetweenMarkers(0, 3, "abc" + marker), "abc");
-        // assertEquals(deleteBetweenMarkers(marker.length, marker.length+3, marker + "abc"), "abc");
+        test(0, "abc" + marker, "");
+        test(marker.length, marker + "abc", "");
+        test(marker.length, marker + "abc" + marker, "");
+        test(1+marker.length, "0" + marker + "abc" + marker + "1",  "0"+marker+"1");
       }
 
       const clickListener = () => {
@@ -530,9 +526,8 @@ namespace UiFunctions {
         MarkerSearch.runTests();
         testDeleteBetweenMarkers();
       }
-    }
+    } // End of CutButton namespace
   } // End of Buttons namespace
-
 
   import elementWithId = HtmlUtils.elementWithId;
 
