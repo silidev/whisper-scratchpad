@@ -12,7 +12,7 @@ import elementWithId = HtmlUtils.elementWithId;
 
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
-const VERSION = "Bunny";
+const VERSION = "Holdemaid";
 
 namespace Functions {
   export const applyReplaceRulesToMainEditor = () => {
