@@ -503,26 +503,30 @@ namespace UiFunctions {
 
       const clickListener = () => {
 
-        const signalToUserThatItWasCopied = () => {
-          const button = buttonWithId("cutButton");
-          button.innerHTML = '✂<br>✔️';
-          setTimeout(() => {
-            button.innerHTML = '✂<br>Cut';
-          }, 500);
-        };
+        // Because this seldom does something bad, first backup the whole text to clipboard:
+        copyToClipboard(mainEditorTextarea.value).then(()=>{
 
-        const copiedRange = toBeCut(mainEditorTextarea);
-        copyToClipboard(inputElementWithId("mainEditorTextarea")
-            .value.substring(copiedRange.left,copiedRange.right)
-        ).then(() => {
-          signalToUserThatItWasCopied();
+          const signalToUserThatItWasCopied = () => {
+            const button = buttonWithId("cutButton");
+            button.innerHTML = '✂<br>✔️';
+            setTimeout(() => {
+              button.innerHTML = '✂<br>Cut';
+            }, 500);
+          };
 
-          // mainEditorTextarea.value = deleteBetweenMarkers(copiedRange.left, copiedRange.right, mainEditorTextarea.value);
-          const selectionStart = copiedRange.left - (copiedRange.left > marker.length ? marker.length : 0)
-          const selectionEnd = copiedRange.right;
-          mainEditorTextarea.setSelectionRange(selectionStart, selectionEnd);
-          saveEditor();
-          mainEditorTextarea.focus();
+          const range = toBeCut(mainEditorTextarea);
+          copyToClipboard(inputElementWithId("mainEditorTextarea")
+              .value.substring(range.left,range.right)
+          ).then(() => {
+            signalToUserThatItWasCopied();
+
+            // mainEditorTextarea.value = deleteBetweenMarkers(range.left, range.right, mainEditorTextarea.value);
+            const selectionStart = range.left - (range.left > marker.length ? marker.length : 0)
+            const selectionEnd = range.right;
+            mainEditorTextarea.setSelectionRange(selectionStart, selectionEnd);
+            saveEditor();
+            mainEditorTextarea.focus();
+          });
         });
       };
 
