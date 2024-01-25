@@ -562,5 +562,5 @@ const rules1 = `
           (
               applyRules1(input))));
     } //end of namespace du2ich
-    } //end of namespace Misc
+  } //end of namespace Misc
 }
