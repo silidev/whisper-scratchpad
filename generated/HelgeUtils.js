@@ -526,6 +526,6 @@ export var HelgeUtils;
             // applyRules2
             (applyRules1(input))));
         }; //end of namespace du2ich
-    })(Misc = HelgeUtils.Misc || (HelgeUtils.Misc = {}));
+    })(Misc = HelgeUtils.Misc || (HelgeUtils.Misc = {})); //end of namespace Misc
 })(HelgeUtils || (HelgeUtils = {}));
 //# sourceMappingURL=HelgeUtils.js.map
