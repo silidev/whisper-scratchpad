@@ -1,4 +1,6 @@
-// noinspection SpellCheckingInspection
+// noinspection SpellCheckingInspection,JSUnusedGlobalSymbols
+// noinspection JSUnusedGlobalSymbols
+
 const VERSION = "Saltburn";
 
 import {sendCtrlZ} from "./DontInspect.js";
@@ -40,7 +42,7 @@ namespace UiFunctions {
 
     export const runTests = () => {
       CutButton.runTests();
-    }
+    };
 
     export namespace Media {
       let mediaRecorder: MediaRecorder;
@@ -62,7 +64,7 @@ namespace UiFunctions {
           } else {
             setStopped();
           }
-        }
+        };
         const setRecording = () => {
           setHtmlOfButtonStop('◼<br>Stop');
           setHtmlOfButtonPauseRecord(blinkFast('🔴 Recording') + '<br>|| Pause');
@@ -129,7 +131,7 @@ namespace UiFunctions {
               return removeLastDot(input);
             }
             return input;
-          }
+          };
           const transcriptionText = await HelgeUtils.Transcription.transcribe(
               apiName, audioBlob, getApiKey(), promptForWhisper());
           if (insertAtCursorFlag)
@@ -181,7 +183,7 @@ namespace UiFunctions {
           if (beginPaused) mediaRecorder.pause();
           StateIndicator.update();
         };
-      }
+      };
 
       const startRecording = (beginPaused: boolean = false) => {
         navigator.mediaDevices.getUserMedia({audio: true}).then(getOnStreamReady(beginPaused));
@@ -200,7 +202,7 @@ namespace UiFunctions {
           NotVisibleAtThisTime.showSpinner();
           startRecording();
         }
-      }
+      };
       buttonWithId("stopButton").addEventListener('click', stopButton);
 
       const stop_transcribe_startNewRecording_and_pause = () => {
@@ -225,7 +227,7 @@ namespace UiFunctions {
         } else {
           buttonWithId("stopButton").click();
         }
-      }
+      };
 
       const transcribeButton = () => {
         if (mediaRecorder?.state === 'recording'
@@ -235,7 +237,7 @@ namespace UiFunctions {
           return;
         }
         pauseRecordButton();
-      }
+      };
 
 // ############## transcribeButton ##############
       buttonWithId("transcribeButton").addEventListener('click', transcribeButton);
@@ -348,7 +350,7 @@ namespace UiFunctions {
       HtmlUtils.addClickListener(buttonWithId("addWordReplaceRuleButton"), addWordReplaceRule);
 
       function cancelButton() {
-        saveEditor()
+        saveEditor();
         window.location.reload();
       }
 
@@ -392,7 +394,7 @@ namespace UiFunctions {
       apiSelector.addEventListener('change', () => {
         HtmlUtils.Cookies.set('apiSelector', apiSelector.value);
       });
-    }
+    };
 
 
     // addReplaceRuleButton
@@ -411,7 +413,7 @@ namespace UiFunctions {
     };
     export const addWordReplaceRule = () => {
       addReplaceRule(true);
-    }
+    };
 
     export namespace CutButton {
       //** The text that is expected before and after the text that is cut. */
@@ -482,7 +484,7 @@ namespace UiFunctions {
       };
 
       const deleteBetweenMarkers = (left: number, right: number , input: string) => {
-        const v1 = (input.substring(0, left) + input.substring(right)).replaceAll(marker+marker, marker)
+        const v1 = (input.substring(0, left) + input.substring(right)).replaceAll(marker+marker, marker);
         if (v1===marker+marker) return "";
         if (v1.startsWith(marker)) return v1.substring(marker.length);
         if (v1.endsWith(marker)) return v1.substring(0, v1.length - marker.length);
@@ -494,12 +496,12 @@ namespace UiFunctions {
           const left = MarkerSearch.leftIndex(input, cursorPosition);
           const right = MarkerSearch.rightIndex(input, cursorPosition);
           assertEquals(deleteBetweenMarkers(left, right, input), expected);
-        }
+        };
         test(0, "abc" + marker, "");
         test(marker.length, marker + "abc", "");
         test(marker.length, marker + "abc" + marker, "");
         test(1+marker.length, "0" + marker + "abc" + marker + "1",  "0"+marker+"1");
-      }
+      };
 
       const clickListener = () => {
 
@@ -521,7 +523,7 @@ namespace UiFunctions {
             signalToUserThatItWasCopied();
 
             // mainEditorTextarea.value = deleteBetweenMarkers(range.left, range.right, mainEditorTextarea.value);
-            const selectionStart = range.left - (range.left > marker.length ? marker.length : 0)
+            const selectionStart = range.left - (range.left > marker.length ? marker.length : 0);
             const selectionEnd = range.right;
             mainEditorTextarea.setSelectionRange(selectionStart, selectionEnd);
             saveEditor();
@@ -532,7 +534,7 @@ namespace UiFunctions {
 
       export const init = () => {
         buttonWithId("cutButton").addEventListener('click',clickListener);
-      }
+      };
 
       export const runTests = () => {
         MarkerSearch.runTests();
@@ -552,7 +554,7 @@ namespace UiFunctions {
     const magicText = (numberToMakeItUnique: number) => {
       return `Das hier ist ein ziemlich langer ganz normaler Text, an dem die Rules nichts verändern sollten! Dadurch fail'en auch Rules. und das ist auch gut so.`
           + numberToMakeItUnique;
-    }
+    };
 
     const createTestRule = (numberToMakeItUnique: number) => `\n\n"${escapeRegExp(magicText(numberToMakeItUnique))}"gm->""\n\n`;
     const testRules =
@@ -615,11 +617,11 @@ namespace Log {
     const oldLog = logTextArea.value;
     logTextArea.value = (oldLog + "\n" + message).slice(- MAX_LOG_LEN);
     logTextArea.scrollTop = logTextArea.scrollHeight;
-  }
+  };
 
   export const showLog = () => {
     textAreaWithId("logTextArea").style.display = "block";
-  }
+  };
 
   export const addToggleLogButtonClickListener =
       (textAreaWithId: (id: string) => (HTMLTextAreaElement | null)) => {
@@ -687,7 +689,7 @@ export const registerServiceWorker = () => {
 const runTests = () => {
   if (!RUN_TESTS) return;
   UiFunctions.Buttons.runTests();
-}
+};
 
 const init = () => {
   runTests();
@@ -695,6 +697,6 @@ const init = () => {
   registerServiceWorker();
   loadFormData();
   elementWithId("versionSpan").innerHTML = VERSION;
-}
+};
 
 init();

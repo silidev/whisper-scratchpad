@@ -17,13 +17,13 @@ export namespace HtmlUtils {
    *  animation: blink 1s linear infinite;
    * }
    */
-  export const blinkFast = (message: string) => `<span class="blinkingFast">${message}</span>`
+  export const blinkFast = (message: string) => `<span class="blinkingFast">${message}</span>`;
   /**
    * .blinkingSlow {
    *  animation: blink 2s linear infinite;
    * }
    */
-  export const blinkSlow = (message: string) => `<span class="blinkingSlow">${message}</span>`
+  export const blinkSlow = (message: string) => `<span class="blinkingSlow">${message}</span>`;
 
 
   export const elementWithId = memoize((id: string): HTMLElement | null => {
@@ -56,15 +56,15 @@ export namespace HtmlUtils {
       HtmlUtils.textAreaWithId(id).addEventListener('input', () => {
         Cookies.set(cookieName, HtmlUtils.textAreaWithId(id).value);
       });
-    }
+    };
 
     export const getCursor = (textArea: HTMLTextAreaElement) => {
       return textArea.selectionStart;
-    }
+    };
 
     export const setCursor = (textArea: HTMLTextAreaElement, position: number) => {
       textArea.setSelectionRange(position, position);
-    }
+    };
 
     /**
      * Inserts text at the cursor position in a text area. If something is selected it will be overwritten.

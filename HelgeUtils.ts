@@ -85,7 +85,7 @@ export namespace HelgeUtils {
     export const runTestsOnlyToday = () => {
       const RUN_TESTS = new Date().toISOString().slice(0, 10) === "2024-01-24";
       suppressUnusedWarning(RUN_TESTS)
-    }
+    };
 
     export const assert = (condition: boolean, ...output: any[]) => {
       if (condition)
@@ -199,7 +199,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
 
       public applyTo = (subject: string) => {
         return replaceByRules(subject, this.rules, false, false).resultingText;
-      }
+      };
       public applyToWithLog = (subject: string) => {
         return replaceByRules(subject, this.rules, false, true);
       }
@@ -211,7 +211,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
 
       public applyTo = (subject: string) => {
         return replaceByRules(subject, this.rules, true, false).resultingText;
-      }
+      };
       public applyToWithLog = (subject: string) => {
         return replaceByRules(subject, this.rules, true, true);
       }
@@ -223,7 +223,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
 
       public applyTo = (subject: string) => {
         return replaceByRules(subject, this.rules, true, false, true).resultingText;
-      }
+      };
       public applyToWithLog = (subject: string) => {
         return replaceByRules(subject, this.rules, true, true, true);
       }
@@ -276,7 +276,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
         resultingText: subject,
         log: log
       };
-    }
+    };
 
   /**
    * Deprecated! Use ReplaceRules or WholeWordReplaceRules instead.
@@ -299,7 +299,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
         return result;
       }
     };
-  }
+  };
 
   export const extractHighlights = (input: string): string[] => {
     const regex = /={2,3}([^=]+)={2,3}/g;

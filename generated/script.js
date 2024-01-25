@@ -1,4 +1,5 @@
-// noinspection SpellCheckingInspection
+// noinspection SpellCheckingInspection,JSUnusedGlobalSymbols
+// noinspection JSUnusedGlobalSymbols
 const VERSION = "Saltburn";
 import { sendCtrlZ } from "./DontInspect.js";
 import { HtmlUtils } from "./HtmlUtils.js";

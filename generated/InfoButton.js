@@ -3,6 +3,7 @@ class InfoButton extends HTMLElement {
         super();
         this.shadow = this.attachShadow({ mode: 'open' });
     }
+    // noinspection JSUnusedGlobalSymbols
     connectedCallback() {
         const targetId = this.getAttribute('target-id') || 'default-id';
         const moreInfoLinkText = this.getAttribute('moreInfoLinkText') || 'ⓘ';
