@@ -109,6 +109,23 @@ export var HelgeUtils;
             }
         };
     })(Tests = HelgeUtils.Tests || (HelgeUtils.Tests = {}));
+    let Strings;
+    (function (Strings) {
+        Strings.toUppercaseFirstChar = (input) => {
+            if (input.length === 0)
+                return input;
+            const specialChars = {
+                'ü': 'Ü',
+                'ö': 'Ö',
+                'ä': 'Ä'
+            };
+            const firstChar = input.charAt(0);
+            return (specialChars[firstChar] || firstChar.toLocaleUpperCase()) + input.slice(1);
+        };
+        Strings.escapeRegExp = (str) => {
+            return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+        };
+    })(Strings = HelgeUtils.Strings || (HelgeUtils.Strings = {}));
     let Transcription;
     (function (Transcription) {
         class TranscriptionError extends Error {
@@ -283,23 +300,6 @@ export var HelgeUtils;
         }
         return matches;
     };
-    let Strings;
-    (function (Strings) {
-        Strings.toUppercaseFirstChar = (input) => {
-            if (input.length === 0)
-                return input;
-            const specialChars = {
-                'ü': 'Ü',
-                'ö': 'Ö',
-                'ä': 'Ä'
-            };
-            const firstChar = input.charAt(0);
-            return (specialChars[firstChar] || firstChar.toLocaleUpperCase()) + input.slice(1);
-        };
-        Strings.escapeRegExp = (str) => {
-            return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-        };
-    })(Strings = HelgeUtils.Strings || (HelgeUtils.Strings = {}));
     let Misc;
     (function (Misc) {
         // noinspection SpellCheckingInspection

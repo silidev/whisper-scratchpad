@@ -115,6 +115,26 @@ export namespace HelgeUtils {
     };
   }
 
+  export namespace Strings {
+    export const toUppercaseFirstChar = (input: string): string => {
+      if (input.length === 0) return input;
+
+      const specialChars: { [key: string]: string } = {
+        'ü': 'Ü',
+        'ö': 'Ö',
+        'ä': 'Ä'
+      };
+
+      const firstChar = input.charAt(0);
+      return (specialChars[firstChar] || firstChar.toLocaleUpperCase()) + input.slice(1);
+    };
+
+    export const escapeRegExp = (str: string): string => {
+      return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+    };
+  }
+
+
   export namespace Transcription {
 
     export class TranscriptionError extends Error {
@@ -312,25 +332,6 @@ Please note that certain strong accents can possibly cause this mode to transcri
 
     return matches;
   };
-
-  export namespace Strings {
-    export const toUppercaseFirstChar = (input: string): string => {
-      if (input.length === 0) return input;
-
-      const specialChars: { [key: string]: string } = {
-        'ü': 'Ü',
-        'ö': 'Ö',
-        'ä': 'Ä'
-      };
-
-      const firstChar = input.charAt(0);
-      return (specialChars[firstChar] || firstChar.toLocaleUpperCase()) + input.slice(1);
-    };
-
-    export const escapeRegExp = (str: string): string => {
-      return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-    };
-  }
 
   export namespace Misc {
     // noinspection SpellCheckingInspection
