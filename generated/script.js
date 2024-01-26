@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2024 by Helge Tobias Kosuch
+ */
 // noinspection SpellCheckingInspection,JSUnusedGlobalSymbols
 // noinspection JSUnusedGlobalSymbols
 const VERSION = "Saltburn";
@@ -396,20 +399,20 @@ var UiFunctions;
                     return searchForward ? text.length : 0;
                 };
                 MarkerSearch.runTests = () => {
-                    const test = (input, index, expected) => assertEquals(input.substring(MarkerSearch.leftIndex(input, index), MarkerSearch.rightIndex(input, index)), expected);
+                    const runTest = (input, index, expected) => assertEquals(input.substring(MarkerSearch.leftIndex(input, index), MarkerSearch.rightIndex(input, index)), expected);
                     {
                         const inputStr = "abc" + marker;
-                        test(inputStr, 0, "abc");
-                        test(inputStr, 3, "abc");
-                        test(inputStr, 4, "");
-                        test(inputStr, 3 + marker.length, "");
-                        test(inputStr, 3 + marker.length + 1, "");
+                        runTest(inputStr, 0, "abc");
+                        runTest(inputStr, 3, "abc");
+                        runTest(inputStr, 4, "");
+                        runTest(inputStr, 3 + marker.length, "");
+                        runTest(inputStr, 3 + marker.length + 1, "");
                     }
                     {
                         const inputStr = marker + "abc";
-                        test(inputStr, 0, "");
-                        test(inputStr, marker.length, "abc");
-                        test(inputStr, marker.length + 3, "abc");
+                        runTest(inputStr, 0, "");
+                        runTest(inputStr, marker.length, "abc");
+                        runTest(inputStr, marker.length + 3, "abc");
                     }
                 };
             })(MarkerSearch || (MarkerSearch = {}));
@@ -435,15 +438,15 @@ var UiFunctions;
                 return v1;
             };
             const testDeleteBetweenMarkers = () => {
-                const test = (cursorPosition, input, expected) => {
+                const runTest = (cursorPosition, input, expected) => {
                     const left = MarkerSearch.leftIndex(input, cursorPosition);
                     const right = MarkerSearch.rightIndex(input, cursorPosition);
                     assertEquals(deleteBetweenMarkers(left, right, input), expected);
                 };
-                test(0, "abc" + marker, "");
-                test(marker.length, marker + "abc", "");
-                test(marker.length, marker + "abc" + marker, "");
-                test(1 + marker.length, "0" + marker + "abc" + marker + "1", "0" + marker + "1");
+                runTest(0, "abc" + marker, "");
+                runTest(marker.length, marker + "abc", "");
+                runTest(marker.length, marker + "abc" + marker, "");
+                runTest(1 + marker.length, "0" + marker + "abc" + marker + "1", "0" + marker + "1");
             };
             const clickListener = () => {
                 // Because this seldom does something bad, first backup the whole text to clipboard:

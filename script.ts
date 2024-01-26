@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2024 by Helge Tobias Kosuch
+ */
+
 // noinspection SpellCheckingInspection,JSUnusedGlobalSymbols
 // noinspection JSUnusedGlobalSymbols
 
@@ -447,24 +451,24 @@ namespace UiFunctions {
         };
 
         export const runTests = () => {
-          const test = (input: string, index: number, expected: string) =>
+          const runTest = (input: string, index: number, expected: string) =>
               assertEquals(input.substring(
                       leftIndex(input, index),
                       rightIndex(input, index)),
                   expected);
           {
             const inputStr = "abc" + marker;
-            test(inputStr, 0, "abc");
-            test(inputStr, 3, "abc");
-            test(inputStr, 4, "");
-            test(inputStr, 3+marker.length, "");
-            test(inputStr, 3+marker.length+1, "");
+            runTest(inputStr, 0, "abc");
+            runTest(inputStr, 3, "abc");
+            runTest(inputStr, 4, "");
+            runTest(inputStr, 3+marker.length, "");
+            runTest(inputStr, 3+marker.length+1, "");
           }
           {
             const inputStr =  marker + "abc";
-            test(inputStr, 0, "");
-            test(inputStr, marker.length, "abc");
-            test(inputStr, marker.length+3, "abc");
+            runTest(inputStr, 0, "");
+            runTest(inputStr, marker.length, "abc");
+            runTest(inputStr, marker.length+3, "abc");
           }
         }
       }
@@ -491,15 +495,15 @@ namespace UiFunctions {
       };
 
       const testDeleteBetweenMarkers = () => {
-        const test = (cursorPosition: number, input: string, expected: string) => {
+        const runTest = (cursorPosition: number, input: string, expected: string) => {
           const left = MarkerSearch.leftIndex(input, cursorPosition);
           const right = MarkerSearch.rightIndex(input, cursorPosition);
           assertEquals(deleteBetweenMarkers(left, right, input), expected);
         };
-        test(0, "abc" + marker, "");
-        test(marker.length, marker + "abc", "");
-        test(marker.length, marker + "abc" + marker, "");
-        test(1+marker.length, "0" + marker + "abc" + marker + "1",  "0"+marker+"1");
+        runTest(0, "abc" + marker, "");
+        runTest(marker.length, marker + "abc", "");
+        runTest(marker.length, marker + "abc" + marker, "");
+        runTest(1+marker.length, "0" + marker + "abc" + marker + "1",  "0"+marker+"1");
       };
 
       const clickListener = () => {
