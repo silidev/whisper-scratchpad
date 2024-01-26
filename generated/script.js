@@ -453,7 +453,14 @@ var UiFunctions;
                         .substring(delimiters.left, delimiters.right)
                         .trim()).then(() => {
                         HtmlUtils.signalClickToUser(buttonWithId("cutButton"));
-                        // mainEditorTextarea.value = deleteBetweenMarkers(delimiters.left, delimiters.right, mainEditorTextarea.value);
+                        {
+                            /** If DELETE==true, the text between the markers is deleted. Do NOT use this yet because sometimes
+                             * something goes wrong. */
+                            const DELETE = true;
+                            if (DELETE)
+                                mainEditorTextarea.value =
+                                    deleteBetweenMarkers(delimiters.left, delimiters.right, mainEditorTextarea.value);
+                        }
                         const selectionStart = delimiters.left - (delimiters.left > marker.length ? marker.length : 0);
                         const selectionEnd = delimiters.right;
                         mainEditorTextarea.setSelectionRange(selectionStart, selectionEnd);
