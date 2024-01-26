@@ -416,7 +416,7 @@ var UiFunctions;
             /** Returns the positions of the adjacent cut markers or
              * the start and end of the text if is no cut marker in
              * that direction. */
-            const searchDelimiters = (textArea) => {
+            const startAndEndIndexOfTextBetweenMarkers = (textArea) => {
                 const text = textArea.value;
                 const cursorPosition = textArea.selectionStart;
                 return {
@@ -448,10 +448,11 @@ var UiFunctions;
             const clickListener = () => {
                 // Because this seldom does something bad, first backup the whole text to clipboard:
                 copyToClipboard(mainEditorTextarea.value).then(() => {
-                    const betweenMarkers = searchDelimiters(mainEditorTextarea);
-                    copyToClipboard(inputElementWithId("mainEditorTextarea").value
+                    const betweenMarkers = startAndEndIndexOfTextBetweenMarkers(mainEditorTextarea);
+                    const trimmedText = () => inputElementWithId("mainEditorTextarea").value
                         .substring(betweenMarkers.left, betweenMarkers.right)
-                        .trim()).then(() => {
+                        .trim();
+                    copyToClipboard(trimmedText()).then(() => {
                         HtmlUtils.signalClickToUser(buttonWithId("cutButton"));
                         {
                             /** If DELETE==true, the text between the markers is deleted. Do NOT use this yet because sometimes
