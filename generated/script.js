@@ -416,7 +416,7 @@ var UiFunctions;
             /** Returns the positions of the adjacent cut markers or
              * the start and end of the text if is no cut marker in
              * that direction. */
-            const toBeCopied = (textArea) => {
+            const searchDelimiters = (textArea) => {
                 const text = textArea.value;
                 const cursorPosition = textArea.selectionStart;
                 return {
@@ -455,13 +455,14 @@ var UiFunctions;
                             button.innerHTML = '✂<br>Cut';
                         }, 500);
                     };
-                    const range = toBeCopied(mainEditorTextarea);
-                    copyToClipboard(inputElementWithId("mainEditorTextarea")
-                        .value.substring(range.left, range.right)).then(() => {
+                    const delimiters = searchDelimiters(mainEditorTextarea);
+                    copyToClipboard(inputElementWithId("mainEditorTextarea").value
+                        .substring(delimiters.left, delimiters.right)
+                        .trim()).then(() => {
                         signalToUserThatItWasCopied();
-                        // mainEditorTextarea.value = deleteBetweenMarkers(range.left, range.right, mainEditorTextarea.value);
-                        const selectionStart = range.left - (range.left > marker.length ? marker.length : 0);
-                        const selectionEnd = range.right;
+                        // mainEditorTextarea.value = deleteBetweenMarkers(delimiters.left, delimiters.right, mainEditorTextarea.value);
+                        const selectionStart = delimiters.left - (delimiters.left > marker.length ? marker.length : 0);
+                        const selectionEnd = delimiters.right;
                         mainEditorTextarea.setSelectionRange(selectionStart, selectionEnd);
                         saveEditor();
                         mainEditorTextarea.focus();
