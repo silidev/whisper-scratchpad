@@ -111,6 +111,7 @@ export var HelgeUtils;
     })(Tests = HelgeUtils.Tests || (HelgeUtils.Tests = {}));
     let Strings;
     (function (Strings) {
+        var assertEquals = HelgeUtils.Tests.assertEquals;
         Strings.toUppercaseFirstChar = (input) => {
             if (input.length === 0)
                 return input;
@@ -125,6 +126,58 @@ export var HelgeUtils;
         Strings.escapeRegExp = (str) => {
             return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
         };
+        /**
+         * text.substring(leftIndex, rightIndex) is the string between the delimiters. */
+        class DelimiterSearch {
+            constructor(delimiter) {
+                this.delimiter = delimiter;
+            }
+            leftIndex(text, startIndex) {
+                return DelimiterSearch.index(this.delimiter, text, startIndex, false);
+            }
+            rightIndex(text, startIndex) {
+                return DelimiterSearch.index(this.delimiter, text, startIndex, true);
+            }
+            /** If search backwards the position after the delimiter is */
+            static index(delimiter, text, startIndex, searchForward) {
+                const searchBackward = !searchForward;
+                if (searchBackward) {
+                    if (startIndex === 0)
+                        return 0;
+                    // If the starIndex is at the start of a delimiter we want to return the index of the start of the string before this delimiter:
+                    startIndex--;
+                }
+                const step = searchForward ? 1 : -1;
+                for (let i = startIndex; searchForward ? i < text.length : i >= 0; i += step) {
+                    if (text.substring(i, i + delimiter.length) === delimiter) {
+                        return i
+                            + (searchForward ? 0 : delimiter.length);
+                    }
+                }
+                return searchForward ? text.length : 0;
+            }
+            ;
+        }
+        DelimiterSearch.runTests = () => {
+            const delimiter = '---\n';
+            const instance = new DelimiterSearch(delimiter);
+            const runTest = (input, index, expected) => assertEquals(input.substring(instance.leftIndex(input, index), instance.rightIndex(input, index)), expected);
+            {
+                const inputStr = "abc" + delimiter;
+                runTest(inputStr, 0, "abc");
+                runTest(inputStr, 3, "abc");
+                runTest(inputStr, 4, "");
+                runTest(inputStr, 3 + delimiter.length, "");
+                runTest(inputStr, 3 + delimiter.length + 1, "");
+            }
+            {
+                const inputStr = delimiter + "abc";
+                runTest(inputStr, 0, "");
+                runTest(inputStr, delimiter.length, "abc");
+                runTest(inputStr, delimiter.length + 3, "abc");
+            }
+        };
+        Strings.DelimiterSearch = DelimiterSearch;
     })(Strings = HelgeUtils.Strings || (HelgeUtils.Strings = {}));
     let Transcription;
     (function (Transcription) {

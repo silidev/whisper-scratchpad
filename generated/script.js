@@ -372,58 +372,7 @@ var UiFunctions;
         (function (CutButton) {
             //** The text that is expected before and after the text that is cut. */
             var assertEquals = HelgeUtils.Tests.assertEquals;
-            /**
-             * text.substring(leftIndex, rightIndex) is the string between the markers. */
-            class DelimiterSearch {
-                constructor(delimiter) {
-                    this.delimiter = delimiter;
-                }
-                leftIndex(text, startIndex) {
-                    return DelimiterSearch.index(this.delimiter, text, startIndex, false);
-                }
-                rightIndex(text, startIndex) {
-                    return DelimiterSearch.index(this.delimiter, text, startIndex, true);
-                }
-                /** If search backwards the position after the delimiter is */
-                static index(delimiter, text, startIndex, searchForward) {
-                    const searchBackward = !searchForward;
-                    if (searchBackward) {
-                        if (startIndex === 0)
-                            return 0;
-                        // If the starIndex is at the start of a delimiter we want to return the index of the start of the string before this delimiter:
-                        startIndex--;
-                    }
-                    const step = searchForward ? 1 : -1;
-                    for (let i = startIndex; searchForward ? i < text.length : i >= 0; i += step) {
-                        if (text.substring(i, i + delimiter.length) === delimiter) {
-                            return i
-                                + (searchForward ? 0 : delimiter.length);
-                        }
-                    }
-                    return searchForward ? text.length : 0;
-                }
-                ;
-            }
-            DelimiterSearch.runTests = () => {
-                const delimiter = '---\n';
-                const instance = new DelimiterSearch(delimiter);
-                const runTest = (input, index, expected) => assertEquals(input.substring(instance.leftIndex(input, index), instance.rightIndex(input, index)), expected);
-                {
-                    const inputStr = "abc" + delimiter;
-                    runTest(inputStr, 0, "abc");
-                    runTest(inputStr, 3, "abc");
-                    runTest(inputStr, 4, "");
-                    runTest(inputStr, 3 + delimiter.length, "");
-                    runTest(inputStr, 3 + delimiter.length + 1, "");
-                }
-                {
-                    const inputStr = delimiter + "abc";
-                    runTest(inputStr, 0, "");
-                    runTest(inputStr, delimiter.length, "abc");
-                    runTest(inputStr, delimiter.length + 3, "abc");
-                }
-            };
-            CutButton.DelimiterSearch = DelimiterSearch;
+            var Strings = HelgeUtils.Strings;
             const newNoteDelimiter = ')))---(((\n';
             /** Returns the positions of the adjacent cut markers or
              * the start and end of the text if is no cut marker in
@@ -431,7 +380,7 @@ var UiFunctions;
             const startAndEndIndexOfTextBetweenDelimiters = (textArea) => {
                 const text = textArea.value;
                 const cursorPosition = textArea.selectionStart;
-                const markerSearch = new DelimiterSearch(newNoteDelimiter);
+                const markerSearch = new Strings.DelimiterSearch(newNoteDelimiter);
                 return {
                     left: markerSearch.leftIndex(text, cursorPosition),
                     right: markerSearch.rightIndex(text, cursorPosition)
@@ -449,9 +398,9 @@ var UiFunctions;
             };
             const testDeleteBetweenDelimiters = () => {
                 const runTest = (cursorPosition, input, expected) => {
-                    const markerSearch = new DelimiterSearch(newNoteDelimiter);
-                    const left = markerSearch.leftIndex(input, cursorPosition);
-                    const right = markerSearch.rightIndex(input, cursorPosition);
+                    const delimiterSearch = new Strings.DelimiterSearch(newNoteDelimiter);
+                    const left = delimiterSearch.leftIndex(input, cursorPosition);
+                    const right = delimiterSearch.rightIndex(input, cursorPosition);
                     assertEquals(deleteBetweenDelimiters(left, right, input), expected);
                 };
                 runTest(0, "abc" + newNoteDelimiter, "");
@@ -488,7 +437,7 @@ var UiFunctions;
                 buttonWithId("cutButton").addEventListener('click', clickListener);
             };
             CutButton.runTests = () => {
-                DelimiterSearch.runTests();
+                Strings.DelimiterSearch.runTests();
                 testDeleteBetweenDelimiters();
             };
         })(CutButton = Buttons.CutButton || (Buttons.CutButton = {})); // End of CutButton namespace

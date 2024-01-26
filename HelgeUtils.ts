@@ -116,6 +116,7 @@ export namespace HelgeUtils {
   }
 
   export namespace Strings {
+    import assertEquals = HelgeUtils.Tests.assertEquals;
     export const toUppercaseFirstChar = (input: string): string => {
       if (input.length === 0) return input;
 
@@ -133,9 +134,64 @@ export namespace HelgeUtils {
       return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
     };
 
+    /**
+     * text.substring(leftIndex, rightIndex) is the string between the delimiters. */
+    export class DelimiterSearch {
+      constructor(public delimiter: string) {
+      }
 
+      public leftIndex(text: string, startIndex: number) {
+        return DelimiterSearch.index(this.delimiter, text, startIndex, false);
+      }
+
+      public rightIndex(text: string, startIndex: number) {
+        return DelimiterSearch.index(this.delimiter, text, startIndex, true);
+      }
+
+      /** If search backwards the position after the delimiter is */
+      static index(delimiter: string, text: string, startIndex: number, searchForward: boolean) {
+        const searchBackward = !searchForward;
+        if (searchBackward) {
+          if (startIndex === 0) return 0;
+          // If the starIndex is at the start of a delimiter we want to return the index of the start of the string before this delimiter:
+          startIndex--;
+        }
+        const step = searchForward ? 1 : -1;
+        for (let i = startIndex; searchForward ? i < text.length : i >= 0; i += step) {
+          if (text.substring(i, i + delimiter.length) === delimiter) {
+            return i
+                + (searchForward ? 0 : delimiter.length);
+          }
+        }
+        return searchForward ? text.length : 0;
+      };
+
+      static runTests = () => {
+        const delimiter = '---\n';
+        const instance = new DelimiterSearch(delimiter);
+
+        const runTest = (input: string, index: number, expected: string) =>
+            assertEquals(input.substring(
+                    instance.leftIndex(input, index),
+                    instance.rightIndex(input, index)),
+                expected);
+        {
+          const inputStr = "abc" + delimiter;
+          runTest(inputStr, 0, "abc");
+          runTest(inputStr, 3, "abc");
+          runTest(inputStr, 4, "");
+          runTest(inputStr, 3+delimiter.length, "");
+          runTest(inputStr, 3+delimiter.length+1, "");
+        }
+        {
+          const inputStr =  delimiter + "abc";
+          runTest(inputStr, 0, "");
+          runTest(inputStr, delimiter.length, "abc");
+          runTest(inputStr, delimiter.length+3, "abc");
+        }
+      }
+    }
   }
-
 
   export namespace Transcription {
 
