@@ -473,7 +473,7 @@ namespace UiFunctions {
       /** Returns the positions of the adjacent cut markers or
        * the start and end of the text if is no cut marker in
        * that direction. */
-      const toBeCut = (textArea: HTMLTextAreaElement) => {
+      const toBeCopied = (textArea: HTMLTextAreaElement) => {
         const text = textArea.value;
         const cursorPosition = textArea.selectionStart;
 
@@ -516,7 +516,7 @@ namespace UiFunctions {
             }, 500);
           };
 
-          const range = toBeCut(mainEditorTextarea);
+          const range = toBeCopied(mainEditorTextarea);
           copyToClipboard(inputElementWithId("mainEditorTextarea")
               .value.substring(range.left,range.right)
           ).then(() => {
