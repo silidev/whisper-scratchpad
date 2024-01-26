@@ -2,9 +2,8 @@
  * Copyright (c) 2024 by Helge Tobias Kosuch
  */
 
-// noinspection SpellCheckingInspection,JSUnusedGlobalSymbols
 // noinspection JSUnusedGlobalSymbols
-
+// noinspection SpellCheckingInspection,JSUnusedGlobalSymbols
 const VERSION = "Saltburn";
 
 import {sendCtrlZ} from "./DontInspect.js";
@@ -424,24 +423,20 @@ namespace UiFunctions {
 
       /**
        * text.substring(leftIndex, rightIndex) is the string between the markers. */
-      namespace MarkerSearch {
-        import assertEquals = HelgeUtils.Tests.assertEquals;
+      export class MarkerSearch {
+        constructor(public marker: string) {
+        }
 
-        export class Instance {
-          constructor(public marker: string) {
-          }
+        public leftIndex(text: string, startIndex: number) {
+          return MarkerSearch.index(this.marker, text, startIndex, false);
+        }
 
-          public leftIndex(text: string, startIndex: number) {
-            return index(this.marker, text, startIndex, false);
-          }
-
-          public rightIndex(text: string, startIndex: number) {
-            return index(this.marker, text, startIndex, true);
-          }
+        public rightIndex(text: string, startIndex: number) {
+          return MarkerSearch.index(this.marker, text, startIndex, true);
         }
 
         /** If search backwards the position after the marker is */
-        const index = (marker: string, text: string, startIndex: number, searchForward: boolean) => {
+        static index(marker: string, text: string, startIndex: number, searchForward: boolean) {
           const searchBackward = !searchForward;
           if (searchBackward) {
             if (startIndex === 0) return 0;
@@ -458,9 +453,9 @@ namespace UiFunctions {
           return searchForward ? text.length : 0;
         };
 
-        export const runTests = () => {
+        static runTests = () => {
           const marker = '---\n';
-          const instance = new Instance(marker);
+          const instance = new MarkerSearch(marker);
 
           const runTest = (input: string, index: number, expected: string) =>
               assertEquals(input.substring(
@@ -482,9 +477,9 @@ namespace UiFunctions {
             runTest(inputStr, marker.length+3, "abc");
           }
         }
-      } // End of MarkerSearch namespace
+      } // End of MarkerSearch class
 
-      const marker = ')))---(((\n';
+      const newNoteMarker = ')))---(((\n';
 
       /** Returns the positions of the adjacent cut markers or
        * the start and end of the text if is no cut marker in
@@ -493,7 +488,7 @@ namespace UiFunctions {
         const text = textArea.value;
         const cursorPosition = textArea.selectionStart;
 
-        const markerSearch = new MarkerSearch.Instance(marker);
+        const markerSearch = new MarkerSearch(newNoteMarker);
         return {
           left: markerSearch.leftIndex(text, cursorPosition),
           right: markerSearch.rightIndex(text, cursorPosition)
@@ -501,24 +496,24 @@ namespace UiFunctions {
       };
 
       const deleteBetweenMarkers = (left: number, right: number , input: string) => {
-        const v1 = (input.substring(0, left) + input.substring(right)).replaceAll(marker+marker, marker);
-        if (v1===marker+marker) return "";
-        if (v1.startsWith(marker)) return v1.substring(marker.length);
-        if (v1.endsWith(marker)) return v1.substring(0, v1.length - marker.length);
+        const v1 = (input.substring(0, left) + input.substring(right)).replaceAll(newNoteMarker+newNoteMarker, newNoteMarker);
+        if (v1===newNoteMarker+newNoteMarker) return "";
+        if (v1.startsWith(newNoteMarker)) return v1.substring(newNoteMarker.length);
+        if (v1.endsWith(newNoteMarker)) return v1.substring(0, v1.length - newNoteMarker.length);
         return v1;
       };
 
       const testDeleteBetweenMarkers = () => {
         const runTest = (cursorPosition: number, input: string, expected: string) => {
-          const markerSearch = new MarkerSearch.Instance(marker);
+          const markerSearch = new MarkerSearch(newNoteMarker);
           const left = markerSearch.leftIndex(input, cursorPosition);
           const right = markerSearch.rightIndex(input, cursorPosition);
           assertEquals(deleteBetweenMarkers(left, right, input), expected);
         };
-        runTest(0, "abc" + marker, "");
-        runTest(marker.length, marker + "abc", "");
-        runTest(marker.length, marker + "abc" + marker, "");
-        runTest(1+marker.length, "0" + marker + "abc" + marker + "1",  "0"+marker+"1");
+        runTest(0, "abc" + newNoteMarker, "");
+        runTest(newNoteMarker.length, newNoteMarker + "abc", "");
+        runTest(newNoteMarker.length, newNoteMarker + "abc" + newNoteMarker, "");
+        runTest(1+newNoteMarker.length, "0" + newNoteMarker + "abc" + newNoteMarker + "1",  "0"+newNoteMarker+"1");
       };
 
       const clickListener = () => {
@@ -543,7 +538,7 @@ namespace UiFunctions {
               if (DELETE) mainEditorTextarea.value =
                     deleteBetweenMarkers(betweenMarkers.left, betweenMarkers.right, mainEditorTextarea.value);
             }
-            const selectionStart = betweenMarkers.left - (betweenMarkers.left > marker.length ? marker.length : 0);
+            const selectionStart = betweenMarkers.left - (betweenMarkers.left > newNoteMarker.length ? newNoteMarker.length : 0);
             const selectionEnd = betweenMarkers.right;
             mainEditorTextarea.setSelectionRange(selectionStart, selectionEnd);
             saveEditor();

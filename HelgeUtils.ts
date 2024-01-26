@@ -132,6 +132,8 @@ export namespace HelgeUtils {
     export const escapeRegExp = (str: string): string => {
       return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
     };
+
+
   }
 
 

@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2024 by Helge Tobias Kosuch
  */
-// noinspection SpellCheckingInspection,JSUnusedGlobalSymbols
 // noinspection JSUnusedGlobalSymbols
+// noinspection SpellCheckingInspection,JSUnusedGlobalSymbols
 const VERSION = "Saltburn";
 import { sendCtrlZ } from "./DontInspect.js";
 import { HtmlUtils } from "./HtmlUtils.js";
@@ -374,23 +374,18 @@ var UiFunctions;
             var assertEquals = HelgeUtils.Tests.assertEquals;
             /**
              * text.substring(leftIndex, rightIndex) is the string between the markers. */
-            let MarkerSearch;
-            (function (MarkerSearch) {
-                var assertEquals = HelgeUtils.Tests.assertEquals;
-                class Instance {
-                    constructor(marker) {
-                        this.marker = marker;
-                    }
-                    leftIndex(text, startIndex) {
-                        return index(this.marker, text, startIndex, false);
-                    }
-                    rightIndex(text, startIndex) {
-                        return index(this.marker, text, startIndex, true);
-                    }
+            class MarkerSearch {
+                constructor(marker) {
+                    this.marker = marker;
                 }
-                MarkerSearch.Instance = Instance;
+                leftIndex(text, startIndex) {
+                    return MarkerSearch.index(this.marker, text, startIndex, false);
+                }
+                rightIndex(text, startIndex) {
+                    return MarkerSearch.index(this.marker, text, startIndex, true);
+                }
                 /** If search backwards the position after the marker is */
-                const index = (marker, text, startIndex, searchForward) => {
+                static index(marker, text, startIndex, searchForward) {
                     const searchBackward = !searchForward;
                     if (searchBackward) {
                         if (startIndex === 0)
@@ -406,61 +401,63 @@ var UiFunctions;
                         }
                     }
                     return searchForward ? text.length : 0;
-                };
-                MarkerSearch.runTests = () => {
-                    const marker = '---\n';
-                    const instance = new Instance(marker);
-                    const runTest = (input, index, expected) => assertEquals(input.substring(instance.leftIndex(input, index), instance.rightIndex(input, index)), expected);
-                    {
-                        const inputStr = "abc" + marker;
-                        runTest(inputStr, 0, "abc");
-                        runTest(inputStr, 3, "abc");
-                        runTest(inputStr, 4, "");
-                        runTest(inputStr, 3 + marker.length, "");
-                        runTest(inputStr, 3 + marker.length + 1, "");
-                    }
-                    {
-                        const inputStr = marker + "abc";
-                        runTest(inputStr, 0, "");
-                        runTest(inputStr, marker.length, "abc");
-                        runTest(inputStr, marker.length + 3, "abc");
-                    }
-                };
-            })(MarkerSearch || (MarkerSearch = {})); // End of MarkerSearch namespace
-            const marker = ')))---(((\n';
+                }
+                ;
+            } // End of MarkerSearch class
+            MarkerSearch.runTests = () => {
+                const marker = '---\n';
+                const instance = new MarkerSearch(marker);
+                const runTest = (input, index, expected) => assertEquals(input.substring(instance.leftIndex(input, index), instance.rightIndex(input, index)), expected);
+                {
+                    const inputStr = "abc" + marker;
+                    runTest(inputStr, 0, "abc");
+                    runTest(inputStr, 3, "abc");
+                    runTest(inputStr, 4, "");
+                    runTest(inputStr, 3 + marker.length, "");
+                    runTest(inputStr, 3 + marker.length + 1, "");
+                }
+                {
+                    const inputStr = marker + "abc";
+                    runTest(inputStr, 0, "");
+                    runTest(inputStr, marker.length, "abc");
+                    runTest(inputStr, marker.length + 3, "abc");
+                }
+            };
+            CutButton.MarkerSearch = MarkerSearch;
+            const newNoteMarker = ')))---(((\n';
             /** Returns the positions of the adjacent cut markers or
              * the start and end of the text if is no cut marker in
              * that direction. */
             const startAndEndIndexOfTextBetweenMarkers = (textArea) => {
                 const text = textArea.value;
                 const cursorPosition = textArea.selectionStart;
-                const markerSearch = new MarkerSearch.Instance(marker);
+                const markerSearch = new MarkerSearch(newNoteMarker);
                 return {
                     left: markerSearch.leftIndex(text, cursorPosition),
                     right: markerSearch.rightIndex(text, cursorPosition)
                 };
             };
             const deleteBetweenMarkers = (left, right, input) => {
-                const v1 = (input.substring(0, left) + input.substring(right)).replaceAll(marker + marker, marker);
-                if (v1 === marker + marker)
+                const v1 = (input.substring(0, left) + input.substring(right)).replaceAll(newNoteMarker + newNoteMarker, newNoteMarker);
+                if (v1 === newNoteMarker + newNoteMarker)
                     return "";
-                if (v1.startsWith(marker))
-                    return v1.substring(marker.length);
-                if (v1.endsWith(marker))
-                    return v1.substring(0, v1.length - marker.length);
+                if (v1.startsWith(newNoteMarker))
+                    return v1.substring(newNoteMarker.length);
+                if (v1.endsWith(newNoteMarker))
+                    return v1.substring(0, v1.length - newNoteMarker.length);
                 return v1;
             };
             const testDeleteBetweenMarkers = () => {
                 const runTest = (cursorPosition, input, expected) => {
-                    const markerSearch = new MarkerSearch.Instance(marker);
+                    const markerSearch = new MarkerSearch(newNoteMarker);
                     const left = markerSearch.leftIndex(input, cursorPosition);
                     const right = markerSearch.rightIndex(input, cursorPosition);
                     assertEquals(deleteBetweenMarkers(left, right, input), expected);
                 };
-                runTest(0, "abc" + marker, "");
-                runTest(marker.length, marker + "abc", "");
-                runTest(marker.length, marker + "abc" + marker, "");
-                runTest(1 + marker.length, "0" + marker + "abc" + marker + "1", "0" + marker + "1");
+                runTest(0, "abc" + newNoteMarker, "");
+                runTest(newNoteMarker.length, newNoteMarker + "abc", "");
+                runTest(newNoteMarker.length, newNoteMarker + "abc" + newNoteMarker, "");
+                runTest(1 + newNoteMarker.length, "0" + newNoteMarker + "abc" + newNoteMarker + "1", "0" + newNoteMarker + "1");
             };
             const clickListener = () => {
                 // Because this seldom does something bad, first backup the whole text to clipboard:
@@ -479,7 +476,7 @@ var UiFunctions;
                                 mainEditorTextarea.value =
                                     deleteBetweenMarkers(betweenMarkers.left, betweenMarkers.right, mainEditorTextarea.value);
                         }
-                        const selectionStart = betweenMarkers.left - (betweenMarkers.left > marker.length ? marker.length : 0);
+                        const selectionStart = betweenMarkers.left - (betweenMarkers.left > newNoteMarker.length ? newNoteMarker.length : 0);
                         const selectionEnd = betweenMarkers.right;
                         mainEditorTextarea.setSelectionRange(selectionStart, selectionEnd);
                         saveEditor();
