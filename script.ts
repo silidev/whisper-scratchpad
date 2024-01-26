@@ -421,19 +421,27 @@ namespace UiFunctions {
     export namespace CutButton {
       //** The text that is expected before and after the text that is cut. */
       import assertEquals = HelgeUtils.Tests.assertEquals;
-      const marker = ')))---(((\n';
 
       /**
        * text.substring(leftIndex, rightIndex) is the string between the markers. */
       namespace MarkerSearch {
         import assertEquals = HelgeUtils.Tests.assertEquals;
-        export const leftIndex = (text: string, startIndex: number) =>
-            index(text, startIndex, false);
-        export const rightIndex = (text: string, startIndex: number) =>
-            index(text, startIndex, true);
+
+        export class Instance {
+          constructor(public marker: string) {
+          }
+
+          public leftIndex(text: string, startIndex: number) {
+            return index(this.marker, text, startIndex, false);
+          }
+
+          public rightIndex(text: string, startIndex: number) {
+            return index(this.marker, text, startIndex, true);
+          }
+        }
 
         /** If search backwards the position after the marker is */
-        const index = (text: string, startIndex: number, searchForward: boolean) => {
+        const index = (marker: string, text: string, startIndex: number, searchForward: boolean) => {
           const searchBackward = !searchForward;
           if (searchBackward) {
             if (startIndex === 0) return 0;
@@ -451,10 +459,13 @@ namespace UiFunctions {
         };
 
         export const runTests = () => {
+          const marker = ')))---(((\n';
+          const instance = new Instance(marker);
+
           const runTest = (input: string, index: number, expected: string) =>
               assertEquals(input.substring(
-                      leftIndex(input, index),
-                      rightIndex(input, index)),
+                      instance.leftIndex(input, index),
+                      instance.rightIndex(input, index)),
                   expected);
           {
             const inputStr = "abc" + marker;
@@ -471,7 +482,7 @@ namespace UiFunctions {
             runTest(inputStr, marker.length+3, "abc");
           }
         }
-      }
+      } // End of MarkerSearch namespace
 
       /** Returns the positions of the adjacent cut markers or
        * the start and end of the text if is no cut marker in
@@ -481,6 +492,7 @@ namespace UiFunctions {
         const cursorPosition = textArea.selectionStart;
 
         return {
+          MarkerSearch.instance(marker);
           left: MarkerSearch.leftIndex(text, cursorPosition),
           right: MarkerSearch.rightIndex(text, cursorPosition)
         };
