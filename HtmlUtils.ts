@@ -113,7 +113,7 @@ export namespace HtmlUtils {
 
   /**
    * Known "problems": If the user clicks on the button multiple times in a row, the checkmark will
-   * be appended multiple times. ... no time for that.
+   * be appended multiple times. ... no time for that. Where possible just use HtmlUtils.addClickListener(...).
    */
   export const signalClickToUser = (element: HTMLElement) => {
     const before = element.innerHTML;

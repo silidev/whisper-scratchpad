@@ -95,7 +95,7 @@ export var HtmlUtils;
     })(Cookies = HtmlUtils.Cookies || (HtmlUtils.Cookies = {}));
     /**
      * Known "problems": If the user clicks on the button multiple times in a row, the checkmark will
-     * be appended multiple times. ... no time for that.
+     * be appended multiple times. ... no time for that. Where possible just use HtmlUtils.addClickListener(...).
      */
     HtmlUtils.signalClickToUser = (element) => {
         const before = element.innerHTML;
