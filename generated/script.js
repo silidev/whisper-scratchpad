@@ -15,7 +15,7 @@ var inputElementWithId = HtmlUtils.inputElementWithId;
 var escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 var elementWithId = HtmlUtils.elementWithId;
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
-const RUN_TESTS = new Date().toISOString().slice(0, 10) === "2024-01-24";
+const RUN_TESTS = new Date().toISOString().slice(0, 10) === "2024-01-26";
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
 var Functions;
@@ -408,7 +408,7 @@ var UiFunctions;
                     return searchForward ? text.length : 0;
                 };
                 MarkerSearch.runTests = () => {
-                    const marker = ')))---(((\n';
+                    const marker = '---\n';
                     const instance = new Instance(marker);
                     const runTest = (input, index, expected) => assertEquals(input.substring(instance.leftIndex(input, index), instance.rightIndex(input, index)), expected);
                     {
@@ -427,16 +427,17 @@ var UiFunctions;
                     }
                 };
             })(MarkerSearch || (MarkerSearch = {})); // End of MarkerSearch namespace
+            const marker = ')))---(((\n';
             /** Returns the positions of the adjacent cut markers or
              * the start and end of the text if is no cut marker in
              * that direction. */
             const startAndEndIndexOfTextBetweenMarkers = (textArea) => {
                 const text = textArea.value;
                 const cursorPosition = textArea.selectionStart;
+                const markerSearch = new MarkerSearch.Instance(marker);
                 return {
-                    MarkerSearch, : .instance(marker),
-                    left: MarkerSearch.leftIndex(text, cursorPosition),
-                    right: MarkerSearch.rightIndex(text, cursorPosition)
+                    left: markerSearch.leftIndex(text, cursorPosition),
+                    right: markerSearch.rightIndex(text, cursorPosition)
                 };
             };
             const deleteBetweenMarkers = (left, right, input) => {
@@ -451,8 +452,9 @@ var UiFunctions;
             };
             const testDeleteBetweenMarkers = () => {
                 const runTest = (cursorPosition, input, expected) => {
-                    const left = MarkerSearch.leftIndex(input, cursorPosition);
-                    const right = MarkerSearch.rightIndex(input, cursorPosition);
+                    const markerSearch = new MarkerSearch.Instance(marker);
+                    const left = markerSearch.leftIndex(input, cursorPosition);
+                    const right = markerSearch.rightIndex(input, cursorPosition);
                     assertEquals(deleteBetweenMarkers(left, right, input), expected);
                 };
                 runTest(0, "abc" + marker, "");
