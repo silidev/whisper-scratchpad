@@ -423,39 +423,39 @@ namespace UiFunctions {
 
       /**
        * text.substring(leftIndex, rightIndex) is the string between the markers. */
-      export class MarkerSearch {
-        constructor(public marker: string) {
+      export class DelimiterSearch {
+        constructor(public delimiter: string) {
         }
 
         public leftIndex(text: string, startIndex: number) {
-          return MarkerSearch.index(this.marker, text, startIndex, false);
+          return DelimiterSearch.index(this.delimiter, text, startIndex, false);
         }
 
         public rightIndex(text: string, startIndex: number) {
-          return MarkerSearch.index(this.marker, text, startIndex, true);
+          return DelimiterSearch.index(this.delimiter, text, startIndex, true);
         }
 
-        /** If search backwards the position after the marker is */
-        static index(marker: string, text: string, startIndex: number, searchForward: boolean) {
+        /** If search backwards the position after the delimiter is */
+        static index(delimiter: string, text: string, startIndex: number, searchForward: boolean) {
           const searchBackward = !searchForward;
           if (searchBackward) {
             if (startIndex === 0) return 0;
-            // If the starIndex is at the start of a marker we want to return the index of the start of the string before this marker:
+            // If the starIndex is at the start of a delimiter we want to return the index of the start of the string before this delimiter:
             startIndex--;
           }
           const step = searchForward ? 1 : -1;
           for (let i = startIndex; searchForward ? i < text.length : i >= 0; i += step) {
-            if (text.substring(i, i + marker.length) === marker) {
+            if (text.substring(i, i + delimiter.length) === delimiter) {
               return i
-                  + (searchForward ? 0 : marker.length);
+                  + (searchForward ? 0 : delimiter.length);
             }
           }
           return searchForward ? text.length : 0;
         };
 
         static runTests = () => {
-          const marker = '---\n';
-          const instance = new MarkerSearch(marker);
+          const delimiter = '---\n';
+          const instance = new DelimiterSearch(delimiter);
 
           const runTest = (input: string, index: number, expected: string) =>
               assertEquals(input.substring(
@@ -463,57 +463,57 @@ namespace UiFunctions {
                       instance.rightIndex(input, index)),
                   expected);
           {
-            const inputStr = "abc" + marker;
+            const inputStr = "abc" + delimiter;
             runTest(inputStr, 0, "abc");
             runTest(inputStr, 3, "abc");
             runTest(inputStr, 4, "");
-            runTest(inputStr, 3+marker.length, "");
-            runTest(inputStr, 3+marker.length+1, "");
+            runTest(inputStr, 3+delimiter.length, "");
+            runTest(inputStr, 3+delimiter.length+1, "");
           }
           {
-            const inputStr =  marker + "abc";
+            const inputStr =  delimiter + "abc";
             runTest(inputStr, 0, "");
-            runTest(inputStr, marker.length, "abc");
-            runTest(inputStr, marker.length+3, "abc");
+            runTest(inputStr, delimiter.length, "abc");
+            runTest(inputStr, delimiter.length+3, "abc");
           }
         }
-      } // End of MarkerSearch class
+      }
 
-      const newNoteMarker = ')))---(((\n';
+      const newNoteDelimiter = ')))---(((\n';
 
       /** Returns the positions of the adjacent cut markers or
        * the start and end of the text if is no cut marker in
        * that direction. */
-      const startAndEndIndexOfTextBetweenMarkers = (textArea: HTMLTextAreaElement) => {
+      const startAndEndIndexOfTextBetweenDelimiters = (textArea: HTMLTextAreaElement) => {
         const text = textArea.value;
         const cursorPosition = textArea.selectionStart;
 
-        const markerSearch = new MarkerSearch(newNoteMarker);
+        const markerSearch = new DelimiterSearch(newNoteDelimiter);
         return {
           left: markerSearch.leftIndex(text, cursorPosition),
           right: markerSearch.rightIndex(text, cursorPosition)
         };
       };
 
-      const deleteBetweenMarkers = (left: number, right: number , input: string) => {
-        const v1 = (input.substring(0, left) + input.substring(right)).replaceAll(newNoteMarker+newNoteMarker, newNoteMarker);
-        if (v1===newNoteMarker+newNoteMarker) return "";
-        if (v1.startsWith(newNoteMarker)) return v1.substring(newNoteMarker.length);
-        if (v1.endsWith(newNoteMarker)) return v1.substring(0, v1.length - newNoteMarker.length);
+      const deleteBetweenDelimiters = (left: number, right: number , input: string) => {
+        const v1 = (input.substring(0, left) + input.substring(right)).replaceAll(newNoteDelimiter+newNoteDelimiter, newNoteDelimiter);
+        if (v1===newNoteDelimiter+newNoteDelimiter) return "";
+        if (v1.startsWith(newNoteDelimiter)) return v1.substring(newNoteDelimiter.length);
+        if (v1.endsWith(newNoteDelimiter)) return v1.substring(0, v1.length - newNoteDelimiter.length);
         return v1;
       };
 
-      const testDeleteBetweenMarkers = () => {
+      const testDeleteBetweenDelimiters = () => {
         const runTest = (cursorPosition: number, input: string, expected: string) => {
-          const markerSearch = new MarkerSearch(newNoteMarker);
+          const markerSearch = new DelimiterSearch(newNoteDelimiter);
           const left = markerSearch.leftIndex(input, cursorPosition);
           const right = markerSearch.rightIndex(input, cursorPosition);
-          assertEquals(deleteBetweenMarkers(left, right, input), expected);
+          assertEquals(deleteBetweenDelimiters(left, right, input), expected);
         };
-        runTest(0, "abc" + newNoteMarker, "");
-        runTest(newNoteMarker.length, newNoteMarker + "abc", "");
-        runTest(newNoteMarker.length, newNoteMarker + "abc" + newNoteMarker, "");
-        runTest(1+newNoteMarker.length, "0" + newNoteMarker + "abc" + newNoteMarker + "1",  "0"+newNoteMarker+"1");
+        runTest(0, "abc" + newNoteDelimiter, "");
+        runTest(newNoteDelimiter.length, newNoteDelimiter + "abc", "");
+        runTest(newNoteDelimiter.length, newNoteDelimiter + "abc" + newNoteDelimiter, "");
+        runTest(1+newNoteDelimiter.length, "0" + newNoteDelimiter + "abc" + newNoteDelimiter + "1",  "0"+newNoteDelimiter+"1");
       };
 
       const clickListener = () => {
@@ -521,11 +521,11 @@ namespace UiFunctions {
         // Because this seldom does something bad, first backup the whole text to clipboard:
         copyToClipboard(mainEditorTextarea.value).then(()=>{
 
-          const betweenMarkers = startAndEndIndexOfTextBetweenMarkers(mainEditorTextarea);
+          const between = startAndEndIndexOfTextBetweenDelimiters(mainEditorTextarea);
 
           const trimmedText =
               () => inputElementWithId("mainEditorTextarea").value
-              .substring(betweenMarkers.left, betweenMarkers.right)
+              .substring(between.left, between.right)
               .trim();
 
           copyToClipboard(trimmedText()).then(() => {
@@ -536,10 +536,10 @@ namespace UiFunctions {
                * something goes wrong. */
               const DELETE = true;
               if (DELETE) mainEditorTextarea.value =
-                    deleteBetweenMarkers(betweenMarkers.left, betweenMarkers.right, mainEditorTextarea.value);
+                    deleteBetweenDelimiters(between.left, between.right, mainEditorTextarea.value);
             }
-            const selectionStart = betweenMarkers.left - (betweenMarkers.left > newNoteMarker.length ? newNoteMarker.length : 0);
-            const selectionEnd = betweenMarkers.right;
+            const selectionStart = between.left - (between.left > newNoteDelimiter.length ? newNoteDelimiter.length : 0);
+            const selectionEnd = between.right;
             mainEditorTextarea.setSelectionRange(selectionStart, selectionEnd);
             saveEditor();
             mainEditorTextarea.focus();
@@ -552,8 +552,8 @@ namespace UiFunctions {
       };
 
       export const runTests = () => {
-        MarkerSearch.runTests();
-        testDeleteBetweenMarkers();
+        DelimiterSearch.runTests();
+        testDeleteBetweenDelimiters();
       }
     } // End of CutButton namespace
   } // End of Buttons namespace
