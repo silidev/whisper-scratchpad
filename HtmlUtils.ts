@@ -112,6 +112,18 @@ export namespace HtmlUtils {
   }
 
   /**
+   * Known "problems": If the user clicks on the button multiple times in a row, the checkmark will
+   * be appended multiple times. ... no time for that.
+   */
+  export const signalClickToUser = (element: HTMLElement) => {
+    const before = element.innerHTML;
+    element.innerHTML += "✔️";
+    setTimeout(
+        () => element.innerHTML = before
+        , 500);
+  };
+
+  /**
    * Adds a click listener to a button that appends a checkmark to the button
    * text when clicked. */
   export const addClickListener = (element: HTMLElement, callback: () => void) => {

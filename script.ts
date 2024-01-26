@@ -6,7 +6,6 @@ const VERSION = "Saltburn";
 import {sendCtrlZ} from "./DontInspect.js";
 import {HtmlUtils} from "./HtmlUtils.js";
 import {HelgeUtils} from "./HelgeUtils.js";
-
 import TextAreas = HtmlUtils.TextAreas;
 import buttonWithId = HtmlUtils.buttonWithId;
 import blinkFast = HtmlUtils.blinkFast;
@@ -508,21 +507,14 @@ namespace UiFunctions {
         // Because this seldom does something bad, first backup the whole text to clipboard:
         copyToClipboard(mainEditorTextarea.value).then(()=>{
 
-          const signalToUserThatItWasCopied = () => {
-            const button = buttonWithId("cutButton");
-            button.innerHTML = '✂<br>✔️';
-            setTimeout(() => {
-              button.innerHTML = '✂<br>Cut';
-            }, 500);
-          };
-
           const delimiters = searchDelimiters(mainEditorTextarea);
           copyToClipboard(
             inputElementWithId("mainEditorTextarea").value
             .substring(delimiters.left,delimiters.right)
             .trim()
           ).then(() => {
-            signalToUserThatItWasCopied();
+
+            HtmlUtils.signalClickToUser(buttonWithId("cutButton"));
 
             // mainEditorTextarea.value = deleteBetweenMarkers(delimiters.left, delimiters.right, mainEditorTextarea.value);
             const selectionStart = delimiters.left - (delimiters.left > marker.length ? marker.length : 0);
