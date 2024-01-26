@@ -378,7 +378,7 @@ namespace UiFunctions {
             buttonWithId(buttonId).innerHTML = '⎘<br>Copied!';
             setTimeout(() => {
               buttonWithId(buttonId).innerHTML = '⎘<br>Copy';
-            }, 2000);
+            }, 500);
           });
         });
       };
