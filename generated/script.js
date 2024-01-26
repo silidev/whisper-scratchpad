@@ -448,9 +448,9 @@ var UiFunctions;
             const clickListener = () => {
                 // Because this seldom does something bad, first backup the whole text to clipboard:
                 copyToClipboard(mainEditorTextarea.value).then(() => {
-                    const delimiters = searchDelimiters(mainEditorTextarea);
+                    const betweenMarkers = searchDelimiters(mainEditorTextarea);
                     copyToClipboard(inputElementWithId("mainEditorTextarea").value
-                        .substring(delimiters.left, delimiters.right)
+                        .substring(betweenMarkers.left, betweenMarkers.right)
                         .trim()).then(() => {
                         HtmlUtils.signalClickToUser(buttonWithId("cutButton"));
                         {
@@ -459,10 +459,10 @@ var UiFunctions;
                             const DELETE = true;
                             if (DELETE)
                                 mainEditorTextarea.value =
-                                    deleteBetweenMarkers(delimiters.left, delimiters.right, mainEditorTextarea.value);
+                                    deleteBetweenMarkers(betweenMarkers.left, betweenMarkers.right, mainEditorTextarea.value);
                         }
-                        const selectionStart = delimiters.left - (delimiters.left > marker.length ? marker.length : 0);
-                        const selectionEnd = delimiters.right;
+                        const selectionStart = betweenMarkers.left - (betweenMarkers.left > marker.length ? marker.length : 0);
+                        const selectionEnd = betweenMarkers.right;
                         mainEditorTextarea.setSelectionRange(selectionStart, selectionEnd);
                         saveEditor();
                         mainEditorTextarea.focus();
