@@ -163,7 +163,6 @@ export namespace HelgeUtils {
         return searchForward ? text.length : 0;
       };
       public static runTests = () => {
-        alert("Running tests for DelimiterSearch");
         this.testDelimiterSearch();
         this.testDeleteBetweenDelimiters();
       };

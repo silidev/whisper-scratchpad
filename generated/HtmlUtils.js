@@ -194,5 +194,8 @@ export var HtmlUtils;
     HtmlUtils.stripHtmlTags = (input) => {
         return input.replace(/<\/?[^>]+(>|$)/g, "");
     };
+    HtmlUtils.isMsWindows = () => {
+        return navigator.userAgent.match(/Windows/i);
+    };
 })(HtmlUtils || (HtmlUtils = {}));
 //# sourceMappingURL=HtmlUtils.js.map

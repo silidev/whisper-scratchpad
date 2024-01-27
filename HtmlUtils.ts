@@ -231,4 +231,8 @@ export namespace HtmlUtils {
   export const stripHtmlTags = (input: string): string => {
     return input.replace(/<\/?[^>]+(>|$)/g, "");
   };
+
+  export const isMsWindows = () => {
+    return navigator.userAgent.match(/Windows/i);
+  };
 }

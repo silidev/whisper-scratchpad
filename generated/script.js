@@ -14,7 +14,7 @@ var blinkSlow = HtmlUtils.blinkSlow;
 var escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 var elementWithId = HtmlUtils.NeverNull.elementWithId;
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
-const RUN_TESTS = new Date().toISOString().slice(0, 10) === "2024-01-27";
+const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString().slice(0, 10) === "2024-01-27";
 if (RUN_TESTS)
     console.log("RUN_TESTS is true. This is only for " +
         "testing. Set it to false in production.");

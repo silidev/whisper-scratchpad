@@ -161,7 +161,6 @@ export var HelgeUtils;
         } //end of class DelimiterSearch
         _a = DelimiterSearch;
         DelimiterSearch.runTests = () => {
-            alert("Running tests for DelimiterSearch");
             _a.testDelimiterSearch();
             _a.testDeleteBetweenDelimiters();
         };
