@@ -581,6 +581,7 @@ namespace ReplaceByRules {
     return retVal.resultingText;
   }
 
+  // noinspection JSUnusedGlobalSymbols
   export function onlyWholeWordsWithUiLog(rules: string, subject: string) {
     return withUiLog(rules, subject, true);
   }

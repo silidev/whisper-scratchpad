@@ -166,7 +166,7 @@ export namespace HelgeUtils {
         alert("Running tests for DelimiterSearch");
         this.testDelimiterSearch();
         this.testDeleteBetweenDelimiters();
-      }
+      };
       private static testDelimiterSearch = () => {
         const delimiter = '---\n';
         const instance = new DelimiterSearch(delimiter);
@@ -190,7 +190,7 @@ export namespace HelgeUtils {
           runTest(inputStr, delimiter.length, "abc");
           runTest(inputStr, delimiter.length+3, "abc");
         }
-      }
+      };
       /** Deletes the text between two delimiters.
        * @param left - The index of the left delimiter.
        * @param right - The index of the right delimiter.
@@ -431,7 +431,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
         return input;
       };
       return untypedNullFilter(f(...parameters)) as T;
-    }
+    };
 
 
     // noinspection SpellCheckingInspection

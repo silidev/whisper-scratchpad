@@ -506,6 +506,7 @@ var ReplaceByRules;
         return retVal.resultingText;
     }
     ReplaceByRules.withUiLog = withUiLog;
+    // noinspection JSUnusedGlobalSymbols
     function onlyWholeWordsWithUiLog(rules, subject) {
         return withUiLog(rules, subject, true);
     }

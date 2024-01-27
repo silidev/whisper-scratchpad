@@ -7,6 +7,7 @@
 import {HelgeUtils} from "./HelgeUtils.js";
 
 export namespace HtmlUtils {
+  const clipboard = navigator.clipboard;
 
   const memoize = HelgeUtils.memoize;
 
@@ -192,7 +193,32 @@ export namespace HtmlUtils {
     return element.innerHTML;
   };
 
-  export const copyToClipboard = (text: string) => navigator.clipboard.writeText(text);
+  /**
+   * Deprecated! Use navigator.clipboard.writeText instead.
+   */
+  export const copyToClipboard = (text: string) => clipboard.writeText(text);
+
+  /**
+   # DOMException Read permission denied error
+
+   you're encountering when calling navigator.clipboard.readText() is likely due to the permissions and security restrictions around accessing the clipboard in web browsers. Here are some key points to consider and potential solutions:
+
+   User Interaction Required: Most modern browsers require a user-initiated action, like a click event, to access the clipboard. Make sure your code is triggered by such an action.
+
+   Secure Context: Clipboard access is only allowed in a secure context (HTTPS), not on HTTP pages.
+
+   Permissions: Depending on the browser, your site may need explicit permission from the user to access the clipboard.
+
+   Browser Support: Ensure that the browser you are using supports the Clipboard API.
+
+   Cross-Origin Restrictions: If your script is running in an iframe, it might be subject to cross-origin restrictions.
+   */
+  export namespace Clipboard {
+    /** @deprecated Inline this function instead. */
+    export const read = () => clipboard.readText();
+    /** @deprecated Inline this function instead. */
+    export const write = (text: string) => clipboard.writeText(text);
+  }
 
   /**
    * Deprecated! Use copyToClipboard instead.
@@ -200,5 +226,9 @@ export namespace HtmlUtils {
    */
   export const putIntoClipboard = (str: string) => {
     navigator.clipboard.writeText(str).then();
-  }
+  };
+
+  export const stripHtmlTags = (input: string): string => {
+    return input.replace(/<\/?[^>]+(>|$)/g, "");
+  };
 }
