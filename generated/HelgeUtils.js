@@ -111,6 +111,7 @@ export var HelgeUtils;
     })(Tests = HelgeUtils.Tests || (HelgeUtils.Tests = {}));
     let Strings;
     (function (Strings) {
+        var _a;
         var assertEquals = HelgeUtils.Tests.assertEquals;
         Strings.toUppercaseFirstChar = (input) => {
             if (input.length === 0)
@@ -133,10 +134,10 @@ export var HelgeUtils;
                 this.delimiter = delimiter;
             }
             leftIndex(text, startIndex) {
-                return DelimiterSearch.index(this.delimiter, text, startIndex, false);
+                return _a.index(this.delimiter, text, startIndex, false);
             }
             rightIndex(text, startIndex) {
-                return DelimiterSearch.index(this.delimiter, text, startIndex, true);
+                return _a.index(this.delimiter, text, startIndex, true);
             }
             /** If search backwards the position after the delimiter is */
             static index(delimiter, text, startIndex, searchForward) {
@@ -157,10 +158,16 @@ export var HelgeUtils;
                 return searchForward ? text.length : 0;
             }
             ;
-        }
+        } //end of class DelimiterSearch
+        _a = DelimiterSearch;
         DelimiterSearch.runTests = () => {
+            alert("Running tests for DelimiterSearch");
+            _a.testDelimiterSearch();
+            _a.testDeleteBetweenDelimiters();
+        };
+        DelimiterSearch.testDelimiterSearch = () => {
             const delimiter = '---\n';
-            const instance = new DelimiterSearch(delimiter);
+            const instance = new _a(delimiter);
             const runTest = (input, index, expected) => assertEquals(input.substring(instance.leftIndex(input, index), instance.rightIndex(input, index)), expected);
             {
                 const inputStr = "abc" + delimiter;
@@ -177,8 +184,37 @@ export var HelgeUtils;
                 runTest(inputStr, delimiter.length + 3, "abc");
             }
         };
+        /** Deletes the text between two delimiters.
+         * @param left - The index of the left delimiter.
+         * @param right - The index of the right delimiter.
+         * @param input - The text to delete from.
+         * @param delimiter - The delimiter.
+         * */
+        DelimiterSearch.deleteBetweenDelimiters = (left, right, input, delimiter) => {
+            const v1 = (input.substring(0, left) + input.substring(right)).replaceAll(delimiter + delimiter, delimiter);
+            if (v1 === delimiter + delimiter)
+                return "";
+            if (v1.startsWith(delimiter))
+                return v1.substring(delimiter.length);
+            if (v1.endsWith(delimiter))
+                return v1.substring(0, v1.length - delimiter.length);
+            return v1;
+        };
+        DelimiterSearch.testDeleteBetweenDelimiters = () => {
+            const delimiter = ')))---(((\n';
+            const runTest = (cursorPosition, input, expected) => {
+                const delimiterSearch = new Strings.DelimiterSearch(delimiter);
+                const left = delimiterSearch.leftIndex(input, cursorPosition);
+                const right = delimiterSearch.rightIndex(input, cursorPosition);
+                assertEquals(_a.deleteBetweenDelimiters(left, right, input, delimiter), expected);
+            };
+            runTest(0, "abc" + delimiter, "");
+            runTest(delimiter.length, delimiter + "abc", "");
+            runTest(delimiter.length, delimiter + "abc" + delimiter, "");
+            runTest(1 + delimiter.length, "0" + delimiter + "abc" + delimiter + "1", "0" + delimiter + "1");
+        };
         Strings.DelimiterSearch = DelimiterSearch;
-    })(Strings = HelgeUtils.Strings || (HelgeUtils.Strings = {}));
+    })(Strings = HelgeUtils.Strings || (HelgeUtils.Strings = {})); //end of namespace Strings
     let Transcription;
     (function (Transcription) {
         class TranscriptionError extends Error {

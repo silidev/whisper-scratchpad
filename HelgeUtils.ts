@@ -96,7 +96,7 @@ export namespace HelgeUtils {
       HelgeUtils.Exceptions.alertAndThrow(...output);
     };
 
-    export const assertEquals = (actual: any, expected: any, message: string = null) => {
+    export const assertEquals = (actual: any, expected: any, message: string | null = null) => {
       if (actual !== expected) {
         if (actual instanceof Date && expected instanceof Date
             && actual.getTime()===expected.getTime())
@@ -139,17 +139,14 @@ export namespace HelgeUtils {
     export class DelimiterSearch {
       constructor(public delimiter: string) {
       }
-
       public leftIndex(text: string, startIndex: number) {
         return DelimiterSearch.index(this.delimiter, text, startIndex, false);
       }
-
       public rightIndex(text: string, startIndex: number) {
         return DelimiterSearch.index(this.delimiter, text, startIndex, true);
       }
-
       /** If search backwards the position after the delimiter is */
-      static index(delimiter: string, text: string, startIndex: number, searchForward: boolean) {
+      private static index(delimiter: string, text: string, startIndex: number, searchForward: boolean) {
         const searchBackward = !searchForward;
         if (searchBackward) {
           if (startIndex === 0) return 0;
@@ -165,8 +162,12 @@ export namespace HelgeUtils {
         }
         return searchForward ? text.length : 0;
       };
-
-      static runTests = () => {
+      public static runTests = () => {
+        alert("Running tests for DelimiterSearch");
+        this.testDelimiterSearch();
+        this.testDeleteBetweenDelimiters();
+      }
+      private static testDelimiterSearch = () => {
         const delimiter = '---\n';
         const instance = new DelimiterSearch(delimiter);
 
@@ -190,8 +191,34 @@ export namespace HelgeUtils {
           runTest(inputStr, delimiter.length+3, "abc");
         }
       }
-    }
-  }
+      /** Deletes the text between two delimiters.
+       * @param left - The index of the left delimiter.
+       * @param right - The index of the right delimiter.
+       * @param input - The text to delete from.
+       * @param delimiter - The delimiter.
+       * */
+      public static deleteBetweenDelimiters = (left: number, right: number , input: string, delimiter: string) => {
+        const v1 = (input.substring(0, left) + input.substring(right)).replaceAll(delimiter+delimiter, delimiter);
+        if (v1===delimiter+ delimiter) return "";
+        if (v1.startsWith(delimiter)) return v1.substring(delimiter.length);
+        if (v1.endsWith(delimiter)) return v1.substring(0, v1.length - delimiter.length);
+        return v1;
+      };
+      private static testDeleteBetweenDelimiters = () => {
+        const delimiter = ')))---(((\n';
+        const runTest = (cursorPosition: number, input: string, expected: string) => {
+          const delimiterSearch = new Strings.DelimiterSearch(delimiter);
+          const left = delimiterSearch.leftIndex(input, cursorPosition);
+          const right = delimiterSearch.rightIndex(input, cursorPosition);
+          assertEquals(DelimiterSearch.deleteBetweenDelimiters(left, right, input, delimiter), expected);
+        };
+        runTest(0, "abc" + delimiter, "");
+        runTest(delimiter.length, delimiter + "abc", "");
+        runTest(delimiter.length, delimiter + "abc" + delimiter, "");
+        runTest(1+delimiter.length, "0" + delimiter + "abc" + delimiter + "1",  "0"+delimiter+"1");
+      };
+    } //end of class DelimiterSearch
+  } //end of namespace Strings
 
   export namespace Transcription {
 
@@ -335,7 +362,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
         count++;
       }
 
-      let rule: RegExpExecArray;
+      let rule: RegExpExecArray | null;
       while (rule = ruleParser.exec(allRules)) {
         const [
           , target
@@ -381,8 +408,8 @@ Please note that certain strong accents can possibly cause this mode to transcri
 
   export const extractHighlights = (input: string): string[] => {
     const regex = /={2,3}([^=]+)={2,3}/g;
-    let matches = [];
-    let match: string[];
+    let matches: string[] = [];
+    let match: string[] | null;
 
     while ((match = regex.exec(input)) !== null) {
       matches.push(match[1].trim());

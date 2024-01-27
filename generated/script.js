@@ -8,16 +8,30 @@ import { sendCtrlZ } from "./DontInspect.js";
 import { HtmlUtils } from "./HtmlUtils.js";
 import { HelgeUtils } from "./HelgeUtils.js";
 var TextAreas = HtmlUtils.TextAreas;
-var buttonWithId = HtmlUtils.buttonWithId;
 var blinkFast = HtmlUtils.blinkFast;
 var blinkSlow = HtmlUtils.blinkSlow;
-var inputElementWithId = HtmlUtils.inputElementWithId;
 var escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 var elementWithId = HtmlUtils.elementWithId;
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
-const RUN_TESTS = new Date().toISOString().slice(0, 10) === "2024-01-26";
+const RUN_TESTS = new Date().toISOString().slice(0, 10) === "2024-01-27";
+if (RUN_TESTS)
+    console.log("RUN_TESTS is true. This is only for " +
+        "testing. Set it to false in production.");
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
+const newNoteDelimiter = ')))---(((\n';
+const buttonWithId = (buttonId) => {
+    const retVal = HtmlUtils.buttonWithId(buttonId);
+    if (buttonId === null)
+        HelgeUtils.Exceptions.alertAndThrow(`buttonWithId(${buttonId}) is null.`);
+    return retVal;
+};
+const inputElementWithId = (inputElementId) => {
+    const retVal = HtmlUtils.inputElementWithId(inputElementId);
+    if (retVal === null)
+        HelgeUtils.Exceptions.alertAndThrow(`inputElementWithId(${inputElementId}) is null.`);
+    return retVal;
+};
 var Functions;
 (function (Functions) {
     Functions.applyReplaceRulesToMainEditor = () => {
@@ -370,53 +384,14 @@ var UiFunctions;
         };
         let CutButton;
         (function (CutButton) {
-            //** The text that is expected before and after the text that is cut. */
-            var assertEquals = HelgeUtils.Tests.assertEquals;
-            var Strings = HelgeUtils.Strings;
-            const newNoteDelimiter = ')))---(((\n';
-            /** Returns the positions of the adjacent delimiters or
-             * the start and end of the text if is no cut marker in
-             * that direction. */
-            const startAndEndIndexOfTextBetweenDelimiters = (textArea, delimiter, text, cursorPosition) => {
-                const markerSearch = new Strings.DelimiterSearch(delimiter);
-                return {
-                    left: markerSearch.leftIndex(text, cursorPosition),
-                    right: markerSearch.rightIndex(text, cursorPosition)
-                };
-            };
-            /** Deletes the text between two delimiters.
-             * @param left - The index of the left delimiter.
-             * @param right - The index of the right delimiter.
-             * @param input - The text to delete from.
-             * @param delimiter - The delimiter.
-             * */
-            const deleteBetweenDelimiters = (left, right, input, delimiter) => {
-                const v1 = (input.substring(0, left) + input.substring(right)).replaceAll(delimiter + delimiter, delimiter);
-                if (v1 === delimiter + delimiter)
-                    return "";
-                if (v1.startsWith(delimiter))
-                    return v1.substring(delimiter.length);
-                if (v1.endsWith(delimiter))
-                    return v1.substring(0, v1.length - delimiter.length);
-                return v1;
-            };
-            const testDeleteBetweenDelimiters = () => {
-                const delimiter = ')))---(((\n';
-                const runTest = (cursorPosition, input, expected) => {
-                    const delimiterSearch = new Strings.DelimiterSearch(delimiter);
-                    const left = delimiterSearch.leftIndex(input, cursorPosition);
-                    const right = delimiterSearch.rightIndex(input, cursorPosition);
-                    assertEquals(deleteBetweenDelimiters(left, right, input, delimiter), expected);
-                };
-                runTest(0, "abc" + delimiter, "");
-                runTest(delimiter.length, delimiter + "abc", "");
-                runTest(delimiter.length, delimiter + "abc" + delimiter, "");
-                runTest(1 + delimiter.length, "0" + delimiter + "abc" + delimiter + "1", "0" + delimiter + "1");
-            };
             const clickListener = () => {
                 // Because this seldom does something bad, first backup the whole text to clipboard:
                 copyToClipboard(mainEditorTextarea.value).then(() => {
-                    const between = startAndEndIndexOfTextBetweenDelimiters(mainEditorTextarea, newNoteDelimiter, mainEditorTextarea.value, mainEditorTextarea.selectionStart);
+                    const markerSearch = new HelgeUtils.Strings.DelimiterSearch(newNoteDelimiter);
+                    const between = {
+                        left: markerSearch.leftIndex(mainEditorTextarea.value, mainEditorTextarea.selectionStart),
+                        right: markerSearch.rightIndex(mainEditorTextarea.value, mainEditorTextarea.selectionStart)
+                    };
                     const trimmedText = () => inputElementWithId("mainEditorTextarea").value
                         .substring(between.left, between.right)
                         .trim();
@@ -428,7 +403,7 @@ var UiFunctions;
                             const DELETE = true;
                             if (DELETE)
                                 mainEditorTextarea.value =
-                                    deleteBetweenDelimiters(between.left, between.right, mainEditorTextarea.value, newNoteDelimiter);
+                                    HelgeUtils.Strings.DelimiterSearch.deleteBetweenDelimiters(between.left, between.right, mainEditorTextarea.value, newNoteDelimiter);
                         }
                         const selectionStart = between.left - (between.left > newNoteDelimiter.length ? newNoteDelimiter.length : 0);
                         const selectionEnd = between.right;
@@ -442,8 +417,7 @@ var UiFunctions;
                 buttonWithId("cutButton").addEventListener('click', clickListener);
             };
             CutButton.runTests = () => {
-                Strings.DelimiterSearch.runTests();
-                testDeleteBetweenDelimiters();
+                HelgeUtils.Strings.DelimiterSearch.runTests();
             };
         })(CutButton = Buttons.CutButton || (Buttons.CutButton = {})); // End of CutButton namespace
     })(Buttons = UiFunctions.Buttons || (UiFunctions.Buttons = {})); // End of Buttons namespace

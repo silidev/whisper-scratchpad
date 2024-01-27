@@ -4,10 +4,10 @@
     "target": "es2021",
     "sourceMap": true,
     "outDir": "./generated",
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "strictNullChecks": true, // Otherwise you spent hours debugging why your code doesn't work
   },
   "exclude": [
     "node_modules"
   ],
-  "noImplicitAny": false
 }
