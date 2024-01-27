@@ -374,44 +374,49 @@ var UiFunctions;
             var assertEquals = HelgeUtils.Tests.assertEquals;
             var Strings = HelgeUtils.Strings;
             const newNoteDelimiter = ')))---(((\n';
-            /** Returns the positions of the adjacent cut markers or
+            /** Returns the positions of the adjacent delimiters or
              * the start and end of the text if is no cut marker in
              * that direction. */
-            const startAndEndIndexOfTextBetweenDelimiters = (textArea) => {
-                const text = textArea.value;
-                const cursorPosition = textArea.selectionStart;
-                const markerSearch = new Strings.DelimiterSearch(newNoteDelimiter);
+            const startAndEndIndexOfTextBetweenDelimiters = (textArea, delimiter, text, cursorPosition) => {
+                const markerSearch = new Strings.DelimiterSearch(delimiter);
                 return {
                     left: markerSearch.leftIndex(text, cursorPosition),
                     right: markerSearch.rightIndex(text, cursorPosition)
                 };
             };
-            const deleteBetweenDelimiters = (left, right, input) => {
-                const v1 = (input.substring(0, left) + input.substring(right)).replaceAll(newNoteDelimiter + newNoteDelimiter, newNoteDelimiter);
-                if (v1 === newNoteDelimiter + newNoteDelimiter)
+            /** Deletes the text between two delimiters.
+             * @param left - The index of the left delimiter.
+             * @param right - The index of the right delimiter.
+             * @param input - The text to delete from.
+             * @param delimiter - The delimiter.
+             * */
+            const deleteBetweenDelimiters = (left, right, input, delimiter) => {
+                const v1 = (input.substring(0, left) + input.substring(right)).replaceAll(delimiter + delimiter, delimiter);
+                if (v1 === delimiter + delimiter)
                     return "";
-                if (v1.startsWith(newNoteDelimiter))
-                    return v1.substring(newNoteDelimiter.length);
-                if (v1.endsWith(newNoteDelimiter))
-                    return v1.substring(0, v1.length - newNoteDelimiter.length);
+                if (v1.startsWith(delimiter))
+                    return v1.substring(delimiter.length);
+                if (v1.endsWith(delimiter))
+                    return v1.substring(0, v1.length - delimiter.length);
                 return v1;
             };
             const testDeleteBetweenDelimiters = () => {
+                const delimiter = ')))---(((\n';
                 const runTest = (cursorPosition, input, expected) => {
-                    const delimiterSearch = new Strings.DelimiterSearch(newNoteDelimiter);
+                    const delimiterSearch = new Strings.DelimiterSearch(delimiter);
                     const left = delimiterSearch.leftIndex(input, cursorPosition);
                     const right = delimiterSearch.rightIndex(input, cursorPosition);
-                    assertEquals(deleteBetweenDelimiters(left, right, input), expected);
+                    assertEquals(deleteBetweenDelimiters(left, right, input, delimiter), expected);
                 };
-                runTest(0, "abc" + newNoteDelimiter, "");
-                runTest(newNoteDelimiter.length, newNoteDelimiter + "abc", "");
-                runTest(newNoteDelimiter.length, newNoteDelimiter + "abc" + newNoteDelimiter, "");
-                runTest(1 + newNoteDelimiter.length, "0" + newNoteDelimiter + "abc" + newNoteDelimiter + "1", "0" + newNoteDelimiter + "1");
+                runTest(0, "abc" + delimiter, "");
+                runTest(delimiter.length, delimiter + "abc", "");
+                runTest(delimiter.length, delimiter + "abc" + delimiter, "");
+                runTest(1 + delimiter.length, "0" + delimiter + "abc" + delimiter + "1", "0" + delimiter + "1");
             };
             const clickListener = () => {
                 // Because this seldom does something bad, first backup the whole text to clipboard:
                 copyToClipboard(mainEditorTextarea.value).then(() => {
-                    const between = startAndEndIndexOfTextBetweenDelimiters(mainEditorTextarea);
+                    const between = startAndEndIndexOfTextBetweenDelimiters(mainEditorTextarea, newNoteDelimiter, mainEditorTextarea.value, mainEditorTextarea.selectionStart);
                     const trimmedText = () => inputElementWithId("mainEditorTextarea").value
                         .substring(between.left, between.right)
                         .trim();
@@ -423,7 +428,7 @@ var UiFunctions;
                             const DELETE = true;
                             if (DELETE)
                                 mainEditorTextarea.value =
-                                    deleteBetweenDelimiters(between.left, between.right, mainEditorTextarea.value);
+                                    deleteBetweenDelimiters(between.left, between.right, mainEditorTextarea.value, newNoteDelimiter);
                         }
                         const selectionStart = between.left - (between.left > newNoteDelimiter.length ? newNoteDelimiter.length : 0);
                         const selectionEnd = between.right;
