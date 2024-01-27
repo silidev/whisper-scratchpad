@@ -99,14 +99,20 @@ namespace UiFunctions {
         };
 
       }
+
+      const appendTranscription = async (audioBlob: Blob) => transcribeAndHandleResult(audioBlob, false);
+      // noinspection JSUnusedLocalSymbols
+      const insertTranscription = async (audioBlob: Blob) => transcribeAndHandleResult(audioBlob, true);
+
       /**
+       * Deprecated, use appendTranscription or insertTranscription instead.
+       *
        * @param audioBlob
        * @param insertAtCursorFlag
        * - If true, the transcription is inserted at the cursor position
        * in the main editor, but often it is inserted at the beginning of the text instead.
        * - If false, it will be appended.
        */
-
       const transcribeAndHandleResult = async (audioBlob: Blob, insertAtCursorFlag: boolean ) => {
         sending = true;
         StateIndicator.update();
@@ -144,7 +150,8 @@ namespace UiFunctions {
             }
             return input;
           };
-          const transcriptionText = await HelgeUtils.Transcription.transcribe(
+          const transcriptionText =
+              await HelgeUtils.Transcription.transcribe(
               apiName, audioBlob, getApiKey() as string, promptForWhisper());
           if (insertAtCursorFlag)
             insertAtCursor(aSpaceIfNeeded() + removeLastDotIfNotAtEnd(transcriptionText));
@@ -178,7 +185,7 @@ namespace UiFunctions {
           downloadLink.download = 'recording.wav';
           downloadLink.style.display = 'block';
         }
-        transcribeAndHandleResult(audioBlob, true).then(NotVisibleAtThisTime.hideSpinner);
+        appendTranscription(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
       };
 
       const getOnStreamReady = (beginPaused: boolean) => {
@@ -222,7 +229,7 @@ namespace UiFunctions {
           audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
           audioChunks = [];
           sending = true;
-          transcribeAndHandleResult(audioBlob, false).then(NotVisibleAtThisTime.hideSpinner);
+          appendTranscription(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
           startRecording(true);
         };
         mediaRecorder.stop();
@@ -259,7 +266,7 @@ namespace UiFunctions {
       const transcribeAgainButton = () => {
         UiFunctions.closeEditorMenu();
         NotVisibleAtThisTime.showSpinner();
-        transcribeAndHandleResult(audioBlob, true).then(NotVisibleAtThisTime.hideSpinner);
+        appendTranscription(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
       };
       HtmlUtils.addClickListener(buttonWithId("transcribeAgainButton"), transcribeAgainButton);
 

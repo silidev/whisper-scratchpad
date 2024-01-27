@@ -92,7 +92,12 @@ var UiFunctions;
                     buttonWithId("pauseRecordButton").innerHTML = html;
                 };
             })(StateIndicator = Media.StateIndicator || (Media.StateIndicator = {}));
+            const appendTranscription = async (audioBlob) => transcribeAndHandleResult(audioBlob, false);
+            // noinspection JSUnusedLocalSymbols
+            const insertTranscription = async (audioBlob) => transcribeAndHandleResult(audioBlob, true);
             /**
+             * Deprecated, use appendTranscription or insertTranscription instead.
+             *
              * @param audioBlob
              * @param insertAtCursorFlag
              * - If true, the transcription is inserted at the cursor position
@@ -164,7 +169,7 @@ var UiFunctions;
                     downloadLink.download = 'recording.wav';
                     downloadLink.style.display = 'block';
                 }
-                transcribeAndHandleResult(audioBlob, true).then(NotVisibleAtThisTime.hideSpinner);
+                appendTranscription(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
             };
             const getOnStreamReady = (beginPaused) => {
                 return (streamParam) => {
@@ -205,7 +210,7 @@ var UiFunctions;
                     audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                     audioChunks = [];
                     sending = true;
-                    transcribeAndHandleResult(audioBlob, false).then(NotVisibleAtThisTime.hideSpinner);
+                    appendTranscription(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
                     startRecording(true);
                 };
                 mediaRecorder.stop();
@@ -240,7 +245,7 @@ var UiFunctions;
             const transcribeAgainButton = () => {
                 UiFunctions.closeEditorMenu();
                 NotVisibleAtThisTime.showSpinner();
-                transcribeAndHandleResult(audioBlob, true).then(NotVisibleAtThisTime.hideSpinner);
+                appendTranscription(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
             };
             HtmlUtils.addClickListener(buttonWithId("transcribeAgainButton"), transcribeAgainButton);
             StateIndicator.update();
