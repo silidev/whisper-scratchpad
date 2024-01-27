@@ -3,6 +3,9 @@
  */
 
 // noinspection JSUnusedGlobalSymbols
+
+import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
+
 // noinspection SpellCheckingInspection,JSUnusedGlobalSymbols
 const VERSION = "Saltburn";
 
@@ -13,7 +16,7 @@ import TextAreas = HtmlUtils.TextAreas;
 import blinkFast = HtmlUtils.blinkFast;
 import blinkSlow = HtmlUtils.blinkSlow;
 import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
-import elementWithId = HtmlUtils.elementWithId;
+import elementWithId = HtmlUtils.NeverNull.elementWithId;
 
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = new Date().toISOString().slice(0, 10) === "2024-01-27";
@@ -23,18 +26,6 @@ if (RUN_TESTS) console.log("RUN_TESTS is true. This is only for " +
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
 const newNoteDelimiter = ')))---(((\n';
-
-const buttonWithId = (buttonId: string): HTMLButtonElement => {
-  const retVal = HtmlUtils.buttonWithId(buttonId);
-  if (buttonId === null) HelgeUtils.Exceptions.alertAndThrow(`buttonWithId(${buttonId}) is null.`);
-  return retVal as HTMLButtonElement;
-};
-
-const inputElementWithId = (inputElementId: string): HTMLInputElement => {
-  const retVal = HtmlUtils.inputElementWithId(inputElementId);
-  if (retVal === null) HelgeUtils.Exceptions.alertAndThrow(`inputElementWithId(${inputElementId}) is null.`);
-  return retVal as HTMLInputElement;
-}
 
 namespace Functions {
   export const applyReplaceRulesToMainEditor = () => {
@@ -50,16 +41,21 @@ namespace Functions {
 
 namespace UiFunctions {
   // noinspection SpellCheckingInspection
+  import elementWithId = HtmlUtils.NeverNull.elementWithId;
+  import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
   export namespace Buttons {
-    import textAreaWithId = HtmlUtils.textAreaWithId;
     import insertTextAtCursor = HtmlUtils.TextAreas.insertTextAtCursor;
     import copyToClipboard = HtmlUtils.copyToClipboard;
+    import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
+    import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
+    import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
 
     export const runTests = () => {
       CutButton.runTests();
     };
 
     export namespace Media {
+      import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
       let mediaRecorder: MediaRecorder;
       let audioChunks: Blob[] = [];
       let audioBlob: Blob;
@@ -69,6 +65,7 @@ namespace UiFunctions {
 
       export namespace StateIndicator {
 
+        import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
         /** Updates the recorder state display. That consists of the text
          * and color of the stop button and the pause record button. */
         export const update = () => {
@@ -474,8 +471,6 @@ namespace UiFunctions {
     } // End of CutButton namespace
   } // End of Buttons namespace
 
-  import elementWithId = HtmlUtils.elementWithId;
-
   export const closeEditorMenu = () => {
     elementWithId("editorMenuHeading").dispatchEvent(new CustomEvent('rootMenuClose'));
   };
@@ -511,12 +506,12 @@ const mainEditorTextarea = document.getElementById('mainEditorTextarea') as HTML
 const transcriptionPromptEditor = document.getElementById('transcriptionPromptEditor') as HTMLTextAreaElement;
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement;
 
-const saveEditor = () => HtmlUtils.Cookies.set("editorText", HtmlUtils.textAreaWithId("mainEditorTextarea").value);
+const saveEditor = () => HtmlUtils.Cookies.set("editorText", textAreaWithId("mainEditorTextarea").value);
 
 TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea');
 const saveReplaceRules = () => HtmlUtils.Cookies.set("replaceRules",
-    HtmlUtils.textAreaWithId("replaceRulesTextArea").value);
-HtmlUtils.textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions.replaceRulesTextAreaOnInput);
+    textAreaWithId("replaceRulesTextArea").value);
+textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions.replaceRulesTextAreaOnInput);
 TextAreas.setAutoSave('editorText', 'mainEditorTextarea');
 TextAreas.setAutoSave('prompt', 'transcriptionPromptEditor');
 
@@ -539,7 +534,8 @@ namespace NotVisibleAtThisTime {
 }
 
 namespace Log {
-  import textAreaWithId = HtmlUtils.textAreaWithId;
+  import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
+  import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
   const MAX_LOG_LEN = 1000;
 
   export const write = (message: string) => {
@@ -555,7 +551,7 @@ namespace Log {
   };
 
   export const addToggleLogButtonClickListener =
-      (textAreaWithId: (id: string) => (HTMLTextAreaElement | null)) => {
+      (textAreaWithId: (id: string) => (HTMLTextAreaElement)) => {
     HtmlUtils.addClickListener(buttonWithId("toggleLogButton"), () => {
       UiFunctions.closeEditorMenu();
       const log = textAreaWithId("logTextArea");
@@ -572,6 +568,8 @@ namespace Log {
 
 namespace ReplaceByRules {
   // Overload signatures
+  import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
+
   export function withUiLog(rules: string, subject: string): string;
   export function withUiLog(rules: string, subject: string, wholeWords: boolean): string;
   export function withUiLog(rules: string, subject: string, wholeWords: boolean, preserveCase: boolean): string;
@@ -600,8 +598,8 @@ const setApiKeyCookie = (apiKey: string) => {
 
 export const loadFormData = () => {
   const Cookies = HtmlUtils.Cookies;
-  mainEditorTextarea.value = Cookies.get("editorText");
-  transcriptionPromptEditor.value = Cookies.get("prompt");
+  mainEditorTextarea.value = Cookies.get("editorText")??"";
+  transcriptionPromptEditor.value = Cookies.get("prompt")??"";
   replaceRulesTextArea.value = Cookies.get("replaceRules")??`""->""\n`;
   apiSelector.value = Cookies.get("apiSelector")??'OpenAI';
 };

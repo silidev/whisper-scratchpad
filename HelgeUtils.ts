@@ -36,7 +36,7 @@ export namespace HelgeUtils {
      </context>
      </template>
      </pre>*/
-    export const unhandledExceptionAlert = (e: Error) => {
+    export const unhandledExceptionAlert = (e: Error | string) => {
       let str = "Unhandled EXCEPTION! :" + e;
       if (e instanceof Error) {
         str += ", Stack trace:\n";
@@ -280,9 +280,8 @@ Please note that certain strong accents can possibly cause this mode to transcri
         },
         body: formData
       })).json();
-      const resultText = result?.prediction ?? "";
-      if (typeof resultText === "string") return resultText;
-      return result;
+      const resultText = result?.prediction;
+      return resultText;
     };
 
     export const transcribe = async (api: ApiName, audioBlob: Blob, apiKey: string
@@ -419,6 +418,22 @@ Please note that certain strong accents can possibly cause this mode to transcri
   };
 
   export namespace Misc {
+    /** I use "strictNullChecks": true to avoid debugging. Therefore, I need this where that is
+     * too strict.
+     *
+     * Use example:
+     * const elementWithId = (id: string) =>
+     *   nullFilter<HTMLElement>(HtmlUtils.elementWithId, id);
+     */
+    export const nullFilter = <T>(f: Function, ...parameters: any ): T => {
+      const untypedNullFilter = (input: any) => {
+        if (input === null) HelgeUtils.Exceptions.alertAndThrow(`Unexpected null value.`);
+        return input;
+      };
+      return untypedNullFilter(f(...parameters)) as T;
+    }
+
+
     // noinspection SpellCheckingInspection
     /**
      * Converts "Du" to "Ich" and "Dein" to "Mein" and so on.

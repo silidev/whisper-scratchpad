@@ -267,10 +267,8 @@ export var HelgeUtils;
                 },
                 body: formData
             })).json();
-            const resultText = result?.prediction ?? "";
-            if (typeof resultText === "string")
-                return resultText;
-            return result;
+            const resultText = result?.prediction;
+            return resultText;
         };
         Transcription.transcribe = async (api, audioBlob, apiKey, prompt = '') => {
             if (!audioBlob || audioBlob.size === 0)
@@ -391,6 +389,21 @@ export var HelgeUtils;
     };
     let Misc;
     (function (Misc) {
+        /** I use "strictNullChecks": true to avoid debugging. Therefore, I need this where that is
+         * too strict.
+         *
+         * Use example:
+         * const elementWithId = (id: string) =>
+         *   nullFilter<HTMLElement>(HtmlUtils.elementWithId, id);
+         */
+        Misc.nullFilter = (f, ...parameters) => {
+            const untypedNullFilter = (input) => {
+                if (input === null)
+                    HelgeUtils.Exceptions.alertAndThrow(`Unexpected null value.`);
+                return input;
+            };
+            return untypedNullFilter(f(...parameters));
+        };
         // noinspection SpellCheckingInspection
         /**
          * Converts "Du" to "Ich" and "Dein" to "Mein" and so on.

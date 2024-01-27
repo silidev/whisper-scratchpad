@@ -27,8 +27,18 @@ export var HtmlUtils;
     HtmlUtils.buttonWithId = HtmlUtils.elementWithId;
     HtmlUtils.textAreaWithId = HtmlUtils.elementWithId;
     HtmlUtils.inputElementWithId = HtmlUtils.elementWithId;
+    /** These never return null. Instead, they throw a runtime error. */
+    let NeverNull;
+    (function (NeverNull) {
+        var nullFilter = HelgeUtils.Misc.nullFilter;
+        NeverNull.elementWithId = (id) => nullFilter(HtmlUtils.elementWithId, id);
+        NeverNull.buttonWithId = (id) => nullFilter(HtmlUtils.buttonWithId, id);
+        NeverNull.inputElementWithId = (id) => nullFilter(HtmlUtils.inputElementWithId, id);
+        NeverNull.textAreaWithId = (id) => nullFilter(HtmlUtils.textAreaWithId, id);
+    })(NeverNull = HtmlUtils.NeverNull || (HtmlUtils.NeverNull = {}));
     let TextAreas;
     (function (TextAreas) {
+        var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
         TextAreas.appendText = (textArea, text) => {
             textArea.value += " " + text;
             TextAreas.setCursor(textArea, textArea.value.length);
@@ -44,8 +54,8 @@ export var HtmlUtils;
          * @param id - The ID of the text area element.
          */
         TextAreas.setAutoSave = (cookieName, id) => {
-            HtmlUtils.textAreaWithId(id).addEventListener('input', () => {
-                Cookies.set(cookieName, HtmlUtils.textAreaWithId(id).value);
+            textAreaWithId(id).addEventListener('input', () => {
+                Cookies.set(cookieName, textAreaWithId(id).value);
             });
         };
         TextAreas.getCursor = (textArea) => {

@@ -2,6 +2,7 @@
  * Copyright (c) 2024 by Helge Tobias Kosuch
  */
 // noinspection JSUnusedGlobalSymbols
+var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
 // noinspection SpellCheckingInspection,JSUnusedGlobalSymbols
 const VERSION = "Saltburn";
 import { sendCtrlZ } from "./DontInspect.js";
@@ -11,7 +12,7 @@ var TextAreas = HtmlUtils.TextAreas;
 var blinkFast = HtmlUtils.blinkFast;
 var blinkSlow = HtmlUtils.blinkSlow;
 var escapeRegExp = HelgeUtils.Strings.escapeRegExp;
-var elementWithId = HtmlUtils.elementWithId;
+var elementWithId = HtmlUtils.NeverNull.elementWithId;
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = new Date().toISOString().slice(0, 10) === "2024-01-27";
 if (RUN_TESTS)
@@ -20,18 +21,6 @@ if (RUN_TESTS)
 // ############## Config ##############
 const INSERT_EDITOR_INTO_PROMPT = true;
 const newNoteDelimiter = ')))---(((\n';
-const buttonWithId = (buttonId) => {
-    const retVal = HtmlUtils.buttonWithId(buttonId);
-    if (buttonId === null)
-        HelgeUtils.Exceptions.alertAndThrow(`buttonWithId(${buttonId}) is null.`);
-    return retVal;
-};
-const inputElementWithId = (inputElementId) => {
-    const retVal = HtmlUtils.inputElementWithId(inputElementId);
-    if (retVal === null)
-        HelgeUtils.Exceptions.alertAndThrow(`inputElementWithId(${inputElementId}) is null.`);
-    return retVal;
-};
 var Functions;
 (function (Functions) {
     Functions.applyReplaceRulesToMainEditor = () => {
@@ -45,16 +34,21 @@ var Functions;
 var UiFunctions;
 (function (UiFunctions) {
     // noinspection SpellCheckingInspection
+    var elementWithId = HtmlUtils.NeverNull.elementWithId;
+    var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
     let Buttons;
     (function (Buttons) {
-        var textAreaWithId = HtmlUtils.textAreaWithId;
         var insertTextAtCursor = HtmlUtils.TextAreas.insertTextAtCursor;
         var copyToClipboard = HtmlUtils.copyToClipboard;
+        var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
+        var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
+        var inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
         Buttons.runTests = () => {
             CutButton.runTests();
         };
         let Media;
         (function (Media) {
+            var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
             let mediaRecorder;
             let audioChunks = [];
             let audioBlob;
@@ -63,6 +57,7 @@ var UiFunctions;
             let sending = false;
             let StateIndicator;
             (function (StateIndicator) {
+                var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
                 /** Updates the recorder state display. That consists of the text
                  * and color of the stop button and the pause record button. */
                 StateIndicator.update = () => {
@@ -421,7 +416,6 @@ var UiFunctions;
             };
         })(CutButton = Buttons.CutButton || (Buttons.CutButton = {})); // End of CutButton namespace
     })(Buttons = UiFunctions.Buttons || (UiFunctions.Buttons = {})); // End of Buttons namespace
-    var elementWithId = HtmlUtils.elementWithId;
     UiFunctions.closeEditorMenu = () => {
         elementWithId("editorMenuHeading").dispatchEvent(new CustomEvent('rootMenuClose'));
     };
@@ -449,10 +443,10 @@ const apiKeyInput = document.getElementById('apiKeyInputField');
 const mainEditorTextarea = document.getElementById('mainEditorTextarea');
 const transcriptionPromptEditor = document.getElementById('transcriptionPromptEditor');
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea');
-const saveEditor = () => HtmlUtils.Cookies.set("editorText", HtmlUtils.textAreaWithId("mainEditorTextarea").value);
+const saveEditor = () => HtmlUtils.Cookies.set("editorText", textAreaWithId("mainEditorTextarea").value);
 TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea');
-const saveReplaceRules = () => HtmlUtils.Cookies.set("replaceRules", HtmlUtils.textAreaWithId("replaceRulesTextArea").value);
-HtmlUtils.textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions.replaceRulesTextAreaOnInput);
+const saveReplaceRules = () => HtmlUtils.Cookies.set("replaceRules", textAreaWithId("replaceRulesTextArea").value);
+textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions.replaceRulesTextAreaOnInput);
 TextAreas.setAutoSave('editorText', 'mainEditorTextarea');
 TextAreas.setAutoSave('prompt', 'transcriptionPromptEditor');
 const insertAtCursor = (text) => {
@@ -472,7 +466,8 @@ var NotVisibleAtThisTime;
 })(NotVisibleAtThisTime || (NotVisibleAtThisTime = {}));
 var Log;
 (function (Log) {
-    var textAreaWithId = HtmlUtils.textAreaWithId;
+    var inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
+    var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
     const MAX_LOG_LEN = 1000;
     Log.write = (message) => {
         if (!inputElementWithId("logReplaceRulesCheckbox").checked)
@@ -502,6 +497,8 @@ var Log;
 })(Log || (Log = {}));
 var ReplaceByRules;
 (function (ReplaceByRules) {
+    // Overload signatures
+    var inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
     function withUiLog(rules, subject, wholeWords = false, preserveCase = false) {
         const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked;
         const retVal = HelgeUtils.ReplaceByRules.replaceByRules(subject, rules, wholeWords, logFlag, preserveCase);
@@ -524,8 +521,8 @@ const setApiKeyCookie = (apiKey) => {
 };
 export const loadFormData = () => {
     const Cookies = HtmlUtils.Cookies;
-    mainEditorTextarea.value = Cookies.get("editorText");
-    transcriptionPromptEditor.value = Cookies.get("prompt");
+    mainEditorTextarea.value = Cookies.get("editorText") ?? "";
+    transcriptionPromptEditor.value = Cookies.get("prompt") ?? "";
     replaceRulesTextArea.value = Cookies.get("replaceRules") ?? `""->""\n`;
     apiSelector.value = Cookies.get("apiSelector") ?? 'OpenAI';
 };
