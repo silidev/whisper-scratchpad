@@ -3,24 +3,20 @@
  */
 // noinspection JSUnusedGlobalSymbols
 var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
-// noinspection SpellCheckingInspection,JSUnusedGlobalSymbols
-const VERSION = "Saltburn";
-import { sendCtrlZ } from "./DontInspect.js";
-import { HtmlUtils } from "./HtmlUtils.js";
-import { HelgeUtils } from "./HelgeUtils.js";
 var TextAreas = HtmlUtils.TextAreas;
 var blinkFast = HtmlUtils.blinkFast;
 var blinkSlow = HtmlUtils.blinkSlow;
 var escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 var elementWithId = HtmlUtils.NeverNull.elementWithId;
+import { sendCtrlZ } from "./DontInspect.js";
+import { HtmlUtils } from "./HtmlUtils.js";
+import { HelgeUtils } from "./HelgeUtils.js";
+import { INSERT_EDITOR_INTO_PROMPT, newNoteDelimiter, VERSION } from "./config.js";
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString().slice(0, 10) === "2024-01-27";
 if (RUN_TESTS)
     console.log("RUN_TESTS is true. This is only for " +
         "testing. Set it to false in production.");
-// ############## Config ##############
-const INSERT_EDITOR_INTO_PROMPT = true;
-const newNoteDelimiter = ')))---(((\n';
 var Functions;
 (function (Functions) {
     Functions.applyReplaceRulesToMainEditor = () => {
