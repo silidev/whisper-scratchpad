@@ -1,39 +1,34 @@
 import {HelgeUtils} from "./HelgeUtils.js";
 import {newNoteDelimiter} from "./config.js";
 import {HtmlUtils} from "./HtmlUtils.js";
+import {saveEditor} from "./script.js";
 import copyToClipboard = HtmlUtils.copyToClipboard;
 import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
-import {saveEditor} from "./script.js";
+import {CurrentNote} from "./CurrentNote.js";
 
 export function createCutButtonClickListener(mainEditorTextarea: HTMLTextAreaElement) {
   const clickListener = () => {
 
-    // Because this seldom does something bad, first backup the whole text to clipboard:
+    // Because this sometimes (very seldom) does something bad, first backup the whole text to clipboard:
     copyToClipboard(mainEditorTextarea.value).then(() => {
-
-      const markerSearch = new HelgeUtils.Strings.DelimiterSearch(newNoteDelimiter);
-      const between = {
-        left: markerSearch.leftIndex(mainEditorTextarea.value, mainEditorTextarea.selectionStart),
-        right: markerSearch.rightIndex(mainEditorTextarea.value, mainEditorTextarea.selectionStart)
-      };
+      const range = new CurrentNote(mainEditorTextarea).rangeOf();
 
       const trimmedText =
           () => mainEditorTextarea.value
-              .substring(between.left, between.right)
+              .substring(range.left, range.right)
               .trim();
 
       copyToClipboard(trimmedText()).then(() => {
 
         HtmlUtils.signalClickToUser(buttonWithId("cutButton"));
         {
-          /** If DELETE==true, the text between the markers is deleted. Do NOT use this yet because sometimes
-           * something goes wrong. */
+          /** If DELETE==true, the text between the markers is deleted. */
           const DELETE = true;
           if (DELETE) mainEditorTextarea.value =
-              HelgeUtils.Strings.DelimiterSearch.deleteBetweenDelimiters(between.left, between.right, mainEditorTextarea.value, newNoteDelimiter);
+              HelgeUtils.Strings.DelimiterSearch.deleteBetweenDelimiters(range.left, range.right, mainEditorTextarea.value, newNoteDelimiter);
         }
-        const selectionStart = between.left - (between.left > newNoteDelimiter.length ? newNoteDelimiter.length : 0);
-        const selectionEnd = between.right;
+        const selectionStart = range.left - (range.left > newNoteDelimiter.length ? newNoteDelimiter.length : 0);
+        const selectionEnd = range.right;
         mainEditorTextarea.setSelectionRange(selectionStart, selectionEnd);
         saveEditor();
         mainEditorTextarea.focus();
