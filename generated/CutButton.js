@@ -2,20 +2,20 @@ import { HelgeUtils } from "./HelgeUtils.js";
 import { newNoteDelimiter } from "./config.js";
 import { HtmlUtils } from "./HtmlUtils.js";
 import { saveEditor } from "./script.js";
-var copyToClipboard = HtmlUtils.copyToClipboard;
 var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
 import { CurrentNote } from "./CurrentNote.js";
-export function createCutButtonClickListener(mainEditorTextarea) {
+export const createCutButtonClickListener = (mainEditorTextarea) => {
     const clickListener = () => {
+        const clipboard = navigator.clipboard;
         const currentNote = new CurrentNote(mainEditorTextarea);
         // Because this sometimes (very seldom) does something bad, first backup the whole text to clipboard:
-        copyToClipboard(mainEditorTextarea.value).then(() => {
+        clipboard.writeText(mainEditorTextarea.value).then(() => {
             const trimmedText = () => {
                 return mainEditorTextarea.value
                     .substring(currentNote.leftIndex(), currentNote.rightIndex())
                     .trim();
             };
-            copyToClipboard(trimmedText()).then(() => {
+            clipboard.writeText(trimmedText()).then(() => {
                 HtmlUtils.signalClickToUser(buttonWithId("cutButton"));
                 {
                     /** If DELETE==true, the text between the markers is deleted. */
@@ -33,5 +33,5 @@ export function createCutButtonClickListener(mainEditorTextarea) {
         });
     };
     return clickListener;
-}
+};
 //# sourceMappingURL=CutButton.js.map

@@ -6,13 +6,14 @@ import copyToClipboard = HtmlUtils.copyToClipboard;
 import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
 import {CurrentNote} from "./CurrentNote.js";
 
-export function createCutButtonClickListener(mainEditorTextarea: HTMLTextAreaElement) {
+export const createCutButtonClickListener = (mainEditorTextarea: HTMLTextAreaElement) => {
   const clickListener = () => {
 
+    const clipboard = navigator.clipboard;
     const currentNote = new CurrentNote(mainEditorTextarea);
 
     // Because this sometimes (very seldom) does something bad, first backup the whole text to clipboard:
-    copyToClipboard(mainEditorTextarea.value).then(() => {
+    clipboard.writeText(mainEditorTextarea.value).then(() => {
       const trimmedText =
           () => {
             return mainEditorTextarea.value
@@ -20,7 +21,7 @@ export function createCutButtonClickListener(mainEditorTextarea: HTMLTextAreaEle
                 .trim();
           };
 
-      copyToClipboard(trimmedText()).then(() => {
+      clipboard.writeText(trimmedText()).then(() => {
 
         HtmlUtils.signalClickToUser(buttonWithId("cutButton"));
         {
@@ -39,4 +40,4 @@ export function createCutButtonClickListener(mainEditorTextarea: HTMLTextAreaEle
     });
   };
   return clickListener;
-}
+};
