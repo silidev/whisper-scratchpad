@@ -2,9 +2,8 @@ import {HelgeUtils} from "./HelgeUtils.js";
 import {newNoteDelimiter} from "./config.js";
 import {HtmlUtils} from "./HtmlUtils.js";
 import {saveEditor} from "./script.js";
-import copyToClipboard = HtmlUtils.copyToClipboard;
-import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
 import {CurrentNote} from "./CurrentNote.js";
+import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
 
 export const createCutButtonClickListener = (mainEditorTextarea: HTMLTextAreaElement) => {
   const clickListener = () => {
@@ -14,14 +13,7 @@ export const createCutButtonClickListener = (mainEditorTextarea: HTMLTextAreaEle
 
     // Because this sometimes (very seldom) does something bad, first backup the whole text to clipboard:
     clipboard.writeText(mainEditorTextarea.value).then(() => {
-      const trimmedText =
-          () => {
-            return mainEditorTextarea.value
-                .substring(currentNote.leftIndex(), currentNote.rightIndex())
-                .trim();
-          };
-
-      clipboard.writeText(trimmedText()).then(() => {
+      clipboard.writeText(currentNote.textOf().trim()).then(() => {
 
         HtmlUtils.signalClickToUser(buttonWithId("cutButton"));
         {
