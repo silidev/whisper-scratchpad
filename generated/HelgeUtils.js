@@ -7,6 +7,9 @@
  * Copyright by Helge Tobias Kosuch 2024 */
 export var HelgeUtils;
 (function (HelgeUtils) {
+    HelgeUtils.runTests = () => {
+        HelgeUtils.Strings.runTests();
+    };
     let Exceptions;
     (function (Exceptions) {
         /**
@@ -213,6 +216,10 @@ export var HelgeUtils;
             runTest(1 + delimiter.length, "0" + delimiter + "abc" + delimiter + "1", "0" + delimiter + "1");
         };
         Strings.DelimiterSearch = DelimiterSearch;
+        function runTests() {
+            DelimiterSearch.runTests();
+        }
+        Strings.runTests = runTests;
     })(Strings = HelgeUtils.Strings || (HelgeUtils.Strings = {})); //end of namespace Strings
     let Transcription;
     (function (Transcription) {

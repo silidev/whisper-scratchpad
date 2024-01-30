@@ -13,7 +13,8 @@ import elementWithId = HtmlUtils.NeverNull.elementWithId;
 import {sendCtrlZ} from "./DontInspect.js";
 import {HtmlUtils} from "./HtmlUtils.js";
 import {HelgeUtils} from "./HelgeUtils.js";
-import {INSERT_EDITOR_INTO_PROMPT, newNoteDelimiter, VERSION} from "./config.js";
+import {INSERT_EDITOR_INTO_PROMPT, VERSION} from "./config.js";
+import {createCutButtonClickListener} from "./CutButton.js";
 
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString().slice(0, 10) === "2024-01-27";
@@ -43,12 +44,9 @@ namespace UiFunctions {
     import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
     import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
 
-    export const runTests = () => {
-      CutButton.runTests();
-    };
-
     export namespace Media {
       import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
+      import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
       let mediaRecorder: MediaRecorder;
       let audioChunks: Blob[] = [];
       let audioBlob: Blob;
@@ -96,6 +94,7 @@ namespace UiFunctions {
       const appendTranscription = async (audioBlob: Blob) => transcribeAndHandleResult(audioBlob, false);
       // noinspection JSUnusedLocalSymbols
       const insertTranscription = async (audioBlob: Blob) => transcribeAndHandleResult(audioBlob, true);
+      suppressUnusedWarning(insertTranscription);
 
       /**
        * Deprecated, use appendTranscription or insertTranscription instead.
@@ -428,46 +427,9 @@ namespace UiFunctions {
     };
 
     export namespace CutButton {
-      const clickListener = () => {
-
-        // Because this seldom does something bad, first backup the whole text to clipboard:
-        copyToClipboard(mainEditorTextarea.value).then(()=>{
-
-          const markerSearch = new HelgeUtils.Strings.DelimiterSearch(newNoteDelimiter);
-          const between = {
-            left: markerSearch.leftIndex(mainEditorTextarea.value, mainEditorTextarea.selectionStart),
-            right: markerSearch.rightIndex(mainEditorTextarea.value, mainEditorTextarea.selectionStart)
-          };
-
-          const trimmedText =
-              () => inputElementWithId("mainEditorTextarea").value
-              .substring(between.left, between.right)
-              .trim();
-
-          copyToClipboard(trimmedText()).then(() => {
-
-            HtmlUtils.signalClickToUser(buttonWithId("cutButton"));
-            {
-              /** If DELETE==true, the text between the markers is deleted. Do NOT use this yet because sometimes
-               * something goes wrong. */
-              const DELETE = true;
-              if (DELETE) mainEditorTextarea.value =
-                  HelgeUtils.Strings.DelimiterSearch.deleteBetweenDelimiters(between.left, between.right, mainEditorTextarea.value, newNoteDelimiter);
-            }
-            const selectionStart = between.left - (between.left > newNoteDelimiter.length ? newNoteDelimiter.length : 0);
-            const selectionEnd = between.right;
-            mainEditorTextarea.setSelectionRange(selectionStart, selectionEnd);
-            saveEditor();
-            mainEditorTextarea.focus();
-          });
-        });
-      };
       export const init = () => {
-        buttonWithId("cutButton").addEventListener('click',clickListener);
+        buttonWithId("cutButton").addEventListener('click',createCutButtonClickListener(mainEditorTextarea));
       };
-      export const runTests = () => {
-        HelgeUtils.Strings.DelimiterSearch.runTests();
-      }
     } // End of CutButton namespace
   } // End of Buttons namespace
 
@@ -506,7 +468,7 @@ const mainEditorTextarea = document.getElementById('mainEditorTextarea') as HTML
 const transcriptionPromptEditor = document.getElementById('transcriptionPromptEditor') as HTMLTextAreaElement;
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement;
 
-const saveEditor = () => HtmlUtils.Cookies.set("editorText", textAreaWithId("mainEditorTextarea").value);
+export const saveEditor = () => HtmlUtils.Cookies.set("editorText", textAreaWithId("mainEditorTextarea").value);
 
 TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea');
 const saveReplaceRules = () => HtmlUtils.Cookies.set("replaceRules",
@@ -618,7 +580,7 @@ export const registerServiceWorker = () => {
 
 const runTests = () => {
   if (!RUN_TESTS) return;
-  UiFunctions.Buttons.runTests();
+  HelgeUtils.runTests();
 };
 
 const init = () => {
