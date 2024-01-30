@@ -14,18 +14,24 @@ export const createCutButtonClickListener = (mainEditorTextarea: HTMLTextAreaEle
     // Because this sometimes (very seldom) does something bad, first backup the whole text to clipboard:
     clipboard.writeText(mainEditorTextarea.value).then(() => {
       clipboard.writeText(currentNote.textOf().trim()).then(() => {
-
         HtmlUtils.signalClickToUser(buttonWithId("cutButton"));
         {
-          /** If DELETE==true, the text between the markers is deleted. */
           const DELETE = true;
-          if (DELETE) mainEditorTextarea.value =
-              HelgeUtils.Strings.DelimiterSearch.deleteBetweenDelimiters(currentNote.leftIndex()
-                  , currentNote.rightIndex(), mainEditorTextarea.value, newNoteDelimiter);
+          if (DELETE)
+              /* If DELETE==true, the text between the markers is deleted. */
+              mainEditorTextarea.value =
+                  HelgeUtils.Strings.DelimiterSearch.deleteBetweenDelimiters(
+                  currentNote.leftIndex(), currentNote.rightIndex(),
+                  mainEditorTextarea.value, newNoteDelimiter);
+          else {
+            // When DELETE==false, just select the text between the markers:
+            const selectionStart = currentNote.leftIndex()
+                // Also select the newNoteDelimiter before the note:
+                - (currentNote.leftIndex() > newNoteDelimiter.length ? newNoteDelimiter.length : 0);
+            const selectionEnd = currentNote.rightIndex();
+            mainEditorTextarea.setSelectionRange(selectionStart, selectionEnd);
+          }
         }
-        const selectionStart = currentNote.leftIndex() - (currentNote.leftIndex() > newNoteDelimiter.length ? newNoteDelimiter.length : 0);
-        const selectionEnd = currentNote.rightIndex();
-        mainEditorTextarea.setSelectionRange(selectionStart, selectionEnd);
         saveEditor();
         mainEditorTextarea.focus();
       });
