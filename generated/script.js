@@ -331,6 +331,16 @@ var UiFunctions;
             HtmlUtils.addClickListener(buttonWithId("cancelButton"), () => {
                 cancelButton();
             });
+            // cutAllButton
+            {
+                const cutAllButton = buttonWithId("cutAllButton");
+                HtmlUtils.addClickListener(cutAllButton, () => {
+                    navigator.clipboard.writeText(mainEditorTextarea.value).then(() => {
+                        mainEditorTextarea.value = '';
+                        saveEditor();
+                    });
+                });
+            }
             // aboutButton
             HtmlUtils.addClickListener(buttonWithId("pasteButton"), () => {
                 navigator.clipboard.readText().then(text => {

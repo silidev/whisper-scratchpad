@@ -370,13 +370,23 @@ namespace UiFunctions {
         cancelButton();
       });
 
+// cutAllButton
+      {
+        const cutAllButton = buttonWithId("cutAllButton");
+        HtmlUtils.addClickListener(cutAllButton, () => {
+          navigator.clipboard.writeText(mainEditorTextarea.value).then(() => {
+            mainEditorTextarea.value = '';
+            saveEditor();
+          });
+        });
+      }
+
 // aboutButton
       HtmlUtils.addClickListener(buttonWithId("pasteButton"), () => {
         navigator.clipboard.readText().then(text => {
           insertAtCursor(text);
         });
       });
-
 
 // cutButton
       buttonWithId("cutButton").addEventListener('click', createCutButtonClickListener(mainEditorTextarea));
