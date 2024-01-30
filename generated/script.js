@@ -338,7 +338,7 @@ var UiFunctions;
                 });
             });
             // cutButton
-            UiFunctions.Buttons.CutButton.init();
+            buttonWithId("cutButton").addEventListener('click', createCutButtonClickListener(mainEditorTextarea));
             // copyButtons
             /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
             const addEventListenerForCopyButton = (buttonId, inputElementId) => {
@@ -378,12 +378,6 @@ var UiFunctions;
         Buttons.addWordReplaceRule = () => {
             addReplaceRule(true);
         };
-        let CutButton;
-        (function (CutButton) {
-            CutButton.init = () => {
-                buttonWithId("cutButton").addEventListener('click', createCutButtonClickListener(mainEditorTextarea));
-            };
-        })(CutButton = Buttons.CutButton || (Buttons.CutButton = {})); // End of CutButton namespace
     })(Buttons = UiFunctions.Buttons || (UiFunctions.Buttons = {})); // End of Buttons namespace
     UiFunctions.closeEditorMenu = () => {
         elementWithId("editorMenuHeading").dispatchEvent(new CustomEvent('rootMenuClose'));

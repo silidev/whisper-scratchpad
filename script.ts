@@ -379,7 +379,7 @@ namespace UiFunctions {
 
 
 // cutButton
-      UiFunctions.Buttons.CutButton.init();
+      buttonWithId("cutButton").addEventListener('click', createCutButtonClickListener(mainEditorTextarea));
 
 // copyButtons
       /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
@@ -425,12 +425,6 @@ namespace UiFunctions {
     export const addWordReplaceRule = () => {
       addReplaceRule(true);
     };
-
-    export namespace CutButton {
-      export const init = () => {
-        buttonWithId("cutButton").addEventListener('click',createCutButtonClickListener(mainEditorTextarea));
-      };
-    } // End of CutButton namespace
   } // End of Buttons namespace
 
   export const closeEditorMenu = () => {
