@@ -186,13 +186,13 @@ export var HelgeUtils;
                 runTest(inputStr, delimiter.length + 3, "abc");
             }
         };
-        /** Deletes the text between two delimiters.
+        /** Deletes a note from the given text.
          * @param input - The text to delete from.
          * @param left - The index of the left delimiter.
          * @param right - The index of the right delimiter.
          * @param delimiter - The delimiter.
          * */
-        DelimiterSearch.deleteBetweenDelimiters = (input, left, right, delimiter) => {
+        DelimiterSearch.deleteNote = (input, left, right, delimiter) => {
             const str1 = (input.substring(0, left) + input.substring(right)).replaceAll(delimiter + delimiter, delimiter);
             if (str1 === delimiter + delimiter)
                 return "";
@@ -208,7 +208,7 @@ export var HelgeUtils;
                 const delimiterSearch = new Strings.DelimiterSearch(delimiter);
                 const left = delimiterSearch.leftIndex(input, cursorPosition);
                 const right = delimiterSearch.rightIndex(input, cursorPosition);
-                assertEquals(_a.deleteBetweenDelimiters(input, left, right, delimiter), expected);
+                assertEquals(_a.deleteNote(input, left, right, delimiter), expected);
             };
             runTest(0, "abc" + delimiter, "");
             runTest(delimiter.length, delimiter + "abc", "");
