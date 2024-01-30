@@ -13,6 +13,8 @@ const urlsToCache = [
     'manifest.json',
     'service-worker.js',
     'style.css',
+    'generated/CurrentNote.js',
+    'generated/CutButton.js',
 ];
 
 self.addEventListener('install', event => {

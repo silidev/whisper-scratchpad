@@ -9,14 +9,16 @@ import {CurrentNote} from "./CurrentNote.js";
 export function createCutButtonClickListener(mainEditorTextarea: HTMLTextAreaElement) {
   const clickListener = () => {
 
+    const currentNote = new CurrentNote(mainEditorTextarea);
+
     // Because this sometimes (very seldom) does something bad, first backup the whole text to clipboard:
     copyToClipboard(mainEditorTextarea.value).then(() => {
-      const range = new CurrentNote(mainEditorTextarea).rangeOf();
-
       const trimmedText =
-          () => mainEditorTextarea.value
-              .substring(range.left, range.right)
-              .trim();
+          () => {
+            return mainEditorTextarea.value
+                .substring(currentNote.leftIndex(), currentNote.rightIndex())
+                .trim();
+          };
 
       copyToClipboard(trimmedText()).then(() => {
 
@@ -25,10 +27,11 @@ export function createCutButtonClickListener(mainEditorTextarea: HTMLTextAreaEle
           /** If DELETE==true, the text between the markers is deleted. */
           const DELETE = true;
           if (DELETE) mainEditorTextarea.value =
-              HelgeUtils.Strings.DelimiterSearch.deleteBetweenDelimiters(range.left, range.right, mainEditorTextarea.value, newNoteDelimiter);
+              HelgeUtils.Strings.DelimiterSearch.deleteBetweenDelimiters(currentNote.leftIndex()
+                  , currentNote.rightIndex(), mainEditorTextarea.value, newNoteDelimiter);
         }
-        const selectionStart = range.left - (range.left > newNoteDelimiter.length ? newNoteDelimiter.length : 0);
-        const selectionEnd = range.right;
+        const selectionStart = currentNote.leftIndex() - (currentNote.leftIndex() > newNoteDelimiter.length ? newNoteDelimiter.length : 0);
+        const selectionEnd = currentNote.rightIndex();
         mainEditorTextarea.setSelectionRange(selectionStart, selectionEnd);
         saveEditor();
         mainEditorTextarea.focus();
