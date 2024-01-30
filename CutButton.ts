@@ -20,9 +20,7 @@ export const createCutButtonClickListener = (mainEditorTextarea: HTMLTextAreaEle
           if (DELETE)
               /* If DELETE==true, the text between the markers is deleted. */
               mainEditorTextarea.value =
-                  HelgeUtils.Strings.DelimiterSearch.deleteBetweenDelimiters(
-                  currentNote.leftIndex(), currentNote.rightIndex(),
-                  mainEditorTextarea.value, newNoteDelimiter);
+                  HelgeUtils.Strings.DelimiterSearch.deleteBetweenDelimiters(mainEditorTextarea.value, currentNote.leftIndex(), currentNote.rightIndex(), newNoteDelimiter);
           else {
             // When DELETE==false, just select the text between the markers:
             const selectionStart = currentNote.leftIndex()

@@ -187,20 +187,20 @@ export var HelgeUtils;
             }
         };
         /** Deletes the text between two delimiters.
+         * @param input - The text to delete from.
          * @param left - The index of the left delimiter.
          * @param right - The index of the right delimiter.
-         * @param input - The text to delete from.
          * @param delimiter - The delimiter.
          * */
-        DelimiterSearch.deleteBetweenDelimiters = (left, right, input, delimiter) => {
-            const v1 = (input.substring(0, left) + input.substring(right)).replaceAll(delimiter + delimiter, delimiter);
-            if (v1 === delimiter + delimiter)
+        DelimiterSearch.deleteBetweenDelimiters = (input, left, right, delimiter) => {
+            const str1 = (input.substring(0, left) + input.substring(right)).replaceAll(delimiter + delimiter, delimiter);
+            if (str1 === delimiter + delimiter)
                 return "";
-            if (v1.startsWith(delimiter))
-                return v1.substring(delimiter.length);
-            if (v1.endsWith(delimiter))
-                return v1.substring(0, v1.length - delimiter.length);
-            return v1;
+            if (str1.startsWith(delimiter))
+                return str1.substring(delimiter.length);
+            if (str1.endsWith(delimiter))
+                return str1.substring(0, str1.length - delimiter.length);
+            return str1;
         };
         DelimiterSearch.testDeleteBetweenDelimiters = () => {
             const delimiter = ')))---(((\n';
@@ -208,7 +208,7 @@ export var HelgeUtils;
                 const delimiterSearch = new Strings.DelimiterSearch(delimiter);
                 const left = delimiterSearch.leftIndex(input, cursorPosition);
                 const right = delimiterSearch.rightIndex(input, cursorPosition);
-                assertEquals(_a.deleteBetweenDelimiters(left, right, input, delimiter), expected);
+                assertEquals(_a.deleteBetweenDelimiters(input, left, right, delimiter), expected);
             };
             runTest(0, "abc" + delimiter, "");
             runTest(delimiter.length, delimiter + "abc", "");

@@ -195,17 +195,17 @@ export namespace HelgeUtils {
         }
       };
       /** Deletes the text between two delimiters.
+       * @param input - The text to delete from.
        * @param left - The index of the left delimiter.
        * @param right - The index of the right delimiter.
-       * @param input - The text to delete from.
        * @param delimiter - The delimiter.
        * */
-      public static deleteBetweenDelimiters = (left: number, right: number , input: string, delimiter: string) => {
-        const v1 = (input.substring(0, left) + input.substring(right)).replaceAll(delimiter+delimiter, delimiter);
-        if (v1===delimiter+ delimiter) return "";
-        if (v1.startsWith(delimiter)) return v1.substring(delimiter.length);
-        if (v1.endsWith(delimiter)) return v1.substring(0, v1.length - delimiter.length);
-        return v1;
+      public static deleteBetweenDelimiters = (input: string, left: number, right: number, delimiter: string) => {
+        const str1 = (input.substring(0, left) + input.substring(right)).replaceAll(delimiter+delimiter, delimiter);
+        if (str1===delimiter+ delimiter) return "";
+        if (str1.startsWith(delimiter)) return str1.substring(delimiter.length);
+        if (str1.endsWith(delimiter)) return str1.substring(0, str1.length - delimiter.length);
+        return str1;
       };
       private static testDeleteBetweenDelimiters = () => {
         const delimiter = ')))---(((\n';
@@ -213,7 +213,7 @@ export namespace HelgeUtils {
           const delimiterSearch = new Strings.DelimiterSearch(delimiter);
           const left = delimiterSearch.leftIndex(input, cursorPosition);
           const right = delimiterSearch.rightIndex(input, cursorPosition);
-          assertEquals(DelimiterSearch.deleteBetweenDelimiters(left, right, input, delimiter), expected);
+          assertEquals(DelimiterSearch.deleteBetweenDelimiters(input, left, right, delimiter), expected);
         };
         runTest(0, "abc" + delimiter, "");
         runTest(delimiter.length, delimiter + "abc", "");
