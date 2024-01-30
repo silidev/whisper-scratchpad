@@ -17,7 +17,7 @@ export class CurrentNote {
         .rightIndex(this.mainEditorTextarea.value, this.mainEditorTextarea.selectionStart);
   }
 
-  public textOf() {
+  public text() {
     return this.mainEditorTextarea.value.substring(this.leftIndex(), this.rightIndex());
   }
 }

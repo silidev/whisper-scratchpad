@@ -13,7 +13,7 @@ export class CurrentNote {
         return new HelgeUtils.Strings.DelimiterSearch(newNoteDelimiter)
             .rightIndex(this.mainEditorTextarea.value, this.mainEditorTextarea.selectionStart);
     }
-    textOf() {
+    text() {
         return this.mainEditorTextarea.value.substring(this.leftIndex(), this.rightIndex());
     }
 }
