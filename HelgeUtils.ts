@@ -10,7 +10,7 @@ export namespace HelgeUtils {
 
   export const runTests = () => {
     HelgeUtils.Strings.runTests();
-  }
+  };
 
   export namespace Exceptions {
     /**

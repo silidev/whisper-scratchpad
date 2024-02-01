@@ -11,7 +11,7 @@ var elementWithId = HtmlUtils.NeverNull.elementWithId;
 import { sendCtrlZ } from "./DontInspect.js";
 import { HtmlUtils } from "./HtmlUtils.js";
 import { HelgeUtils } from "./HelgeUtils.js";
-import { INSERT_EDITOR_INTO_PROMPT, VERSION } from "./config.js";
+import { INSERT_EDITOR_INTO_PROMPT, newNoteDelimiter, VERSION, WHERE_TO_INSERT_AT } from "./config.js";
 import { createCutButtonClickListener } from "./CutButton.js";
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString().slice(0, 10) === "2024-01-27";
@@ -28,7 +28,7 @@ var Functions;
         mainEditorTextarea.selectionEnd = selectionEnd;
     };
 })(Functions || (Functions = {}));
-var UiFunctions;
+export var UiFunctions;
 (function (UiFunctions) {
     // noinspection SpellCheckingInspection
     var elementWithId = HtmlUtils.NeverNull.elementWithId;
@@ -43,7 +43,6 @@ var UiFunctions;
         let Media;
         (function (Media) {
             var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
-            var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
             let mediaRecorder;
             let audioChunks = [];
             let audioBlob;
@@ -87,20 +86,7 @@ var UiFunctions;
                     buttonWithId("pauseRecordButton").innerHTML = html;
                 };
             })(StateIndicator = Media.StateIndicator || (Media.StateIndicator = {}));
-            const appendTranscription = async (audioBlob) => transcribeAndHandleResult(audioBlob, false);
-            // noinspection JSUnusedLocalSymbols
-            const insertTranscription = async (audioBlob) => transcribeAndHandleResult(audioBlob, true);
-            suppressUnusedWarning(insertTranscription);
-            /**
-             * Deprecated, use appendTranscription or insertTranscription instead.
-             *
-             * @param audioBlob
-             * @param insertAtCursorFlag
-             * - If true, the transcription is inserted at the cursor position
-             * in the main editor, but often it is inserted at the beginning of the text instead.
-             * - If false, it will be appended.
-             */
-            const transcribeAndHandleResult = async (audioBlob, insertAtCursorFlag) => {
+            const transcribeAndHandleResult = async (audioBlob, whereToPutTranscription) => {
                 sending = true;
                 StateIndicator.update();
                 const apiName = getApiSelectedInUi();
@@ -108,32 +94,43 @@ var UiFunctions;
                     insertAtCursor("You must select an API below.");
                     return;
                 }
-                const promptForWhisper = () => transcriptionPromptEditor.value
-                    + INSERT_EDITOR_INTO_PROMPT ? mainEditorTextarea.value.substring(0, mainEditorTextarea.selectionStart /*The start is relevant b/c the selection will be overwritten by the
-                                                new text. */).slice(-(750 /* Taking the last 750 CHARS is for sure less than the max 250 TOKENS whisper is considering. This is
-              important because the last words of the last transcription should always be included to avoid hallucinations
-              if it otherwise would be an incomplete sentence. */
-                    - transcriptionPromptEditor.value.length)) : "";
+                const maxEditorPrompt = (textArea) => {
+                    const text = textArea.value;
+                    const indexAfterPreviousDelimiter = () => new HelgeUtils.Strings.DelimiterSearch(newNoteDelimiter)
+                        .leftIndex(text, promptMaxRightIndex);
+                    /** promptMaxRightIndex. "max" because this might be shortened
+                     *  later on. */
+                    const promptMaxRightIndex = text.length;
+                    return text.substring(indexAfterPreviousDelimiter(), textArea.selectionStart /* The start is relevant b/c the
+                     selection will be overwritten by the new text. */);
+                };
+                const promptForWhisper = () => {
+                    return transcriptionPromptEditor.value
+                        + INSERT_EDITOR_INTO_PROMPT ? maxEditorPrompt(mainEditorTextarea).slice(-(750 /* Taking the last 750 CHARS is for sure less than the max 250
+                     TOKENS whisper is considering. This is important because the last
+                     words of the last transcription should always be included to
+                     avoid hallucinations if it otherwise would be an incomplete sentence. */
+                        - transcriptionPromptEditor.value.length)) : "";
+                };
                 const removeLastDot = (text) => {
                     if (text.endsWith('.')) {
                         return text.slice(0, -1) + " ";
                     }
                     return text;
                 };
-                function aSpaceIfNeeded() {
-                    return mainEditorTextarea.selectionStart > 0
-                        && !mainEditorTextarea.value.charAt(mainEditorTextarea.selectionStart - 1).match(/\s/)
-                        ? " " : "";
-                }
+                const aSpaceIfNeeded = () => mainEditorTextarea.selectionStart > 0
+                    && !mainEditorTextarea.value.charAt(mainEditorTextarea.selectionStart - 1).match(/\s/)
+                    ? " " : "";
+                const getTranscriptionText = async () => await HelgeUtils.Transcription.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper());
+                const removeLastDotIfNotAtEnd = (input) => {
+                    if (mainEditorTextarea.selectionStart < mainEditorTextarea.value.length) {
+                        return removeLastDot(input);
+                    }
+                    return input;
+                };
                 try {
-                    const removeLastDotIfNotAtEnd = (input) => {
-                        if (mainEditorTextarea.selectionStart < mainEditorTextarea.value.length) {
-                            return removeLastDot(input);
-                        }
-                        return input;
-                    };
-                    const transcriptionText = await HelgeUtils.Transcription.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper());
-                    if (insertAtCursorFlag)
+                    const transcriptionText = await getTranscriptionText();
+                    if (whereToPutTranscription == "insertAtCursor")
                         insertAtCursor(aSpaceIfNeeded() + removeLastDotIfNotAtEnd(transcriptionText));
                     else
                         TextAreas.appendText(mainEditorTextarea, transcriptionText);
@@ -165,7 +162,8 @@ var UiFunctions;
                     downloadLink.download = 'recording.wav';
                     downloadLink.style.display = 'block';
                 }
-                appendTranscription(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
+                transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
+                    .then(NotVisibleAtThisTime.hideSpinner);
             };
             const getOnStreamReady = (beginPaused) => {
                 return (streamParam) => {
@@ -206,7 +204,7 @@ var UiFunctions;
                     audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                     audioChunks = [];
                     sending = true;
-                    appendTranscription(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
+                    transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT).then(NotVisibleAtThisTime.hideSpinner);
                     startRecording(true);
                 };
                 mediaRecorder.stop();
@@ -241,7 +239,7 @@ var UiFunctions;
             const transcribeAgainButton = () => {
                 UiFunctions.closeEditorMenu();
                 NotVisibleAtThisTime.showSpinner();
-                appendTranscription(audioBlob).then(NotVisibleAtThisTime.hideSpinner);
+                transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT).then(NotVisibleAtThisTime.hideSpinner);
             };
             HtmlUtils.addClickListener(buttonWithId("transcribeAgainButton"), transcribeAgainButton);
             StateIndicator.update();
