@@ -11,7 +11,7 @@ var elementWithId = HtmlUtils.NeverNull.elementWithId;
 import { sendCtrlZ } from "./DontInspect.js";
 import { HtmlUtils } from "./HtmlUtils.js";
 import { HelgeUtils } from "./HelgeUtils.js";
-import { INSERT_EDITOR_INTO_PROMPT, newNoteDelimiter, VERSION, WHERE_TO_INSERT_AT } from "./config.js";
+import { INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT } from "./config.js";
 import { createCutButtonClickListener } from "./CutButton.js";
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString().slice(0, 10) === "2024-01-27";
@@ -96,7 +96,7 @@ export var UiFunctions;
                 }
                 const maxEditorPrompt = (textArea) => {
                     const text = textArea.value;
-                    const indexAfterPreviousDelimiter = () => new HelgeUtils.Strings.DelimiterSearch(newNoteDelimiter)
+                    const indexAfterPreviousDelimiter = () => new HelgeUtils.Strings.DelimiterSearch(NEW_NOTE_DELIMITER)
                         .leftIndex(text, promptMaxRightIndex);
                     /** promptMaxRightIndex. "max" because this might be shortened
                      *  later on. */

@@ -1,5 +1,5 @@
 import {HelgeUtils} from "./HelgeUtils.js";
-import {newNoteDelimiter} from "./config.js";
+import {NEW_NOTE_DELIMITER} from "./config.js";
 import {HtmlUtils} from "./HtmlUtils.js";
 import {saveEditor} from "./script.js";
 import {CurrentNote} from "./CurrentNote.js";
@@ -22,12 +22,12 @@ export const createCutButtonClickListener = (mainEditorTextarea: HTMLTextAreaEle
             /* If DELETE==true, the text between the markers is deleted. */
             mainEditorTextarea.value =
                 DelimiterSearch.deleteNote(mainEditorTextarea.value,
-                  currentNote.leftIndex(), currentNote.rightIndex(), newNoteDelimiter);
+                  currentNote.leftIndex(), currentNote.rightIndex(), NEW_NOTE_DELIMITER);
           } else {
             // When DELETE==false, just select the text between the markers:
             const selectionStart = currentNote.leftIndex()
                 // Also select the newNoteDelimiter before the note:
-                - (currentNote.leftIndex() > newNoteDelimiter.length ? newNoteDelimiter.length : 0);
+                - (currentNote.leftIndex() > NEW_NOTE_DELIMITER.length ? NEW_NOTE_DELIMITER.length : 0);
             const selectionEnd = currentNote.rightIndex();
             mainEditorTextarea.setSelectionRange(selectionStart, selectionEnd);
           }

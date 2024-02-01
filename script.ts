@@ -15,7 +15,7 @@ import {HtmlUtils} from "./HtmlUtils.js";
 import {HelgeUtils} from "./HelgeUtils.js";
 import {
   INSERT_EDITOR_INTO_PROMPT,
-  newNoteDelimiter,
+  NEW_NOTE_DELIMITER,
   VERSION, WHERE_TO_INSERT_AT
 } from "./config.js";
 import {createCutButtonClickListener} from "./CutButton.js";
@@ -108,7 +108,7 @@ export namespace UiFunctions {
         const maxEditorPrompt = (textArea: HTMLTextAreaElement) => {
           const text = textArea.value;
           const indexAfterPreviousDelimiter = () =>
-              new HelgeUtils.Strings.DelimiterSearch(newNoteDelimiter)
+              new HelgeUtils.Strings.DelimiterSearch(NEW_NOTE_DELIMITER)
               .leftIndex(text, promptMaxRightIndex);
           /** promptMaxRightIndex. "max" because this might be shortened
            *  later on. */
