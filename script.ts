@@ -50,6 +50,7 @@ export namespace UiFunctions {
 
     export namespace Media {
       import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
+      import DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
       let mediaRecorder: MediaRecorder;
       let audioChunks: Blob[] = [];
       let audioBlob: Blob;
@@ -105,23 +106,24 @@ export namespace UiFunctions {
           insertAtCursor("You must select an API below.");
           return;
         }
-        const maxEditorPrompt = (textArea: HTMLTextAreaElement) => {
+        const maxEditorPrompt = ((textArea: HTMLTextAreaElement) => {
           const text = textArea.value;
-          const indexAfterPreviousDelimiter = () =>
-              new HelgeUtils.Strings.DelimiterSearch(NEW_NOTE_DELIMITER)
-              .leftIndex(text, promptMaxRightIndex);
-          /** promptMaxRightIndex. "max" because this might be shortened
+          /* maxRightIndex.
+           * "max" because this might be shortened
            *  later on. */
-          const promptMaxRightIndex = text.length;
-          return text.substring(
-              indexAfterPreviousDelimiter()
-              , textArea.selectionStart /* The start is relevant b/c the
-               selection will be overwritten by the new text. */
-          );
-        };
+          const maxRightIndex = (() => {
+            return WHERE_TO_INSERT_AT === "appendAtEnd"
+                ? text.length
+                : textArea.selectionStart/* Only the start is relevant b/c the
+              selection will be overwritten by the new text. */})();
+          const indexAfterPreviousDelimiter = (() => {
+            return new DelimiterSearch(NEW_NOTE_DELIMITER).leftIndex(text, maxRightIndex);
+          })();
+          return text.substring(indexAfterPreviousDelimiter, maxRightIndex);
+        })(mainEditorTextarea);
         const promptForWhisper = () => {
           return transcriptionPromptEditor.value
-          + INSERT_EDITOR_INTO_PROMPT ? maxEditorPrompt(mainEditorTextarea).slice(-(
+          + INSERT_EDITOR_INTO_PROMPT ? maxEditorPrompt.slice(-(
               750 /* Taking the last 750 CHARS is for sure less than the max 250
                TOKENS whisper is considering. This is important because the last
                words of the last transcription should always be included to
