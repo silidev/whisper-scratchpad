@@ -16,24 +16,27 @@ export const createCutButtonClickListener = (mainEditorTextarea: HTMLTextAreaEle
     clipboard.writeText(mainEditorTextarea.value).then(() => {
       clipboard.writeText(currentNote.text().trim()).then(() => {
         HtmlUtils.signalClickToUser(buttonWithId("cutButton"));
+        const textArea = mainEditorTextarea;
         {
           const DELETE = true;
           if (DELETE) {
+            const leftIndex = currentNote.leftIndex();
             /* If DELETE==true, the text between the markers is deleted. */
-            mainEditorTextarea.value =
-                DelimiterSearch.deleteNote(mainEditorTextarea.value,
-                  currentNote.leftIndex(), currentNote.rightIndex(), NEW_NOTE_DELIMITER);
+            textArea.value =
+                DelimiterSearch.deleteNote(textArea.value,
+                  leftIndex, currentNote.rightIndex(), NEW_NOTE_DELIMITER);
+            textArea.setSelectionRange(leftIndex, leftIndex);
           } else {
             // When DELETE==false, just select the text between the markers:
             const selectionStart = currentNote.leftIndex()
                 // Also select the newNoteDelimiter before the note:
                 - (currentNote.leftIndex() > NEW_NOTE_DELIMITER.length ? NEW_NOTE_DELIMITER.length : 0);
             const selectionEnd = currentNote.rightIndex();
-            mainEditorTextarea.setSelectionRange(selectionStart, selectionEnd);
+            textArea.setSelectionRange(selectionStart, selectionEnd);
           }
         }
         saveEditor();
-        mainEditorTextarea.focus();
+        textArea.focus();
       });
     });
   };

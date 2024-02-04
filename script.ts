@@ -167,7 +167,6 @@ export namespace UiFunctions {
             throw error;
           }
         }
-
         sending = false;
         StateIndicator.update();
       };
