@@ -40,6 +40,51 @@ export var HtmlUtils;
     let TextAreas;
     (function (TextAreas) {
         var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
+        class TextAreaWrapper {
+            constructor(textArea) {
+                this.textArea = textArea;
+            }
+            appendTextAndPutCursorAfter(text) {
+                TextAreas.appendTextAndPutCursorAfter(this.textArea, text);
+                return this;
+            }
+            selectedText() {
+                const start = this.textArea.selectionStart;
+                const end = this.textArea.selectionEnd;
+                return this.textArea.value.substring(start, end);
+            }
+            setCursor(position) {
+                TextAreas.setCursor(this.textArea, position);
+                return this;
+            }
+            insertTextAndPutCursorAfter(addedText) {
+                TextAreas.insertTextAndPutCursorAfter(this.textArea, addedText);
+                return this;
+            }
+            getCursor() {
+                return TextAreas.getCursor(this.textArea);
+            }
+            setAutoSave(cookieName) {
+                TextAreas.setAutoSave(cookieName, this.textArea.id);
+                return this;
+            }
+            value() {
+                return this.textArea.value;
+            }
+            setValue(value) {
+                this.textArea.value = value;
+                return this;
+            }
+            focus() {
+                this.textArea.focus();
+                return this;
+            }
+            setCursorAtEnd() {
+                this.setCursor(this.textArea.value.length);
+                return this;
+            }
+        }
+        TextAreas.TextAreaWrapper = TextAreaWrapper;
         TextAreas.appendTextAndPutCursorAfter = (textArea, text) => {
             textArea.value += " " + text;
             TextAreas.setCursor(textArea, textArea.value.length);

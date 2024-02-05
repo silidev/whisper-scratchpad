@@ -13,6 +13,7 @@ import { HtmlUtils } from "./HtmlUtils.js";
 import { HelgeUtils } from "./HelgeUtils.js";
 import { INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT } from "./config.js";
 import { createCutButtonClickListener } from "./CutButton.js";
+var TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString().slice(0, 10) === "2024-01-27";
 if (RUN_TESTS)
@@ -428,6 +429,7 @@ const spinner1 = document.getElementById('spinner1');
 const apiSelector = document.getElementById('apiSelector');
 const apiKeyInput = document.getElementById('apiKeyInputField');
 const mainEditorTextarea = document.getElementById('mainEditorTextarea');
+const mainEditor = new TextAreaWrapper(mainEditorTextarea);
 const transcriptionPromptEditor = document.getElementById('transcriptionPromptEditor');
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea');
 export const saveEditor = () => HtmlUtils.Cookies.set("editorText", textAreaWithId("mainEditorTextarea").value);
@@ -535,6 +537,7 @@ const init = () => {
     registerServiceWorker();
     loadFormData();
     elementWithId("versionSpan").innerHTML = VERSION;
+    mainEditor.setCursorAtEnd().focus();
 };
 init();
 //# sourceMappingURL=script.js.map

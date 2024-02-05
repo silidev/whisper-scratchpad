@@ -54,6 +54,60 @@ export namespace HtmlUtils {
 
     import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
 
+    export class TextAreaWrapper {
+      constructor(private textArea: HTMLTextAreaElement) {
+      }
+
+      public appendTextAndPutCursorAfter(text: string) {
+        TextAreas.appendTextAndPutCursorAfter(this.textArea, text);
+        return this;
+      }
+
+      public selectedText() {
+        const start = this.textArea.selectionStart;
+        const end = this.textArea.selectionEnd;
+        return this.textArea.value.substring(start, end);
+      }
+
+      public setCursor(position: number) {
+        TextAreas.setCursor(this.textArea, position);
+        return this;
+      }
+
+      public insertTextAndPutCursorAfter(addedText: string) {
+        TextAreas.insertTextAndPutCursorAfter(this.textArea, addedText);
+        return this;
+      }
+
+      public getCursor() {
+        return TextAreas.getCursor(this.textArea);
+      }
+
+      public setAutoSave(cookieName: string) {
+        TextAreas.setAutoSave(cookieName, this.textArea.id);
+        return this;
+      }
+
+      public value() {
+        return this.textArea.value;
+      }
+
+      public setValue(value: string) {
+        this.textArea.value = value;
+        return this;
+      }
+
+      public focus() {
+        this.textArea.focus();
+        return this;
+      }
+
+      public setCursorAtEnd() {
+        this.setCursor(this.textArea.value.length);
+        return this;
+      }
+    }
+
     export const appendTextAndPutCursorAfter =
         (textArea: HTMLTextAreaElement, text: string) => {
       textArea.value += " " + text;

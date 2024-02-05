@@ -19,6 +19,7 @@ import {
   VERSION, WHERE_TO_INSERT_AT
 } from "./config.js";
 import {createCutButtonClickListener} from "./CutButton.js";
+import TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
 
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString().slice(0, 10) === "2024-01-27";
@@ -174,7 +175,7 @@ export namespace UiFunctions {
           mainEditorTextarea.focus();
           saveEditor();
           navigator.clipboard.writeText(mainEditorTextarea.value).then();
-        }catch (error) {
+        } catch (error) {
           handleError(error);
         }
         sending = false;
@@ -485,6 +486,7 @@ const apiSelector = document.getElementById('apiSelector') as HTMLSelectElement;
 
 const apiKeyInput = document.getElementById('apiKeyInputField') as HTMLTextAreaElement;
 const mainEditorTextarea = document.getElementById('mainEditorTextarea') as HTMLTextAreaElement;
+const mainEditor = new TextAreaWrapper(mainEditorTextarea);
 const transcriptionPromptEditor = document.getElementById('transcriptionPromptEditor') as HTMLTextAreaElement;
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement;
 
@@ -609,6 +611,7 @@ const init = () => {
   registerServiceWorker();
   loadFormData();
   elementWithId("versionSpan").innerHTML = VERSION;
+  mainEditor.setCursorAtEnd().focus();
 };
 
 init();
