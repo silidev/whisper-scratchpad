@@ -172,20 +172,27 @@ export namespace UiFunctions {
         }
       };
 
-      const stopCallback = () => {
-        HtmlUtils.Media.releaseMicrophone(stream);
-        isRecording = false;
-        StateIndicator.update();
-        audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
-        audioChunks = [];
-        { // Download button
-          downloadLink.href = URL.createObjectURL(audioBlob);
-          downloadLink.download = 'recording.wav';
-          downloadLink.style.display = 'block';
-        }
-        transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
-            .then(NotVisibleAtThisTime.hideSpinner);
-      };
+      export namespace StopCallbackCreator {
+        export const createCancelingCallback = () => createInternal(true);
+        export const transcribingCallback = () => createInternal(false);
+        const createInternal = (cancel: boolean) => {
+          return () => {
+            HtmlUtils.Media.releaseMicrophone(stream);
+            isRecording = false;
+            StateIndicator.update();
+            audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
+            if (cancel) return;
+            audioChunks = [];
+            { // Download button
+              downloadLink.href = URL.createObjectURL(audioBlob);
+              downloadLink.download = 'recording.wav';
+              downloadLink.style.display = 'block';
+            }
+            transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
+                .then(NotVisibleAtThisTime.hideSpinner);
+          };
+        };
+      }
 
       const getOnStreamReady = (beginPaused: boolean) => {
         return (streamParam: MediaStream) => {
@@ -207,12 +214,12 @@ export namespace UiFunctions {
         navigator.mediaDevices.getUserMedia({audio: true}).then(getOnStreamReady(beginPaused));
       };
 
+// ############## stopButton ##############
       const stopRecording = () => {
-        mediaRecorder.onstop = stopCallback;
+        mediaRecorder.onstop = StopCallbackCreator.transcribingCallback();
         mediaRecorder.stop();
       };
 
-      // ############## stopButton ##############
       const stopButton = () => {
         if (isRecording) {
           stopRecording();
@@ -223,6 +230,13 @@ export namespace UiFunctions {
       };
       buttonWithId("stopButton").addEventListener('click', stopButton);
 
+// ############## cancelRecording ##############
+      export const cancelRecording = () => {
+        mediaRecorder.onstop = StopCallbackCreator.createCancelingCallback();
+        mediaRecorder.stop();
+      };
+
+// ############## stop_transcribe_startNewRecording_and_pause ##############
       const stop_transcribe_startNewRecording_and_pause = () => {
         mediaRecorder.onstop = () => {
           audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
@@ -367,14 +381,19 @@ export namespace UiFunctions {
       HtmlUtils.addClickListener(buttonWithId("addReplaceRuleButton"), addReplaceRule);
       HtmlUtils.addClickListener(buttonWithId("addWordReplaceRuleButton"), addWordReplaceRule);
 
-      function cancelButton() {
+// updateButton
+      const updateButton = () => {
         saveEditor();
         window.location.reload();
       }
-
-// aboutButton
-      HtmlUtils.addClickListener(buttonWithId("cancelButton"), () => {
-        cancelButton();
+      
+      HtmlUtils.addClickListener(buttonWithId("updateButton"), () => {
+        updateButton();
+      });
+      
+// cancelRecording
+      HtmlUtils.addClickListener(buttonWithId("cancelRecording"), () => {
+        Buttons.Media.cancelRecording();
       });
 
 // cutAllButton

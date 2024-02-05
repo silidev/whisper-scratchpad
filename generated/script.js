@@ -163,20 +163,29 @@ export var UiFunctions;
                         throw error;
                 }
             };
-            const stopCallback = () => {
-                HtmlUtils.Media.releaseMicrophone(stream);
-                isRecording = false;
-                StateIndicator.update();
-                audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                audioChunks = [];
-                { // Download button
-                    downloadLink.href = URL.createObjectURL(audioBlob);
-                    downloadLink.download = 'recording.wav';
-                    downloadLink.style.display = 'block';
-                }
-                transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
-                    .then(NotVisibleAtThisTime.hideSpinner);
-            };
+            let StopCallbackCreator;
+            (function (StopCallbackCreator) {
+                StopCallbackCreator.createCancelingCallback = () => createInternal(true);
+                StopCallbackCreator.transcribingCallback = () => createInternal(false);
+                const createInternal = (cancel) => {
+                    return () => {
+                        HtmlUtils.Media.releaseMicrophone(stream);
+                        isRecording = false;
+                        StateIndicator.update();
+                        audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        if (cancel)
+                            return;
+                        audioChunks = [];
+                        { // Download button
+                            downloadLink.href = URL.createObjectURL(audioBlob);
+                            downloadLink.download = 'recording.wav';
+                            downloadLink.style.display = 'block';
+                        }
+                        transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
+                            .then(NotVisibleAtThisTime.hideSpinner);
+                    };
+                };
+            })(StopCallbackCreator = Media.StopCallbackCreator || (Media.StopCallbackCreator = {}));
             const getOnStreamReady = (beginPaused) => {
                 return (streamParam) => {
                     stream = streamParam;
@@ -196,11 +205,11 @@ export var UiFunctions;
             const startRecording = (beginPaused = false) => {
                 navigator.mediaDevices.getUserMedia({ audio: true }).then(getOnStreamReady(beginPaused));
             };
+            // ############## stopButton ##############
             const stopRecording = () => {
-                mediaRecorder.onstop = stopCallback;
+                mediaRecorder.onstop = StopCallbackCreator.transcribingCallback();
                 mediaRecorder.stop();
             };
-            // ############## stopButton ##############
             const stopButton = () => {
                 if (isRecording) {
                     stopRecording();
@@ -211,6 +220,12 @@ export var UiFunctions;
                 }
             };
             buttonWithId("stopButton").addEventListener('click', stopButton);
+            // ############## cancelRecording ##############
+            Media.cancelRecording = () => {
+                mediaRecorder.onstop = StopCallbackCreator.createCancelingCallback();
+                mediaRecorder.stop();
+            };
+            // ############## stop_transcribe_startNewRecording_and_pause ##############
             const stop_transcribe_startNewRecording_and_pause = () => {
                 mediaRecorder.onstop = () => {
                     audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
@@ -333,13 +348,17 @@ export var UiFunctions;
             addCtrlZButtonEventListener("ctrlZButtonOfPrompt", transcriptionPromptEditor);
             HtmlUtils.addClickListener(buttonWithId("addReplaceRuleButton"), addReplaceRule);
             HtmlUtils.addClickListener(buttonWithId("addWordReplaceRuleButton"), Buttons.addWordReplaceRule);
-            function cancelButton() {
+            // updateButton
+            const updateButton = () => {
                 saveEditor();
                 window.location.reload();
-            }
-            // aboutButton
-            HtmlUtils.addClickListener(buttonWithId("cancelButton"), () => {
-                cancelButton();
+            };
+            HtmlUtils.addClickListener(buttonWithId("updateButton"), () => {
+                updateButton();
+            });
+            // cancelRecording
+            HtmlUtils.addClickListener(buttonWithId("cancelRecording"), () => {
+                Buttons.Media.cancelRecording();
             });
             // cutAllButton
             {
