@@ -40,7 +40,7 @@ export var HtmlUtils;
     let TextAreas;
     (function (TextAreas) {
         var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
-        TextAreas.appendText = (textArea, text) => {
+        TextAreas.appendTextAndPutCursorAfter = (textArea, text) => {
             textArea.value += " " + text;
             TextAreas.setCursor(textArea, textArea.value.length);
         };
@@ -66,9 +66,9 @@ export var HtmlUtils;
             textArea.setSelectionRange(position, position);
         };
         /**
-         * Inserts text at the cursor position in a text area. If something is selected it will be overwritten.
-         */
-        TextAreas.insertTextAtCursor = (textarea, addedText) => {
+         * Inserts text at the cursor position in a text area. If something is
+         * selected it will be overwritten. */
+        TextAreas.insertTextAndPutCursorAfter = (textarea, addedText) => {
             if (!addedText)
                 return;
             const textBeforeSelection = textarea.value.substring(0, textarea.selectionStart);

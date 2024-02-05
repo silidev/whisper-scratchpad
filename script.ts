@@ -42,7 +42,7 @@ export namespace UiFunctions {
   import elementWithId = HtmlUtils.NeverNull.elementWithId;
   import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
   export namespace Buttons {
-    import insertTextAtCursor = HtmlUtils.TextAreas.insertTextAtCursor;
+    import insertTextAtCursor = HtmlUtils.TextAreas.insertTextAndPutCursorAfter;
     import copyToClipboard = HtmlUtils.copyToClipboard;
     import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
     import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
@@ -51,6 +51,8 @@ export namespace UiFunctions {
     export namespace Media {
       import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
       import DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
+      import appendTextAndPutCursorAfter = HtmlUtils.TextAreas.appendTextAndPutCursorAfter;
+      import applyReplaceRulesToMainEditor = Functions.applyReplaceRulesToMainEditor;
       let mediaRecorder: MediaRecorder;
       let audioChunks: Blob[] = [];
       let audioBlob: Blob;
@@ -99,13 +101,7 @@ export namespace UiFunctions {
 
       const transcribeAndHandleResult = async (audioBlob: Blob,
           whereToPutTranscription: WhereToPutTranscription ) => {
-        sending = true;
-        StateIndicator.update();
-        const apiName = getApiSelectedInUi();
-        if (!apiName) {
-          insertAtCursor("You must select an API below.");
-          return;
-        }
+
         const maxEditorPrompt = ((textArea: HTMLTextAreaElement) => {
           const text = textArea.value;
           /* maxRightIndex.
@@ -148,17 +144,7 @@ export namespace UiFunctions {
           }
           return input;
         };
-
-        try {
-          const transcriptionText = await getTranscriptionText();
-          if (whereToPutTranscription=="insertAtCursor")
-            insertAtCursor(aSpaceIfNeeded() + removeLastDotIfNotAtEnd(transcriptionText));
-          else
-            TextAreas.appendText(mainEditorTextarea, transcriptionText);
-          Functions.applyReplaceRulesToMainEditor();
-          saveEditor();
-          navigator.clipboard.writeText(mainEditorTextarea.value).then();
-        } catch (error) {
+        const handleError = (error: any) => {
           if (error instanceof HelgeUtils.Transcription.TranscriptionError) {
             Log.write(JSON.stringify(error.payload, null, 2));
             Log.showLog();
@@ -166,6 +152,30 @@ export namespace UiFunctions {
             // Handle other types of errors or rethrow
             throw error;
           }
+        };
+
+        sending = true;
+        StateIndicator.update();
+        const apiName = getApiSelectedInUi();
+        if (!apiName) {
+          insertTextAndPutCursorAfter("You must select an API below.");
+          return;
+        }
+        try {
+          const transcriptionText = await getTranscriptionText();
+
+          if (whereToPutTranscription=="insertAtCursor") {
+            insertTextAndPutCursorAfter(aSpaceIfNeeded()
+                + removeLastDotIfNotAtEnd(transcriptionText));
+          } else {
+            appendTextAndPutCursorAfter(mainEditorTextarea, transcriptionText);
+          }
+          applyReplaceRulesToMainEditor();
+          // mainEditorTextarea.focus();
+          saveEditor();
+          navigator.clipboard.writeText(mainEditorTextarea.value).then();
+        }catch (error) {
+          handleError(error);
         }
         sending = false;
         StateIndicator.update();
@@ -390,7 +400,7 @@ export namespace UiFunctions {
 // aboutButton
       HtmlUtils.addClickListener(buttonWithId("pasteButton"), () => {
         navigator.clipboard.readText().then(text => {
-          insertAtCursor(text);
+          insertTextAndPutCursorAfter(text);
         });
       });
 
@@ -432,7 +442,7 @@ export namespace UiFunctions {
       const maybeWordBoundary = wordsOnly ? "\\b" : "";
       const insertedString = `"${maybeWordBoundary+escapeRegExp(selectedText)
           + maybeWordBoundary}"gm->"${selectedText}"\n`;
-      TextAreas.insertTextAtCursor(replaceRulesTextArea, insertedString);
+      TextAreas.insertTextAndPutCursorAfter(replaceRulesTextArea, insertedString);
       replaceRulesTextArea.selectionStart = 0;
       replaceRulesTextArea.selectionEnd = insertedString.length; // was, delete on day: setCursor(12 + selectedText.length);
       // replaceRulesTextArea.focus(); // Taken out b/c this jumps way too much down on mobile.
@@ -487,8 +497,8 @@ textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions.rep
 TextAreas.setAutoSave('editorText', 'mainEditorTextarea');
 TextAreas.setAutoSave('prompt', 'transcriptionPromptEditor');
 
-const insertAtCursor = (text: string) => {
-  TextAreas.insertTextAtCursor(mainEditorTextarea, text);
+const insertTextAndPutCursorAfter = (text: string) => {
+  TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, text);
 };
 
 const getApiSelectedInUi = () => (apiSelector.value as HelgeUtils.Transcription.ApiName);

@@ -53,7 +53,9 @@ export namespace HtmlUtils {
   export namespace TextAreas {
 
     import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
-    export const appendText = (textArea: HTMLTextAreaElement, text: string) => {
+
+    export const appendTextAndPutCursorAfter =
+        (textArea: HTMLTextAreaElement, text: string) => {
       textArea.value += " " + text;
       setCursor(textArea, textArea.value.length);
     };
@@ -84,9 +86,9 @@ export namespace HtmlUtils {
     };
 
     /**
-     * Inserts text at the cursor position in a text area. If something is selected it will be overwritten.
-     */
-    export const insertTextAtCursor = (
+     * Inserts text at the cursor position in a text area. If something is
+     * selected it will be overwritten. */
+    export const insertTextAndPutCursorAfter = (
         textarea: HTMLTextAreaElement,
         addedText: string) => {
 

@@ -35,7 +35,7 @@ export var UiFunctions;
     var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
     let Buttons;
     (function (Buttons) {
-        var insertTextAtCursor = HtmlUtils.TextAreas.insertTextAtCursor;
+        var insertTextAtCursor = HtmlUtils.TextAreas.insertTextAndPutCursorAfter;
         var copyToClipboard = HtmlUtils.copyToClipboard;
         var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
         var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
@@ -44,6 +44,8 @@ export var UiFunctions;
         (function (Media) {
             var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
             var DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
+            var appendTextAndPutCursorAfter = HtmlUtils.TextAreas.appendTextAndPutCursorAfter;
+            var applyReplaceRulesToMainEditor = Functions.applyReplaceRulesToMainEditor;
             let mediaRecorder;
             let audioChunks = [];
             let audioBlob;
@@ -88,13 +90,6 @@ export var UiFunctions;
                 };
             })(StateIndicator = Media.StateIndicator || (Media.StateIndicator = {}));
             const transcribeAndHandleResult = async (audioBlob, whereToPutTranscription) => {
-                sending = true;
-                StateIndicator.update();
-                const apiName = getApiSelectedInUi();
-                if (!apiName) {
-                    insertAtCursor("You must select an API below.");
-                    return;
-                }
                 const maxEditorPrompt = ((textArea) => {
                     const text = textArea.value;
                     /* maxRightIndex.
@@ -135,17 +130,7 @@ export var UiFunctions;
                     }
                     return input;
                 };
-                try {
-                    const transcriptionText = await getTranscriptionText();
-                    if (whereToPutTranscription == "insertAtCursor")
-                        insertAtCursor(aSpaceIfNeeded() + removeLastDotIfNotAtEnd(transcriptionText));
-                    else
-                        TextAreas.appendText(mainEditorTextarea, transcriptionText);
-                    Functions.applyReplaceRulesToMainEditor();
-                    saveEditor();
-                    navigator.clipboard.writeText(mainEditorTextarea.value).then();
-                }
-                catch (error) {
+                const handleError = (error) => {
                     if (error instanceof HelgeUtils.Transcription.TranscriptionError) {
                         Log.write(JSON.stringify(error.payload, null, 2));
                         Log.showLog();
@@ -154,6 +139,30 @@ export var UiFunctions;
                         // Handle other types of errors or rethrow
                         throw error;
                     }
+                };
+                sending = true;
+                StateIndicator.update();
+                const apiName = getApiSelectedInUi();
+                if (!apiName) {
+                    insertTextAndPutCursorAfter("You must select an API below.");
+                    return;
+                }
+                try {
+                    const transcriptionText = await getTranscriptionText();
+                    if (whereToPutTranscription == "insertAtCursor") {
+                        insertTextAndPutCursorAfter(aSpaceIfNeeded()
+                            + removeLastDotIfNotAtEnd(transcriptionText));
+                    }
+                    else {
+                        appendTextAndPutCursorAfter(mainEditorTextarea, transcriptionText);
+                    }
+                    applyReplaceRulesToMainEditor();
+                    // mainEditorTextarea.focus();
+                    saveEditor();
+                    navigator.clipboard.writeText(mainEditorTextarea.value).then();
+                }
+                catch (error) {
+                    handleError(error);
                 }
                 sending = false;
                 StateIndicator.update();
@@ -349,7 +358,7 @@ export var UiFunctions;
             // aboutButton
             HtmlUtils.addClickListener(buttonWithId("pasteButton"), () => {
                 navigator.clipboard.readText().then(text => {
-                    insertAtCursor(text);
+                    insertTextAndPutCursorAfter(text);
                 });
             });
             // cutButton
@@ -384,7 +393,7 @@ export var UiFunctions;
             const maybeWordBoundary = wordsOnly ? "\\b" : "";
             const insertedString = `"${maybeWordBoundary + escapeRegExp(selectedText)
                 + maybeWordBoundary}"gm->"${selectedText}"\n`;
-            TextAreas.insertTextAtCursor(replaceRulesTextArea, insertedString);
+            TextAreas.insertTextAndPutCursorAfter(replaceRulesTextArea, insertedString);
             replaceRulesTextArea.selectionStart = 0;
             replaceRulesTextArea.selectionEnd = insertedString.length; // was, delete on day: setCursor(12 + selectedText.length);
             // replaceRulesTextArea.focus(); // Taken out b/c this jumps way too much down on mobile.
@@ -427,8 +436,8 @@ const saveReplaceRules = () => HtmlUtils.Cookies.set("replaceRules", textAreaWit
 textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions.replaceRulesTextAreaOnInput);
 TextAreas.setAutoSave('editorText', 'mainEditorTextarea');
 TextAreas.setAutoSave('prompt', 'transcriptionPromptEditor');
-const insertAtCursor = (text) => {
-    TextAreas.insertTextAtCursor(mainEditorTextarea, text);
+const insertTextAndPutCursorAfter = (text) => {
+    TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, text);
 };
 const getApiSelectedInUi = () => apiSelector.value;
 var NotVisibleAtThisTime;

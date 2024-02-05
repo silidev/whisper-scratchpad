@@ -17,8 +17,8 @@ export const createCutButtonClickListener = (mainEditorTextarea) => {
                 {
                     const DELETE = true;
                     if (DELETE) {
-                        const leftIndex = currentNote.leftIndex();
                         /* If DELETE==true, the text between the markers is deleted. */
+                        const leftIndex = currentNote.leftIndex();
                         textArea.value =
                             DelimiterSearch.deleteNote(textArea.value, leftIndex, currentNote.rightIndex(), NEW_NOTE_DELIMITER);
                         textArea.setSelectionRange(leftIndex, leftIndex);
