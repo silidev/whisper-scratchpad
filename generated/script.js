@@ -157,7 +157,7 @@ export var UiFunctions;
                         appendTextAndPutCursorAfter(mainEditorTextarea, transcriptionText);
                     }
                     applyReplaceRulesToMainEditor();
-                    // mainEditorTextarea.focus();
+                    mainEditorTextarea.focus();
                     saveEditor();
                     navigator.clipboard.writeText(mainEditorTextarea.value).then();
                 }
