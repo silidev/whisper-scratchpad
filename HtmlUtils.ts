@@ -63,6 +63,11 @@ export namespace HtmlUtils {
         return this;
       }
 
+      public append(text: string) {
+        TextAreas.append(this.textArea, text);
+        return this;
+      }
+
       public selectedText() {
         const start = this.textArea.selectionStart;
         const end = this.textArea.selectionEnd;
@@ -115,9 +120,13 @@ export namespace HtmlUtils {
 
     export const appendTextAndPutCursorAfter =
         (textArea: HTMLTextAreaElement, text: string) => {
-      textArea.value += " " + text;
+      append(textArea, text);
       setCursor(textArea, textArea.value.length);
     };
+
+    export const append = (textArea: HTMLTextAreaElement, text: string) => {
+      textArea.value += text;
+    }
 
     export const selectedText = (textArea: HTMLTextAreaElement) => {
       const start = textArea.selectionStart;

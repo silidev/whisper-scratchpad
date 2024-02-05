@@ -48,6 +48,10 @@ export var HtmlUtils;
                 TextAreas.appendTextAndPutCursorAfter(this.textArea, text);
                 return this;
             }
+            append(text) {
+                TextAreas.append(this.textArea, text);
+                return this;
+            }
             selectedText() {
                 const start = this.textArea.selectionStart;
                 const end = this.textArea.selectionEnd;
@@ -90,8 +94,11 @@ export var HtmlUtils;
         }
         TextAreas.TextAreaWrapper = TextAreaWrapper;
         TextAreas.appendTextAndPutCursorAfter = (textArea, text) => {
-            textArea.value += " " + text;
+            TextAreas.append(textArea, text);
             TextAreas.setCursor(textArea, textArea.value.length);
+        };
+        TextAreas.append = (textArea, text) => {
+            textArea.value += text;
         };
         TextAreas.selectedText = (textArea) => {
             const start = textArea.selectionStart;

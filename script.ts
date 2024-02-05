@@ -10,16 +10,12 @@ import blinkFast = HtmlUtils.blinkFast;
 import blinkSlow = HtmlUtils.blinkSlow;
 import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 import elementWithId = HtmlUtils.NeverNull.elementWithId;
+import TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
 import {sendCtrlZ} from "./DontInspect.js";
 import {HtmlUtils} from "./HtmlUtils.js";
 import {HelgeUtils} from "./HelgeUtils.js";
-import {
-  INSERT_EDITOR_INTO_PROMPT,
-  NEW_NOTE_DELIMITER,
-  VERSION, WHERE_TO_INSERT_AT
-} from "./config.js";
+import {INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT} from "./config.js";
 import {createCutButtonClickListener} from "./CutButton.js";
-import TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
 
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString().slice(0, 10) === "2024-01-27";
@@ -38,6 +34,8 @@ namespace Functions {
   };
 }
 
+const trimMainEditor = () => mainEditor.trim().append(" ");
+
 export namespace UiFunctions {
   // noinspection SpellCheckingInspection
   import elementWithId = HtmlUtils.NeverNull.elementWithId;
@@ -52,7 +50,6 @@ export namespace UiFunctions {
     export namespace Media {
       import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
       import DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
-      import appendTextAndPutCursorAfter = HtmlUtils.TextAreas.appendTextAndPutCursorAfter;
       import applyReplaceRulesToMainEditor = Functions.applyReplaceRulesToMainEditor;
       let mediaRecorder: MediaRecorder;
       let audioChunks: Blob[] = [];
@@ -102,86 +99,77 @@ export namespace UiFunctions {
 
       const transcribeAndHandleResult = async (audioBlob: Blob,
           whereToPutTranscription: WhereToPutTranscription ) => {
-
-        const maxEditorPrompt = ((textArea: HTMLTextAreaElement) => {
-          const text = textArea.value;
-          /* maxRightIndex.
-           * "max" because this might be shortened
-           *  later on. */
-          const maxRightIndex = (() => {
-            return WHERE_TO_INSERT_AT === "appendAtEnd"
-                ? text.length
-                : textArea.selectionStart/* Only the start is relevant b/c the
-              selection will be overwritten by the new text. */})();
-          const indexAfterPreviousDelimiter = (() => {
-            return new DelimiterSearch(NEW_NOTE_DELIMITER).leftIndex(text, maxRightIndex);
-          })();
-          return text.substring(indexAfterPreviousDelimiter, maxRightIndex);
-        })(mainEditorTextarea);
-        const promptForWhisper = () => {
-          return transcriptionPromptEditor.value
-          + INSERT_EDITOR_INTO_PROMPT ? maxEditorPrompt.slice(-(
-              750 /* Taking the last 750 CHARS is for sure less than the max 250
-               TOKENS whisper is considering. This is important because the last
-               words of the last transcription should always be included to
-               avoid hallucinations if it otherwise would be an incomplete sentence. */
-              - transcriptionPromptEditor.value.length)) : "";
-        };
-        const removeLastDot = (text: string): string => {
-          if (text.endsWith('.')) {
-            return text.slice(0, -1)+" ";
-          }
-          return text;
-        };
-        const aSpaceIfNeeded = () => mainEditorTextarea.selectionStart > 0
-        && !mainEditorTextarea.value.charAt(
-            mainEditorTextarea.selectionStart - 1).match(/\s/)
-            ? " " : "";
-        const getTranscriptionText = async () => await HelgeUtils.Transcription.transcribe(
-            apiName, audioBlob, getApiKey() as string, promptForWhisper());
-        const removeLastDotIfNotAtEnd = (input: string): string => {
-          if (mainEditorTextarea.selectionStart < mainEditorTextarea.value.length) {
-            return removeLastDot(input);
-          }
-          return input;
-        };
-        const handleError = (error: any) => {
-          if (error instanceof HelgeUtils.Transcription.TranscriptionError) {
-            Log.write(JSON.stringify(error.payload, null, 2));
-            Log.showLog();
-          } else {
-            // Handle other types of errors or rethrow
-            throw error;
-          }
-        };
-
-        sending = true;
-        StateIndicator.update();
-        const apiName = getApiSelectedInUi();
-        if (!apiName) {
-          insertTextAndPutCursorAfter("You must select an API below.");
-          return;
-        }
         try {
+          const maxEditorPrompt = ((textArea: HTMLTextAreaElement) => {
+            const text = textArea.value;
+            /* maxRightIndex.
+             * "max" because this might be shortened
+             *  later on. */
+            const maxRightIndex = (() => {
+              return WHERE_TO_INSERT_AT === "appendAtEnd"
+                  ? text.length
+                  : textArea.selectionStart/* Only the start is relevant b/c the
+                selection will be overwritten by the new text. */})();
+            const indexAfterPreviousDelimiter = (() => {
+              return new DelimiterSearch(NEW_NOTE_DELIMITER).leftIndex(text, maxRightIndex);
+            })();
+            return text.substring(indexAfterPreviousDelimiter, maxRightIndex);
+          })(mainEditorTextarea);
+          const promptForWhisper = () => {
+            return transcriptionPromptEditor.value
+            + INSERT_EDITOR_INTO_PROMPT ? maxEditorPrompt.slice(-(
+                750 /* Taking the last 750 CHARS is for sure less than the max 250
+                 TOKENS whisper is considering. This is important because the last
+                 words of the last transcription should always be included to
+                 avoid hallucinations if it otherwise would be an incomplete sentence. */
+                - transcriptionPromptEditor.value.length)) : "";
+          };
+          const removeLastDot = (text: string): string => {
+            if (text.endsWith('.')) {
+              return text.slice(0, -1)+" ";
+            }
+            return text;
+          };
+          const aSpaceIfNeeded = () => mainEditorTextarea.selectionStart > 0
+          && !mainEditorTextarea.value.charAt(
+              mainEditorTextarea.selectionStart - 1).match(/\s/)
+              ? " " : "";
+          const getTranscriptionText = async () => await HelgeUtils.Transcription.transcribe(
+              apiName, audioBlob, getApiKey() as string, promptForWhisper());
+          const removeLastDotIfNotAtEnd = (input: string): string => {
+            if (mainEditorTextarea.selectionStart < mainEditorTextarea.value.length) {
+              return removeLastDot(input);
+            }
+            return input;
+          };
+
+          sending = true;
+          StateIndicator.update();
+          const apiName = getApiSelectedInUi();
+          if (!apiName) {
+            insertTextAndPutCursorAfter("You must select an API below.");
+            return;
+          }
           const transcriptionText = await getTranscriptionText();
 
           if (whereToPutTranscription=="insertAtCursor") {
             insertTextAndPutCursorAfter(aSpaceIfNeeded()
                 + removeLastDotIfNotAtEnd(transcriptionText));
           } else {
-            mainEditor.trim();
-            appendTextAndPutCursorAfter(mainEditorTextarea, transcriptionText);
+            trimMainEditor().appendTextAndPutCursorAfter(transcriptionText);
           }
           applyReplaceRulesToMainEditor();
-          mainEditor.trim();
-          mainEditorTextarea.focus();
+          trimMainEditor().focus();
           saveEditor();
           navigator.clipboard.writeText(mainEditorTextarea.value).then();
+          sending = false;
+          StateIndicator.update();
         } catch (error) {
-          handleError(error);
+          if (error instanceof HelgeUtils.Transcription.TranscriptionError) {
+            Log.write(JSON.stringify(error.payload, null, 2));
+            Log.showLog();
+          } else throw error;
         }
-        sending = false;
-        StateIndicator.update();
       };
 
       const stopCallback = () => {
