@@ -169,9 +169,11 @@ export namespace UiFunctions {
             insertTextAndPutCursorAfter(aSpaceIfNeeded()
                 + removeLastDotIfNotAtEnd(transcriptionText));
           } else {
+            mainEditor.trim();
             appendTextAndPutCursorAfter(mainEditorTextarea, transcriptionText);
           }
           applyReplaceRulesToMainEditor();
+          mainEditor.trim();
           mainEditorTextarea.focus();
           saveEditor();
           navigator.clipboard.writeText(mainEditorTextarea.value).then();

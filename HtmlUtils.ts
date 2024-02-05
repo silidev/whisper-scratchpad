@@ -106,6 +106,11 @@ export namespace HtmlUtils {
         this.setCursor(this.textArea.value.length);
         return this;
       }
+
+      public trim() {
+        this.textArea.value = this.textArea.value.trim();
+        return this;
+      }
     }
 
     export const appendTextAndPutCursorAfter =
@@ -256,17 +261,11 @@ export namespace HtmlUtils {
 
   /**
    # DOMException Read permission denied error
-
    you're encountering when calling navigator.clipboard.readText() is likely due to the permissions and security restrictions around accessing the clipboard in web browsers. Here are some key points to consider and potential solutions:
-
    User Interaction Required: Most modern browsers require a user-initiated action, like a click event, to access the clipboard. Make sure your code is triggered by such an action.
-
    Secure Context: Clipboard access is only allowed in a secure context (HTTPS), not on HTTP pages.
-
    Permissions: Depending on the browser, your site may need explicit permission from the user to access the clipboard.
-
    Browser Support: Ensure that the browser you are using supports the Clipboard API.
-
    Cross-Origin Restrictions: If your script is running in an iframe, it might be subject to cross-origin restrictions.
    */
   export namespace Clipboard {
