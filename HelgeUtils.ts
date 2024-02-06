@@ -8,10 +8,6 @@
  * Copyright by Helge Tobias Kosuch 2024 */
 export namespace HelgeUtils {
 
-  export const runTests = () => {
-    HelgeUtils.Strings.runTests();
-  };
-
   export namespace Exceptions {
     /**
      * Reporting of exceptions in callbacks is sometimes very bad.
@@ -225,6 +221,15 @@ export namespace HelgeUtils {
       DelimiterSearch.runTests();
     }
   } //end of namespace Strings
+
+  export const runTests = function (){
+    const {
+      DatesAndTimes,
+    } = this;
+    this.testRemoveElements();
+    DatesAndTimes.runTests();
+    Strings.runTests();
+  };
 
   export namespace Transcription {
 

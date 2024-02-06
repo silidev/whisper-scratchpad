@@ -7,9 +7,6 @@
  * Copyright by Helge Tobias Kosuch 2024 */
 export var HelgeUtils;
 (function (HelgeUtils) {
-    HelgeUtils.runTests = () => {
-        HelgeUtils.Strings.runTests();
-    };
     let Exceptions;
     (function (Exceptions) {
         /**
@@ -221,6 +218,12 @@ export var HelgeUtils;
         }
         Strings.runTests = runTests;
     })(Strings = HelgeUtils.Strings || (HelgeUtils.Strings = {})); //end of namespace Strings
+    HelgeUtils.runTests = function () {
+        const { DatesAndTimes, } = this;
+        this.testRemoveElements();
+        DatesAndTimes.runTests();
+        Strings.runTests();
+    };
     let Transcription;
     (function (Transcription) {
         class TranscriptionError extends Error {

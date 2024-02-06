@@ -132,7 +132,7 @@ export namespace HtmlUtils {
       const start = textArea.selectionStart;
       const end = textArea.selectionEnd;
       return textArea.value.substring(start, end);
-    };
+    }
 
     /**
      * Makes a text area element auto-save its content to a cookie after each modified character (input event).
