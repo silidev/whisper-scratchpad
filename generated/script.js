@@ -164,8 +164,7 @@ export var UiFunctions;
                 }
                 catch (error) {
                     if (error instanceof HelgeUtils.Transcription.TranscriptionError) {
-                        Log.write(JSON.stringify(error.payload, null, 2));
-                        Log.showLog();
+                        Log.error(JSON.stringify(error.payload, null, 2));
                     }
                     else
                         throw error;
@@ -480,14 +479,25 @@ var Log;
     var inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
     var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
     const MAX_LOG_LEN = 1000;
-    Log.write = (message) => {
-        if (!inputElementWithId("logReplaceRulesCheckbox").checked)
-            return;
+    Log.turnOnLogging = () => {
+        inputElementWithId("logReplaceRulesCheckbox").checked = true;
+    };
+    function logEvenIfNotEnabled(message) {
         const logTextArea = textAreaWithId("logTextArea");
         const oldLog = logTextArea.value;
-        logTextArea.value = (oldLog + "\n" + message).slice(-MAX_LOG_LEN);
-        logTextArea.scrollTop = logTextArea.scrollHeight;
+        logTextArea.value = (oldLog + "\n" + message).slice(-MAX_LOG_LEN).trim();
+        TextAreas.scrollToEnd(logTextArea);
+    }
+    Log.writeIfLoggingEnabled = (message) => {
+        if (!inputElementWithId("logReplaceRulesCheckbox").checked)
+            return;
+        logEvenIfNotEnabled(message);
     };
+    Log.error = (message) => {
+        logEvenIfNotEnabled(message);
+        Log.showLog();
+    };
+    /** This only shows the log. It does NOT turn logging on! */
     Log.showLog = () => {
         textAreaWithId("logTextArea").style.display = "block";
     };
@@ -513,7 +523,7 @@ var ReplaceByRules;
     function withUiLog(rules, subject, wholeWords = false, preserveCase = false) {
         const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked;
         const retVal = HelgeUtils.ReplaceByRules.replaceByRules(subject, rules, wholeWords, logFlag, preserveCase);
-        Log.write(retVal.log);
+        Log.writeIfLoggingEnabled(retVal.log);
         return retVal.resultingText;
     }
     ReplaceByRules.withUiLog = withUiLog;

@@ -134,6 +134,10 @@ export var HtmlUtils;
             TextAreas.setCursor(textarea, textBeforeSelection.length + addedText.length);
             textarea.focus();
         };
+        function scrollToEnd(logTextArea) {
+            logTextArea.scrollTop = logTextArea.scrollHeight;
+        }
+        TextAreas.scrollToEnd = scrollToEnd;
     })(TextAreas = HtmlUtils.TextAreas || (HtmlUtils.TextAreas = {}));
     let Media;
     (function (Media) {

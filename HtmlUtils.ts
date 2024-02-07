@@ -171,6 +171,10 @@ export namespace HtmlUtils {
       setCursor(textarea, textBeforeSelection.length + addedText.length);
       textarea.focus();
     };
+
+    export function scrollToEnd(logTextArea: HTMLTextAreaElement) {
+      logTextArea.scrollTop = logTextArea.scrollHeight;
+    }
   }
 
   export namespace Media {

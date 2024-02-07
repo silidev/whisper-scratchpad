@@ -176,8 +176,7 @@ export namespace UiFunctions {
           StateIndicator.update();
         } catch (error) {
           if (error instanceof HelgeUtils.Transcription.TranscriptionError) {
-            Log.write(JSON.stringify(error.payload, null, 2));
-            Log.showLog();
+            Log.error(JSON.stringify(error.payload, null, 2));
           } else throw error;
         }
       };
@@ -541,14 +540,28 @@ namespace Log {
   import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
   const MAX_LOG_LEN = 1000;
 
-  export const write = (message: string) => {
-    if (!inputElementWithId("logReplaceRulesCheckbox").checked) return;
+  export const turnOnLogging = () => {
+    inputElementWithId("logReplaceRulesCheckbox").checked = true;
+  }
+
+  function logEvenIfNotEnabled(message: string) {
     const logTextArea = textAreaWithId("logTextArea");
     const oldLog = logTextArea.value;
-    logTextArea.value = (oldLog + "\n" + message).slice(- MAX_LOG_LEN);
-    logTextArea.scrollTop = logTextArea.scrollHeight;
+    logTextArea.value = (oldLog + "\n" + message).slice(-MAX_LOG_LEN).trim();
+    TextAreas.scrollToEnd(logTextArea);
+  }
+
+  export const writeIfLoggingEnabled = (message: string) => {
+    if (!inputElementWithId("logReplaceRulesCheckbox").checked) return;
+    logEvenIfNotEnabled(message);
   };
 
+  export const error = (message: string) => {
+    logEvenIfNotEnabled(message);
+    showLog();
+  }
+
+  /** This only shows the log. It does NOT turn logging on! */
   export const showLog = () => {
     textAreaWithId("logTextArea").style.display = "block";
   };
@@ -580,7 +593,7 @@ namespace ReplaceByRules {
   export function withUiLog(rules: string, subject: string, wholeWords = false, preserveCase = false): string {
     const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked;
     const retVal = HelgeUtils.ReplaceByRules.replaceByRules(subject, rules, wholeWords, logFlag, preserveCase);
-    Log.write(retVal.log);
+    Log.writeIfLoggingEnabled(retVal.log);
     return retVal.resultingText;
   }
 
