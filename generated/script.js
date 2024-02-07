@@ -92,22 +92,21 @@ export var UiFunctions;
             })(StateIndicator = Media.StateIndicator || (Media.StateIndicator = {}));
             const transcribeAndHandleResult = async (audioBlob, whereToPutTranscription) => {
                 try {
-                    const maxEditorPrompt = ((textArea) => {
+                    const calcMaxEditorPrompt = (textArea) => {
                         const text = textArea.value;
                         /* maxRightIndex.
-                         * "max" because this might be shortened
-                         *  later on. */
+                         * "max" because this might be shortened later on. */
                         const maxRightIndex = (() => {
                             return WHERE_TO_INSERT_AT === "appendAtEnd"
                                 ? text.length
-                                : textArea.selectionStart; /* Only the start is relevant b/c the
-                          selection will be overwritten by the new text. */
+                                : textArea.selectionStart; /* Only the start is relevant
+                            b/c the selection will be overwritten by the new text. */
                         })();
                         const indexAfterPreviousDelimiter = (() => {
                             return new DelimiterSearch(NEW_NOTE_DELIMITER).leftIndex(text, maxRightIndex);
                         })();
                         return text.substring(indexAfterPreviousDelimiter, maxRightIndex);
-                    })(mainEditorTextarea);
+                    };
                     const promptForWhisper = () => {
                         const maxNumberOfCharsFromEditor = 750 /* Taking the last 750
                              CHARS is for sure less than the max 250 TOKENS whisper is
@@ -116,6 +115,7 @@ export var UiFunctions;
                              hallucinations if it otherwise would be an incomplete
                              sentence. */
                             - transcriptionPromptEditor.value.length;
+                        const maxEditorPrompt = calcMaxEditorPrompt(mainEditorTextarea);
                         return transcriptionPromptEditor.value
                             + INSERT_EDITOR_INTO_PROMPT
                             ? maxEditorPrompt.slice(-maxNumberOfCharsFromEditor)
