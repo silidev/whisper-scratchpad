@@ -130,7 +130,7 @@ export namespace UiFunctions {
                 ? " " : "";
           };
           const promptForWhisper = () => {
-            const maxNumberOfCharsFromEditor = 750 /* Taking the last 750
+            const maxNumberOfCharsFromEditor = 500 /* Taking the last 500
                  CHARS is for sure less than the max 250 TOKENS whisper is
                  considering. This is important because the last words of
                  the last transcription should always be included to avoid
