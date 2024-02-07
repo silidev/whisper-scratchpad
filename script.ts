@@ -116,13 +116,17 @@ export namespace UiFunctions {
             return text.substring(indexAfterPreviousDelimiter, maxRightIndex);
           })(mainEditorTextarea);
           const promptForWhisper = () => {
+            const maxNumberOfCharsFromEditor = 750 /* Taking the last 750
+                 CHARS is for sure less than the max 250 TOKENS whisper is
+                 considering. This is important because the last words of
+                 the last transcription should always be included to avoid
+                 hallucinations if it otherwise would be an incomplete
+                 sentence. */
+              - transcriptionPromptEditor.value.length;
             return transcriptionPromptEditor.value
-            + INSERT_EDITOR_INTO_PROMPT ? maxEditorPrompt.slice(-(
-                750 /* Taking the last 750 CHARS is for sure less than the max 250
-                 TOKENS whisper is considering. This is important because the last
-                 words of the last transcription should always be included to
-                 avoid hallucinations if it otherwise would be an incomplete sentence. */
-                - transcriptionPromptEditor.value.length)) : "";
+                + INSERT_EDITOR_INTO_PROMPT
+                ? maxEditorPrompt.slice(- maxNumberOfCharsFromEditor)
+                : "";
           };
           const removeLastDot = (text: string): string => {
             if (text.endsWith('.')) {
