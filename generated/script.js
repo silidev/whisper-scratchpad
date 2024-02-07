@@ -120,17 +120,18 @@ export var UiFunctions;
                             ? " " : "";
                     };
                     const promptForWhisper = () => {
-                        const maxNumberOfCharsFromEditor = 500 /* Taking the last 500
-                             CHARS is for sure less than the max 250 TOKENS whisper is
-                             considering. This is important because the last words of
-                             the last transcription should always be included to avoid
-                             hallucinations if it otherwise would be an incomplete
-                             sentence. */
+                        const MAX_TOTAL_CHARS = 500; /* Taking the last 500
+                         CHARS is for sure less than the max 250 TOKENS whisper is
+                         considering. This is important because the last words of
+                         the last transcription should always be included to avoid
+                         hallucinations if it otherwise would be an incomplete
+                         sentence. */
+                        const maxCharsFromEditor = MAX_TOTAL_CHARS
                             - transcriptionPromptEditor.value.length;
                         const maxEditorPrompt = calcMaxEditorPrompt(mainEditorTextarea);
                         return transcriptionPromptEditor.value +
                             (INSERT_EDITOR_INTO_PROMPT
-                                ? maxEditorPrompt.slice(-maxNumberOfCharsFromEditor)
+                                ? maxEditorPrompt.slice(-maxCharsFromEditor)
                                 : "");
                     };
                     const getTranscriptionText = async () => await HelgeUtils.Transcription.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper());
