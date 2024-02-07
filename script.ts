@@ -102,20 +102,33 @@ export namespace UiFunctions {
         try {
           const calcMaxEditorPrompt = (textArea: HTMLTextAreaElement) => {
             const text = textArea.value;
-            /* maxRightIndex.
+            /* maxLeftIndex.
+             * Searching for the Delimiter. It is ")))---(((" at this time.
              * "max" because this might be shortened later on. */
-            const maxRightIndex = (() => {
+            const maxLeftIndex = (() => {
               return WHERE_TO_INSERT_AT === "appendAtEnd"
                   ? text.length
                   : textArea.selectionStart/* Only the start is relevant
                   b/c the selection will be overwritten by the new text. */
             })();
             const indexAfterPreviousDelimiter = (() => {
-              return new DelimiterSearch(NEW_NOTE_DELIMITER).leftIndex(text, maxRightIndex);
+              return new DelimiterSearch(NEW_NOTE_DELIMITER).leftIndex(text, maxLeftIndex);
             })();
-            return text.substring(indexAfterPreviousDelimiter, maxRightIndex);
+            return text.substring(indexAfterPreviousDelimiter, maxLeftIndex);
           };
 
+          const removeLastDot = (text: string): string => {
+            if (text.endsWith('.')) {
+              return text.slice(0, -1)+" ";
+            }
+            return text;
+          };
+          const aSpaceIfNeeded = () => {
+            return mainEditorTextarea.selectionStart > 0
+            && !mainEditorTextarea.value.charAt(
+                mainEditorTextarea.selectionStart - 1).match(/\s/)
+                ? " " : "";
+          };
           const promptForWhisper = () => {
             const maxNumberOfCharsFromEditor = 750 /* Taking the last 750
                  CHARS is for sure less than the max 250 TOKENS whisper is
@@ -123,23 +136,14 @@ export namespace UiFunctions {
                  the last transcription should always be included to avoid
                  hallucinations if it otherwise would be an incomplete
                  sentence. */
-              - transcriptionPromptEditor.value.length;
+                - transcriptionPromptEditor.value.length;
             const maxEditorPrompt = calcMaxEditorPrompt(mainEditorTextarea);
-            return transcriptionPromptEditor.value
-                + INSERT_EDITOR_INTO_PROMPT
+            return transcriptionPromptEditor.value +
+                (INSERT_EDITOR_INTO_PROMPT
                 ? maxEditorPrompt.slice(- maxNumberOfCharsFromEditor)
-                : "";
+                : "");
           };
-          const removeLastDot = (text: string): string => {
-            if (text.endsWith('.')) {
-              return text.slice(0, -1)+" ";
-            }
-            return text;
-          };
-          const aSpaceIfNeeded = () => mainEditorTextarea.selectionStart > 0
-          && !mainEditorTextarea.value.charAt(
-              mainEditorTextarea.selectionStart - 1).match(/\s/)
-              ? " " : "";
+
           const getTranscriptionText = async () => await HelgeUtils.Transcription.transcribe(
               apiName, audioBlob, getApiKey() as string, promptForWhisper());
           const removeLastDotIfNotAtEnd = (input: string): string => {

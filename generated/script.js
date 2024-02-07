@@ -94,18 +94,30 @@ export var UiFunctions;
                 try {
                     const calcMaxEditorPrompt = (textArea) => {
                         const text = textArea.value;
-                        /* maxRightIndex.
+                        /* maxLeftIndex.
+                         * Searching for the Delimiter. It is ")))---(((" at this time.
                          * "max" because this might be shortened later on. */
-                        const maxRightIndex = (() => {
+                        const maxLeftIndex = (() => {
                             return WHERE_TO_INSERT_AT === "appendAtEnd"
                                 ? text.length
                                 : textArea.selectionStart; /* Only the start is relevant
                             b/c the selection will be overwritten by the new text. */
                         })();
                         const indexAfterPreviousDelimiter = (() => {
-                            return new DelimiterSearch(NEW_NOTE_DELIMITER).leftIndex(text, maxRightIndex);
+                            return new DelimiterSearch(NEW_NOTE_DELIMITER).leftIndex(text, maxLeftIndex);
                         })();
-                        return text.substring(indexAfterPreviousDelimiter, maxRightIndex);
+                        return text.substring(indexAfterPreviousDelimiter, maxLeftIndex);
+                    };
+                    const removeLastDot = (text) => {
+                        if (text.endsWith('.')) {
+                            return text.slice(0, -1) + " ";
+                        }
+                        return text;
+                    };
+                    const aSpaceIfNeeded = () => {
+                        return mainEditorTextarea.selectionStart > 0
+                            && !mainEditorTextarea.value.charAt(mainEditorTextarea.selectionStart - 1).match(/\s/)
+                            ? " " : "";
                     };
                     const promptForWhisper = () => {
                         const maxNumberOfCharsFromEditor = 750 /* Taking the last 750
@@ -116,20 +128,11 @@ export var UiFunctions;
                              sentence. */
                             - transcriptionPromptEditor.value.length;
                         const maxEditorPrompt = calcMaxEditorPrompt(mainEditorTextarea);
-                        return transcriptionPromptEditor.value
-                            + INSERT_EDITOR_INTO_PROMPT
-                            ? maxEditorPrompt.slice(-maxNumberOfCharsFromEditor)
-                            : "";
+                        return transcriptionPromptEditor.value +
+                            (INSERT_EDITOR_INTO_PROMPT
+                                ? maxEditorPrompt.slice(-maxNumberOfCharsFromEditor)
+                                : "");
                     };
-                    const removeLastDot = (text) => {
-                        if (text.endsWith('.')) {
-                            return text.slice(0, -1) + " ";
-                        }
-                        return text;
-                    };
-                    const aSpaceIfNeeded = () => mainEditorTextarea.selectionStart > 0
-                        && !mainEditorTextarea.value.charAt(mainEditorTextarea.selectionStart - 1).match(/\s/)
-                        ? " " : "";
                     const getTranscriptionText = async () => await HelgeUtils.Transcription.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper());
                     const removeLastDotIfNotAtEnd = (input) => {
                         if (mainEditorTextarea.selectionStart < mainEditorTextarea.value.length) {
