@@ -401,7 +401,7 @@ export var UiFunctions;
             addEventListenerForCopyButton("copyReplaceRulesButton", "replaceRulesTextArea");
             addEventListenerForCopyButton("copyPromptButton", "transcriptionPromptEditor");
             buttonWithId("saveAPIKeyButton").addEventListener('click', function () {
-                inputElementWithId('apiKey').value = ''; // Clear the input field
+                inputElementWithId('apiKeyInputField').value = ''; // Clear the input field
             });
             apiSelector.addEventListener('change', () => {
                 HtmlUtils.Cookies.set('apiSelector', apiSelector.value);
