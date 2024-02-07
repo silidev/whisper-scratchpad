@@ -192,7 +192,14 @@ export namespace HtmlUtils {
   }
 
   export namespace Cookies {
+
+    /**
+     * Sets a cookie with the given name and value.
+     *
+     * @throws Error if the cookie value exceeds 4095 characters. */
     export const set = (cookieName: string, cookieValue: string) => {
+      if (cookieValue.length > MAX_COOKIE_SIZE)
+        throw new Error(`Cookie value exceeds maximum characters of ${MAX_COOKIE_SIZE}.`);
       const expirationTime = new Date(Date.now() + 2147483647000).toUTCString();
       document.cookie = `${cookieName}=${encodeURIComponent(cookieValue)};expires=${expirationTime};path=/`;
     };

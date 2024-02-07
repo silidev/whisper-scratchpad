@@ -155,7 +155,13 @@ export var HtmlUtils;
     })(Media = HtmlUtils.Media || (HtmlUtils.Media = {}));
     let Cookies;
     (function (Cookies) {
+        /**
+         * Sets a cookie with the given name and value.
+         *
+         * @throws Error if the cookie value exceeds 4095 characters. */
         Cookies.set = (cookieName, cookieValue) => {
+            if (cookieValue.length > MAX_COOKIE_SIZE)
+                throw new Error(`Cookie value exceeds maximum characters of ${MAX_COOKIE_SIZE}.`);
             const expirationTime = new Date(Date.now() + 2147483647000).toUTCString();
             document.cookie = `${cookieName}=${encodeURIComponent(cookieValue)};expires=${expirationTime};path=/`;
         };
