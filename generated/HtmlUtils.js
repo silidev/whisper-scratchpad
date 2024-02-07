@@ -4,6 +4,7 @@
  * Should be named WebUtils... but I am used to HtmlUtils.
  * */
 import { HelgeUtils } from "./HelgeUtils.js";
+const MAX_COOKIE_SIZE = 4096;
 export var HtmlUtils;
 (function (HtmlUtils) {
     const clipboard = navigator.clipboard;
@@ -68,8 +69,8 @@ export var HtmlUtils;
             getCursor() {
                 return TextAreas.getCursor(this.textArea);
             }
-            setAutoSave(cookieName) {
-                TextAreas.setAutoSave(cookieName, this.textArea.id);
+            setAutoSave(cookieName, handleError) {
+                TextAreas.setAutoSave(cookieName, this.textArea.id, handleError);
                 return this;
             }
             value() {
@@ -109,10 +110,15 @@ export var HtmlUtils;
          * Makes a text area element auto-save its content to a cookie after each modified character (input event).
          * @param cookieName - The name of the cookie to store the text area content.
          * @param id - The ID of the text area element.
+         * @param handleError - A function to call when an error occurs.
          */
-        TextAreas.setAutoSave = (cookieName, id) => {
+        TextAreas.setAutoSave = (cookieName, id, handleError) => {
             textAreaWithId(id).addEventListener('input', () => {
-                Cookies.set(cookieName, textAreaWithId(id).value);
+                const text = textAreaWithId(id).value;
+                Cookies.set(cookieName, text.slice(0, MAX_COOKIE_SIZE - 1));
+                if (text.length >= MAX_COOKIE_SIZE - 1) {
+                    handleError(`${cookieName}: Text area content exceeds 4095 characters. Content will not be saved.`);
+                }
             });
         };
         TextAreas.getCursor = (textArea) => {

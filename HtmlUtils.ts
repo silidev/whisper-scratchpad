@@ -6,6 +6,8 @@
  * */
 import {HelgeUtils} from "./HelgeUtils.js";
 
+const MAX_COOKIE_SIZE = 4096;
+
 export namespace HtmlUtils {
   const clipboard = navigator.clipboard;
 
@@ -88,8 +90,8 @@ export namespace HtmlUtils {
         return TextAreas.getCursor(this.textArea);
       }
 
-      public setAutoSave(cookieName: string) {
-        TextAreas.setAutoSave(cookieName, this.textArea.id);
+      public setAutoSave(cookieName: string, handleError: (msg: string) => void){
+        TextAreas.setAutoSave(cookieName, this.textArea.id, handleError);
         return this;
       }
 
@@ -138,10 +140,15 @@ export namespace HtmlUtils {
      * Makes a text area element auto-save its content to a cookie after each modified character (input event).
      * @param cookieName - The name of the cookie to store the text area content.
      * @param id - The ID of the text area element.
+     * @param handleError - A function to call when an error occurs.
      */
-    export const setAutoSave = (cookieName: string, id: string) => {
+    export const setAutoSave = (cookieName: string, id: string, handleError: (msg: string) => void) => {
       textAreaWithId(id).addEventListener('input', () => {
-        Cookies.set(cookieName, textAreaWithId(id).value);
+        const text = textAreaWithId(id).value;
+        Cookies.set(cookieName, text.slice(0,MAX_COOKIE_SIZE-1));
+        if (text.length >= MAX_COOKIE_SIZE-1) {
+          handleError(`${cookieName}: Text area content exceeds 4095 characters. Content will not be saved.`);
+        }
       });
     };
 

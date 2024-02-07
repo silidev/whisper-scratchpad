@@ -510,13 +510,18 @@ const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as 
 
 export const saveEditor = () => HtmlUtils.Cookies.set("editorText", textAreaWithId("mainEditorTextarea").value);
 
-TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea');
 const saveReplaceRules = () => HtmlUtils.Cookies.set("replaceRules",
     textAreaWithId("replaceRulesTextArea").value);
 textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions.replaceRulesTextAreaOnInput);
-TextAreas.setAutoSave('editorText', 'mainEditorTextarea');
-TextAreas.setAutoSave('prompt', 'transcriptionPromptEditor');
 
+{ // Autosaves
+  const handleAutoSaveError = (msg: string) => {
+    Log.error(msg);
+  }
+  TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea', handleAutoSaveError);
+  TextAreas.setAutoSave('editorText', 'mainEditorTextarea', handleAutoSaveError);
+  TextAreas.setAutoSave('prompt', 'transcriptionPromptEditor', handleAutoSaveError);
+}
 const insertTextAndPutCursorAfter = (text: string) => {
   TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, text);
 };
