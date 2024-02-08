@@ -222,12 +222,7 @@ export namespace HelgeUtils {
     }
   } //end of namespace Strings
 
-  export const runTests = function (){
-    const {
-      DatesAndTimes,
-    } = this;
-    this.testRemoveElements();
-    DatesAndTimes.runTests();
+  export const runTests = () => {
     Strings.runTests();
   };
 

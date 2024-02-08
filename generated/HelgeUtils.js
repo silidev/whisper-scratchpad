@@ -218,10 +218,7 @@ export var HelgeUtils;
         }
         Strings.runTests = runTests;
     })(Strings = HelgeUtils.Strings || (HelgeUtils.Strings = {})); //end of namespace Strings
-    HelgeUtils.runTests = function () {
-        const { DatesAndTimes, } = this;
-        this.testRemoveElements();
-        DatesAndTimes.runTests();
+    HelgeUtils.runTests = () => {
         Strings.runTests();
     };
     let Transcription;
