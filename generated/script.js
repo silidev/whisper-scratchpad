@@ -19,16 +19,23 @@ const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString().slice(0, 1
 if (RUN_TESTS)
     console.log("RUN_TESTS is true. This is only for " +
         "testing. Set it to false in production.");
-var Functions;
-(function (Functions) {
-    Functions.applyReplaceRulesToMainEditor = () => {
+var OnlyDefinitions;
+(function (OnlyDefinitions) {
+    OnlyDefinitions.applyReplaceRulesToMainEditor = () => {
         const selectionStart = mainEditorTextarea.selectionStart;
         const selectionEnd = mainEditorTextarea.selectionEnd;
         mainEditorTextarea.value = ReplaceByRules.withUiLog(replaceRulesTextArea.value, mainEditorTextarea.value);
         mainEditorTextarea.selectionStart = selectionStart;
         mainEditorTextarea.selectionEnd = selectionEnd;
     };
-})(Functions || (Functions = {}));
+    OnlyDefinitions.addMenuItem = (id, menuFunction) => {
+        HtmlUtils.addClickListener(elementWithId(id), () => {
+            menuFunction();
+            UiFunctions.closeEditorMenu();
+        });
+    };
+})(OnlyDefinitions || (OnlyDefinitions = {}));
+var addMenuItem = OnlyDefinitions.addMenuItem;
 const trimMainEditor = () => mainEditor.trim().append(" ");
 export var UiFunctions;
 (function (UiFunctions) {
@@ -46,7 +53,7 @@ export var UiFunctions;
         (function (Media) {
             var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
             var DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
-            var applyReplaceRulesToMainEditor = Functions.applyReplaceRulesToMainEditor;
+            var applyReplaceRulesToMainEditor = OnlyDefinitions.applyReplaceRulesToMainEditor;
             let mediaRecorder;
             let audioChunks = [];
             let audioBlob;
@@ -234,9 +241,10 @@ export var UiFunctions;
             buttonWithId("stopButton").addEventListener('click', stopButton);
             // ############## cancelRecording ##############
             Media.cancelRecording = () => {
+                if (!mediaRecorder)
+                    return;
                 mediaRecorder.onstop = StopCallbackCreator.createCancelingCallback();
                 mediaRecorder.stop();
-                UiFunctions.closeEditorMenu();
             };
             // ############## stop_transcribe_startNewRecording_and_pause ##############
             const stop_transcribe_startNewRecording_and_pause = () => {
@@ -278,50 +286,37 @@ export var UiFunctions;
             buttonWithId("pauseRecordButton").addEventListener('click', pauseRecordButton);
             // ############## transcribeAgainButton ##############
             const transcribeAgainButton = () => {
-                UiFunctions.closeEditorMenu();
                 NotVisibleAtThisTime.showSpinner();
                 transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT).then(NotVisibleAtThisTime.hideSpinner);
             };
-            HtmlUtils.addClickListener(buttonWithId("transcribeAgainButton"), transcribeAgainButton);
+            addMenuItem("transcribeAgainButton", transcribeAgainButton);
             StateIndicator.update();
         })(Media = Buttons.Media || (Buttons.Media = {})); // End of media buttons
         Buttons.addButtonEventListeners = () => {
             // ############## Toggle Log Button ##############
-            Log.addToggleLogButtonClickListener(textAreaWithId);
+            addMenuItem("toggleLogButton", Log.toggleLog(textAreaWithId));
             // ############## Crop Highlights Menu Item ##############
             const cropHighlights = () => {
                 mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ');
                 saveEditor();
             };
-            HtmlUtils.addClickListener(buttonWithId("cropHighlightsMenuItem"), () => {
-                cropHighlights();
-                UiFunctions.closeEditorMenu();
-            });
+            addMenuItem("cropHighlightsMenuItem", cropHighlights);
             // ############## Copy Backup to clipboard Menu Item ##############
             const copyBackupToClipboard = () => {
                 navigator.clipboard.writeText("## Replace Rules\n" + replaceRulesTextArea.value + "\n"
                     + "## Prompt\n" + transcriptionPromptEditor.value).then();
             };
-            HtmlUtils.addClickListener(buttonWithId("copyBackupMenuItem"), () => {
-                copyBackupToClipboard();
-                UiFunctions.closeEditorMenu();
-            });
+            addMenuItem("copyBackupMenuItem", copyBackupToClipboard);
             // ############## Focus the main editor textarea Menu Item ##############
-            HtmlUtils.addClickListener(inputElementWithId("focusMainEditorMenuItem"), () => {
-                UiFunctions.closeEditorMenu();
-                mainEditorTextarea.focus();
-            });
+            addMenuItem("focusMainEditorMenuItem", mainEditorTextarea.focus);
             // ############## Du2Ich Menu Item ##############
             const du2ichMenuItem = () => {
-                UiFunctions.closeEditorMenu();
                 copyToClipboard(mainEditorTextarea.value).then(() => {
                     mainEditorTextarea.value = HelgeUtils.Misc.du2ich(mainEditorTextarea.value, ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog);
                     saveEditor();
                 });
             };
-            HtmlUtils.addClickListener(inputElementWithId("du2ichMenuItem"), () => {
-                du2ichMenuItem();
-            });
+            addMenuItem("du2ichMenuItem", du2ichMenuItem);
             // ############## saveAPIKeyButton ##############
             function saveAPIKeyButton() {
                 setApiKeyCookie(apiKeyInput.value);
@@ -339,7 +334,7 @@ export var UiFunctions;
                 clearButton();
             });
             const replaceAgainButton = () => {
-                Functions.applyReplaceRulesToMainEditor();
+                OnlyDefinitions.applyReplaceRulesToMainEditor();
                 mainEditorTextarea.focus();
                 // window.scrollBy(0,-100000);
             };
@@ -371,9 +366,7 @@ export var UiFunctions;
                 updateButton();
             });
             // cancelRecording
-            HtmlUtils.addClickListener(buttonWithId("cancelRecording"), () => {
-                Buttons.Media.cancelRecording();
-            });
+            addMenuItem("cancelRecording", Buttons.Media.cancelRecording);
             // cutAllButton
             {
                 const cutAllButton = buttonWithId("cutAllButton");
@@ -489,7 +482,6 @@ var NotVisibleAtThisTime;
 var Log;
 (function (Log) {
     var inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
-    var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
     const MAX_LOG_LEN = 1000;
     Log.turnOnLogging = () => {
         inputElementWithId("logReplaceRulesCheckbox").checked = true;
@@ -513,19 +505,16 @@ var Log;
     Log.showLog = () => {
         textAreaWithId("logTextArea").style.display = "block";
     };
-    Log.addToggleLogButtonClickListener = (textAreaWithId) => {
-        HtmlUtils.addClickListener(buttonWithId("toggleLogButton"), () => {
-            UiFunctions.closeEditorMenu();
-            const log = textAreaWithId("logTextArea");
-            if (log.style.display === "none") {
-                log.style.display = "block";
-                inputElementWithId("logReplaceRulesCheckbox").checked = true;
-            }
-            else {
-                log.style.display = "none";
-                inputElementWithId("logReplaceRulesCheckbox").checked = false;
-            }
-        });
+    Log.toggleLog = (textAreaWithId) => () => {
+        const log = textAreaWithId("logTextArea");
+        if (log.style.display === "none") {
+            log.style.display = "block";
+            inputElementWithId("logReplaceRulesCheckbox").checked = true;
+        }
+        else {
+            log.style.display = "none";
+            inputElementWithId("logReplaceRulesCheckbox").checked = false;
+        }
     };
 })(Log || (Log = {}));
 var ReplaceByRules;
