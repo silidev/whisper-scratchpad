@@ -462,7 +462,7 @@ const rules1 = `
 "analysierst"->"analysiere"
 "antwortest"->"antworte"
 "arbeitest"->"arbeite"
-"assozierst"->"assoziiere"
+"assoziierst"->"assoziiere"
 "authentifizierst"->"authentifiziere"
 "autorisierst"->"autorisiere"
 "bedankst"->"bedanke"
@@ -511,9 +511,9 @@ const rules1 = `
 "erschreckst"->"erschrecke"
 "erweiterst"->"erweitere"
 "erwärmst"->"erwärme"
-"ethisierst"->"ethisiere"
 "findest"->"finde"
 "findest"->"finde"
+"fühlst"->"fühle"
 "folgst"->"folge"
 "fährst"->"fahre"
 "fühlst"->"fühle"
@@ -646,6 +646,8 @@ const rules1 = `
 "überprüfst"->"überprüfe"
 "übertriffst"->"übertriff"
 "überzeugst"->"überzeuge"
+"klärst"->"kläre"
+"wirst"->"werde"
 `;
       /**
        * Here also partial words are replaced.*/

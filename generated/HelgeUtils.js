@@ -427,7 +427,7 @@ export var HelgeUtils;
 "analysierst"->"analysiere"
 "antwortest"->"antworte"
 "arbeitest"->"arbeite"
-"assozierst"->"assoziiere"
+"assoziierst"->"assoziiere"
 "authentifizierst"->"authentifiziere"
 "autorisierst"->"autorisiere"
 "bedankst"->"bedanke"
@@ -476,9 +476,9 @@ export var HelgeUtils;
 "erschreckst"->"erschrecke"
 "erweiterst"->"erweitere"
 "erwärmst"->"erwärme"
-"ethisierst"->"ethisiere"
 "findest"->"finde"
 "findest"->"finde"
+"fühlst"->"fühle"
 "folgst"->"folge"
 "fährst"->"fahre"
 "fühlst"->"fühle"
@@ -611,6 +611,8 @@ export var HelgeUtils;
 "überprüfst"->"überprüfe"
 "übertriffst"->"übertriff"
 "überzeugst"->"überzeuge"
+"klärst"->"kläre"
+"wirst"->"werde"
 `;
             /**
              * Here also partial words are replaced.*/
