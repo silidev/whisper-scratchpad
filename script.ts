@@ -80,7 +80,7 @@ export namespace UiFunctions {
           setHtmlOfButtonStop('◼<br>Stop');
           setHtmlOfButtonPauseRecord(blinkSlow('|| Paused') +'<br>⬤▶ Cont. Rec');
         };
-        const setStopped = () => {
+        export const setStopped = () => {
           setHtmlOfButtonStop('◼<br>Stop');
           setHtmlOfButtonPauseRecord(sending
               ? blinkFast('✎ Scribing') + '<br>⬤ Record'
@@ -191,7 +191,10 @@ export namespace UiFunctions {
             isRecording = false;
             StateIndicator.update();
             audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
-            if (cancel) return;
+            if (cancel) {
+              StateIndicator.setStopped();
+              return;
+            }
             audioChunks = [];
             { // Download button
               downloadLink.href = URL.createObjectURL(audioBlob);

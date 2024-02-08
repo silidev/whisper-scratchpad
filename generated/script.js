@@ -66,7 +66,7 @@ export var UiFunctions;
                         StateIndicator.setPaused();
                     }
                     else {
-                        setStopped();
+                        StateIndicator.setStopped();
                     }
                 };
                 const setRecording = () => {
@@ -77,7 +77,7 @@ export var UiFunctions;
                     setHtmlOfButtonStop('◼<br>Stop');
                     setHtmlOfButtonPauseRecord(blinkSlow('|| Paused') + '<br>⬤▶ Cont. Rec');
                 };
-                const setStopped = () => {
+                StateIndicator.setStopped = () => {
                     setHtmlOfButtonStop('◼<br>Stop');
                     setHtmlOfButtonPauseRecord(sending
                         ? blinkFast('✎ Scribing') + '<br>⬤ Record'
@@ -181,8 +181,10 @@ export var UiFunctions;
                         isRecording = false;
                         StateIndicator.update();
                         audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                        if (cancel)
+                        if (cancel) {
+                            StateIndicator.setStopped();
                             return;
+                        }
                         audioChunks = [];
                         { // Download button
                             downloadLink.href = URL.createObjectURL(audioBlob);
