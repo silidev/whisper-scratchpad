@@ -198,7 +198,7 @@ export namespace HelgeUtils {
        * */
       public static deleteNote = (input: string, left: number, right: number, delimiter: string) => {
         const str1 = (input.substring(0, left) + input.substring(right)).replaceAll(delimiter+delimiter, delimiter);
-        if (str1===delimiter+ delimiter) return "";
+        if (str1===delimiter+delimiter) return "";
         if (str1.startsWith(delimiter)) return str1.substring(delimiter.length);
         if (str1.endsWith(delimiter)) return str1.substring(0, str1.length - delimiter.length);
         return str1;

@@ -273,7 +273,8 @@ export namespace UiFunctions {
           mediaRecorder.resume();
           StateIndicator.update();
         } else {
-          buttonWithId("stopButton").click();
+          NotVisibleAtThisTime.showSpinner();
+          startRecording();
         }
       };
 

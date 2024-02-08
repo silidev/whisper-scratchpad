@@ -259,7 +259,8 @@ export var UiFunctions;
                     StateIndicator.update();
                 }
                 else {
-                    buttonWithId("stopButton").click();
+                    NotVisibleAtThisTime.showSpinner();
+                    startRecording();
                 }
             };
             const transcribeButton = () => {
