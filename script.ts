@@ -250,6 +250,7 @@ export namespace UiFunctions {
       export const cancelRecording = () => {
         mediaRecorder.onstop = StopCallbackCreator.createCancelingCallback();
         mediaRecorder.stop();
+        UiFunctions.closeEditorMenu();
       };
 
 // ############## stop_transcribe_startNewRecording_and_pause ##############
