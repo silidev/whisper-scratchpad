@@ -234,12 +234,15 @@ export namespace UiFunctions {
       };
 
       const stopButton = () => {
+        stopRecording();
+        /** delete, previous behavior
         if (isRecording) {
           stopRecording();
         } else {
           NotVisibleAtThisTime.showSpinner();
           startRecording();
         }
+        */
       };
       buttonWithId("stopButton").addEventListener('click', stopButton);
 

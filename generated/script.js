@@ -221,13 +221,15 @@ export var UiFunctions;
                 mediaRecorder.stop();
             };
             const stopButton = () => {
+                stopRecording();
+                /** delete, previous behavior
                 if (isRecording) {
-                    stopRecording();
+                  stopRecording();
+                } else {
+                  NotVisibleAtThisTime.showSpinner();
+                  startRecording();
                 }
-                else {
-                    NotVisibleAtThisTime.showSpinner();
-                    startRecording();
-                }
+                */
             };
             buttonWithId("stopButton").addEventListener('click', stopButton);
             // ############## cancelRecording ##############
