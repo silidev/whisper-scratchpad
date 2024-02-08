@@ -11,6 +11,7 @@ import blinkSlow = HtmlUtils.blinkSlow;
 import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 import elementWithId = HtmlUtils.NeverNull.elementWithId;
 import TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
+import addMenuItem = OnlyDefinitions.addMenuItem;
 import {sendCtrlZ} from "./DontInspect.js";
 import {HtmlUtils} from "./HtmlUtils.js";
 import {HelgeUtils} from "./HelgeUtils.js";
@@ -33,21 +34,12 @@ namespace OnlyDefinitions {
     mainEditorTextarea.selectionEnd = selectionEnd;
   };
 
-  export const addMenuItem = (id: string, menuFunction: () => void) => {
-    HtmlUtils.addClickListener(elementWithId(id), () => {
-      menuFunction();
-      UiFunctions.closeEditorMenu();
-    });
-  };
+  export const addMenuItem = HtmlUtils.Menus.WcMenu.addMenuItem("editorMenuHeading");
 }
-
-import addMenuItem = OnlyDefinitions.addMenuItem;
 
 const trimMainEditor = () => mainEditor.trim().append(" ");
 
 export namespace UiFunctions {
-  // noinspection SpellCheckingInspection
-  import elementWithId = HtmlUtils.NeverNull.elementWithId;
   import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
   export namespace Buttons {
     import insertTextAtCursor = HtmlUtils.TextAreas.insertTextAndPutCursorAfter;
@@ -475,10 +467,6 @@ export namespace UiFunctions {
       addReplaceRule(true);
     };
   } // End of Buttons namespace
-
-  export const closeEditorMenu = () => {
-    elementWithId("editorMenuHeading").dispatchEvent(new CustomEvent('rootMenuClose'));
-  };
 
   const replaceRulesTest = () => {
     // noinspection SpellCheckingInspection

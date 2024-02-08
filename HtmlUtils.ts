@@ -317,4 +317,21 @@ export namespace HtmlUtils {
   export const isMsWindows = () => {
     return navigator.userAgent.match(/Windows/i);
   };
+
+  export namespace Menus {
+    /** https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper */
+    export namespace WcMenu {
+      import elementWithId = NeverNull.elementWithId;
+      export const addMenuItem = (menuHeadingId: string) => {
+        return (id: string, menuFunction: () => void) => {
+          HtmlUtils.addClickListener(elementWithId(id), () => {
+            menuFunction();
+            // Close the menu:
+            elementWithId(menuHeadingId).dispatchEvent(
+                new CustomEvent('rootMenuClose'));
+          });
+        };
+      };
+    }
+  }
 }

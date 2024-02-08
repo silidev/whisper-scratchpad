@@ -9,6 +9,7 @@ var blinkSlow = HtmlUtils.blinkSlow;
 var escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 var elementWithId = HtmlUtils.NeverNull.elementWithId;
 var TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
+var addMenuItem = OnlyDefinitions.addMenuItem;
 import { sendCtrlZ } from "./DontInspect.js";
 import { HtmlUtils } from "./HtmlUtils.js";
 import { HelgeUtils } from "./HelgeUtils.js";
@@ -28,19 +29,11 @@ var OnlyDefinitions;
         mainEditorTextarea.selectionStart = selectionStart;
         mainEditorTextarea.selectionEnd = selectionEnd;
     };
-    OnlyDefinitions.addMenuItem = (id, menuFunction) => {
-        HtmlUtils.addClickListener(elementWithId(id), () => {
-            menuFunction();
-            UiFunctions.closeEditorMenu();
-        });
-    };
+    OnlyDefinitions.addMenuItem = HtmlUtils.Menus.WcMenu.addMenuItem("editorMenuHeading");
 })(OnlyDefinitions || (OnlyDefinitions = {}));
-var addMenuItem = OnlyDefinitions.addMenuItem;
 const trimMainEditor = () => mainEditor.trim().append(" ");
 export var UiFunctions;
 (function (UiFunctions) {
-    // noinspection SpellCheckingInspection
-    var elementWithId = HtmlUtils.NeverNull.elementWithId;
     var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
     let Buttons;
     (function (Buttons) {
@@ -425,9 +418,6 @@ export var UiFunctions;
             addReplaceRule(true);
         };
     })(Buttons = UiFunctions.Buttons || (UiFunctions.Buttons = {})); // End of Buttons namespace
-    UiFunctions.closeEditorMenu = () => {
-        elementWithId("editorMenuHeading").dispatchEvent(new CustomEvent('rootMenuClose'));
-    };
     const replaceRulesTest = () => {
         // noinspection SpellCheckingInspection
         const magicText = (numberToMakeItUnique) => {

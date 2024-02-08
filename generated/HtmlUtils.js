@@ -263,5 +263,22 @@ export var HtmlUtils;
     HtmlUtils.isMsWindows = () => {
         return navigator.userAgent.match(/Windows/i);
     };
+    let Menus;
+    (function (Menus) {
+        /** https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper */
+        let WcMenu;
+        (function (WcMenu) {
+            var elementWithId = NeverNull.elementWithId;
+            WcMenu.addMenuItem = (menuHeadingId) => {
+                return (id, menuFunction) => {
+                    HtmlUtils.addClickListener(elementWithId(id), () => {
+                        menuFunction();
+                        // Close the menu:
+                        elementWithId(menuHeadingId).dispatchEvent(new CustomEvent('rootMenuClose'));
+                    });
+                };
+            };
+        })(WcMenu = Menus.WcMenu || (Menus.WcMenu = {}));
+    })(Menus = HtmlUtils.Menus || (HtmlUtils.Menus = {}));
 })(HtmlUtils || (HtmlUtils = {}));
 //# sourceMappingURL=HtmlUtils.js.map
