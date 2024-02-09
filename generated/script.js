@@ -15,6 +15,7 @@ import { createCutButtonClickListener } from "./CutButton.js";
 import { HtmlUtils } from "./HtmlUtils.js";
 var LocalStorage = HtmlUtils.BrowserStorage.LocalStorage;
 var Cookies = HtmlUtils.BrowserStorage.Cookies;
+var BrowserStorage = HtmlUtils.BrowserStorage;
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString().slice(0, 10) === "2024-01-27";
 if (RUN_TESTS)
@@ -449,9 +450,9 @@ textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions
     const handleAutoSaveError = (msg) => {
         Log.error(msg);
     };
-    TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea', handleAutoSaveError);
-    TextAreas.setAutoSave('editorText', 'mainEditorTextarea', handleAutoSaveError);
-    TextAreas.setAutoSave('prompt', 'transcriptionPromptEditor', handleAutoSaveError);
+    TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea', handleAutoSaveError, BrowserStorage.LocalStorage);
+    TextAreas.setAutoSave('editorText', 'mainEditorTextarea', handleAutoSaveError, BrowserStorage.LocalStorage);
+    TextAreas.setAutoSave('prompt', 'transcriptionPromptEditor', handleAutoSaveError, BrowserStorage.LocalStorage);
 }
 const insertTextAndPutCursorAfter = (text) => {
     TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, text);

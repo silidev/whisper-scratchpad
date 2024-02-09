@@ -70,7 +70,7 @@ export var HtmlUtils;
                 return TextAreas.getCursor(this.textArea);
             }
             setAutoSave(cookieName, handleError) {
-                TextAreas.setAutoSave(cookieName, this.textArea.id, handleError);
+                TextAreas.setAutoSave(cookieName, this.textArea.id, handleError, BrowserStorage.LocalStorage);
                 return this;
             }
             value() {
@@ -111,12 +111,13 @@ export var HtmlUtils;
          * @param storageKey - The name of the cookie to store the text area content.
          * @param id - The ID of the text area element.
          * @param handleError - A function to call when an error occurs.
+         * @param bsProvider
          */
-        TextAreas.setAutoSave = (storageKey, id, handleError) => {
+        TextAreas.setAutoSave = (storageKey, id, handleError, bsProvider) => {
             textAreaWithId(id).addEventListener('input', () => {
                 const text = textAreaWithId(id).value;
                 try {
-                    BrowserStorage.Cookies.set(storageKey, text.slice(0, MAX_COOKIE_SIZE - 1));
+                    bsProvider.set(storageKey, text.slice(0, MAX_COOKIE_SIZE - 1));
                 }
                 catch (e) {
                     handleError(`${storageKey}: Text area content exceeds 4095 characters. Content will not be saved.`);
