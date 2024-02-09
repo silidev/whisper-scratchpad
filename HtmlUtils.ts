@@ -138,16 +138,17 @@ export namespace HtmlUtils {
 
     /**
      * Makes a text area element auto-save its content to a cookie after each modified character (input event).
-     * @param cookieName - The name of the cookie to store the text area content.
+     * @param storageKey - The name of the cookie to store the text area content.
      * @param id - The ID of the text area element.
      * @param handleError - A function to call when an error occurs.
      */
-    export const setAutoSave = (cookieName: string, id: string, handleError: (msg: string) => void) => {
+    export const setAutoSave = (storageKey: string, id: string, handleError: (msg: string) => void) => {
       textAreaWithId(id).addEventListener('input', () => {
         const text = textAreaWithId(id).value;
-        Cookies.set(cookieName, text.slice(0,MAX_COOKIE_SIZE-1));
-        if (text.length >= MAX_COOKIE_SIZE-1) {
-          handleError(`${cookieName}: Text area content exceeds 4095 characters. Content will not be saved.`);
+        try {
+          Cookies.set(storageKey, text.slice(0, MAX_COOKIE_SIZE - 1));
+        } catch (e) {
+          handleError(`${storageKey}: Text area content exceeds 4095 characters. Content will not be saved.`);
         }
       });
     };
@@ -188,6 +189,20 @@ export namespace HtmlUtils {
     export const releaseMicrophone = (stream: MediaStream) => {
       if (!stream) return;
       stream.getTracks().forEach(track => track.stop());
+    };
+  }
+
+  export namespace LocalStorage {
+    /**
+     * Sets a local storage item with the given name and value.
+     *
+     * @throws Error if the local storage item value exceeds 5242880 characters.*/
+    export const set = (itemName: string, itemValue: string) => {
+      localStorage.setItem(itemName, itemValue);
+    };
+
+    export const get = (name: string) => {
+      return localStorage.getItem(name);
     };
   }
 

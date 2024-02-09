@@ -108,16 +108,18 @@ export var HtmlUtils;
         };
         /**
          * Makes a text area element auto-save its content to a cookie after each modified character (input event).
-         * @param cookieName - The name of the cookie to store the text area content.
+         * @param storageKey - The name of the cookie to store the text area content.
          * @param id - The ID of the text area element.
          * @param handleError - A function to call when an error occurs.
          */
-        TextAreas.setAutoSave = (cookieName, id, handleError) => {
+        TextAreas.setAutoSave = (storageKey, id, handleError) => {
             textAreaWithId(id).addEventListener('input', () => {
                 const text = textAreaWithId(id).value;
-                Cookies.set(cookieName, text.slice(0, MAX_COOKIE_SIZE - 1));
-                if (text.length >= MAX_COOKIE_SIZE - 1) {
-                    handleError(`${cookieName}: Text area content exceeds 4095 characters. Content will not be saved.`);
+                try {
+                    Cookies.set(storageKey, text.slice(0, MAX_COOKIE_SIZE - 1));
+                }
+                catch (e) {
+                    handleError(`${storageKey}: Text area content exceeds 4095 characters. Content will not be saved.`);
                 }
             });
         };
@@ -153,6 +155,19 @@ export var HtmlUtils;
             stream.getTracks().forEach(track => track.stop());
         };
     })(Media = HtmlUtils.Media || (HtmlUtils.Media = {}));
+    let LocalStorage;
+    (function (LocalStorage) {
+        /**
+         * Sets a local storage item with the given name and value.
+         *
+         * @throws Error if the local storage item value exceeds 5242880 characters.*/
+        LocalStorage.set = (itemName, itemValue) => {
+            localStorage.setItem(itemName, itemValue);
+        };
+        LocalStorage.get = (name) => {
+            return localStorage.getItem(name);
+        };
+    })(LocalStorage = HtmlUtils.LocalStorage || (HtmlUtils.LocalStorage = {}));
     let Cookies;
     (function (Cookies) {
         /**
