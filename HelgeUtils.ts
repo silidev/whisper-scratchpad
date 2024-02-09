@@ -267,7 +267,7 @@ export namespace HelgeUtils {
                               prompt: string = '',
                               language: string | null = null
     ) => {
-      suppressUnusedWarning(prompt, language);
+      suppressUnusedWarning(prompt);
       // Docs: https://docs.gladia.io/reference/pre-recorded
       const formData = new FormData();
       formData.append('audio', audioBlob);
@@ -278,7 +278,9 @@ automatic multiple languages	For specific scenarios where language is changed mu
 The model will continuously detect the spoken language and switch the transcription language accordingly.
 Please note that certain strong accents can possibly cause this mode to transcribe to the wrong language.
 */
-      // formData.append('language_behaviour', 'automatic multiple languages');
+      if (language)
+        formData.append('language_behaviour', 'automatic multiple languages');
+
       formData.append('toggle_diarization', 'false');
       // formData.append('transcription_hint', prompt);
       formData.append('output_format', 'txt');

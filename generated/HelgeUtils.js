@@ -251,7 +251,7 @@ export var HelgeUtils;
             return result;
         };
         const withGladia = async (audioBlob, apiKey, prompt = '', language = null) => {
-            HelgeUtils.suppressUnusedWarning(prompt, language);
+            HelgeUtils.suppressUnusedWarning(prompt);
             // Docs: https://docs.gladia.io/reference/pre-recorded
             const formData = new FormData();
             formData.append('audio', audioBlob);
@@ -262,7 +262,8 @@ export var HelgeUtils;
       The model will continuously detect the spoken language and switch the transcription language accordingly.
       Please note that certain strong accents can possibly cause this mode to transcribe to the wrong language.
       */
-            // formData.append('language_behaviour', 'automatic multiple languages');
+            if (language)
+                formData.append('language_behaviour', 'automatic multiple languages');
             formData.append('toggle_diarization', 'false');
             // formData.append('transcription_hint', prompt);
             formData.append('output_format', 'txt');
