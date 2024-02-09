@@ -214,9 +214,11 @@ export var HtmlUtils;
             ExceptionHandlers.installGlobalDefault = () => {
                 window.onerror = (message, source, lineNo, colNo, error) => {
                     const errorMessage = `An error occurred: ${message}\nSource: ${source}\nLine: ${lineNo}\nColumn: ${colNo}\nError Object: ${error}`;
-                    /* This is executed twice. I don't know why. The debugger didn't
-                     help. This shouldn't happen anyway. Don't invest more time.  */
-                    ErrorHandling.printError(unhandledExceptionAlert(error ?? errorMessage));
+                    ErrorHandling.printError(unhandledExceptionAlert(error ?? errorMessage)
+                    /* unhandledExceptionAlert is sometimes executed twice here. I
+                       don't know why. The debugger didn't help. This shouldn't
+                       happen anyway. Don't invest more time. */
+                    );
                     return true; // Prevents the default browser error handling
                 };
             };

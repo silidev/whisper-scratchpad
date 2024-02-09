@@ -260,9 +260,12 @@ export namespace HtmlUtils {
         window.onerror = (message, source, lineNo, colNo, error) => {
           const errorMessage = `An error occurred: ${message}\nSource: ${source}\nLine: ${lineNo}\nColumn: ${colNo}\nError Object: ${error}`;
 
-          /* This is executed twice. I don't know why. The debugger didn't
-           help. This shouldn't happen anyway. Don't invest more time.  */
-          printError(unhandledExceptionAlert(error??errorMessage));
+          printError(
+              unhandledExceptionAlert(error??errorMessage)
+              /* unhandledExceptionAlert is sometimes executed twice here. I
+                 don't know why. The debugger didn't help. This shouldn't
+                 happen anyway. Don't invest more time. */
+          );
           return true; // Prevents the default browser error handling
         };
       };
@@ -272,6 +275,8 @@ export namespace HtmlUtils {
      * This outputs aggressively on top of everything to the user. */
     export const printError = (str: string) => {
       console.log(str);
+      alert(str);
+
       callSwallowingExceptions(() => {
         document.body.insertAdjacentHTML('afterbegin',
             `<div 
@@ -280,7 +285,6 @@ export namespace HtmlUtils {
             <p style="font-size:18px;">${escapeHtml(str)}</p>`
             + `########</div>`);
       });
-      alert(str);
     };
 
     /**

@@ -22,7 +22,7 @@ export namespace HelgeUtils {
      *
      * @return void
      *
-     * @param e {Error} The exception, preferably of type Error,
+     * @param err {Error} The exception, preferably of type Error,
      *        because then a stack trace will be displayed.
      <pre>
      IntelliJ Live Template
@@ -36,15 +36,12 @@ export namespace HelgeUtils {
      </context>
      </template>
      </pre>*/
-    export const unhandledExceptionAlert = (e: Error | string | any) => {
-      let str = "Unhandled EXCEPTION! :" + e;
-      if (e instanceof Error) {
+    export const unhandledExceptionAlert = (err: Error | string | any) => {
+      let str = "Unhandled EXCEPTION! :" + err;
+      if (err instanceof Error) {
         str += ", Stack trace:\n";
-        str += e.stack;
+        str += err.stack;
       }
-      /* Do NOT call console.trace() here because the stack trace
-         of this place here is not helpful, but instead very
-         confusing. */
       console.log(str);
       alert(str);
       return str;
