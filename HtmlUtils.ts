@@ -55,6 +55,7 @@ export namespace HtmlUtils {
   export namespace TextAreas {
 
     import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
+    import trimExceptASingleNewlineAtTheEnd = HelgeUtils.Strings.trimExceptASingleNewlineAtTheEnd;
 
     export class TextAreaWrapper {
       constructor(private textArea: HTMLTextAreaElement) {
@@ -115,7 +116,7 @@ export namespace HtmlUtils {
       }
 
       public trim() {
-        this.textArea.value = this.textArea.value.trim();
+        this.textArea.value = trimExceptASingleNewlineAtTheEnd(this.textArea.value);
         return this;
       }
     }

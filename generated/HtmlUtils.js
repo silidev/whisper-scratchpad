@@ -41,6 +41,7 @@ export var HtmlUtils;
     let TextAreas;
     (function (TextAreas) {
         var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
+        var trimExceptASingleNewlineAtTheEnd = HelgeUtils.Strings.trimExceptASingleNewlineAtTheEnd;
         class TextAreaWrapper {
             constructor(textArea) {
                 this.textArea = textArea;
@@ -89,7 +90,7 @@ export var HtmlUtils;
                 return this;
             }
             trim() {
-                this.textArea.value = this.textArea.value.trim();
+                this.textArea.value = trimExceptASingleNewlineAtTheEnd(this.textArea.value);
                 return this;
             }
         }

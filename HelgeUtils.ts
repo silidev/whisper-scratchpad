@@ -117,6 +117,21 @@ export namespace HelgeUtils {
 
   export namespace Strings {
     import assertEquals = HelgeUtils.Tests.assertEquals;
+    /**
+     * Trim whitespace but leave a single newline at the end if there is
+     * any whitespace that includes a newline.
+     */
+    export const trimExceptASingleNewlineAtTheEnd = (input: string): string => {
+      // Check for whitespace including a newline at the end
+      if (/\s*\n\s*$/.test(input)) {
+        // Trim and leave a single newline at the end
+        return input.replace(/\s+$/, '\n');
+      } else {
+        // Just trim normally
+        return input.trim();
+      }
+    };
+
     export const toUppercaseFirstChar = (input: string): string => {
       if (input.length === 0) return input;
 

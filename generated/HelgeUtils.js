@@ -113,6 +113,21 @@ export var HelgeUtils;
     (function (Strings) {
         var _a;
         var assertEquals = HelgeUtils.Tests.assertEquals;
+        /**
+         * Trim whitespace but leave a single newline at the end if there is
+         * any whitespace that includes a newline.
+         */
+        Strings.trimExceptASingleNewlineAtTheEnd = (input) => {
+            // Check for whitespace including a newline at the end
+            if (/\s*\n\s*$/.test(input)) {
+                // Trim and leave a single newline at the end
+                return input.replace(/\s+$/, '\n');
+            }
+            else {
+                // Just trim normally
+                return input.trim();
+            }
+        };
         Strings.toUppercaseFirstChar = (input) => {
             if (input.length === 0)
                 return input;
