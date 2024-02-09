@@ -267,7 +267,7 @@ export namespace HelgeUtils {
                               prompt: string = '',
                               language: string | null = null
     ) => {
-      suppressUnusedWarning(prompt);
+      suppressUnusedWarning(prompt, language);
       // Docs: https://docs.gladia.io/reference/pre-recorded
       const formData = new FormData();
       formData.append('audio', audioBlob);

@@ -251,7 +251,7 @@ export var HelgeUtils;
             return result;
         };
         const withGladia = async (audioBlob, apiKey, prompt = '', language = null) => {
-            HelgeUtils.suppressUnusedWarning(prompt);
+            HelgeUtils.suppressUnusedWarning(prompt, language);
             // Docs: https://docs.gladia.io/reference/pre-recorded
             const formData = new FormData();
             formData.append('audio', audioBlob);
