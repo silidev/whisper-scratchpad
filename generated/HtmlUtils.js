@@ -225,6 +225,7 @@ export var HtmlUtils;
          * This outputs aggressively on top of everything to the user. */
         ErrorHandling.printError = (str) => {
             console.log(str);
+            alert(str);
             callSwallowingExceptions(() => {
                 document.body.insertAdjacentHTML('afterbegin', `<div 
               style="background-color: #000000; color:red;"> 
@@ -232,7 +233,6 @@ export var HtmlUtils;
             <p style="font-size:18px;">${HtmlUtils.escapeHtml(str)}</p>`
                     + `########</div>`);
             });
-            alert(str);
         };
         /**
          * This outputs gently. Might not be seen by the user.  */
