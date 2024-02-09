@@ -351,14 +351,6 @@ export var UiFunctions;
             addCtrlZButtonEventListener("ctrlZButtonOfPrompt", transcriptionPromptEditor);
             HtmlUtils.addClickListener(buttonWithId("addReplaceRuleButton"), addReplaceRule);
             HtmlUtils.addClickListener(buttonWithId("addWordReplaceRuleButton"), Buttons.addWordReplaceRule);
-            // updateButton
-            const updateButton = () => {
-                saveEditor();
-                window.location.reload();
-            };
-            HtmlUtils.addClickListener(buttonWithId("updateButton"), () => {
-                updateButton();
-            });
             // cancelRecording
             addMenuItem("cancelRecording", Buttons.Media.cancelRecording);
             // cutAllButton

@@ -34,13 +34,20 @@
       <div class='item'>
         <button id="du2ichMenuItem">du2ich</button>
         <button id="cancelRecording">x<br>Cancel</button>
-        <button id="updateButton">Update</button>
         <button id="toggleLogButton">Show<br>Log</button>
         <span style="display: flex; align-items: center; border: 1px solid
         var(--mainColor); height: var(--buttonHeight);">
           <input type="checkbox" id="logReplaceRulesCheckbox" style="margin-left: 8px" class="forceMainColor">
           <label style="margin: 8px" for="logReplaceRulesCheckbox">Log</label>
         </span>
+      </div>
+      <div class='item'>
+        <button id="updateButton"
+                onclick="window.location.reload();
+            // Do NOT reference anything from other scripts here, because this must work even if the other scripts are broken.
+            ">
+          Update w/o save
+        </button>
       </div>
       <div class='item' id="transcribeAgainButton"><a>Transcribe last recording again</a></div>
       <div class='item' id="focusMainEditorMenuItem"><a>Focus the main editor textarea (to debug)</a></div>

@@ -391,16 +391,6 @@ export namespace UiFunctions {
       HtmlUtils.addClickListener(buttonWithId("addReplaceRuleButton"), addReplaceRule);
       HtmlUtils.addClickListener(buttonWithId("addWordReplaceRuleButton"), addWordReplaceRule);
 
-// updateButton
-      const updateButton = () => {
-        saveEditor();
-        window.location.reload();
-      }
-      
-      HtmlUtils.addClickListener(buttonWithId("updateButton"), () => {
-        updateButton();
-      });
-      
 // cancelRecording
       addMenuItem("cancelRecording", Buttons.Media.cancelRecording);
 
