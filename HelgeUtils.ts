@@ -22,7 +22,7 @@ export namespace HelgeUtils {
      *
      * @return void
      *
-     * @param err {Error} The exception, preferably of type Error,
+     * @param e {Error} The exception, preferably of type Error,
      *        because then a stack trace will be displayed.
      <pre>
      IntelliJ Live Template
@@ -36,12 +36,15 @@ export namespace HelgeUtils {
      </context>
      </template>
      </pre>*/
-    export const unhandledExceptionAlert = (err: Error | string | any) => {
-      let str = "Unhandled EXCEPTION! :" + err;
-      if (err instanceof Error) {
+    export const unhandledExceptionAlert = (e: Error | string) => {
+      let str = "Unhandled EXCEPTION! :" + e;
+      if (e instanceof Error) {
         str += ", Stack trace:\n";
-        str += err.stack;
+        str += e.stack;
       }
+      /* Do NOT call console.trace() here because the stack trace
+         of this place here is not helpful, but instead very
+         confusing. */
       console.log(str);
       alert(str);
       return str;
@@ -236,13 +239,16 @@ export namespace HelgeUtils {
 
     export type ApiName = "OpenAI" | "Gladia";
 
-    const withOpenAi = async (audioBlob: Blob, apiKey: string, prompt: string) => {
+    const withOpenAi = async (audioBlob: Blob,
+                              apiKey: string,
+                              prompt: string,
+                              language: string = "") => {
       const formData = new FormData();
       formData.append('file', audioBlob);
       formData.append('model', 'whisper-1'); // Using the largest model
       formData.append('prompt', prompt);
       /* Language. Anything in a different language will be translated to the target language. */
-      formData.append('language', "");
+      formData.append('language', language);
 
       const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
         method: 'POST',
@@ -256,7 +262,11 @@ export namespace HelgeUtils {
       return result;
     };
 
-    const withGladia = async (audioBlob: Blob, apiKey: string, prompt: string = '') => {
+    const withGladia = async (audioBlob: Blob,
+                              apiKey: string,
+                              prompt: string = '',
+                              language: string | null = null
+    ) => {
       suppressUnusedWarning(prompt);
       // Docs: https://docs.gladia.io/reference/pre-recorded
       const formData = new FormData();
@@ -287,12 +297,16 @@ Please note that certain strong accents can possibly cause this mode to transcri
       return resultText;
     };
 
-    export const transcribe = async (api: ApiName, audioBlob: Blob, apiKey: string
-        , prompt: string = '') => {
+    export const transcribe = async (api: ApiName,
+                                     audioBlob: Blob,
+                                     apiKey: string,
+                                     prompt: string = '',
+                                     language: string = ""
+    ) => {
       if (!audioBlob || audioBlob.size===0) return "";
       const output =
           api === "OpenAI" ?
-              await withOpenAi(audioBlob, apiKey, prompt)
+              await withOpenAi(audioBlob, apiKey, prompt, language)
               : await withGladia(audioBlob, apiKey, prompt);
       if (typeof output === "string") return output;
       throw new TranscriptionError(output);
@@ -339,7 +353,8 @@ Please note that certain strong accents can possibly cause this mode to transcri
     /**
      * Deprecated! Use ReplaceRules or WholeWordReplaceRules instead.
      *
-     * Do NOT change the syntax of the rules, because they must be kept compatible with https://github.com/No3371/obsidian-regex-pipeline#readme
+     * Do NOT change the syntax of the rules, because they must be kept compatible with
+     * https://github.com/No3371/obsidian-regex-pipeline#readme
      */
     export const replaceByRules = (subject: string, allRules: string, wholeWords = false
         , logReplacements = false, preserveCase = false) => {

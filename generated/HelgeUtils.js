@@ -22,7 +22,7 @@ export var HelgeUtils;
          *
          * @return void
          *
-         * @param err {Error} The exception, preferably of type Error,
+         * @param e {Error} The exception, preferably of type Error,
          *        because then a stack trace will be displayed.
          <pre>
          IntelliJ Live Template
@@ -36,12 +36,15 @@ export var HelgeUtils;
          </context>
          </template>
          </pre>*/
-        Exceptions.unhandledExceptionAlert = (err) => {
-            let str = "Unhandled EXCEPTION! :" + err;
-            if (err instanceof Error) {
+        Exceptions.unhandledExceptionAlert = (e) => {
+            let str = "Unhandled EXCEPTION! :" + e;
+            if (e instanceof Error) {
                 str += ", Stack trace:\n";
-                str += err.stack;
+                str += e.stack;
             }
+            /* Do NOT call console.trace() here because the stack trace
+               of this place here is not helpful, but instead very
+               confusing. */
             console.log(str);
             alert(str);
             return str;
@@ -228,13 +231,13 @@ export var HelgeUtils;
             }
         }
         Transcription.TranscriptionError = TranscriptionError;
-        const withOpenAi = async (audioBlob, apiKey, prompt) => {
+        const withOpenAi = async (audioBlob, apiKey, prompt, language = "") => {
             const formData = new FormData();
             formData.append('file', audioBlob);
             formData.append('model', 'whisper-1'); // Using the largest model
             formData.append('prompt', prompt);
             /* Language. Anything in a different language will be translated to the target language. */
-            formData.append('language', "");
+            formData.append('language', language);
             const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
                 method: 'POST',
                 headers: {
@@ -247,7 +250,7 @@ export var HelgeUtils;
                 return result.text;
             return result;
         };
-        const withGladia = async (audioBlob, apiKey, prompt = '') => {
+        const withGladia = async (audioBlob, apiKey, prompt = '', language = null) => {
             HelgeUtils.suppressUnusedWarning(prompt);
             // Docs: https://docs.gladia.io/reference/pre-recorded
             const formData = new FormData();
@@ -273,11 +276,11 @@ export var HelgeUtils;
             const resultText = result?.prediction;
             return resultText;
         };
-        Transcription.transcribe = async (api, audioBlob, apiKey, prompt = '') => {
+        Transcription.transcribe = async (api, audioBlob, apiKey, prompt = '', language = "") => {
             if (!audioBlob || audioBlob.size === 0)
                 return "";
             const output = api === "OpenAI" ?
-                await withOpenAi(audioBlob, apiKey, prompt)
+                await withOpenAi(audioBlob, apiKey, prompt, language)
                 : await withGladia(audioBlob, apiKey, prompt);
             if (typeof output === "string")
                 return output;
@@ -325,7 +328,8 @@ export var HelgeUtils;
         /**
          * Deprecated! Use ReplaceRules or WholeWordReplaceRules instead.
          *
-         * Do NOT change the syntax of the rules, because they must be kept compatible with https://github.com/No3371/obsidian-regex-pipeline#readme
+         * Do NOT change the syntax of the rules, because they must be kept compatible with
+         * https://github.com/No3371/obsidian-regex-pipeline#readme
          */
         ReplaceByRules.replaceByRules = (subject, allRules, wholeWords = false, logReplacements = false, preserveCase = false) => {
             const possiblyWordBoundaryMarker = wholeWords ? '\\b' : '';
