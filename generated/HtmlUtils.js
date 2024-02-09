@@ -116,7 +116,7 @@ export var HtmlUtils;
             textAreaWithId(id).addEventListener('input', () => {
                 const text = textAreaWithId(id).value;
                 try {
-                    Cookies.set(storageKey, text.slice(0, MAX_COOKIE_SIZE - 1));
+                    BrowserStorage.Cookies.set(storageKey, text.slice(0, MAX_COOKIE_SIZE - 1));
                 }
                 catch (e) {
                     handleError(`${storageKey}: Text area content exceeds 4095 characters. Content will not be saved.`);
@@ -155,44 +155,47 @@ export var HtmlUtils;
             stream.getTracks().forEach(track => track.stop());
         };
     })(Media = HtmlUtils.Media || (HtmlUtils.Media = {}));
-    let LocalStorage;
-    (function (LocalStorage) {
-        /**
-         * Sets a local storage item with the given name and value.
-         *
-         * @throws Error if the local storage item value exceeds 5242880 characters.*/
-        LocalStorage.set = (itemName, itemValue) => {
-            localStorage.setItem(itemName, itemValue);
-        };
-        LocalStorage.get = (name) => {
-            return localStorage.getItem(name);
-        };
-    })(LocalStorage = HtmlUtils.LocalStorage || (HtmlUtils.LocalStorage = {}));
-    let Cookies;
-    (function (Cookies) {
-        /**
-         * Sets a cookie with the given name and value.
-         *
-         * @throws Error if the cookie value exceeds 4095 characters.*/
-        Cookies.set = (cookieName, cookieValue) => {
-            const expirationTime = new Date(Date.now() + 2147483647000).toUTCString();
-            document.cookie = `${cookieName}=${encodeURIComponent(cookieValue)};expires=${expirationTime};path=/`;
-            const message = `Cookie "${cookieName}"'s value exceeds maximum characters of ${MAX_COOKIE_SIZE}.`;
-            if (document.cookie.length > MAX_COOKIE_SIZE) {
-                throw new Error(message);
-            }
-        };
-        Cookies.get = (name) => {
-            let cookieArr = document.cookie.split(";");
-            for (let i = 0; i < cookieArr.length; i++) {
-                let cookiePair = cookieArr[i].split("=");
-                if (name === cookiePair[0].trim()) {
-                    return decodeURIComponent(cookiePair[1]);
+    let BrowserStorage;
+    (function (BrowserStorage) {
+        let LocalStorage;
+        (function (LocalStorage) {
+            /**
+             * Sets a local storage item with the given name and value.
+             *
+             * @throws Error if the local storage item value exceeds 5242880 characters.*/
+            LocalStorage.set = (itemName, itemValue) => {
+                localStorage.setItem(itemName, itemValue);
+            };
+            LocalStorage.get = (name) => {
+                return localStorage.getItem(name);
+            };
+        })(LocalStorage = BrowserStorage.LocalStorage || (BrowserStorage.LocalStorage = {}));
+        let Cookies;
+        (function (Cookies) {
+            /**
+             * Sets a cookie with the given name and value.
+             *
+             * @throws Error if the cookie value exceeds 4095 characters.*/
+            Cookies.set = (cookieName, cookieValue) => {
+                const expirationTime = new Date(Date.now() + 2147483647000).toUTCString();
+                document.cookie = `${cookieName}=${encodeURIComponent(cookieValue)};expires=${expirationTime};path=/`;
+                const message = `Cookie "${cookieName}"'s value exceeds maximum characters of ${MAX_COOKIE_SIZE}.`;
+                if (document.cookie.length > MAX_COOKIE_SIZE) {
+                    throw new Error(message);
                 }
-            }
-            return null;
-        };
-    })(Cookies = HtmlUtils.Cookies || (HtmlUtils.Cookies = {}));
+            };
+            Cookies.get = (name) => {
+                let cookieArr = document.cookie.split(";");
+                for (let i = 0; i < cookieArr.length; i++) {
+                    let cookiePair = cookieArr[i].split("=");
+                    if (name === cookiePair[0].trim()) {
+                        return decodeURIComponent(cookiePair[1]);
+                    }
+                }
+                return null;
+            };
+        })(Cookies = BrowserStorage.Cookies || (BrowserStorage.Cookies = {}));
+    })(BrowserStorage = HtmlUtils.BrowserStorage || (HtmlUtils.BrowserStorage = {}));
     /**
      * Known "problems": If the user clicks on the button multiple times in a row, the checkmark will
      * be appended multiple times. ... no time for that. Where possible just use HtmlUtils.addClickListener(...).

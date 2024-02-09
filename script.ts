@@ -14,6 +14,8 @@ import {HelgeUtils} from "./HelgeUtils.js";
 import {INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT} from "./config.js";
 import {createCutButtonClickListener} from "./CutButton.js";
 import {HtmlUtils} from "./HtmlUtils.js";
+import LocalStorage = HtmlUtils.BrowserStorage.LocalStorage;
+import Cookies = HtmlUtils.BrowserStorage.Cookies;
 
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString().slice(0, 10) === "2024-01-27";
@@ -47,6 +49,7 @@ export namespace UiFunctions {
     import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
     import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
     import addMenuItem = OnlyDefinitions.addMenuItem;
+    import Cookies = HtmlUtils.BrowserStorage.Cookies;
 
     export namespace Media {
       import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
@@ -435,7 +438,7 @@ export namespace UiFunctions {
       });
 
       apiSelector.addEventListener('change', () => {
-        HtmlUtils.Cookies.set('apiSelector', apiSelector.value);
+        Cookies.set('apiSelector', apiSelector.value);
       });
     };
 
@@ -491,10 +494,10 @@ const mainEditor = new TextAreaWrapper(mainEditorTextarea);
 const transcriptionPromptEditor = document.getElementById('transcriptionPromptEditor') as HTMLTextAreaElement;
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement;
 
-export const saveEditor = () => HtmlUtils.Cookies.set("editorText", textAreaWithId("mainEditorTextarea").value);
+export const saveEditor = () => LocalStorage.set("editorText", textAreaWithId("mainEditorTextarea").value);
 
 const saveReplaceRules = () => {
-  HtmlUtils.Cookies.set("replaceRules",
+  LocalStorage.set("replaceRules",
       textAreaWithId("replaceRulesTextArea").value);
 };
 
@@ -597,17 +600,22 @@ namespace ReplaceByRules {
 }
 
 
-const getApiKey = () => HtmlUtils.Cookies.get(apiSelector.value + 'ApiKey');
+const getApiKey = () => Cookies.get(apiSelector.value + 'ApiKey');
 
 const setApiKeyCookie = (apiKey: string) => {
-  HtmlUtils.Cookies.set(apiSelector.value + 'ApiKey', apiKey);
+  Cookies.set(apiSelector.value + 'ApiKey', apiKey);
 };
 
 export const loadFormData = () => {
-  const Cookies = HtmlUtils.Cookies;
-  mainEditorTextarea.value = Cookies.get("editorText")??"";
-  transcriptionPromptEditor.value = Cookies.get("prompt")??"";
-  replaceRulesTextArea.value = Cookies.get("replaceRules")??`""->""\n`;
+  const getLocalStorageOrCookie = (key: string) => {
+    return LocalStorage.get(key) ?? Cookies.get(key);
+  }
+
+  mainEditorTextarea.value = getLocalStorageOrCookie("editorText")??"";
+  transcriptionPromptEditor.value = getLocalStorageOrCookie("prompt")??"";
+  replaceRulesTextArea.value = getLocalStorageOrCookie("replaceRules")
+      ??`""->""\n` // Default replace rule;
+
   apiSelector.value = Cookies.get("apiSelector")??'OpenAI';
 };
 

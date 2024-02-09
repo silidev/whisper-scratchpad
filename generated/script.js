@@ -13,6 +13,8 @@ import { HelgeUtils } from "./HelgeUtils.js";
 import { INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT } from "./config.js";
 import { createCutButtonClickListener } from "./CutButton.js";
 import { HtmlUtils } from "./HtmlUtils.js";
+var LocalStorage = HtmlUtils.BrowserStorage.LocalStorage;
+var Cookies = HtmlUtils.BrowserStorage.Cookies;
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString().slice(0, 10) === "2024-01-27";
 if (RUN_TESTS)
@@ -42,6 +44,7 @@ export var UiFunctions;
         var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
         var inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
         var addMenuItem = OnlyDefinitions.addMenuItem;
+        var Cookies = HtmlUtils.BrowserStorage.Cookies;
         let Media;
         (function (Media) {
             var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
@@ -390,7 +393,7 @@ export var UiFunctions;
                 inputElementWithId('apiKeyInputField').value = ''; // Clear the input field
             });
             apiSelector.addEventListener('change', () => {
-                HtmlUtils.Cookies.set('apiSelector', apiSelector.value);
+                Cookies.set('apiSelector', apiSelector.value);
             });
         };
         // addReplaceRuleButton
@@ -436,9 +439,9 @@ const mainEditorTextarea = document.getElementById('mainEditorTextarea');
 const mainEditor = new TextAreaWrapper(mainEditorTextarea);
 const transcriptionPromptEditor = document.getElementById('transcriptionPromptEditor');
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea');
-export const saveEditor = () => HtmlUtils.Cookies.set("editorText", textAreaWithId("mainEditorTextarea").value);
+export const saveEditor = () => LocalStorage.set("editorText", textAreaWithId("mainEditorTextarea").value);
 const saveReplaceRules = () => {
-    HtmlUtils.Cookies.set("replaceRules", textAreaWithId("replaceRulesTextArea").value);
+    LocalStorage.set("replaceRules", textAreaWithId("replaceRulesTextArea").value);
 };
 textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions
     .replaceRulesTextAreaOnInput);
@@ -524,15 +527,18 @@ var ReplaceByRules;
     }
     ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog = onlyWholeWordsPreserveCaseWithUiLog;
 })(ReplaceByRules || (ReplaceByRules = {}));
-const getApiKey = () => HtmlUtils.Cookies.get(apiSelector.value + 'ApiKey');
+const getApiKey = () => Cookies.get(apiSelector.value + 'ApiKey');
 const setApiKeyCookie = (apiKey) => {
-    HtmlUtils.Cookies.set(apiSelector.value + 'ApiKey', apiKey);
+    Cookies.set(apiSelector.value + 'ApiKey', apiKey);
 };
 export const loadFormData = () => {
-    const Cookies = HtmlUtils.Cookies;
-    mainEditorTextarea.value = Cookies.get("editorText") ?? "";
-    transcriptionPromptEditor.value = Cookies.get("prompt") ?? "";
-    replaceRulesTextArea.value = Cookies.get("replaceRules") ?? `""->""\n`;
+    const getLocalStorageOrCookie = (key) => {
+        return LocalStorage.get(key) ?? Cookies.get(key);
+    };
+    mainEditorTextarea.value = getLocalStorageOrCookie("editorText") ?? "";
+    transcriptionPromptEditor.value = getLocalStorageOrCookie("prompt") ?? "";
+    replaceRulesTextArea.value = getLocalStorageOrCookie("replaceRules")
+        ?? `""->""\n`; // Default replace rule;
     apiSelector.value = Cookies.get("apiSelector") ?? 'OpenAI';
 };
 export const registerServiceWorker = () => {

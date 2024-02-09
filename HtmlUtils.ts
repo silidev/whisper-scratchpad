@@ -146,7 +146,8 @@ export namespace HtmlUtils {
       textAreaWithId(id).addEventListener('input', () => {
         const text = textAreaWithId(id).value;
         try {
-          Cookies.set(storageKey, text.slice(0, MAX_COOKIE_SIZE - 1));
+          BrowserStorage.Cookies.set(storageKey,
+              text.slice(0, MAX_COOKIE_SIZE - 1));
         } catch (e) {
           handleError(`${storageKey}: Text area content exceeds 4095 characters. Content will not be saved.`);
         }
@@ -192,47 +193,52 @@ export namespace HtmlUtils {
     };
   }
 
-  export namespace LocalStorage {
-    /**
-     * Sets a local storage item with the given name and value.
-     *
-     * @throws Error if the local storage item value exceeds 5242880 characters.*/
-    export const set = (itemName: string, itemValue: string) => {
-      localStorage.setItem(itemName, itemValue);
-    };
+  export namespace BrowserStorage {
+    export interface BsProvider {
+      set(itemName: string, itemValue: string): void;
+      get(name: string): string | null;
+    }
 
-    export const get = (name: string) => {
-      return localStorage.getItem(name);
-    };
-  }
+    export namespace LocalStorage {
+      /**
+       * Sets a local storage item with the given name and value.
+       *
+       * @throws Error if the local storage item value exceeds 5242880 characters.*/
+      export const set = (itemName: string, itemValue: string) => {
+        localStorage.setItem(itemName, itemValue);
+      };
 
-  export namespace Cookies {
+      export const get = (name: string) => {
+        return localStorage.getItem(name);
+      };
+    }
 
-    /**
-     * Sets a cookie with the given name and value.
-     *
-     * @throws Error if the cookie value exceeds 4095 characters.*/
-    export const set = (cookieName: string, cookieValue: string) => {
-      const expirationTime = new Date(Date.now() + 2147483647000).toUTCString();
-      document.cookie = `${cookieName}=${encodeURIComponent(cookieValue)};expires=${expirationTime};path=/`;
-      const message = `Cookie "${cookieName}"'s value exceeds maximum characters of ${MAX_COOKIE_SIZE}.`;
-      if (document.cookie.length > MAX_COOKIE_SIZE) {
-        throw new Error(message);
-      }
-    };
-
-    export const get = (name: string) => {
-      let cookieArr = document.cookie.split(";");
-      for (let i = 0; i < cookieArr.length; i++) {
-        let cookiePair = cookieArr[i].split("=");
-        if (name === cookiePair[0].trim()) {
-          return decodeURIComponent(cookiePair[1]);
+    export namespace Cookies {
+      /**
+       * Sets a cookie with the given name and value.
+       *
+       * @throws Error if the cookie value exceeds 4095 characters.*/
+      export const set = (cookieName: string, cookieValue: string) => {
+        const expirationTime = new Date(Date.now() + 2147483647000).toUTCString();
+        document.cookie = `${cookieName}=${encodeURIComponent(cookieValue)};expires=${expirationTime};path=/`;
+        const message = `Cookie "${cookieName}"'s value exceeds maximum characters of ${MAX_COOKIE_SIZE}.`;
+        if (document.cookie.length > MAX_COOKIE_SIZE) {
+          throw new Error(message);
         }
-      }
-      return null;
-    };
-  }
+      };
 
+      export const get = (name: string) => {
+        let cookieArr = document.cookie.split(";");
+        for (let i = 0; i < cookieArr.length; i++) {
+          let cookiePair = cookieArr[i].split("=");
+          if (name === cookiePair[0].trim()) {
+            return decodeURIComponent(cookiePair[1]);
+          }
+        }
+        return null;
+      };
+    }
+  }
   /**
    * Known "problems": If the user clicks on the button multiple times in a row, the checkmark will
    * be appended multiple times. ... no time for that. Where possible just use HtmlUtils.addClickListener(...).
