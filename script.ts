@@ -11,7 +11,6 @@ import blinkSlow = HtmlUtils.blinkSlow;
 import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 import elementWithId = HtmlUtils.NeverNull.elementWithId;
 import TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
-import addMenuItem = OnlyDefinitions.addMenuItem;
 import {sendCtrlZ} from "./DontInspect.js";
 import {HtmlUtils} from "./HtmlUtils.js";
 import {HelgeUtils} from "./HelgeUtils.js";
@@ -37,6 +36,8 @@ namespace OnlyDefinitions {
   export const addMenuItem = HtmlUtils.Menus.WcMenu.addMenuItem("editorMenuHeading");
 }
 
+
+
 const trimMainEditor = () => mainEditor.trim().append(" ");
 
 export namespace UiFunctions {
@@ -47,11 +48,13 @@ export namespace UiFunctions {
     import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
     import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
     import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
+    import addMenuItem = OnlyDefinitions.addMenuItem;
 
     export namespace Media {
       import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
       import DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
       import applyReplaceRulesToMainEditor = OnlyDefinitions.applyReplaceRulesToMainEditor;
+      import addMenuItem = OnlyDefinitions.addMenuItem;
       let mediaRecorder: MediaRecorder;
       let audioChunks: Blob[] = [];
       let audioBlob: Blob;
