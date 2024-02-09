@@ -2,8 +2,6 @@
  * Copyright (c) 2024 by Helge Tobias Kosuch
  */
 
-// noinspection JSUnusedGlobalSymbols
-
 import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
 import TextAreas = HtmlUtils.TextAreas;
 import blinkFast = HtmlUtils.blinkFast;
@@ -12,17 +10,19 @@ import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 import elementWithId = HtmlUtils.NeverNull.elementWithId;
 import TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
 import {sendCtrlZ} from "./DontInspect.js";
-import {HtmlUtils} from "./HtmlUtils.js";
 import {HelgeUtils} from "./HelgeUtils.js";
 import {INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT} from "./config.js";
 import {createCutButtonClickListener} from "./CutButton.js";
+import {HtmlUtils} from "./HtmlUtils.js";
 
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString().slice(0, 10) === "2024-01-27";
 if (RUN_TESTS) console.log("RUN_TESTS is true. This is only for " +
     "testing. Set it to false in production.");
 
-namespace OnlyDefinitions {
+HtmlUtils.ErrorHandling.ExceptionHandlers.installGlobalDefault();
+
+namespace OnlyDefinitions { // TODOhStu: Move to its own module file
   export const applyReplaceRulesToMainEditor = () => {
     const selectionStart = mainEditorTextarea.selectionStart;
     const selectionEnd = mainEditorTextarea.selectionEnd;
@@ -35,8 +35,6 @@ namespace OnlyDefinitions {
 
   export const addMenuItem = HtmlUtils.Menus.WcMenu.addMenuItem("editorMenuHeading");
 }
-
-
 
 const trimMainEditor = () => mainEditor.trim().append(" ");
 
@@ -495,9 +493,13 @@ const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as 
 
 export const saveEditor = () => HtmlUtils.Cookies.set("editorText", textAreaWithId("mainEditorTextarea").value);
 
-const saveReplaceRules = () => HtmlUtils.Cookies.set("replaceRules",
-    textAreaWithId("replaceRulesTextArea").value);
-textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions.replaceRulesTextAreaOnInput);
+const saveReplaceRules = () => {
+  HtmlUtils.Cookies.set("replaceRules",
+      textAreaWithId("replaceRulesTextArea").value);
+};
+
+textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions
+    .replaceRulesTextAreaOnInput);
 
 { // Autosaves
   const handleAutoSaveError = (msg: string) => {
@@ -507,6 +509,7 @@ textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions.rep
   TextAreas.setAutoSave('editorText', 'mainEditorTextarea', handleAutoSaveError);
   TextAreas.setAutoSave('prompt', 'transcriptionPromptEditor', handleAutoSaveError);
 }
+
 const insertTextAndPutCursorAfter = (text: string) => {
   TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, text);
 };

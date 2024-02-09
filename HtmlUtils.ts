@@ -196,12 +196,14 @@ export namespace HtmlUtils {
     /**
      * Sets a cookie with the given name and value.
      *
-     * @throws Error if the cookie value exceeds 4095 characters. */
+     * @throws Error if the cookie value exceeds 4095 characters.*/
     export const set = (cookieName: string, cookieValue: string) => {
-      if (cookieValue.length > MAX_COOKIE_SIZE)
-        throw new Error(`Cookie value exceeds maximum characters of ${MAX_COOKIE_SIZE}.`);
       const expirationTime = new Date(Date.now() + 2147483647000).toUTCString();
       document.cookie = `${cookieName}=${encodeURIComponent(cookieValue)};expires=${expirationTime};path=/`;
+      const message = `Cookie "${cookieName}"'s value exceeds maximum characters of ${MAX_COOKIE_SIZE}.`;
+      if (document.cookie.length > MAX_COOKIE_SIZE) {
+        throw new Error(message);
+      }
     };
 
     export const get = (name: string) => {
@@ -248,32 +250,55 @@ export namespace HtmlUtils {
     window.scrollBy(0, 100000);
   };
 
-  /**
-   * This outputs aggressively on top of everything to the user. */
-  export const printError = (str: string) => {
-    console.log(str);
-    HelgeUtils.Exceptions.callSwallowingExceptions(() => {
-      document.body.insertAdjacentHTML('afterbegin',
-          `<div 
-              style="position: fixed; z-index: 9999; background-color: #000000; color:red;"> 
-            <p style="font-size: 30px;">###### printDebug</p>
-            <p style="font-size:18px;">${escapeHtml(str)}</p>`
-          + `########</div>`);
-    });
-  };
+  export namespace ErrorHandling {
+    import Exceptions = HelgeUtils.Exceptions;
+    import callSwallowingExceptions = Exceptions.callSwallowingExceptions;
+    import unhandledExceptionAlert = Exceptions.unhandledExceptionAlert;
 
-  /**
-   * This outputs gently. Might not be seen by the user.  */
-  export const printDebug = (str: string) => {
-    console.log(str);
-    HelgeUtils.Exceptions.callSwallowingExceptions(() => {
-      document.body.insertAdjacentHTML('beforeend',
-          `<div 
+    export namespace ExceptionHandlers {
+      export const installGlobalDefault = () => {
+        window.onerror = (message, source, lineNo, colNo, error) => {
+          const errorMessage = `An error occurred: ${message}\nSource: ${source}\nLine: ${lineNo}\nColumn: ${colNo}\nError Object: ${error}`;
+
+          /* This is executed twice. I don't know why. The debugger didn't
+           help. This shouldn't happen anyway. Don't invest more time.  */
+          printError(unhandledExceptionAlert(error??errorMessage));
+          return true; // Prevents the default browser error handling
+        };
+      };
+    }
+
+    /**
+     * This outputs aggressively on top of everything to the user. */
+    export const printError = (str: string) => {
+      console.log(str);
+      callSwallowingExceptions(() => {
+        document.body.insertAdjacentHTML('afterbegin',
+            `<div 
+              style="background-color: #000000; color:red;"> 
+            <p style="font-size: 30px;">###### printError</p>
+            <p style="font-size:18px;">${escapeHtml(str)}</p>`
+            + `########</div>`);
+      });
+      alert(str);
+    };
+
+    /**
+     * This outputs gently. Might not be seen by the user.  */
+    export const printDebug = (str: string) => {
+      console.log(str);
+      HelgeUtils.Exceptions.callSwallowingExceptions(() => {
+        document.body.insertAdjacentHTML('beforeend',
+            `<div 
               style="z-index: 9999; background-color: #00000000; color:red;"> 
             <p style="font-size:18px;">${escapeHtml(str)}</p>`
-          + `</div>`);
-    });
-  };
+            + `</div>`);
+      });
+    };
+  }
+
+  export const printDebug = ErrorHandling.printDebug;
+  export const printError = ErrorHandling.printError;
 
   export const escapeHtml = (input: string): string => {
     const element = document.createElement("div");
@@ -334,4 +359,4 @@ export namespace HtmlUtils {
       };
     }
   }
-}
+} // End of HtmlUtils

@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2024 by Helge Tobias Kosuch
  */
-// noinspection JSUnusedGlobalSymbols
 var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
 var TextAreas = HtmlUtils.TextAreas;
 var blinkFast = HtmlUtils.blinkFast;
@@ -10,15 +9,16 @@ var escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 var elementWithId = HtmlUtils.NeverNull.elementWithId;
 var TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
 import { sendCtrlZ } from "./DontInspect.js";
-import { HtmlUtils } from "./HtmlUtils.js";
 import { HelgeUtils } from "./HelgeUtils.js";
 import { INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT } from "./config.js";
 import { createCutButtonClickListener } from "./CutButton.js";
+import { HtmlUtils } from "./HtmlUtils.js";
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString().slice(0, 10) === "2024-01-27";
 if (RUN_TESTS)
     console.log("RUN_TESTS is true. This is only for " +
         "testing. Set it to false in production.");
+HtmlUtils.ErrorHandling.ExceptionHandlers.installGlobalDefault();
 var OnlyDefinitions;
 (function (OnlyDefinitions) {
     OnlyDefinitions.applyReplaceRulesToMainEditor = () => {
@@ -437,8 +437,11 @@ const mainEditor = new TextAreaWrapper(mainEditorTextarea);
 const transcriptionPromptEditor = document.getElementById('transcriptionPromptEditor');
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea');
 export const saveEditor = () => HtmlUtils.Cookies.set("editorText", textAreaWithId("mainEditorTextarea").value);
-const saveReplaceRules = () => HtmlUtils.Cookies.set("replaceRules", textAreaWithId("replaceRulesTextArea").value);
-textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions.replaceRulesTextAreaOnInput);
+const saveReplaceRules = () => {
+    HtmlUtils.Cookies.set("replaceRules", textAreaWithId("replaceRulesTextArea").value);
+};
+textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions
+    .replaceRulesTextAreaOnInput);
 { // Autosaves
     const handleAutoSaveError = (msg) => {
         Log.error(msg);

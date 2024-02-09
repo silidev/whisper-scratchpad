@@ -158,12 +158,14 @@ export var HtmlUtils;
         /**
          * Sets a cookie with the given name and value.
          *
-         * @throws Error if the cookie value exceeds 4095 characters. */
+         * @throws Error if the cookie value exceeds 4095 characters.*/
         Cookies.set = (cookieName, cookieValue) => {
-            if (cookieValue.length > MAX_COOKIE_SIZE)
-                throw new Error(`Cookie value exceeds maximum characters of ${MAX_COOKIE_SIZE}.`);
             const expirationTime = new Date(Date.now() + 2147483647000).toUTCString();
             document.cookie = `${cookieName}=${encodeURIComponent(cookieValue)};expires=${expirationTime};path=/`;
+            const message = `Cookie "${cookieName}"'s value exceeds maximum characters of ${MAX_COOKIE_SIZE}.`;
+            if (document.cookie.length > MAX_COOKIE_SIZE) {
+                throw new Error(message);
+            }
         };
         Cookies.get = (name) => {
             let cookieArr = document.cookie.split(";");
@@ -202,29 +204,50 @@ export var HtmlUtils;
     HtmlUtils.scrollToBottom = () => {
         window.scrollBy(0, 100000);
     };
-    /**
-     * This outputs aggressively on top of everything to the user. */
-    HtmlUtils.printError = (str) => {
-        console.log(str);
-        HelgeUtils.Exceptions.callSwallowingExceptions(() => {
-            document.body.insertAdjacentHTML('afterbegin', `<div 
-              style="position: fixed; z-index: 9999; background-color: #000000; color:red;"> 
-            <p style="font-size: 30px;">###### printDebug</p>
+    let ErrorHandling;
+    (function (ErrorHandling) {
+        var Exceptions = HelgeUtils.Exceptions;
+        var callSwallowingExceptions = Exceptions.callSwallowingExceptions;
+        var unhandledExceptionAlert = Exceptions.unhandledExceptionAlert;
+        let ExceptionHandlers;
+        (function (ExceptionHandlers) {
+            ExceptionHandlers.installGlobalDefault = () => {
+                window.onerror = (message, source, lineNo, colNo, error) => {
+                    const errorMessage = `An error occurred: ${message}\nSource: ${source}\nLine: ${lineNo}\nColumn: ${colNo}\nError Object: ${error}`;
+                    /* This is executed twice. I don't know why. The debugger didn't
+                     help. This shouldn't happen anyway. Don't invest more time.  */
+                    ErrorHandling.printError(unhandledExceptionAlert(error ?? errorMessage));
+                    return true; // Prevents the default browser error handling
+                };
+            };
+        })(ExceptionHandlers = ErrorHandling.ExceptionHandlers || (ErrorHandling.ExceptionHandlers = {}));
+        /**
+         * This outputs aggressively on top of everything to the user. */
+        ErrorHandling.printError = (str) => {
+            console.log(str);
+            callSwallowingExceptions(() => {
+                document.body.insertAdjacentHTML('afterbegin', `<div 
+              style="background-color: #000000; color:red;"> 
+            <p style="font-size: 30px;">###### printError</p>
             <p style="font-size:18px;">${HtmlUtils.escapeHtml(str)}</p>`
-                + `########</div>`);
-        });
-    };
-    /**
-     * This outputs gently. Might not be seen by the user.  */
-    HtmlUtils.printDebug = (str) => {
-        console.log(str);
-        HelgeUtils.Exceptions.callSwallowingExceptions(() => {
-            document.body.insertAdjacentHTML('beforeend', `<div 
+                    + `########</div>`);
+            });
+            alert(str);
+        };
+        /**
+         * This outputs gently. Might not be seen by the user.  */
+        ErrorHandling.printDebug = (str) => {
+            console.log(str);
+            HelgeUtils.Exceptions.callSwallowingExceptions(() => {
+                document.body.insertAdjacentHTML('beforeend', `<div 
               style="z-index: 9999; background-color: #00000000; color:red;"> 
             <p style="font-size:18px;">${HtmlUtils.escapeHtml(str)}</p>`
-                + `</div>`);
-        });
-    };
+                    + `</div>`);
+            });
+        };
+    })(ErrorHandling = HtmlUtils.ErrorHandling || (HtmlUtils.ErrorHandling = {}));
+    HtmlUtils.printDebug = ErrorHandling.printDebug;
+    HtmlUtils.printError = ErrorHandling.printError;
     HtmlUtils.escapeHtml = (input) => {
         const element = document.createElement("div");
         element.innerText = input;
@@ -280,5 +303,5 @@ export var HtmlUtils;
             };
         })(WcMenu = Menus.WcMenu || (Menus.WcMenu = {}));
     })(Menus = HtmlUtils.Menus || (HtmlUtils.Menus = {}));
-})(HtmlUtils || (HtmlUtils = {}));
+})(HtmlUtils || (HtmlUtils = {})); // End of HtmlUtils
 //# sourceMappingURL=HtmlUtils.js.map

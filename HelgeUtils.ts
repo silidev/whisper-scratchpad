@@ -36,7 +36,7 @@ export namespace HelgeUtils {
      </context>
      </template>
      </pre>*/
-    export const unhandledExceptionAlert = (e: Error | string) => {
+    export const unhandledExceptionAlert = (e: Error | string | any) => {
       let str = "Unhandled EXCEPTION! :" + e;
       if (e instanceof Error) {
         str += ", Stack trace:\n";
