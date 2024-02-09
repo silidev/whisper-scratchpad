@@ -520,7 +520,7 @@ const insertTextAndPutCursorAfter = (text: string) => {
 
 const getApiSelectedInUi = () => (apiSelector.value as HelgeUtils.Transcription.ApiName);
 
-namespace NotVisibleAtThisTime {
+namespace NotVisibleAtThisTime { //TODOhStu: Remove these
   export const showSpinner = () => {
     // probably not needed anymore, delete later
     // spinner1.style.display = 'block';
