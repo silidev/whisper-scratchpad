@@ -1,7 +1,7 @@
 import {HelgeUtils} from "./HelgeUtils.js";
 import {NEW_NOTE_DELIMITER} from "./config.js";
 import {HtmlUtils} from "./HtmlUtils.js";
-import {saveEditor} from "./script.js";
+import {saveMainEditor} from "./script.js";
 import {CurrentNote} from "./CurrentNote.js";
 import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
 import DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
@@ -35,7 +35,7 @@ export const createCutButtonClickListener = (mainEditorTextarea: HTMLTextAreaEle
             textArea.setSelectionRange(selectionStart, selectionEnd);
           }
         }
-        saveEditor();
+        saveMainEditor();
         textArea.focus();
       });
     });

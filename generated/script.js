@@ -163,7 +163,7 @@ export var UiFunctions;
                     }
                     applyReplaceRulesToMainEditor();
                     trimMainEditor().focus();
-                    saveEditor();
+                    saveMainEditor();
                     navigator.clipboard.writeText(mainEditorTextarea.value).then();
                     sending = false;
                     StateIndicator.update();
@@ -296,7 +296,7 @@ export var UiFunctions;
             // ############## Crop Highlights Menu Item ##############
             const cropHighlights = () => {
                 mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ');
-                saveEditor();
+                saveMainEditor();
             };
             addMenuItem("cropHighlightsMenuItem", cropHighlights);
             // ############## Copy Backup to clipboard Menu Item ##############
@@ -311,7 +311,7 @@ export var UiFunctions;
             const du2ichMenuItem = () => {
                 copyToClipboard(mainEditorTextarea.value).then(() => {
                     mainEditorTextarea.value = HelgeUtils.Misc.du2ich(mainEditorTextarea.value, ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog);
-                    saveEditor();
+                    saveMainEditor();
                 });
             };
             addMenuItem("du2ichMenuItem", du2ichMenuItem);
@@ -325,7 +325,7 @@ export var UiFunctions;
             });
             function clearButton() {
                 mainEditorTextarea.value = '';
-                saveEditor();
+                saveMainEditor();
             }
             // clearButton
             HtmlUtils.addClickListener(buttonWithId("clearButton"), () => {
@@ -355,6 +355,7 @@ export var UiFunctions;
             addCtrlZButtonEventListener("ctrlZButtonOfPrompt", transcriptionPromptEditor);
             HtmlUtils.addClickListener(buttonWithId("addReplaceRuleButton"), addReplaceRule);
             HtmlUtils.addClickListener(buttonWithId("addWordReplaceRuleButton"), Buttons.addWordReplaceRule);
+            HtmlUtils.addClickListener(buttonWithId("insertNewNoteDelimiterButton"), () => insertTextIntoMainEditor('\n' + NEW_NOTE_DELIMITER));
             // cancelRecording
             addMenuItem("cancelRecording", Buttons.Media.cancelRecording);
             // cutAllButton
@@ -363,7 +364,7 @@ export var UiFunctions;
                 HtmlUtils.addClickListener(cutAllButton, () => {
                     navigator.clipboard.writeText(mainEditorTextarea.value).then(() => {
                         mainEditorTextarea.value = '';
-                        saveEditor();
+                        saveMainEditor();
                     });
                 });
             }
@@ -396,6 +397,10 @@ export var UiFunctions;
             apiSelector.addEventListener('change', () => {
                 Cookies.set('apiSelector', apiSelector.value);
             });
+        };
+        const insertTextIntoMainEditor = (insertedString) => {
+            TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, insertedString);
+            saveMainEditor();
         };
         // addReplaceRuleButton
         const addReplaceRule = (wordsOnly = false) => {
@@ -440,7 +445,7 @@ const mainEditorTextarea = document.getElementById('mainEditorTextarea');
 const mainEditor = new TextAreaWrapper(mainEditorTextarea);
 const transcriptionPromptEditor = document.getElementById('transcriptionPromptEditor');
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea');
-export const saveEditor = () => LocalStorage.set("editorText", textAreaWithId("mainEditorTextarea").value);
+export const saveMainEditor = () => LocalStorage.set("editorText", textAreaWithId("mainEditorTextarea").value);
 const saveReplaceRules = () => {
     LocalStorage.set("replaceRules", textAreaWithId("replaceRulesTextArea").value);
 };

@@ -177,7 +177,7 @@ export namespace UiFunctions {
           }
           applyReplaceRulesToMainEditor();
           trimMainEditor().focus();
-          saveEditor();
+          saveMainEditor();
           navigator.clipboard.writeText(mainEditorTextarea.value).then();
           sending = false;
           StateIndicator.update();
@@ -317,7 +317,7 @@ export namespace UiFunctions {
 // ############## Crop Highlights Menu Item ##############
       const cropHighlights = () => {
         mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ');
-        saveEditor();
+        saveMainEditor();
       };
       addMenuItem("cropHighlightsMenuItem", cropHighlights);
 
@@ -339,7 +339,7 @@ export namespace UiFunctions {
         copyToClipboard(mainEditorTextarea.value).then(() => {
           mainEditorTextarea.value = HelgeUtils.Misc.du2ich(
               mainEditorTextarea.value, ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog);
-          saveEditor();
+          saveMainEditor();
         });
       };
       addMenuItem("du2ichMenuItem", du2ichMenuItem);
@@ -355,7 +355,7 @@ export namespace UiFunctions {
 
       function clearButton() {
         mainEditorTextarea.value = '';
-        saveEditor();
+        saveMainEditor();
       }
 
 // clearButton
@@ -392,6 +392,8 @@ export namespace UiFunctions {
 
       HtmlUtils.addClickListener(buttonWithId("addReplaceRuleButton"), addReplaceRule);
       HtmlUtils.addClickListener(buttonWithId("addWordReplaceRuleButton"), addWordReplaceRule);
+      HtmlUtils.addClickListener(buttonWithId("insertNewNoteDelimiterButton"), () =>
+          insertTextIntoMainEditor('\n'+NEW_NOTE_DELIMITER));
 
 // cancelRecording
       addMenuItem("cancelRecording", Buttons.Media.cancelRecording);
@@ -402,7 +404,7 @@ export namespace UiFunctions {
         HtmlUtils.addClickListener(cutAllButton, () => {
           navigator.clipboard.writeText(mainEditorTextarea.value).then(() => {
             mainEditorTextarea.value = '';
-            saveEditor();
+            saveMainEditor();
           });
         });
       }
@@ -443,6 +445,10 @@ export namespace UiFunctions {
       });
     };
 
+    const insertTextIntoMainEditor = (insertedString: string) => {
+      TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, insertedString);
+      saveMainEditor();
+    };
 
     // addReplaceRuleButton
     const addReplaceRule = (wordsOnly: boolean = false) => {
@@ -495,7 +501,7 @@ const mainEditor = new TextAreaWrapper(mainEditorTextarea);
 const transcriptionPromptEditor = document.getElementById('transcriptionPromptEditor') as HTMLTextAreaElement;
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement;
 
-export const saveEditor = () => LocalStorage.set("editorText", textAreaWithId("mainEditorTextarea").value);
+export const saveMainEditor = () => LocalStorage.set("editorText", textAreaWithId("mainEditorTextarea").value);
 
 const saveReplaceRules = () => {
   LocalStorage.set("replaceRules",

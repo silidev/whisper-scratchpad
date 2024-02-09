@@ -17,7 +17,7 @@
   <script defer src='lib/wc-menu-wrapper.min.js'></script>
 </head>
 <body>
-<textarea id="mainEditorTextarea" wrap="soft" placeholder="ICH ICH ICH" style="margin-bottom: -6px">
+<textarea id="mainEditorTextarea" wrap="soft" placeholder="" style="margin-bottom: -6px">
 </textarea>
 <textarea id="logTextArea" wrap="soft" placeholder="" style="display: none; height: 6cm">
 </textarea>
@@ -81,6 +81,10 @@
     <div style="position: fixed;
         left: 0; background-color: black; border: 1px solid green; padding: 5px;
         width: 6cm" id="infoButton1">
+
+      <h3>Because hardly anybody besides me seems to be interested in this, I
+        am not updating the info here anymore. The following is outdated.</h3>
+
       The buttons:
       <ul>
         <li>Copy: Copies the content of the editor to the clipboard.</li>
@@ -97,7 +101,8 @@
   <button id="addWordReplaceRuleButton"><span style="font-size: 16px">"\b\b"</span></button>
   <button id="addReplaceRuleButton"><span style="font-size: 16px">""->""</span></button>
   <button id="ctrlZButtonOfReplaceRules">⎌<br>Ctrl-z</button>
-  <button id="transcribeButton">✎ <br>T-scribe</button>
+  <button id="insertNewNoteDelimiterButton">)))---(((</button>
+  <button id="transcribeButton" style="display: none">✎ <br>T-scribe</button>
 </div>
 
 <!--############## replaceRules ##############-->
@@ -105,7 +110,11 @@
 <div>
   Replace rules:
   <info-button>
-      <pre>
+
+    <h3>Because hardly anybody besides me seems to be interested in this, I
+      am not updating the info here anymore. The following is outdated.</h3>
+
+    <pre>
         These are very useful to replace words which the ASR system recognize wrong, e. g. uncommon names.
 
         A ruleset contains one or more rule, the format looks like:
@@ -191,6 +200,10 @@
 
 <h1>whisper-scratchpad</h1>
 <info-button>
+
+  <h3>Because hardly anybody besides me seems to be interested in this, I
+    am not updating the info here anymore. The following is outdated.</h3>
+
   The first text area is the editor. The full editor is copied to clipboard after each recording. For info about the project look at the bottom of the page.
   <br>The text of each recording is inserted at the cursor position.
   <br>
