@@ -458,9 +458,17 @@ export namespace UiFunctions {
       const maybeWordBoundary = wordsOnly ? "\\b" : "";
       const insertedString = `"${maybeWordBoundary+escapeRegExp(selectedText)
           + maybeWordBoundary}"gm->"${selectedText}"\n`;
-      TextAreas.insertTextAndPutCursorAfter(replaceRulesTextArea, insertedString);
-      replaceRulesTextArea.selectionStart = 0;
-      replaceRulesTextArea.selectionEnd = insertedString.length; // was, delete on day: setCursor(12 + selectedText.length);
+      const lengthBefore = replaceRulesTextArea.value.length;
+      const APPEND = true;
+      if (APPEND) {
+        TextAreas.appendTextAndPutCursorAfter(replaceRulesTextArea, insertedString);
+        replaceRulesTextArea.selectionStart = 0;
+        replaceRulesTextArea.selectionEnd = insertedString.length;
+      } else {
+        TextAreas.insertTextAndPutCursorAfter(replaceRulesTextArea, insertedString);
+        replaceRulesTextArea.selectionStart = lengthBefore;
+        replaceRulesTextArea.selectionEnd = replaceRulesTextArea.value.length;
+      }
       // replaceRulesTextArea.focus(); // Taken out b/c this jumps way too much down on mobile.
       saveReplaceRules();
     };
