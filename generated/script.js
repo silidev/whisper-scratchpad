@@ -153,7 +153,7 @@ export var UiFunctions;
                                 ? maxEditorPrompt.slice(-maxCharsFromEditor)
                                 : "");
                     };
-                    const getTranscriptionText = async () => await HelgeUtils.Transcription.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper());
+                    const getTranscriptionText = async () => await HelgeUtils.Transcription.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper(), getLanguageSelectedInUi());
                     const removeLastDotIfNotAtEnd = (input) => {
                         if (mainEditorTextarea.selectionStart < mainEditorTextarea.value.length) {
                             return removeLastDot(input);
@@ -414,6 +414,9 @@ export var UiFunctions;
             apiSelector.addEventListener('change', () => {
                 Cookies.set('apiSelector', apiSelector.value);
             });
+            languageSelector.addEventListener('change', () => {
+                Cookies.set('languageSelector', languageSelector.value);
+            });
         };
         const insertTextIntoMainEditor = (insertedString) => {
             TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, insertedString);
@@ -468,6 +471,7 @@ export var UiFunctions;
 const downloadLink = document.getElementById('downloadLink');
 const spinner1 = document.getElementById('spinner1');
 const apiSelector = document.getElementById('apiSelector');
+const languageSelector = document.getElementById('languageSelector');
 const apiKeyInput = document.getElementById('apiKeyInputField');
 const mainEditorTextarea = document.getElementById('mainEditorTextarea');
 const mainEditor = new TextAreaWrapper(mainEditorTextarea);
@@ -491,6 +495,7 @@ const insertTextAndPutCursorAfter = (text) => {
     TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, text);
 };
 const getApiSelectedInUi = () => apiSelector.value;
+const getLanguageSelectedInUi = () => (languageSelector.value);
 var NotVisibleAtThisTime;
 (function (NotVisibleAtThisTime) {
     NotVisibleAtThisTime.showSpinner = () => {
@@ -575,6 +580,7 @@ export const loadFormData = () => {
     replaceRulesTextArea.value = getLocalStorageOrCookie("replaceRules")
         ?? `""->""\n`; // Default replace rule
     apiSelector.value = Cookies.get("apiSelector") ?? 'OpenAI';
+    languageSelector.value = Cookies.get("languageSelector") ?? '';
 };
 export const registerServiceWorker = () => {
     if ('serviceWorker' in navigator) {

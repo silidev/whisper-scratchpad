@@ -254,9 +254,7 @@ export namespace HelgeUtils {
 
     export type ApiName = "OpenAI" | "Gladia"
 
-    const withOpenAi = async (audioBlob: Blob,
-                              apiKey: string,
-                              prompt: string,
+    const withOpenAi = async (audioBlob: Blob, apiKey: string, prompt: string,
                               language: string = "") => {
       const formData = new FormData()
       formData.append('file', audioBlob)
@@ -277,11 +275,8 @@ export namespace HelgeUtils {
       return result
     }
 
-    const withGladia = async (audioBlob: Blob,
-                              apiKey: string,
-                              prompt: string = '',
-                              language: string | null = null
-    ) => {
+    const withGladia = async (audioBlob: Blob, apiKey: string, prompt: string = '',
+                              language: string | null = null) => {
       suppressUnusedWarning(prompt)
       // Docs: https://docs.gladia.io/reference/pre-recorded
       const formData = new FormData()
@@ -314,12 +309,9 @@ Please note that certain strong accents can possibly cause this mode to transcri
       return resultText
     }
 
-    export const transcribe = async (api: ApiName,
-                                     audioBlob: Blob,
-                                     apiKey: string,
-                                     prompt: string = '',
-                                     language: string = ""
-    ) => {
+    export const transcribe = async (api: ApiName, audioBlob: Blob, apiKey: string,
+                                     prompt: string = '', language: string = "") =>
+    {
       if (!audioBlob || audioBlob.size===0) return ""
       const output =
           api === "OpenAI" ?

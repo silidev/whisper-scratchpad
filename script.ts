@@ -137,7 +137,6 @@ export namespace UiFunctions {
             })()
             return text.substring(indexAfterPreviousDelimiter, maxLeftIndex)
           }
-
           const removeLastDot = (text: string): string => {
             if (text.endsWith('.')) {
               return text.slice(0, -1)+" "
@@ -165,9 +164,10 @@ export namespace UiFunctions {
                 ? maxEditorPrompt.slice(- maxCharsFromEditor)
                 : "")
           }
-
-          const getTranscriptionText = async () => await HelgeUtils.Transcription.transcribe(
-              apiName, audioBlob, getApiKey() as string, promptForWhisper())
+          const getTranscriptionText = async () => await
+              HelgeUtils.Transcription.transcribe(
+                  apiName, audioBlob, getApiKey() as string, promptForWhisper(),
+                  getLanguageSelectedInUi())
           const removeLastDotIfNotAtEnd = (input: string): string => {
             if (mainEditorTextarea.selectionStart < mainEditorTextarea.value.length) {
               return removeLastDot(input)
@@ -466,6 +466,10 @@ export namespace UiFunctions {
       apiSelector.addEventListener('change', () => {
         Cookies.set('apiSelector', apiSelector.value)
       })
+
+      languageSelector.addEventListener('change', () => {
+        Cookies.set('languageSelector', languageSelector.value)
+      })
     }
 
     const insertTextIntoMainEditor = (insertedString: string) => {
@@ -527,6 +531,7 @@ export namespace UiFunctions {
 const downloadLink = document.getElementById('downloadLink') as HTMLAnchorElement
 const spinner1 = document.getElementById('spinner1') as HTMLElement
 const apiSelector = document.getElementById('apiSelector') as HTMLSelectElement
+const languageSelector = document.getElementById('languageSelector') as HTMLSelectElement
 
 const apiKeyInput = document.getElementById('apiKeyInputField') as HTMLTextAreaElement
 const mainEditorTextarea = document.getElementById('mainEditorTextarea') as HTMLTextAreaElement
@@ -558,6 +563,7 @@ const insertTextAndPutCursorAfter = (text: string) => {
 }
 
 const getApiSelectedInUi = () => (apiSelector.value as HelgeUtils.Transcription.ApiName)
+const getLanguageSelectedInUi = () => (languageSelector.value)
 
 namespace NotVisibleAtThisTime { //TODOhStu: Remove these
   export const showSpinner = () => {
@@ -659,6 +665,7 @@ export const loadFormData = () => {
       ??`""->""\n` // Default replace rule
 
   apiSelector.value = Cookies.get("apiSelector")??'OpenAI'
+  languageSelector.value = Cookies.get("languageSelector")??''
 }
 
 export const registerServiceWorker = () => {
