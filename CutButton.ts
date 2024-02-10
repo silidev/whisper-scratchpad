@@ -9,17 +9,13 @@ export const createCutFunction =
     (mainEditorTextarea: HTMLTextAreaElement,
      prefix = "", postfix = "") => {
 
-  const cut = () => {
+  return () => {
 
     const currentNote = new CurrentNote(mainEditorTextarea);
 
     // Because this sometimes (very seldom) does something bad, first backup the whole text to clipboard:
     clipboard.writeText(mainEditorTextarea.value).then(() => {
-      clipboard.writeText(
-            prefix
-          + currentNote.text().trim()
-          + postfix).then(() =>
-      {
+      clipboard.writeText(prefix + currentNote.text().trim() + postfix).then(() => {
         HtmlUtils.signalClickToUser(buttonWithId("cutButton"));
         {
           const DELETE = true;
@@ -36,5 +32,4 @@ export const createCutFunction =
       });
     });
   };
-  return cut;
 };
