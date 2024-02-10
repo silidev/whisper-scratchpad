@@ -391,7 +391,7 @@ export namespace HtmlUtils {
     /**
      * Inline this function!
      */
-    const addKeyboardBindings = () => {
+    export const addKeyboardBindings = () => {
       document.addEventListener('keyup', (event) => {
         //console.log(event.key, event.shiftKey, event.ctrlKey, event.altKey);
         if (event.key === 'X' && event.shiftKey && event.ctrlKey) {
