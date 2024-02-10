@@ -422,7 +422,8 @@ export var UiFunctions;
                 replaceRulesTextArea.selectionStart = lengthBefore;
                 replaceRulesTextArea.selectionEnd = replaceRulesTextArea.value.length;
             }
-            // replaceRulesTextArea.focus(); // Taken out b/c this jumps way too much down on mobile.
+            replaceRulesTextArea.focus(); // delete: Taken out b/c this jumps way too
+            // much down on mobile.
             saveReplaceRules();
         };
         Buttons.addWordReplaceRule = () => {
