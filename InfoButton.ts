@@ -1,43 +1,43 @@
 class InfoButton extends HTMLElement {
-  private shadow: ShadowRoot;
-  private toggleHiddenClass: any;
+  private shadow: ShadowRoot
+  private toggleHiddenClass: any
 
   constructor() {
-    super();
-    this.shadow = this.attachShadow({mode: 'open'});
+    super()
+    this.shadow = this.attachShadow({mode: 'open'})
   }
 
   // noinspection JSUnusedGlobalSymbols
   connectedCallback() {
-    const targetId = this.getAttribute('target-id') || 'default-id';
-    const moreInfoLinkText = this.getAttribute('moreInfoLinkText') || 'ⓘ';
+    const targetId = this.getAttribute('target-id') || 'default-id'
+    const moreInfoLinkText = this.getAttribute('moreInfoLinkText') || 'ⓘ'
 
     this.shadow.innerHTML = `
       <style>
         .hidden {
-          display: none;
+          display: none
         }
         :host {
-          cursor: pointer;
+          cursor: pointer
         }
       </style>
       <span style="margin: 0;padding: 0">${moreInfoLinkText}</span>
       <span id="${targetId}" class="hidden">
         <slot></slot>
       </span>
-    `;
+    `
 
     this.toggleHiddenClass = () => {
-      const targetElement = this.shadow.getElementById(targetId);
+      const targetElement = this.shadow.getElementById(targetId)
       if (targetElement) {
-        targetElement.classList.toggle('hidden');
+        targetElement.classList.toggle('hidden')
       } else {
-        console.error(`Element with id ${targetId} not found`);
+        console.error(`Element with id ${targetId} not found`)
       }
-    };
+    }
 
-    this.addEventListener('click', this.toggleHiddenClass);
+    this.addEventListener('click', this.toggleHiddenClass)
   }
 }
 
-customElements.define('info-button', InfoButton);
+customElements.define('info-button', InfoButton)

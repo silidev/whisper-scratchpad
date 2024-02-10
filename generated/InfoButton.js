@@ -10,10 +10,10 @@ class InfoButton extends HTMLElement {
         this.shadow.innerHTML = `
       <style>
         .hidden {
-          display: none;
+          display: none
         }
         :host {
-          cursor: pointer;
+          cursor: pointer
         }
       </style>
       <span style="margin: 0;padding: 0">${moreInfoLinkText}</span>

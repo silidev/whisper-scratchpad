@@ -35,7 +35,7 @@ var OnlyDefinitions;
     OnlyDefinitions.addKeyboardShortcuts = () => {
         const cutFromMainEditor = createCutFunction(mainEditorTextarea, "{{c1::", "}}");
         document.addEventListener('keyup', (event) => {
-            // console.log(event.key,event.shiftKey,event.ctrlKey,event.altKey);
+            // console.log(event.key,event.shiftKey,event.ctrlKey,event.altKey)
             if (event.key === 'X' && event.shiftKey && event.ctrlKey) {
                 // Prevent default action to avoid any browser shortcut conflicts
                 event.preventDefault();
@@ -243,10 +243,10 @@ export var UiFunctions;
                 stopRecording();
                 /** delete, previous behavior
                 if (isRecording) {
-                  stopRecording();
+                  stopRecording()
                 } else {
-                  NotVisibleAtThisTime.showSpinner();
-                  startRecording();
+                  NotVisibleAtThisTime.showSpinner()
+                  startRecording()
                 }
                 */
             };
@@ -349,7 +349,7 @@ export var UiFunctions;
             const replaceAgainButton = () => {
                 OnlyDefinitions.applyReplaceRulesToMainEditor();
                 mainEditorTextarea.focus();
-                // window.scrollBy(0,-100000);
+                // window.scrollBy(0,-100000)
             };
             // replaceAgainButton
             HtmlUtils.addClickListener(buttonWithId("replaceAgainButton"), () => {
@@ -495,7 +495,7 @@ var NotVisibleAtThisTime;
 (function (NotVisibleAtThisTime) {
     NotVisibleAtThisTime.showSpinner = () => {
         // probably not needed anymore, delete later
-        // spinner1.style.display = 'block';
+        // spinner1.style.display = 'block'
     };
     // probably not needed anymore, delete later
     NotVisibleAtThisTime.hideSpinner = () => {
@@ -573,7 +573,7 @@ export const loadFormData = () => {
     mainEditorTextarea.value = getLocalStorageOrCookie("editorText") ?? "";
     transcriptionPromptEditor.value = getLocalStorageOrCookie("prompt") ?? "";
     replaceRulesTextArea.value = getLocalStorageOrCookie("replaceRules")
-        ?? `""->""\n`; // Default replace rule;
+        ?? `""->""\n`; // Default replace rule
     apiSelector.value = Cookies.get("apiSelector") ?? 'OpenAI';
 };
 export const registerServiceWorker = () => {

@@ -4,137 +4,137 @@
  *
  * Should be named WebUtils... but I am used to HtmlUtils.
  * */
-import {HelgeUtils} from "./HelgeUtils.js";
+import {HelgeUtils} from "./HelgeUtils.js"
 
-const MAX_COOKIE_SIZE = 4096;
+const MAX_COOKIE_SIZE = 4096
 
 export namespace HtmlUtils {
-  const clipboard = navigator.clipboard;
+  const clipboard = navigator.clipboard
 
-  const memoize = HelgeUtils.memoize;
+  const memoize = HelgeUtils.memoize
 
   // ########## Blinking fast and slow ##########
   // https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow
   /**
    * .blinkingFast {
-   *  animation: blink 1s linear infinite;
+   *  animation: blink 1s linear infinite
    * }
    */
-  export const blinkFast = (message: string) => `<span class="blinkingFast">${message}</span>`;
+  export const blinkFast = (message: string) => `<span class="blinkingFast">${message}</span>`
   /**
    * .blinkingSlow {
-   *  animation: blink 2s linear infinite;
+   *  animation: blink 2s linear infinite
    * }
    */
-  export const blinkSlow = (message: string) => `<span class="blinkingSlow">${message}</span>`;
+  export const blinkSlow = (message: string) => `<span class="blinkingSlow">${message}</span>`
 
 
   export const elementWithId = memoize((id: string): HTMLElement | null => {
-    return document.getElementById(id) as HTMLElement;
-  });
+    return document.getElementById(id) as HTMLElement
+  })
 
-  export const buttonWithId = elementWithId as (id: string) => HTMLButtonElement | null;
-  export const textAreaWithId = elementWithId as (id: string) => HTMLTextAreaElement | null;
-  export const inputElementWithId = elementWithId as (id: string) => HTMLInputElement | null;
+  export const buttonWithId = elementWithId as (id: string) => HTMLButtonElement | null
+  export const textAreaWithId = elementWithId as (id: string) => HTMLTextAreaElement | null
+  export const inputElementWithId = elementWithId as (id: string) => HTMLInputElement | null
 
   /** These never return null. Instead, they throw a runtime error. */
   export namespace NeverNull {
-    import nullFilter = HelgeUtils.Misc.nullFilter;
+    import nullFilter = HelgeUtils.Misc.nullFilter
 
     export const elementWithId = (id: string) =>
-        nullFilter<HTMLElement>(HtmlUtils.elementWithId, id);
+        nullFilter<HTMLElement>(HtmlUtils.elementWithId, id)
     export const buttonWithId = (id: string) =>
-        nullFilter<HTMLButtonElement>(HtmlUtils.buttonWithId, id);
+        nullFilter<HTMLButtonElement>(HtmlUtils.buttonWithId, id)
     export const inputElementWithId = (id: string) =>
-        nullFilter<HTMLInputElement>(HtmlUtils.inputElementWithId, id);
+        nullFilter<HTMLInputElement>(HtmlUtils.inputElementWithId, id)
     export const textAreaWithId = (id: string) =>
-        nullFilter<HTMLTextAreaElement>(HtmlUtils.textAreaWithId, id);
+        nullFilter<HTMLTextAreaElement>(HtmlUtils.textAreaWithId, id)
   }
 
 
   export namespace TextAreas {
 
-    import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
-    import trimExceptASingleNewlineAtTheEnd = HelgeUtils.Strings.trimExceptASingleNewlineAtTheEnd;
+    import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId
+    import trimExceptASingleNewlineAtTheEnd = HelgeUtils.Strings.trimExceptASingleNewlineAtTheEnd
 
     export class TextAreaWrapper {
       constructor(private textArea: HTMLTextAreaElement) {
       }
 
       public appendTextAndPutCursorAfter(text: string) {
-        TextAreas.appendTextAndPutCursorAfter(this.textArea, text);
-        return this;
+        TextAreas.appendTextAndPutCursorAfter(this.textArea, text)
+        return this
       }
 
       public append(text: string) {
-        TextAreas.append(this.textArea, text);
-        return this;
+        TextAreas.append(this.textArea, text)
+        return this
       }
 
       public selectedText() {
-        const start = this.textArea.selectionStart;
-        const end = this.textArea.selectionEnd;
-        return this.textArea.value.substring(start, end);
+        const start = this.textArea.selectionStart
+        const end = this.textArea.selectionEnd
+        return this.textArea.value.substring(start, end)
       }
 
       public setCursor(position: number) {
-        TextAreas.setCursor(this.textArea, position);
-        return this;
+        TextAreas.setCursor(this.textArea, position)
+        return this
       }
 
       public insertTextAndPutCursorAfter(addedText: string) {
-        TextAreas.insertTextAndPutCursorAfter(this.textArea, addedText);
-        return this;
+        TextAreas.insertTextAndPutCursorAfter(this.textArea, addedText)
+        return this
       }
 
       public getCursor() {
-        return TextAreas.getCursor(this.textArea);
+        return TextAreas.getCursor(this.textArea)
       }
 
       public setAutoSave(cookieName: string, handleError: (msg: string) => void){
-        TextAreas.setAutoSave(cookieName, this.textArea.id, handleError, BrowserStorage.LocalStorage);
-        return this;
+        TextAreas.setAutoSave(cookieName, this.textArea.id, handleError, BrowserStorage.LocalStorage)
+        return this
       }
 
       public value() {
-        return this.textArea.value;
+        return this.textArea.value
       }
 
       public setValue(value: string) {
-        this.textArea.value = value;
-        return this;
+        this.textArea.value = value
+        return this
       }
 
       public focus() {
-        this.textArea.focus();
-        return this;
+        this.textArea.focus()
+        return this
       }
 
       public setCursorAtEnd() {
-        this.setCursor(this.textArea.value.length);
-        return this;
+        this.setCursor(this.textArea.value.length)
+        return this
       }
 
       public trim() {
-        this.textArea.value = trimExceptASingleNewlineAtTheEnd(this.textArea.value);
-        return this;
+        this.textArea.value = trimExceptASingleNewlineAtTheEnd(this.textArea.value)
+        return this
       }
     }
 
     export const appendTextAndPutCursorAfter =
         (textArea: HTMLTextAreaElement, text: string) => {
-      append(textArea, text);
-      setCursor(textArea, textArea.value.length);
-    };
+      append(textArea, text)
+      setCursor(textArea, textArea.value.length)
+    }
 
     export const append = (textArea: HTMLTextAreaElement, text: string) => {
-      textArea.value += text;
+      textArea.value += text
     }
 
     export const selectedText = (textArea: HTMLTextAreaElement) => {
-      const start = textArea.selectionStart;
-      const end = textArea.selectionEnd;
-      return textArea.value.substring(start, end);
+      const start = textArea.selectionStart
+      const end = textArea.selectionEnd
+      return textArea.value.substring(start, end)
     }
 
     /**
@@ -146,23 +146,23 @@ export namespace HtmlUtils {
      */
     export const setAutoSave = (storageKey: string, id: string, handleError: (msg: string) => void, bsProvider: HtmlUtils.BrowserStorage.BsProvider) => {
       textAreaWithId(id).addEventListener('input', () => {
-        const text = textAreaWithId(id).value;
+        const text = textAreaWithId(id).value
         try {
           bsProvider.set(storageKey,
-              text.slice(0, MAX_COOKIE_SIZE - 1));
+              text.slice(0, MAX_COOKIE_SIZE - 1))
         } catch (e) {
-          handleError(`${storageKey}: Text area content exceeds 4095 characters. Content will not be saved.`);
+          handleError(`${storageKey}: Text area content exceeds 4095 characters. Content will not be saved.`)
         }
-      });
-    };
+      })
+    }
 
     export const getCursor = (textArea: HTMLTextAreaElement) => {
-      return textArea.selectionStart;
-    };
+      return textArea.selectionStart
+    }
 
     export const setCursor = (textArea: HTMLTextAreaElement, position: number) => {
-      textArea.setSelectionRange(position, position);
-    };
+      textArea.setSelectionRange(position, position)
+    }
 
     /**
      * Inserts text at the cursor position in a text area. If something is
@@ -172,33 +172,33 @@ export namespace HtmlUtils {
         addedText: string) => {
 
       if (!addedText)
-        return;
+        return
 
-      const textBeforeSelection = textarea.value.substring(0, textarea.selectionStart);
-      const textAfterSelection = textarea.value.substring(textarea.selectionEnd);
+      const textBeforeSelection = textarea.value.substring(0, textarea.selectionStart)
+      const textAfterSelection = textarea.value.substring(textarea.selectionEnd)
 
-      setCursor(textarea, 0);
-      textarea.value = textBeforeSelection + addedText + textAfterSelection;
-      setCursor(textarea, textBeforeSelection.length + addedText.length);
-      textarea.focus();
-    };
+      setCursor(textarea, 0)
+      textarea.value = textBeforeSelection + addedText + textAfterSelection
+      setCursor(textarea, textBeforeSelection.length + addedText.length)
+      textarea.focus()
+    }
 
     export const scrollToEnd = (logTextArea: HTMLTextAreaElement) => {
-      logTextArea.scrollTop = logTextArea.scrollHeight;
-    };
+      logTextArea.scrollTop = logTextArea.scrollHeight
+    }
   }
 
   export namespace Media {
     export const releaseMicrophone = (stream: MediaStream) => {
-      if (!stream) return;
-      stream.getTracks().forEach(track => track.stop());
-    };
+      if (!stream) return
+      stream.getTracks().forEach(track => track.stop())
+    }
   }
 
   export namespace BrowserStorage {
     export interface BsProvider {
-      set(itemName: string, itemValue: string): void;
-      get(name: string): string | null;
+      set(itemName: string, itemValue: string): void
+      get(name: string): string | null
     }
 
     export namespace LocalStorage {
@@ -207,12 +207,12 @@ export namespace HtmlUtils {
        *
        * @throws Error if the local storage item value exceeds 5242880 characters.*/
       export const set = (itemName: string, itemValue: string) => {
-        localStorage.setItem(itemName, itemValue);
-      };
+        localStorage.setItem(itemName, itemValue)
+      }
 
       export const get = (name: string) => {
-        return localStorage.getItem(name);
-      };
+        return localStorage.getItem(name)
+      }
     }
 
     export namespace Cookies {
@@ -221,24 +221,24 @@ export namespace HtmlUtils {
        *
        * @throws Error if the cookie value exceeds 4095 characters.*/
       export const set = (cookieName: string, cookieValue: string) => {
-        const expirationTime = new Date(Date.now() + 2147483647000).toUTCString();
-        document.cookie = `${cookieName}=${encodeURIComponent(cookieValue)};expires=${expirationTime};path=/`;
-        const message = `Cookie "${cookieName}"'s value exceeds maximum characters of ${MAX_COOKIE_SIZE}.`;
+        const expirationTime = new Date(Date.now() + 2147483647000).toUTCString()
+        document.cookie = `${cookieName}=${encodeURIComponent(cookieValue)};expires=${expirationTime};path=/`
+        const message = `Cookie "${cookieName}"'s value exceeds maximum characters of ${MAX_COOKIE_SIZE}.`
         if (document.cookie.length > MAX_COOKIE_SIZE) {
-          throw new Error(message);
+          throw new Error(message)
         }
-      };
+      }
 
       export const get = (name: string) => {
-        let cookieArr = document.cookie.split(";");
+        let cookieArr = document.cookie.split(";")
         for (let i = 0; i < cookieArr.length; i++) {
-          let cookiePair = cookieArr[i].split("=");
+          let cookiePair = cookieArr[i].split("=")
           if (name === cookiePair[0].trim()) {
-            return decodeURIComponent(cookiePair[1]);
+            return decodeURIComponent(cookiePair[1])
           }
         }
-        return null;
-      };
+        return null
+      }
     }
   }
   /**
@@ -246,12 +246,12 @@ export namespace HtmlUtils {
    * be appended multiple times. ... no time for that. Where possible just use HtmlUtils.addClickListener(...).
    */
   export const signalClickToUser = (element: HTMLElement) => {
-    const before = element.innerHTML;
-    element.innerHTML += "✔️";
+    const before = element.innerHTML
+    element.innerHTML += "✔️"
     setTimeout(
         () => element.innerHTML = before
-        , 500);
-  };
+        , 500)
+  }
 
   /**
    * Adds a click listener to a button that appends a checkmark to the button
@@ -261,44 +261,44 @@ export namespace HtmlUtils {
     const checkmark = ' ✔️'; // Unicode checkmark
 
     element.addEventListener('click', () => {
-      callback();
+      callback()
       element.innerHTML += checkmark; // Append checkmark to the button HTML
       setTimeout(() => {
         element.innerHTML = initialHTML; // Reset the button HTML after 2 seconds
-      }, 500);
-    });
-  };
+      }, 500)
+    })
+  }
 
   export const scrollToBottom = () => {
-    window.scrollBy(0, 100000);
-  };
+    window.scrollBy(0, 100000)
+  }
 
   export namespace ErrorHandling {
-    import Exceptions = HelgeUtils.Exceptions;
-    import callSwallowingExceptions = Exceptions.callSwallowingExceptions;
-    import unhandledExceptionAlert = Exceptions.unhandledExceptionAlert;
+    import Exceptions = HelgeUtils.Exceptions
+    import callSwallowingExceptions = Exceptions.callSwallowingExceptions
+    import unhandledExceptionAlert = Exceptions.unhandledExceptionAlert
 
     export namespace ExceptionHandlers {
       export const installGlobalDefault = () => {
         window.onerror = (message, source, lineNo, colNo, error) => {
-          const errorMessage = `An error occurred: ${message}\nSource: ${source}\nLine: ${lineNo}\nColumn: ${colNo}\nError Object: ${error}`;
+          const errorMessage = `An error occurred: ${message}\nSource: ${source}\nLine: ${lineNo}\nColumn: ${colNo}\nError Object: ${error}`
 
           printError(
               unhandledExceptionAlert(error??errorMessage)
               /* unhandledExceptionAlert is sometimes executed twice here. I
                  don't know why. The debugger didn't help. This shouldn't
                  happen anyway. Don't invest more time. */
-          );
+          )
           return true; // Prevents the default browser error handling
-        };
-      };
+        }
+      }
     }
 
     /**
      * This outputs aggressively on top of everything to the user. */
     export const printError = (str: string) => {
-      console.log(str);
-      alert(str);
+      console.log(str)
+      alert(str)
 
       callSwallowingExceptions(() => {
         document.body.insertAdjacentHTML('afterbegin',
@@ -306,37 +306,37 @@ export namespace HtmlUtils {
               style="background-color: #000000; color:red;"> 
             <p style="font-size: 30px;">###### printError</p>
             <p style="font-size:18px;">${escapeHtml(str)}</p>`
-            + `########</div>`);
-      });
-    };
+            + `########</div>`)
+      })
+    }
 
     /**
      * This outputs gently. Might not be seen by the user.  */
     export const printDebug = (str: string) => {
-      console.log(str);
+      console.log(str)
       HelgeUtils.Exceptions.callSwallowingExceptions(() => {
         document.body.insertAdjacentHTML('beforeend',
             `<div 
               style="z-index: 9999; background-color: #00000000; color:red;"> 
             <p style="font-size:18px;">${escapeHtml(str)}</p>`
-            + `</div>`);
-      });
-    };
+            + `</div>`)
+      })
+    }
   }
 
-  export const printDebug = ErrorHandling.printDebug;
-  export const printError = ErrorHandling.printError;
+  export const printDebug = ErrorHandling.printDebug
+  export const printError = ErrorHandling.printError
 
   export const escapeHtml = (input: string): string => {
-    const element = document.createElement("div");
-    element.innerText = input;
-    return element.innerHTML;
-  };
+    const element = document.createElement("div")
+    element.innerText = input
+    return element.innerHTML
+  }
 
   /**
    * Deprecated! Use navigator.clipboard.writeText instead.
    */
-  export const copyToClipboard = (text: string) => clipboard.writeText(text);
+  export const copyToClipboard = (text: string) => clipboard.writeText(text)
 
   /**
    # DOMException Read permission denied error
@@ -349,9 +349,9 @@ export namespace HtmlUtils {
    */
   export namespace Clipboard {
     /** @deprecated Inline this function instead. */
-    export const read = () => clipboard.readText();
+    export const read = () => clipboard.readText()
     /** @deprecated Inline this function instead. */
-    export const write = (text: string) => clipboard.writeText(text);
+    export const write = (text: string) => clipboard.writeText(text)
   }
 
   /**
@@ -359,31 +359,31 @@ export namespace HtmlUtils {
    * @param str
    */
   export const putIntoClipboard = (str: string) => {
-    navigator.clipboard.writeText(str).then();
-  };
+    navigator.clipboard.writeText(str).then()
+  }
 
   export const stripHtmlTags = (input: string): string => {
-    return input.replace(/<\/?[^>]+(>|$)/g, "");
-  };
+    return input.replace(/<\/?[^>]+(>|$)/g, "")
+  }
 
   export const isMsWindows = () => {
-    return navigator.userAgent.match(/Windows/i);
-  };
+    return navigator.userAgent.match(/Windows/i)
+  }
 
   export namespace Menus {
     /** https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper */
     export namespace WcMenu {
-      import elementWithId = NeverNull.elementWithId;
+      import elementWithId = NeverNull.elementWithId
       export const addMenuItem = (menuHeadingId: string) => {
         return (id: string, menuFunction: () => void) => {
           HtmlUtils.addClickListener(elementWithId(id), () => {
-            menuFunction();
+            menuFunction()
             // Close the menu:
             elementWithId(menuHeadingId).dispatchEvent(
-                new CustomEvent('rootMenuClose'));
-          });
-        };
-      };
+                new CustomEvent('rootMenuClose'))
+          })
+        }
+      }
     }
   }
 
@@ -393,13 +393,13 @@ export namespace HtmlUtils {
      */
     export const addKeyboardBindings = () => {
       document.addEventListener('keyup', (event) => {
-        //console.log(event.key, event.shiftKey, event.ctrlKey, event.altKey);
+        //console.log(event.key, event.shiftKey, event.ctrlKey, event.altKey)
         if (event.key === 'X' && event.shiftKey && event.ctrlKey) {
           // Prevent default action to avoid any browser shortcut conflicts
-          event.preventDefault();
+          event.preventDefault()
           // Do something here!
         }
-      });
-    };
+      })
+    }
   }
 } // End of HtmlUtils

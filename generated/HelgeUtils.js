@@ -18,7 +18,7 @@ export var HelgeUtils;
          * thus think about if you want to do this after calling this.
          *
          * Use this to throw an exception with a stack trace:
-         *    throw new Error("Some useful error message");
+         *    throw new Error("Some useful error message")
          *
          * @return void
          *
@@ -172,7 +172,6 @@ export var HelgeUtils;
                 }
                 return searchForward ? text.length : 0;
             }
-            ;
         } //end of class DelimiterSearch
         _a = DelimiterSearch;
         DelimiterSearch.runTests = () => {
@@ -280,7 +279,7 @@ export var HelgeUtils;
             if (language)
                 formData.append('language_behaviour', 'automatic multiple languages');
             formData.append('toggle_diarization', 'false');
-            // formData.append('transcription_hint', prompt);
+            // formData.append('transcription_hint', prompt)
             formData.append('output_format', 'txt');
             const result = await (await fetch('https://api.gladia.io/audio/text/audio-transcription/', {
                 method: 'POST',
@@ -354,7 +353,7 @@ export var HelgeUtils;
             let log = '';
             function applyRule(rawTarget, regexFlags, replacementString, replacementFlags) {
                 const target = possiblyWordBoundaryMarker + rawTarget + possiblyWordBoundaryMarker;
-                // console.log("\n" + target + "\n↓↓↓↓↓\n"+ replacement);
+                // console.log("\n" + target + "\n↓↓↓↓↓\n"+ replacement)
                 let regex = regexFlags.length == 0 ?
                     new RegExp(target, 'gm') // Noted that gm flags are basically necessary for this plugin to be useful, you seldom want to replace only 1 occurrence or operate on a note only contains 1 line.
                     : new RegExp(target, regexFlags);
@@ -417,7 +416,7 @@ export var HelgeUtils;
          *
          * Use example:
          * const elementWithId = (id: string) =>
-         *   nullFilter<HTMLElement>(HtmlUtils.elementWithId, id);
+         *   nullFilter<HTMLElement>(HtmlUtils.elementWithId, id)
          */
         Misc.nullFilter = (f, ...parameters) => {
             const untypedNullFilter = (input) => {
@@ -636,16 +635,16 @@ export var HelgeUtils;
             // "\\berst\\b"->"x(ersxt)x"
             // :: Bug: The following does not work for all occurrences: //TODOh
             // "st\\b"->""
-            // `;
+            // `
             // noinspection SpellCheckingInspection
             /**
              * Here also partial words are replaced.*/
             // const rules3 = `
             // "\\bx\\(ersxt\\)x\\b"->"erst"
-            // `;
+            // `
             const applyRules1 = (input) => replaceFunction(rules1, input);
-            // const applyRules2 = (input: string) => ReplaceByRules.withUiLog(rules2, input);
-            // const applyRules3 = (input: string) => ReplaceByRules.withUiLog(rules3, input);
+            // const applyRules2 = (input: string) => ReplaceByRules.withUiLog(rules2, input)
+            // const applyRules3 = (input: string) => ReplaceByRules.withUiLog(rules3, input)
             return (
             // applyRules3
             (

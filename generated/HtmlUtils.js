@@ -13,13 +13,13 @@ export var HtmlUtils;
     // https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow
     /**
      * .blinkingFast {
-     *  animation: blink 1s linear infinite;
+     *  animation: blink 1s linear infinite
      * }
      */
     HtmlUtils.blinkFast = (message) => `<span class="blinkingFast">${message}</span>`;
     /**
      * .blinkingSlow {
-     *  animation: blink 2s linear infinite;
+     *  animation: blink 2s linear infinite
      * }
      */
     HtmlUtils.blinkSlow = (message) => `<span class="blinkingSlow">${message}</span>`;
@@ -331,7 +331,7 @@ export var HtmlUtils;
          */
         Keyboard.addKeyboardBindings = () => {
             document.addEventListener('keyup', (event) => {
-                //console.log(event.key, event.shiftKey, event.ctrlKey, event.altKey);
+                //console.log(event.key, event.shiftKey, event.ctrlKey, event.altKey)
                 if (event.key === 'X' && event.shiftKey && event.ctrlKey) {
                     // Prevent default action to avoid any browser shortcut conflicts
                     event.preventDefault();
