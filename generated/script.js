@@ -11,7 +11,7 @@ var TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
 import { sendCtrlZ } from "./DontInspect.js";
 import { HelgeUtils } from "./HelgeUtils.js";
 import { INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT } from "./config.js";
-import { createCutButtonClickListener } from "./CutButton.js";
+import { createCutFunction } from "./CutButton.js";
 import { HtmlUtils } from "./HtmlUtils.js";
 var LocalStorage = HtmlUtils.BrowserStorage.LocalStorage;
 var Cookies = HtmlUtils.BrowserStorage.Cookies;
@@ -32,6 +32,17 @@ var OnlyDefinitions;
         mainEditorTextarea.selectionEnd = selectionEnd;
     };
     OnlyDefinitions.addMenuItem = HtmlUtils.Menus.WcMenu.addMenuItem("editorMenuHeading");
+    OnlyDefinitions.addKeyboardShortcuts = () => {
+        const cutFromMainEditor = createCutFunction(mainEditorTextarea);
+        document.addEventListener('keyup', (event) => {
+            // console.log(event.key,event.shiftKey,event.ctrlKey,event.altKey);
+            if (event.key === 'X' && event.shiftKey && event.ctrlKey) {
+                // Prevent default action to avoid any browser shortcut conflicts
+                event.preventDefault();
+                cutFromMainEditor();
+            }
+        });
+    };
 })(OnlyDefinitions || (OnlyDefinitions = {}));
 const trimMainEditor = () => mainEditor.trim().append(" ");
 export var UiFunctions;
@@ -46,16 +57,19 @@ export var UiFunctions;
         var inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
         var addMenuItem = OnlyDefinitions.addMenuItem;
         var Cookies = HtmlUtils.BrowserStorage.Cookies;
+        var addKeyboardShortcuts = OnlyDefinitions.addKeyboardShortcuts;
         let Media;
         (function (Media) {
             var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
             var DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
             var applyReplaceRulesToMainEditor = OnlyDefinitions.applyReplaceRulesToMainEditor;
             var addMenuItem = OnlyDefinitions.addMenuItem;
+            var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
             let mediaRecorder;
             let audioChunks = [];
             let audioBlob;
             let isRecording = false;
+            suppressUnusedWarning(isRecording);
             let stream;
             let sending = false;
             let StateIndicator;
@@ -290,7 +304,8 @@ export var UiFunctions;
             addMenuItem("transcribeAgainButton", transcribeAgainButton);
             StateIndicator.update();
         })(Media = Buttons.Media || (Buttons.Media = {})); // End of media buttons
-        Buttons.addButtonEventListeners = () => {
+        Buttons.addEventListeners = () => {
+            addKeyboardShortcuts();
             // ############## Toggle Log Button ##############
             addMenuItem("toggleLogButton", Log.toggleLog(textAreaWithId));
             // ############## Crop Highlights Menu Item ##############
@@ -375,7 +390,7 @@ export var UiFunctions;
                 });
             });
             // cutButton
-            buttonWithId("cutButton").addEventListener('click', createCutButtonClickListener(mainEditorTextarea));
+            buttonWithId("cutButton").addEventListener('click', createCutFunction(mainEditorTextarea));
             // copyButtons
             /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
             const addEventListenerForCopyButton = (buttonId, inputElementId) => {
@@ -575,7 +590,7 @@ const runTests = () => {
 };
 const init = () => {
     runTests();
-    UiFunctions.Buttons.addButtonEventListeners();
+    UiFunctions.Buttons.addEventListeners();
     registerServiceWorker();
     loadFormData();
     elementWithId("versionSpan").innerHTML = VERSION;

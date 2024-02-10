@@ -12,7 +12,7 @@ import TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
 import {sendCtrlZ} from "./DontInspect.js";
 import {HelgeUtils} from "./HelgeUtils.js";
 import {INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT} from "./config.js";
-import {createCutButtonClickListener} from "./CutButton.js";
+import {createCutFunction} from "./CutButton.js";
 import {HtmlUtils} from "./HtmlUtils.js";
 import LocalStorage = HtmlUtils.BrowserStorage.LocalStorage;
 import Cookies = HtmlUtils.BrowserStorage.Cookies;
@@ -37,12 +37,26 @@ namespace OnlyDefinitions { // TODOhStu: Move to its own module file
   };
 
   export const addMenuItem = HtmlUtils.Menus.WcMenu.addMenuItem("editorMenuHeading");
+
+  export const addKeyboardShortcuts = () => {
+    const cutFromMainEditor = createCutFunction(mainEditorTextarea);
+
+    document.addEventListener('keyup', (event) => {
+      // console.log(event.key,event.shiftKey,event.ctrlKey,event.altKey);
+      if (event.key === 'X' && event.shiftKey && event.ctrlKey) {
+        // Prevent default action to avoid any browser shortcut conflicts
+        event.preventDefault();
+        cutFromMainEditor();
+      }
+    });
+  };
 }
 
 const trimMainEditor = () => mainEditor.trim().append(" ");
 
 export namespace UiFunctions {
   import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
+
   export namespace Buttons {
     import insertTextAtCursor = HtmlUtils.TextAreas.insertTextAndPutCursorAfter;
     import copyToClipboard = HtmlUtils.copyToClipboard;
@@ -51,16 +65,18 @@ export namespace UiFunctions {
     import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
     import addMenuItem = OnlyDefinitions.addMenuItem;
     import Cookies = HtmlUtils.BrowserStorage.Cookies;
+    import addKeyboardShortcuts = OnlyDefinitions.addKeyboardShortcuts;
 
     export namespace Media {
       import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
       import DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
       import applyReplaceRulesToMainEditor = OnlyDefinitions.applyReplaceRulesToMainEditor;
       import addMenuItem = OnlyDefinitions.addMenuItem;
+      import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
       let mediaRecorder: MediaRecorder;
       let audioChunks: Blob[] = [];
       let audioBlob: Blob;
-      let isRecording = false;
+      let isRecording = false; suppressUnusedWarning(isRecording);
       let stream: MediaStream;
       let sending = false;
 
@@ -309,7 +325,9 @@ export namespace UiFunctions {
       StateIndicator.update();
     } // End of media buttons
 
-    export const addButtonEventListeners = () => {
+    export const addEventListeners = () => {
+
+      addKeyboardShortcuts();
 
 // ############## Toggle Log Button ##############
       addMenuItem("toggleLogButton", Log.toggleLog(textAreaWithId));
@@ -417,7 +435,8 @@ export namespace UiFunctions {
       });
 
 // cutButton
-      buttonWithId("cutButton").addEventListener('click', createCutButtonClickListener(mainEditorTextarea));
+      buttonWithId("cutButton").addEventListener('click',
+          createCutFunction(mainEditorTextarea));
 
 // copyButtons
       /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
@@ -654,7 +673,7 @@ const runTests = () => {
 
 const init = () => {
   runTests();
-  UiFunctions.Buttons.addButtonEventListeners();
+  UiFunctions.Buttons.addEventListeners();
   registerServiceWorker();
   loadFormData();
   elementWithId("versionSpan").innerHTML = VERSION;

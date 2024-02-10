@@ -324,5 +324,21 @@ export var HtmlUtils;
             };
         })(WcMenu = Menus.WcMenu || (Menus.WcMenu = {}));
     })(Menus = HtmlUtils.Menus || (HtmlUtils.Menus = {}));
+    let Keyboard;
+    (function (Keyboard) {
+        /**
+         * Inline this function!
+         */
+        const addKeyboardBindings = () => {
+            document.addEventListener('keyup', (event) => {
+                //console.log(event.key, event.shiftKey, event.ctrlKey, event.altKey);
+                if (event.key === 'X' && event.shiftKey && event.ctrlKey) {
+                    // Prevent default action to avoid any browser shortcut conflicts
+                    event.preventDefault();
+                    // Do something here!
+                }
+            });
+        };
+    })(Keyboard = HtmlUtils.Keyboard || (HtmlUtils.Keyboard = {}));
 })(HtmlUtils || (HtmlUtils = {})); // End of HtmlUtils
 //# sourceMappingURL=HtmlUtils.js.map

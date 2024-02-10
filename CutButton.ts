@@ -7,8 +7,10 @@ import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
 import DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
 const clipboard = navigator.clipboard;
 
-export const createCutButtonClickListener = (mainEditorTextarea: HTMLTextAreaElement) => {
-  const clickListener = () => {
+export const createCutFunction =
+    (mainEditorTextarea: HTMLTextAreaElement) => {
+
+  const cut = () => {
 
     const currentNote = new CurrentNote(mainEditorTextarea);
 
@@ -40,5 +42,5 @@ export const createCutButtonClickListener = (mainEditorTextarea: HTMLTextAreaEle
       });
     });
   };
-  return clickListener;
+  return cut;
 };

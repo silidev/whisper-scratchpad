@@ -6,8 +6,8 @@ import { CurrentNote } from "./CurrentNote.js";
 var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
 var DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
 const clipboard = navigator.clipboard;
-export const createCutButtonClickListener = (mainEditorTextarea) => {
-    const clickListener = () => {
+export const createCutFunction = (mainEditorTextarea) => {
+    const cut = () => {
         const currentNote = new CurrentNote(mainEditorTextarea);
         // Because this sometimes (very seldom) does something bad, first backup the whole text to clipboard:
         clipboard.writeText(mainEditorTextarea.value).then(() => {
@@ -37,6 +37,6 @@ export const createCutButtonClickListener = (mainEditorTextarea) => {
             });
         });
     };
-    return clickListener;
+    return cut;
 };
 //# sourceMappingURL=CutButton.js.map

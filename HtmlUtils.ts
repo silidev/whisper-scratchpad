@@ -386,4 +386,20 @@ export namespace HtmlUtils {
       };
     }
   }
+
+  export namespace Keyboard {
+    /**
+     * Inline this function!
+     */
+    const addKeyboardBindings = () => {
+      document.addEventListener('keyup', (event) => {
+        //console.log(event.key, event.shiftKey, event.ctrlKey, event.altKey);
+        if (event.key === 'X' && event.shiftKey && event.ctrlKey) {
+          // Prevent default action to avoid any browser shortcut conflicts
+          event.preventDefault();
+          // Do something here!
+        }
+      });
+    };
+  }
 } // End of HtmlUtils
