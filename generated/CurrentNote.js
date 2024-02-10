@@ -1,5 +1,6 @@
 import { HelgeUtils } from "./HelgeUtils.js";
 import { NEW_NOTE_DELIMITER } from "./config.js";
+var DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
 /** The current note is the text between the two newNoteDelimiters. */
 export class CurrentNote {
     constructor(mainEditorTextarea) {
@@ -15,6 +16,20 @@ export class CurrentNote {
     }
     text() {
         return this.mainEditorTextarea.value.substring(this.leftIndex(), this.rightIndex());
+    }
+    delete() {
+        const leftIndex = this.leftIndex();
+        this.mainEditorTextarea.value =
+            DelimiterSearch.deleteNote(this.mainEditorTextarea.value, leftIndex, this.rightIndex(), NEW_NOTE_DELIMITER);
+        this.mainEditorTextarea.setSelectionRange(leftIndex, leftIndex);
+    }
+    /** Selects the text of the current note in the UI */
+    select() {
+        const selectionStart = this.leftIndex()
+            // Also select the newNoteDelimiter before the note:
+            - (this.leftIndex() > NEW_NOTE_DELIMITER.length ? NEW_NOTE_DELIMITER.length : 0);
+        const selectionEnd = this.rightIndex();
+        this.mainEditorTextarea.setSelectionRange(selectionStart, selectionEnd);
     }
 }
 //# sourceMappingURL=CurrentNote.js.map

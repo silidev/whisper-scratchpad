@@ -39,7 +39,7 @@ namespace OnlyDefinitions { // TODOhStu: Move to its own module file
   export const addMenuItem = HtmlUtils.Menus.WcMenu.addMenuItem("editorMenuHeading");
 
   export const addKeyboardShortcuts = () => {
-    const cutFromMainEditor = createCutFunction(mainEditorTextarea);
+    const cutFromMainEditor = createCutFunction(mainEditorTextarea, "{{c1::", "}}");
 
     document.addEventListener('keyup', (event) => {
       // console.log(event.key,event.shiftKey,event.ctrlKey,event.altKey);
@@ -437,6 +437,11 @@ export namespace UiFunctions {
 // cutButton
       buttonWithId("cutButton").addEventListener('click',
           createCutFunction(mainEditorTextarea));
+// cutAnkiButton
+      buttonWithId("cutAnkiButton").addEventListener('click',
+          createCutFunction(mainEditorTextarea, "{{c1::", "}}"));
+
+
 
 // copyButtons
       /** Adds an event listener to a button that copies the text of an input element to the clipboard. */

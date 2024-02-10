@@ -1,39 +1,30 @@
-import { HelgeUtils } from "./HelgeUtils.js";
-import { NEW_NOTE_DELIMITER } from "./config.js";
 import { HtmlUtils } from "./HtmlUtils.js";
 import { saveMainEditor } from "./script.js";
 import { CurrentNote } from "./CurrentNote.js";
 var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
-var DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
 const clipboard = navigator.clipboard;
-export const createCutFunction = (mainEditorTextarea) => {
+export const createCutFunction = (mainEditorTextarea, prefix = "", postfix = "") => {
     const cut = () => {
         const currentNote = new CurrentNote(mainEditorTextarea);
         // Because this sometimes (very seldom) does something bad, first backup the whole text to clipboard:
         clipboard.writeText(mainEditorTextarea.value).then(() => {
-            clipboard.writeText(currentNote.text().trim()).then(() => {
+            clipboard.writeText(prefix
+                + currentNote.text().trim()
+                + postfix).then(() => {
                 HtmlUtils.signalClickToUser(buttonWithId("cutButton"));
-                const textArea = mainEditorTextarea;
                 {
                     const DELETE = true;
                     if (DELETE) {
                         /* If DELETE==true, the text between the markers is deleted. */
-                        const leftIndex = currentNote.leftIndex();
-                        textArea.value =
-                            DelimiterSearch.deleteNote(textArea.value, leftIndex, currentNote.rightIndex(), NEW_NOTE_DELIMITER);
-                        textArea.setSelectionRange(leftIndex, leftIndex);
+                        currentNote.delete();
                     }
                     else {
                         // When DELETE==false, just select the text between the markers:
-                        const selectionStart = currentNote.leftIndex()
-                            // Also select the newNoteDelimiter before the note:
-                            - (currentNote.leftIndex() > NEW_NOTE_DELIMITER.length ? NEW_NOTE_DELIMITER.length : 0);
-                        const selectionEnd = currentNote.rightIndex();
-                        textArea.setSelectionRange(selectionStart, selectionEnd);
+                        currentNote.select();
                     }
                 }
                 saveMainEditor();
-                textArea.focus();
+                mainEditorTextarea.focus();
             });
         });
     };

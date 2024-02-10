@@ -33,7 +33,7 @@ var OnlyDefinitions;
     };
     OnlyDefinitions.addMenuItem = HtmlUtils.Menus.WcMenu.addMenuItem("editorMenuHeading");
     OnlyDefinitions.addKeyboardShortcuts = () => {
-        const cutFromMainEditor = createCutFunction(mainEditorTextarea);
+        const cutFromMainEditor = createCutFunction(mainEditorTextarea, "{{c1::", "}}");
         document.addEventListener('keyup', (event) => {
             // console.log(event.key,event.shiftKey,event.ctrlKey,event.altKey);
             if (event.key === 'X' && event.shiftKey && event.ctrlKey) {
@@ -391,6 +391,8 @@ export var UiFunctions;
             });
             // cutButton
             buttonWithId("cutButton").addEventListener('click', createCutFunction(mainEditorTextarea));
+            // cutAnkiButton
+            buttonWithId("cutAnkiButton").addEventListener('click', createCutFunction(mainEditorTextarea, "{{c1::", "}}"));
             // copyButtons
             /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
             const addEventListenerForCopyButton = (buttonId, inputElementId) => {
