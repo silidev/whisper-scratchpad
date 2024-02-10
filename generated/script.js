@@ -504,6 +504,7 @@ var Log;
 (function (Log) {
     var inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
     const MAX_LOG_LEN = 1000;
+    // noinspection JSUnusedGlobalSymbols
     Log.turnOnLogging = () => {
         inputElementWithId("logReplaceRulesCheckbox").checked = true;
     };

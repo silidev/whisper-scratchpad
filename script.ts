@@ -571,6 +571,7 @@ namespace Log {
   import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
   const MAX_LOG_LEN = 1000;
 
+  // noinspection JSUnusedGlobalSymbols
   export const turnOnLogging = () => {
     inputElementWithId("logReplaceRulesCheckbox").checked = true;
   }
