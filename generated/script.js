@@ -414,13 +414,14 @@ export var UiFunctions;
             const APPEND = true;
             if (APPEND) {
                 TextAreas.appendTextAndPutCursorAfter(replaceRulesTextArea, insertedString);
-                replaceRulesTextArea.selectionStart = 0;
-                replaceRulesTextArea.selectionEnd = insertedString.length;
+                replaceRulesTextArea.selectionStart = lengthBefore;
+                replaceRulesTextArea.selectionEnd = replaceRulesTextArea.value.length;
+                TextAreas.scrollToEnd(replaceRulesTextArea);
             }
             else {
                 TextAreas.insertTextAndPutCursorAfter(replaceRulesTextArea, insertedString);
-                replaceRulesTextArea.selectionStart = lengthBefore;
-                replaceRulesTextArea.selectionEnd = replaceRulesTextArea.value.length;
+                replaceRulesTextArea.selectionStart = 0;
+                replaceRulesTextArea.selectionEnd = insertedString.length;
             }
             replaceRulesTextArea.focus(); // delete: Taken out b/c this jumps way too
             // much down on mobile.

@@ -183,9 +183,9 @@ export namespace HtmlUtils {
       textarea.focus();
     };
 
-    export function scrollToEnd(logTextArea: HTMLTextAreaElement) {
+    export const scrollToEnd = (logTextArea: HTMLTextAreaElement) => {
       logTextArea.scrollTop = logTextArea.scrollHeight;
-    }
+    };
   }
 
   export namespace Media {
