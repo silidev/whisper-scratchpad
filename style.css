@@ -142,13 +142,13 @@ textarea {
 }
 
 @media only screen and (max-width: 600px) {
- .mainEditorTextareaContainer {
+ .textareaContainer {
   width: 90%;
  }
  body, html {
   margin: 0;
  }
- .mainEditorTextareaContainer {
+ .textareaContainer {
   width: 100%
  }
 }

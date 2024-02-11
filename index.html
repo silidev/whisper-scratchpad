@@ -169,6 +169,14 @@
         The default regex flags are "gmu". You can replace the "i" with any regex flags. <a target="_blank" href="https://www.google.com/search?q=regex">Google "regex"</a>
       </pre>
   </info-button>
+<!--  <div class="textareaContainer">-->
+<!--      <textarea id="testReplaceRulesTextArea" style="height: 2cm" wrap="soft" placeholder="Optional. &quot;SEARCH&quot;-&gt;&quot;REPLACE&quot;" >-->
+<!--      </textarea>-->
+<!--  </div>-->
+  <div class="textareaContainer">
+      <textarea id="replaceRulesTextArea" wrap="soft" placeholder="Optional. &quot;SEARCH&quot;-&gt;&quot;REPLACE&quot;" >
+      </textarea>
+  </div>
   <span id="replaceRulesButtons">
     <span class="flexRightAndWrapContent">
       <button id="testFailIndicatorOfReplaceRules" style="display: none">❌FAIL❌</button>
@@ -184,14 +192,6 @@
       <button id="copyReplaceRulesButton">⎘<br>Copy</button>
     </span>
   </span>
-<!--  <div class="mainEditorTextareaContainer">-->
-<!--      <textarea id="testReplaceRulesTextArea" style="height: 2cm" wrap="soft" placeholder="Optional. &quot;SEARCH&quot;-&gt;&quot;REPLACE&quot;" >-->
-<!--      </textarea>-->
-<!--  </div>-->
-  <div class="mainEditorTextareaContainer">
-      <textarea id="replaceRulesTextArea" wrap="soft" placeholder="Optional. &quot;SEARCH&quot;-&gt;&quot;REPLACE&quot;" >
-      </textarea>
-  </div>
 </div>
 
 
@@ -205,7 +205,7 @@
         <button id="copyPromptButton">⎘<br>Copy</button>
         <button id="ctrlZButtonOfPrompt">⎌<br>Ctrl-z</button>
       </span>
-  <div class="mainEditorTextareaContainer">
+  <div class="textareaContainer">
     <textarea id="transcriptionPromptEditor" wrap="soft" placeholder="Optional prompt especially for hinting unusual names if they are not recognized by default."></textarea>
   </div>
 </div>
