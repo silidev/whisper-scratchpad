@@ -1,5 +1,5 @@
 import {HelgeUtils} from "./HelgeUtils.js"
-import {NEW_NOTE_DELIMITER} from "./config.js"
+import {NEW_NOTE_DELIMITER} from "./Config.js"
 import DelimiterSearch = HelgeUtils.Strings.DelimiterSearch
 
 /** The current note is the text between the two newNoteDelimiters. */

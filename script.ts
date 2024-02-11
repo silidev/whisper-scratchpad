@@ -14,7 +14,7 @@ import Cookies = HtmlUtils.BrowserStorage.Cookies;
 import BrowserStorage = HtmlUtils.BrowserStorage;
 import {sendCtrlZ} from "./DontInspect.js"
 import {HelgeUtils} from "./HelgeUtils.js"
-import {INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT} from "./config.js"
+import {INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT} from "./Config.js"
 import {createCutFunction} from "./CutButton.js"
 import {HtmlUtils} from "./HtmlUtils.js"
 
