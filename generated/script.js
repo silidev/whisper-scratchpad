@@ -8,14 +8,14 @@ var blinkSlow = HtmlUtils.blinkSlow;
 var escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 var elementWithId = HtmlUtils.NeverNull.elementWithId;
 var TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
+var LocalStorage = HtmlUtils.BrowserStorage.LocalStorage;
+var Cookies = HtmlUtils.BrowserStorage.Cookies;
+var BrowserStorage = HtmlUtils.BrowserStorage;
 import { sendCtrlZ } from "./DontInspect.js";
 import { HelgeUtils } from "./HelgeUtils.js";
 import { INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT } from "./config.js";
 import { createCutFunction } from "./CutButton.js";
 import { HtmlUtils } from "./HtmlUtils.js";
-var LocalStorage = HtmlUtils.BrowserStorage.LocalStorage;
-var Cookies = HtmlUtils.BrowserStorage.Cookies;
-var BrowserStorage = HtmlUtils.BrowserStorage;
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString().slice(0, 10) === "2024-01-27";
 if (RUN_TESTS)
@@ -424,27 +424,24 @@ export var UiFunctions;
         };
         // addReplaceRuleButton
         const addReplaceRule = (wordsOnly = false) => {
-            // add TextArea.selectedText() to the start of the replaceRulesTextArea
-            TextAreas.setCursor(replaceRulesTextArea, 0);
             const selectedText = TextAreas.selectedText(mainEditorTextarea);
-            const maybeWordBoundary = wordsOnly ? "\\b" : "";
-            const insertedString = `"${maybeWordBoundary + escapeRegExp(selectedText)
-                + maybeWordBoundary}"gm->"${selectedText}"\n`;
+            const ruleString = `"${(wordsOnly ? "\\b" : "")
+                + escapeRegExp(selectedText)
+                + (wordsOnly ? "\\b" : "")}"gm->"${selectedText}"`;
             const lengthBefore = replaceRulesTextArea.value.length;
             const APPEND = true;
             if (APPEND) {
-                TextAreas.appendTextAndPutCursorAfter(replaceRulesTextArea, insertedString);
+                TextAreas.appendTextAndPutCursorAfter(replaceRulesTextArea, "\n" + ruleString);
                 replaceRulesTextArea.selectionStart = lengthBefore;
                 replaceRulesTextArea.selectionEnd = replaceRulesTextArea.value.length;
                 TextAreas.scrollToEnd(replaceRulesTextArea);
             }
             else {
-                TextAreas.insertTextAndPutCursorAfter(replaceRulesTextArea, insertedString);
+                TextAreas.insertTextAndPutCursorAfter(replaceRulesTextArea, ruleString + "\n");
                 replaceRulesTextArea.selectionStart = 0;
-                replaceRulesTextArea.selectionEnd = insertedString.length;
+                replaceRulesTextArea.selectionEnd = ruleString.length;
             }
-            replaceRulesTextArea.focus(); // delete: Taken out b/c this jumps way too
-            // much down on mobile.
+            replaceRulesTextArea.focus();
             saveReplaceRules();
         };
         Buttons.addWordReplaceRule = () => {

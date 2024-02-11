@@ -2,21 +2,21 @@
  * Copyright (c) 2024 by Helge Tobias Kosuch
  */
 
-import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId
-import TextAreas = HtmlUtils.TextAreas
-import blinkFast = HtmlUtils.blinkFast
-import blinkSlow = HtmlUtils.blinkSlow
-import escapeRegExp = HelgeUtils.Strings.escapeRegExp
-import elementWithId = HtmlUtils.NeverNull.elementWithId
-import TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper
+import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
+import TextAreas = HtmlUtils.TextAreas;
+import blinkFast = HtmlUtils.blinkFast;
+import blinkSlow = HtmlUtils.blinkSlow;
+import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
+import elementWithId = HtmlUtils.NeverNull.elementWithId;
+import TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
+import LocalStorage = HtmlUtils.BrowserStorage.LocalStorage;
+import Cookies = HtmlUtils.BrowserStorage.Cookies;
+import BrowserStorage = HtmlUtils.BrowserStorage;
 import {sendCtrlZ} from "./DontInspect.js"
 import {HelgeUtils} from "./HelgeUtils.js"
 import {INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT} from "./config.js"
 import {createCutFunction} from "./CutButton.js"
 import {HtmlUtils} from "./HtmlUtils.js"
-import LocalStorage = HtmlUtils.BrowserStorage.LocalStorage
-import Cookies = HtmlUtils.BrowserStorage.Cookies
-import BrowserStorage = HtmlUtils.BrowserStorage
 
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString().slice(0, 10) === "2024-01-27"
@@ -55,24 +55,24 @@ namespace OnlyDefinitions { // TODOhStu: Move to its own module file
 const trimMainEditor = () => mainEditor.trim().append(" ")
 
 export namespace UiFunctions {
-  import buttonWithId = HtmlUtils.NeverNull.buttonWithId
+  import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
 
   export namespace Buttons {
-    import insertTextAtCursor = HtmlUtils.TextAreas.insertTextAndPutCursorAfter
-    import copyToClipboard = HtmlUtils.copyToClipboard
-    import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId
-    import buttonWithId = HtmlUtils.NeverNull.buttonWithId
-    import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId
-    import addMenuItem = OnlyDefinitions.addMenuItem
-    import Cookies = HtmlUtils.BrowserStorage.Cookies
-    import addKeyboardShortcuts = OnlyDefinitions.addKeyboardShortcuts
+    import insertTextAtCursor = HtmlUtils.TextAreas.insertTextAndPutCursorAfter;
+    import copyToClipboard = HtmlUtils.copyToClipboard;
+    import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
+    import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
+    import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
+    import addMenuItem = OnlyDefinitions.addMenuItem;
+    import Cookies = HtmlUtils.BrowserStorage.Cookies;
+    import addKeyboardShortcuts = OnlyDefinitions.addKeyboardShortcuts;
 
     export namespace Media {
-      import buttonWithId = HtmlUtils.NeverNull.buttonWithId
-      import DelimiterSearch = HelgeUtils.Strings.DelimiterSearch
-      import applyReplaceRulesToMainEditor = OnlyDefinitions.applyReplaceRulesToMainEditor
-      import addMenuItem = OnlyDefinitions.addMenuItem
-      import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning
+      import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
+      import DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
+      import applyReplaceRulesToMainEditor = OnlyDefinitions.applyReplaceRulesToMainEditor;
+      import addMenuItem = OnlyDefinitions.addMenuItem;
+      import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
       let mediaRecorder: MediaRecorder
       let audioChunks: Blob[] = []
       let audioBlob: Blob
@@ -82,7 +82,7 @@ export namespace UiFunctions {
 
       export namespace StateIndicator {
 
-        import buttonWithId = HtmlUtils.NeverNull.buttonWithId
+        import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
         /** Updates the recorder state display. That consists of the text
          * and color of the stop button and the pause record button. */
         export const update = () => {
@@ -479,26 +479,26 @@ export namespace UiFunctions {
 
     // addReplaceRuleButton
     const addReplaceRule = (wordsOnly: boolean = false) => {
-      // add TextArea.selectedText() to the start of the replaceRulesTextArea
-      TextAreas.setCursor(replaceRulesTextArea, 0)
       const selectedText = TextAreas.selectedText(mainEditorTextarea)
-      const maybeWordBoundary = wordsOnly ? "\\b" : ""
-      const insertedString = `"${maybeWordBoundary+escapeRegExp(selectedText)
-          + maybeWordBoundary}"gm->"${selectedText}"\n`
+      const ruleString =
+          `"${
+              (wordsOnly ? "\\b" : "")
+            + escapeRegExp(selectedText)
+            + (wordsOnly ? "\\b" : "")
+          }"gm->"${selectedText}"`
       const lengthBefore = replaceRulesTextArea.value.length
       const APPEND = true
       if (APPEND) {
-        TextAreas.appendTextAndPutCursorAfter(replaceRulesTextArea, insertedString)
+        TextAreas.appendTextAndPutCursorAfter(replaceRulesTextArea, "\n"+ruleString)
         replaceRulesTextArea.selectionStart = lengthBefore
         replaceRulesTextArea.selectionEnd = replaceRulesTextArea.value.length
         TextAreas.scrollToEnd(replaceRulesTextArea)
       } else {
-        TextAreas.insertTextAndPutCursorAfter(replaceRulesTextArea, insertedString)
+        TextAreas.insertTextAndPutCursorAfter(replaceRulesTextArea, ruleString+"\n")
         replaceRulesTextArea.selectionStart = 0
-        replaceRulesTextArea.selectionEnd = insertedString.length
+        replaceRulesTextArea.selectionEnd = ruleString.length
       }
-      replaceRulesTextArea.focus(); // delete: Taken out b/c this jumps way too
-      // much down on mobile.
+      replaceRulesTextArea.focus();
       saveReplaceRules()
     }
     export const addWordReplaceRule = () => {
@@ -578,7 +578,7 @@ namespace NotVisibleAtThisTime { //TODOhStu: Remove these
 }
 
 namespace Log {
-  import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId
+  import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
   const MAX_LOG_LEN = 1000
 
   // noinspection JSUnusedGlobalSymbols
@@ -624,7 +624,7 @@ namespace Log {
 
 namespace ReplaceByRules {
   // Overload signatures
-  import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId
+  import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
 
   export function withUiLog(rules: string, subject: string): string
   export function withUiLog(rules: string, subject: string, wholeWords: boolean): string
