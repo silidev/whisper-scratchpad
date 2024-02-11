@@ -1,7 +1,7 @@
 // ############## Config ##############
 // noinspection SpellCheckingInspection,JSUnusedGlobalSymbols
 
-import {UiFunctions} from "./script.js"
+import {UiFunctions} from "./Main.js"
 import WhereToPutTranscription = UiFunctions.Buttons.Media.WhereToPutTranscription
 
 // noinspection SpellCheckingInspection

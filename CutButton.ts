@@ -1,5 +1,5 @@
 import {HtmlUtils} from "./HtmlUtils.js"
-import {saveMainEditor} from "./script.js"
+import {saveMainEditor} from "./Main.js"
 import {CurrentNote} from "./CurrentNote.js"
 import buttonWithId = HtmlUtils.NeverNull.buttonWithId
 
