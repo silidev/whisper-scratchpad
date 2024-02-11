@@ -444,9 +444,7 @@ export var UiFunctions;
             replaceRulesTextArea.focus();
             saveReplaceRules();
         };
-        Buttons.addWordReplaceRule = () => {
-            addReplaceRule(true);
-        };
+        Buttons.addWordReplaceRule = () => addReplaceRule(true);
     })(Buttons = UiFunctions.Buttons || (UiFunctions.Buttons = {})); // End of Buttons namespace
     const replaceRulesTest = () => {
         // noinspection SpellCheckingInspection

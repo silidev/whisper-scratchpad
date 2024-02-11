@@ -478,7 +478,7 @@ export namespace UiFunctions {
     }
 
     // addReplaceRuleButton
-    const addReplaceRule = (wordsOnly: boolean = false) => {
+    const addReplaceRule = (wordsOnly = false) => {
       const selectedText = TextAreas.selectedText(mainEditorTextarea)
       const ruleString =
           `"${
@@ -501,9 +501,7 @@ export namespace UiFunctions {
       replaceRulesTextArea.focus();
       saveReplaceRules()
     }
-    export const addWordReplaceRule = () => {
-      addReplaceRule(true)
-    }
+    export const addWordReplaceRule = () => addReplaceRule(true)
   } // End of Buttons namespace
 
   const replaceRulesTest = () => {
