@@ -51,7 +51,6 @@ export var UiFunctions;
     let Buttons;
     (function (Buttons) {
         var insertTextAtCursor = HtmlUtils.TextAreas.insertTextAndPutCursorAfter;
-        var copyToClipboard = HtmlUtils.copyToClipboard;
         var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
         var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
         var inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
@@ -178,7 +177,6 @@ export var UiFunctions;
                     applyReplaceRulesToMainEditor();
                     trimMainEditor().focus();
                     saveMainEditor();
-                    navigator.clipboard.writeText(mainEditorTextarea.value).then();
                     sending = false;
                     StateIndicator.update();
                 }
@@ -324,7 +322,7 @@ export var UiFunctions;
             addMenuItem("focusMainEditorMenuItem", mainEditorTextarea.focus);
             // ############## Du2Ich Menu Item ##############
             const du2ichMenuItem = () => {
-                copyToClipboard(mainEditorTextarea.value).then(() => {
+                navigator.clipboard.writeText(mainEditorTextarea.value).then(() => {
                     mainEditorTextarea.value = HelgeUtils.Misc.du2ich(mainEditorTextarea.value, ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog);
                     saveMainEditor();
                 });

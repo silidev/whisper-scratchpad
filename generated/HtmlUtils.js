@@ -7,7 +7,6 @@ import { HelgeUtils } from "./HelgeUtils.js";
 const MAX_COOKIE_SIZE = 4096;
 export var HtmlUtils;
 (function (HtmlUtils) {
-    const clipboard = navigator.clipboard;
     const memoize = HelgeUtils.memoize;
     // ########## Blinking fast and slow ##########
     // https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow
@@ -275,10 +274,6 @@ export var HtmlUtils;
         return element.innerHTML;
     };
     /**
-     * Deprecated! Use navigator.clipboard.writeText instead.
-     */
-    HtmlUtils.copyToClipboard = (text) => clipboard.writeText(text);
-    /**
      # DOMException Read permission denied error
      you're encountering when calling navigator.clipboard.readText() is likely due to the permissions and security restrictions around accessing the clipboard in web browsers. Here are some key points to consider and potential solutions:
      User Interaction Required: Most modern browsers require a user-initiated action, like a click event, to access the clipboard. Make sure your code is triggered by such an action.
@@ -289,10 +284,14 @@ export var HtmlUtils;
      */
     let Clipboard;
     (function (Clipboard) {
-        /** @deprecated Inline this function instead. */
-        Clipboard.read = () => clipboard.readText();
-        /** @deprecated Inline this function instead. */
-        Clipboard.write = (text) => clipboard.writeText(text);
+        /** @deprecated */
+        Clipboard.read = () => {
+            throw new Error("Deprecated! Use navigator.clipboard.readText instead.");
+        };
+        /** @deprecated */
+        Clipboard.write = () => {
+            throw new Error("Deprecated! Use navigator.clipboard.readText instead.");
+        };
     })(Clipboard = HtmlUtils.Clipboard || (HtmlUtils.Clipboard = {}));
     /**
      * Deprecated! Use copyToClipboard instead.

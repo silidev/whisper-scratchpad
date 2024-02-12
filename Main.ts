@@ -59,7 +59,6 @@ export namespace UiFunctions {
 
   export namespace Buttons {
     import insertTextAtCursor = HtmlUtils.TextAreas.insertTextAndPutCursorAfter;
-    import copyToClipboard = HtmlUtils.copyToClipboard;
     import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
     import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
     import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
@@ -193,7 +192,6 @@ export namespace UiFunctions {
           applyReplaceRulesToMainEditor()
           trimMainEditor().focus()
           saveMainEditor()
-          navigator.clipboard.writeText(mainEditorTextarea.value).then()
           sending = false
           StateIndicator.update()
         } catch (error) {
@@ -353,7 +351,7 @@ export namespace UiFunctions {
 
 // ############## Du2Ich Menu Item ##############
       const du2ichMenuItem = () => {
-        copyToClipboard(mainEditorTextarea.value).then(() => {
+        navigator.clipboard.writeText(mainEditorTextarea.value).then(() => {
           mainEditorTextarea.value = HelgeUtils.Misc.du2ich(
               mainEditorTextarea.value, ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog)
           saveMainEditor()
