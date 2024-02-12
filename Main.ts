@@ -378,15 +378,15 @@ export namespace UiFunctions {
         clearButton()
       })
 
-      const replaceAgainButton = () => {
+      const replaceButton = () => {
         OnlyDefinitions.applyReplaceRulesToMainEditor()
         mainEditorTextarea.focus()
         // window.scrollBy(0,-100000)
       }
 
-// replaceAgainButton
-      HtmlUtils.addClickListener(buttonWithId("replaceAgainButton"), () => {
-        replaceAgainButton()
+// replaceButton
+      HtmlUtils.addClickListener(buttonWithId("replaceButton"), () => {
+        replaceButton()
       })
 
 // ############## backslashButton ##############
