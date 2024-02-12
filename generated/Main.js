@@ -470,9 +470,15 @@ const mainEditorTextarea = document.getElementById('mainEditorTextarea');
 const mainEditor = new TextAreaWrapper(mainEditorTextarea);
 const transcriptionPromptEditor = document.getElementById('transcriptionPromptEditor');
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea');
-export const saveMainEditor = () => LocalStorage.set("editorText", textAreaWithId("mainEditorTextarea").value);
+export const saveMainEditor = () => {
+    LocalStorage.set("editorText", textAreaWithId("mainEditorTextarea").value);
+    Cookies.set("editorText", ""); // This used to be stored in a cookie.
+    // Delete old cookie
+};
 const saveReplaceRules = () => {
     LocalStorage.set("replaceRules", textAreaWithId("replaceRulesTextArea").value);
+    Cookies.set("replaceRules", ""); // This used to be stored in a cookie.
+    // Delete old cookie
 };
 textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions
     .replaceRulesTextAreaOnInput);
