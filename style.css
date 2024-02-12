@@ -71,6 +71,7 @@ button {
  margin: 0;
  /*flex-grow: 1;*/
  height: var(--buttonHeight);
+ min-width:var(--buttonHeight)
 }
 
 input, textarea {
