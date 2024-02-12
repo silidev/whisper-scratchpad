@@ -29,7 +29,12 @@ export namespace HtmlUtils {
 
 
   export const elementWithId = memoize((id: string): HTMLElement | null => {
-    return document.getElementById(id) as HTMLElement
+    const element = document.getElementById(id);
+    if (element === null) {
+      printError(`Element with ID ${id} not found.`);
+      return null;
+    }
+    return element as HTMLElement
   })
 
   export const buttonWithId = elementWithId as (id: string) => HTMLButtonElement | null
@@ -294,6 +299,8 @@ export namespace HtmlUtils {
     }
 
     /**
+     * Should be named "ouputError" because it uses alert and console.log, but
+     * I am used to "printError".
      * This outputs aggressively on top of everything to the user. */
     export const printError = (str: string) => {
       console.log(str)

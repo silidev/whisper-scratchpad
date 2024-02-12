@@ -23,7 +23,12 @@ export var HtmlUtils;
      */
     HtmlUtils.blinkSlow = (message) => `<span class="blinkingSlow">${message}</span>`;
     HtmlUtils.elementWithId = memoize((id) => {
-        return document.getElementById(id);
+        const element = document.getElementById(id);
+        if (element === null) {
+            HtmlUtils.printError(`Element with ID ${id} not found.`);
+            return null;
+        }
+        return element;
     });
     HtmlUtils.buttonWithId = HtmlUtils.elementWithId;
     HtmlUtils.textAreaWithId = HtmlUtils.elementWithId;
@@ -242,6 +247,8 @@ export var HtmlUtils;
             };
         })(ExceptionHandlers = ErrorHandling.ExceptionHandlers || (ErrorHandling.ExceptionHandlers = {}));
         /**
+         * Should be named "ouputError" because it uses alert and console.log, but
+         * I am used to "printError".
          * This outputs aggressively on top of everything to the user. */
         ErrorHandling.printError = (str) => {
             console.log(str);

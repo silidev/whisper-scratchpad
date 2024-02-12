@@ -411,8 +411,8 @@ export var HelgeUtils;
     };
     let Misc;
     (function (Misc) {
-        /** I use "strictNullChecks": true to avoid debugging. Therefore, I need this where that is
-         * too strict.
+        /** I use "strictNullChecks": true to avoid bugs. Therefore, I need this
+         * where that is too strict.
          *
          * Use example:
          * const elementWithId = (id: string) =>
@@ -421,7 +421,7 @@ export var HelgeUtils;
         Misc.nullFilter = (f, ...parameters) => {
             const untypedNullFilter = (input) => {
                 if (input === null)
-                    HelgeUtils.Exceptions.alertAndThrow(`Unexpected null value.`);
+                    Exceptions.alertAndThrow(`Unexpected null value.`);
                 return input;
             };
             return untypedNullFilter(f(...parameters));
