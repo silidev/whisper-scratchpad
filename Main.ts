@@ -364,7 +364,7 @@ export namespace UiFunctions {
         setApiKeyCookie(apiKeyInput.value)
         apiKeyInput.value = ''
       };
-      HtmlUtils.addClickListener(buttonWithId("saveAPIKeyButton"), () => {
+      HtmlUtils.addClickListener(("saveAPIKeyButton"), () => {
         saveAPIKeyButton()
       })
 
@@ -375,21 +375,21 @@ export namespace UiFunctions {
       }
 
 // replaceButtons
-      HtmlUtils.addClickListener(buttonWithId("replaceButton1"), () => {
+      HtmlUtils.addClickListener(("replaceButton1"), () => {
         replaceButton()
       })
-      HtmlUtils.addClickListener(buttonWithId("replaceButton2"), () => {
+      HtmlUtils.addClickListener(("replaceButton2"), () => {
         replaceButton()
       })
 
 // ############## backslashButton ##############
-      HtmlUtils.addClickListener(buttonWithId("backslashButton"), () => {
+      HtmlUtils.addClickListener(("backslashButton"), () => {
         insertTextAtCursor(replaceRulesTextArea,"\\")
       })
 
 // ############## ctrlZButtons ##############
       const addCtrlZButtonEventListener = (ctrlZButtonId: string, textArea: HTMLTextAreaElement) => {
-        HtmlUtils.addClickListener(buttonWithId(ctrlZButtonId), () => {
+        HtmlUtils.addClickListener((ctrlZButtonId), () => {
           textArea.focus()
           sendCtrlZ()
         })
@@ -398,9 +398,9 @@ export namespace UiFunctions {
       addCtrlZButtonEventListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea)
       addCtrlZButtonEventListener("ctrlZButtonOfPrompt", transcriptionPromptEditor)
 
-      HtmlUtils.addClickListener(buttonWithId("addReplaceRuleButton"), addReplaceRule)
-      HtmlUtils.addClickListener(buttonWithId("addWordReplaceRuleButton"), addWordReplaceRule)
-      HtmlUtils.addClickListener(buttonWithId("insertNewNoteDelimiterButton"), () =>
+      HtmlUtils.addClickListener(("addReplaceRuleButton"), addReplaceRule)
+      HtmlUtils.addClickListener(("addWordReplaceRuleButton"), addWordReplaceRule)
+      HtmlUtils.addClickListener(("insertNewNoteDelimiterButton"), () =>
           insertTextIntoMainEditor('\n'+NEW_NOTE_DELIMITER))
 
 // cancelRecording
@@ -408,8 +408,7 @@ export namespace UiFunctions {
 
 // cutAllButton
       {
-        const cutAllButton = buttonWithId("cutAllButton")
-        HtmlUtils.addClickListener(cutAllButton, () => {
+        HtmlUtils.addClickListener(("cutAllButton"), () => {
           navigator.clipboard.writeText(mainEditorTextarea.value).then(() => {
             mainEditorTextarea.value = ''
             saveMainEditor()
@@ -418,7 +417,7 @@ export namespace UiFunctions {
       }
 
 // aboutButton
-      HtmlUtils.addClickListener(buttonWithId("pasteButton"), () => {
+      HtmlUtils.addClickListener(("pasteButton"), () => {
         navigator.clipboard.readText().then(text => {
           insertTextAndPutCursorAfter(text)
         })

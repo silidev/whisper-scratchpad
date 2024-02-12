@@ -333,7 +333,7 @@ export var UiFunctions;
                 setApiKeyCookie(apiKeyInput.value);
                 apiKeyInput.value = '';
             };
-            HtmlUtils.addClickListener(buttonWithId("saveAPIKeyButton"), () => {
+            HtmlUtils.addClickListener(("saveAPIKeyButton"), () => {
                 saveAPIKeyButton();
             });
             const replaceButton = () => {
@@ -342,34 +342,33 @@ export var UiFunctions;
                 // window.scrollBy(0,-100000)
             };
             // replaceButtons
-            HtmlUtils.addClickListener(buttonWithId("replaceButton1"), () => {
+            HtmlUtils.addClickListener(("replaceButton1"), () => {
                 replaceButton();
             });
-            HtmlUtils.addClickListener(buttonWithId("replaceButton2"), () => {
+            HtmlUtils.addClickListener(("replaceButton2"), () => {
                 replaceButton();
             });
             // ############## backslashButton ##############
-            HtmlUtils.addClickListener(buttonWithId("backslashButton"), () => {
+            HtmlUtils.addClickListener(("backslashButton"), () => {
                 insertTextAtCursor(replaceRulesTextArea, "\\");
             });
             // ############## ctrlZButtons ##############
             const addCtrlZButtonEventListener = (ctrlZButtonId, textArea) => {
-                HtmlUtils.addClickListener(buttonWithId(ctrlZButtonId), () => {
+                HtmlUtils.addClickListener((ctrlZButtonId), () => {
                     textArea.focus();
                     sendCtrlZ();
                 });
             };
             addCtrlZButtonEventListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea);
             addCtrlZButtonEventListener("ctrlZButtonOfPrompt", transcriptionPromptEditor);
-            HtmlUtils.addClickListener(buttonWithId("addReplaceRuleButton"), addReplaceRule);
-            HtmlUtils.addClickListener(buttonWithId("addWordReplaceRuleButton"), Buttons.addWordReplaceRule);
-            HtmlUtils.addClickListener(buttonWithId("insertNewNoteDelimiterButton"), () => insertTextIntoMainEditor('\n' + NEW_NOTE_DELIMITER));
+            HtmlUtils.addClickListener(("addReplaceRuleButton"), addReplaceRule);
+            HtmlUtils.addClickListener(("addWordReplaceRuleButton"), Buttons.addWordReplaceRule);
+            HtmlUtils.addClickListener(("insertNewNoteDelimiterButton"), () => insertTextIntoMainEditor('\n' + NEW_NOTE_DELIMITER));
             // cancelRecording
             addMenuItem("cancelRecording", Buttons.Media.cancelRecording);
             // cutAllButton
             {
-                const cutAllButton = buttonWithId("cutAllButton");
-                HtmlUtils.addClickListener(cutAllButton, () => {
+                HtmlUtils.addClickListener(("cutAllButton"), () => {
                     navigator.clipboard.writeText(mainEditorTextarea.value).then(() => {
                         mainEditorTextarea.value = '';
                         saveMainEditor();
@@ -377,7 +376,7 @@ export var UiFunctions;
                 });
             }
             // aboutButton
-            HtmlUtils.addClickListener(buttonWithId("pasteButton"), () => {
+            HtmlUtils.addClickListener(("pasteButton"), () => {
                 navigator.clipboard.readText().then(text => {
                     insertTextAndPutCursorAfter(text);
                 });

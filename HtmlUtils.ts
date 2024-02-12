@@ -260,7 +260,14 @@ export namespace HtmlUtils {
   /**
    * Adds a click listener to a button that appends a checkmark to the button
    * text when clicked. */
-  export const addClickListener = (element: HTMLElement, callback: () => void) => {
+  export const addClickListener = (buttonId: string,
+                                   callback: () => void) => {
+    const element = buttonWithId(buttonId)
+    if (element === null) {
+      printError(`Element with ID ${buttonId} not found.`)
+      return
+    }
+
     const initialHTML = element.innerHTML; // Read initial HTML from the button
     const checkmark = ' ✔️'; // Unicode checkmark
 
@@ -381,7 +388,7 @@ export namespace HtmlUtils {
       import elementWithId = NeverNull.elementWithId
       export const addMenuItem = (menuHeadingId: string) => {
         return (id: string, menuFunction: () => void) => {
-          HtmlUtils.addClickListener(elementWithId(id), () => {
+          HtmlUtils.addClickListener(id, () => {
             menuFunction()
             // Close the menu:
             elementWithId(menuHeadingId).dispatchEvent(

@@ -214,7 +214,12 @@ export var HtmlUtils;
     /**
      * Adds a click listener to a button that appends a checkmark to the button
      * text when clicked. */
-    HtmlUtils.addClickListener = (element, callback) => {
+    HtmlUtils.addClickListener = (buttonId, callback) => {
+        const element = HtmlUtils.buttonWithId(buttonId);
+        if (element === null) {
+            HtmlUtils.printError(`Element with ID ${buttonId} not found.`);
+            return;
+        }
         const initialHTML = element.innerHTML; // Read initial HTML from the button
         const checkmark = ' ✔️'; // Unicode checkmark
         element.addEventListener('click', () => {
@@ -322,7 +327,7 @@ export var HtmlUtils;
             var elementWithId = NeverNull.elementWithId;
             WcMenu.addMenuItem = (menuHeadingId) => {
                 return (id, menuFunction) => {
-                    HtmlUtils.addClickListener(elementWithId(id), () => {
+                    HtmlUtils.addClickListener(id, () => {
                         menuFunction();
                         // Close the menu:
                         elementWithId(menuHeadingId).dispatchEvent(new CustomEvent('rootMenuClose'));
