@@ -31,7 +31,8 @@
   <div id="mainEditorMenu" style="z-index: 99999">
     <wc-menu-wrapper>
       <!-- https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper -->
-      <div id="editorMenuHeading" class='heading'>☰</div>
+      <div id="editorMenuHeading" class='heading centerContent'
+           style="min-width:var(--buttonHeight)">☰</div>
       <div class='item buttonMenuItem'>
         <button id="du2ichMenuItem">du2ich</button>
         <button id="cancelRecording">x<br>Cancel</button>
@@ -84,6 +85,7 @@
       <div class='item'>Version:&nbsp;<span id="versionSpan">Rochen</span></div>
     </wc-menu-wrapper></div>
   <!-- ########### row1EditorButtons ############# -->
+  <button id="replaceButton1">♻<br>Repl</button>
   <button id="clearButton" style="display: none; line-height: 20px"><span class="forceMainColor">🧹</span> Clear
   </button>
   <button id="cutButton">✂<br>Cut</button> <!--Copy icon was ⎘-->
@@ -188,7 +190,7 @@
       </select>
       <!-- ############## Replace-rules buttons ###############-->
       <button id="backslashButton" style="width: 60px">\</button>
-      <button id="replaceButton">♻<br>Replace</button>
+      <button id="replaceButton2">♻<br>Replace</button>
       <button id="copyReplaceRulesButton">⎘<br>Copy</button>
     </span>
   </span>

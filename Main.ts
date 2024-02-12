@@ -384,8 +384,11 @@ export namespace UiFunctions {
         // window.scrollBy(0,-100000)
       }
 
-// replaceButton
-      HtmlUtils.addClickListener(buttonWithId("replaceButton"), () => {
+// replaceButtons
+      HtmlUtils.addClickListener(buttonWithId("replaceButton1"), () => {
+        replaceButton()
+      })
+      HtmlUtils.addClickListener(buttonWithId("replaceButton2"), () => {
         replaceButton()
       })
 
