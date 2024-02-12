@@ -50,6 +50,31 @@ export var HelgeUtils;
             return str;
         };
         /**
+         * Wraps the given void function in a try-catch block and swallows any exceptions.
+         *
+         * Example use:
+         *     const produceError = () => {throw "error"}
+         *     const noError = swallowAll(produceError);
+         *     noError(); // Does NOT throw an exception.
+         *
+         * @param func
+         */
+        Exceptions.swallowAll = (func) => {
+            return (...args) => {
+                try {
+                    func(...args);
+                }
+                catch (e) {
+                }
+            };
+        };
+        /** Alias for swallowAll
+         * @deprecated */
+        Exceptions.catchAll = Exceptions.swallowAll;
+        /** Alias for swallowAll
+         * @deprecated */
+        Exceptions.unthrow = Exceptions.swallowAll;
+        /**
          * Calls the function and swallows any exceptions. */
         Exceptions.callSwallowingExceptions = (f) => {
             try {

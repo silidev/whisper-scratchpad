@@ -51,6 +51,35 @@ export namespace HelgeUtils {
     }
 
     /**
+     * Wraps the given void function in a try-catch block and swallows any exceptions.
+     *
+     * Example use:
+     *     const produceError = () => {throw "error"}
+     *     const noError = swallowAll(produceError);
+     *     noError(); // Does NOT throw an exception.
+     *
+     * @param func
+     */
+    export const swallowAll =
+        <T, R>(func: (...args: T[]) => void): (...args: T[]) => void => {
+          return (...args: T[]): void => {
+            try {
+              func(...args)
+            } catch (e) {
+            }
+          }
+        }
+    ;
+
+    /** Alias for swallowAll
+     * @deprecated */
+    export const catchAll = swallowAll;
+
+    /** Alias for swallowAll
+     * @deprecated */
+    export const unthrow = swallowAll;
+
+    /**
      * Calls the function and swallows any exceptions. */
     export const callSwallowingExceptions = (f: () => void) => {
       try {

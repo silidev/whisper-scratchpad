@@ -7,9 +7,9 @@ import { HelgeUtils } from "./HelgeUtils.js";
 const MAX_COOKIE_SIZE = 4096;
 export var HtmlUtils;
 (function (HtmlUtils) {
-    const memoize = HelgeUtils.memoize;
     // ########## Blinking fast and slow ##########
     // https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow
+    var memoize = HelgeUtils.memoize;
     /**
      * .blinkingFast {
      *  animation: blink 1s linear infinite
