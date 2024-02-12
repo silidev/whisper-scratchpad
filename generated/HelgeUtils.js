@@ -411,7 +411,10 @@ export var HelgeUtils;
     };
     let Misc;
     (function (Misc) {
-        /** I use "strictNullChecks": true to avoid bugs. Therefore, I need this
+        /**
+         * Throws an exception if the input is null.
+         *
+         * I use "strictNullChecks": true to avoid bugs. Therefore, I need this
          * where that is too strict.
          *
          * Use example:

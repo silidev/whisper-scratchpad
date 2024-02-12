@@ -445,7 +445,10 @@ Please note that certain strong accents can possibly cause this mode to transcri
   }
 
   export namespace Misc {
-    /** I use "strictNullChecks": true to avoid bugs. Therefore, I need this
+    /**
+     * Throws an exception if the input is null.
+     *
+     * I use "strictNullChecks": true to avoid bugs. Therefore, I need this
      * where that is too strict.
      *
      * Use example:

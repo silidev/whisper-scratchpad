@@ -33,7 +33,8 @@ export var HtmlUtils;
     HtmlUtils.buttonWithId = HtmlUtils.elementWithId;
     HtmlUtils.textAreaWithId = HtmlUtils.elementWithId;
     HtmlUtils.inputElementWithId = HtmlUtils.elementWithId;
-    /** These never return null. Instead, they throw a runtime error. */
+    /**
+     * These never return null. Instead, they throw a runtime error. */
     let NeverNull;
     (function (NeverNull) {
         var nullFilter = HelgeUtils.Misc.nullFilter;

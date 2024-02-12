@@ -41,7 +41,8 @@ export namespace HtmlUtils {
   export const textAreaWithId = elementWithId as (id: string) => HTMLTextAreaElement | null
   export const inputElementWithId = elementWithId as (id: string) => HTMLInputElement | null
 
-  /** These never return null. Instead, they throw a runtime error. */
+  /**
+   * These never return null. Instead, they throw a runtime error. */
   export namespace NeverNull {
     import nullFilter = HelgeUtils.Misc.nullFilter
 
