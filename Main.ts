@@ -360,22 +360,12 @@ export namespace UiFunctions {
       addMenuItem("du2ichMenuItem", du2ichMenuItem)
 
 // ############## saveAPIKeyButton ##############
-      function saveAPIKeyButton() {
+      const saveAPIKeyButton = () => {
         setApiKeyCookie(apiKeyInput.value)
         apiKeyInput.value = ''
-      }
+      };
       HtmlUtils.addClickListener(buttonWithId("saveAPIKeyButton"), () => {
         saveAPIKeyButton()
-      })
-
-      function clearButton() {
-        mainEditorTextarea.value = ''
-        saveMainEditor()
-      }
-
-// clearButton
-      HtmlUtils.addClickListener(buttonWithId("clearButton"), () => {
-        clearButton()
       })
 
       const replaceButton = () => {
