@@ -209,7 +209,7 @@ export var UiFunctions;
                             downloadLink.style.display = 'block';
                         }
                         transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
-                            .then(NotVisibleAtThisTime.hideSpinner);
+                            .then();
                     };
                 };
             })(StopCallbackCreator = Media.StopCallbackCreator || (Media.StopCallbackCreator = {}));
@@ -262,7 +262,7 @@ export var UiFunctions;
                     audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                     audioChunks = [];
                     sending = true;
-                    transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT).then(NotVisibleAtThisTime.hideSpinner);
+                    transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT).then();
                     startRecording(true);
                 };
                 mediaRecorder.stop();
@@ -278,7 +278,6 @@ export var UiFunctions;
                     StateIndicator.update();
                 }
                 else {
-                    NotVisibleAtThisTime.showSpinner();
                     startRecording();
                 }
             };
@@ -296,8 +295,7 @@ export var UiFunctions;
             buttonWithId("pauseRecordButton").addEventListener('click', pauseRecordButton);
             // ############## transcribeAgainButton ##############
             const transcribeAgainButton = () => {
-                NotVisibleAtThisTime.showSpinner();
-                transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT).then(NotVisibleAtThisTime.hideSpinner);
+                transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT).then();
             };
             addMenuItem("transcribeAgainButton", transcribeAgainButton);
             StateIndicator.update();
@@ -456,7 +454,6 @@ export var UiFunctions;
     UiFunctions.replaceRulesTextAreaOnInput = () => replaceRulesTest;
 })(UiFunctions || (UiFunctions = {}));
 const downloadLink = document.getElementById('downloadLink');
-const spinner1 = document.getElementById('spinner1');
 const apiSelector = document.getElementById('apiSelector');
 const languageSelector = document.getElementById('languageSelector');
 const apiKeyInput = document.getElementById('apiKeyInputField');
@@ -489,17 +486,6 @@ const insertTextAndPutCursorAfter = (text) => {
 };
 const getApiSelectedInUi = () => apiSelector.value;
 const getLanguageSelectedInUi = () => (languageSelector.value);
-var NotVisibleAtThisTime;
-(function (NotVisibleAtThisTime) {
-    NotVisibleAtThisTime.showSpinner = () => {
-        // probably not needed anymore, delete later
-        // spinner1.style.display = 'block'
-    };
-    // probably not needed anymore, delete later
-    NotVisibleAtThisTime.hideSpinner = () => {
-        spinner1.style.display = 'none';
-    };
-})(NotVisibleAtThisTime || (NotVisibleAtThisTime = {}));
 var Log;
 (function (Log) {
     var inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;

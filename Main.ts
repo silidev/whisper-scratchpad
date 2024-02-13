@@ -221,7 +221,7 @@ export namespace UiFunctions {
               downloadLink.style.display = 'block'
             }
             transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
-                .then(NotVisibleAtThisTime.hideSpinner)
+                .then()
           }
         }
       }
@@ -278,7 +278,7 @@ export namespace UiFunctions {
           audioBlob = new Blob(audioChunks, {type: 'audio/wav'})
           audioChunks = []
           sending = true
-          transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT).then(NotVisibleAtThisTime.hideSpinner)
+          transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT).then()
           startRecording(true)
         }
         mediaRecorder.stop()
@@ -293,7 +293,6 @@ export namespace UiFunctions {
           mediaRecorder.resume()
           StateIndicator.update()
         } else {
-          NotVisibleAtThisTime.showSpinner()
           startRecording()
         }
       }
@@ -314,8 +313,7 @@ export namespace UiFunctions {
 
 // ############## transcribeAgainButton ##############
       const transcribeAgainButton = () => {
-        NotVisibleAtThisTime.showSpinner()
-        transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT).then(NotVisibleAtThisTime.hideSpinner)
+        transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT).then()
       }
       addMenuItem("transcribeAgainButton", transcribeAgainButton)
 
@@ -517,7 +515,6 @@ export namespace UiFunctions {
 
 
 const downloadLink = document.getElementById('downloadLink') as HTMLAnchorElement
-const spinner1 = document.getElementById('spinner1') as HTMLElement
 const apiSelector = document.getElementById('apiSelector') as HTMLSelectElement
 const languageSelector = document.getElementById('languageSelector') as HTMLSelectElement
 
@@ -558,18 +555,6 @@ const insertTextAndPutCursorAfter = (text: string) => {
 
 const getApiSelectedInUi = () => (apiSelector.value as HelgeUtils.Transcription.ApiName)
 const getLanguageSelectedInUi = () => (languageSelector.value)
-
-namespace NotVisibleAtThisTime { //TODOhStu: Remove these
-  export const showSpinner = () => {
-    // probably not needed anymore, delete later
-    // spinner1.style.display = 'block'
-  }
-
-  // probably not needed anymore, delete later
-  export const hideSpinner = () => {
-    spinner1.style.display = 'none'
-  }
-}
 
 namespace Log {
   import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
