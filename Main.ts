@@ -25,7 +25,7 @@ if (RUN_TESTS) console.log("RUN_TESTS is true. This is only for " +
 
 HtmlUtils.ErrorHandling.ExceptionHandlers.installGlobalDefault()
 
-namespace OnlyDefinitions { // TODOhStu: Move to its own module file
+namespace Misc {
   export const applyReplaceRulesToMainEditor = () => {
     const selectionStart = mainEditorTextarea.selectionStart
     const selectionEnd = mainEditorTextarea.selectionEnd
@@ -62,15 +62,15 @@ export namespace UiFunctions {
     import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
     import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
     import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
-    import addMenuItem = OnlyDefinitions.addMenuItem;
+    import addMenuItem = Misc.addMenuItem;
     import Cookies = HtmlUtils.BrowserStorage.Cookies;
-    import addKeyboardShortcuts = OnlyDefinitions.addKeyboardShortcuts;
+    import addKeyboardShortcuts = Misc.addKeyboardShortcuts;
 
     export namespace Media {
       import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
       import DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
-      import applyReplaceRulesToMainEditor = OnlyDefinitions.applyReplaceRulesToMainEditor;
-      import addMenuItem = OnlyDefinitions.addMenuItem;
+      import applyReplaceRulesToMainEditor = Misc.applyReplaceRulesToMainEditor;
+      import addMenuItem = Misc.addMenuItem;
       import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
       let mediaRecorder: MediaRecorder
       let audioChunks: Blob[] = []
@@ -367,7 +367,7 @@ export namespace UiFunctions {
       })
 
       const replaceButton = () => {
-        OnlyDefinitions.applyReplaceRulesToMainEditor()
+        Misc.applyReplaceRulesToMainEditor()
         mainEditorTextarea.focus()
         // window.scrollBy(0,-100000)
       }

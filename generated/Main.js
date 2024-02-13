@@ -22,17 +22,17 @@ if (RUN_TESTS)
     console.log("RUN_TESTS is true. This is only for " +
         "testing. Set it to false in production.");
 HtmlUtils.ErrorHandling.ExceptionHandlers.installGlobalDefault();
-var OnlyDefinitions;
-(function (OnlyDefinitions) {
-    OnlyDefinitions.applyReplaceRulesToMainEditor = () => {
+var Misc;
+(function (Misc) {
+    Misc.applyReplaceRulesToMainEditor = () => {
         const selectionStart = mainEditorTextarea.selectionStart;
         const selectionEnd = mainEditorTextarea.selectionEnd;
         mainEditorTextarea.value = ReplaceByRules.withUiLog(replaceRulesTextArea.value, mainEditorTextarea.value);
         mainEditorTextarea.selectionStart = selectionStart;
         mainEditorTextarea.selectionEnd = selectionEnd;
     };
-    OnlyDefinitions.addMenuItem = HtmlUtils.Menus.WcMenu.addMenuItem("editorMenuHeading");
-    OnlyDefinitions.addKeyboardShortcuts = () => {
+    Misc.addMenuItem = HtmlUtils.Menus.WcMenu.addMenuItem("editorMenuHeading");
+    Misc.addKeyboardShortcuts = () => {
         const cutFromMainEditor = createCutFunction(mainEditorTextarea, "{{c1::", "}}");
         document.addEventListener('keyup', (event) => {
             // console.log(event.key,event.shiftKey,event.ctrlKey,event.altKey)
@@ -43,7 +43,7 @@ var OnlyDefinitions;
             }
         });
     };
-})(OnlyDefinitions || (OnlyDefinitions = {}));
+})(Misc || (Misc = {}));
 const trimMainEditor = () => mainEditor.trim().append(" ");
 export var UiFunctions;
 (function (UiFunctions) {
@@ -54,15 +54,15 @@ export var UiFunctions;
         var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
         var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
         var inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
-        var addMenuItem = OnlyDefinitions.addMenuItem;
+        var addMenuItem = Misc.addMenuItem;
         var Cookies = HtmlUtils.BrowserStorage.Cookies;
-        var addKeyboardShortcuts = OnlyDefinitions.addKeyboardShortcuts;
+        var addKeyboardShortcuts = Misc.addKeyboardShortcuts;
         let Media;
         (function (Media) {
             var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
             var DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
-            var applyReplaceRulesToMainEditor = OnlyDefinitions.applyReplaceRulesToMainEditor;
-            var addMenuItem = OnlyDefinitions.addMenuItem;
+            var applyReplaceRulesToMainEditor = Misc.applyReplaceRulesToMainEditor;
+            var addMenuItem = Misc.addMenuItem;
             var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
             let mediaRecorder;
             let audioChunks = [];
@@ -335,7 +335,7 @@ export var UiFunctions;
                 saveAPIKeyButton();
             });
             const replaceButton = () => {
-                OnlyDefinitions.applyReplaceRulesToMainEditor();
+                Misc.applyReplaceRulesToMainEditor();
                 mainEditorTextarea.focus();
                 // window.scrollBy(0,-100000)
             };
