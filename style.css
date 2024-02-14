@@ -1,9 +1,9 @@
 :root {
+ --mainColor: #f72e00;   /*amber*/
  /*--mainColor: #ff0000; !*red*!*/
- --mainColor: #f72e00; /*amber*/
  /*--mainColor: #ff886d; !*amber*!*/
- /*--mainColor: #0f0;*/
- /*blue: --mainColor: #00b2ff;*/
+ /*--mainColor: #0f0;    !*green*!*/
+ /*--mainColor: #00b2ff; !*blue*!*/
  --buttonHeight: 55px;
  --menuItemHeight: 44px;
  --fontSize: 18px;
