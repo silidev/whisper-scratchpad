@@ -57,6 +57,7 @@ export var UiFunctions;
         var addMenuItem = Misc.addMenuItem;
         var Cookies = HtmlUtils.BrowserStorage.Cookies;
         var addKeyboardShortcuts = Misc.addKeyboardShortcuts;
+        var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
         let Media;
         (function (Media) {
             var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
@@ -361,7 +362,10 @@ export var UiFunctions;
             addCtrlZButtonEventListener("ctrlZButtonOfPrompt", transcriptionPromptEditor);
             HtmlUtils.addClickListener(("addReplaceRuleButton"), addReplaceRule);
             HtmlUtils.addClickListener(("addWordReplaceRuleButton"), Buttons.addWordReplaceRule);
-            HtmlUtils.addClickListener(("insertNewNoteDelimiterButton"), () => insertTextIntoMainEditor('\n' + NEW_NOTE_DELIMITER));
+            HtmlUtils.addClickListener(("insertNewNoteDelimiterButton"), () => {
+                TextAreas.appendTextAndPutCursorAfter(mainEditorTextarea, '\n' + NEW_NOTE_DELIMITER);
+                saveMainEditor();
+            });
             // cancelRecording
             addMenuItem("cancelRecording", Buttons.Media.cancelRecording);
             // cutAllButton
@@ -412,6 +416,7 @@ export var UiFunctions;
             TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, insertedString);
             saveMainEditor();
         };
+        suppressUnusedWarning(insertTextIntoMainEditor);
         // addReplaceRuleButton
         const addReplaceRule = (wordsOnly = false) => {
             const selectedText = TextAreas.selectedText(mainEditorTextarea);

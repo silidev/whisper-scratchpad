@@ -65,6 +65,7 @@ export namespace UiFunctions {
     import addMenuItem = Misc.addMenuItem;
     import Cookies = HtmlUtils.BrowserStorage.Cookies;
     import addKeyboardShortcuts = Misc.addKeyboardShortcuts;
+    import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
 
     export namespace Media {
       import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
@@ -398,8 +399,10 @@ export namespace UiFunctions {
 
       HtmlUtils.addClickListener(("addReplaceRuleButton"), addReplaceRule)
       HtmlUtils.addClickListener(("addWordReplaceRuleButton"), addWordReplaceRule)
-      HtmlUtils.addClickListener(("insertNewNoteDelimiterButton"), () =>
-          insertTextIntoMainEditor('\n'+NEW_NOTE_DELIMITER))
+      HtmlUtils.addClickListener(("insertNewNoteDelimiterButton"), () => {
+        TextAreas.appendTextAndPutCursorAfter(mainEditorTextarea, '\n' + NEW_NOTE_DELIMITER)
+        saveMainEditor()
+      })
 
 // cancelRecording
       addMenuItem("cancelRecording", Buttons.Media.cancelRecording)
@@ -464,6 +467,7 @@ export namespace UiFunctions {
       TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, insertedString)
       saveMainEditor()
     }
+    suppressUnusedWarning(insertTextIntoMainEditor)
 
     // addReplaceRuleButton
     const addReplaceRule = (wordsOnly = false) => {
