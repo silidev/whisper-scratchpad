@@ -400,8 +400,7 @@ export namespace UiFunctions {
       HtmlUtils.addClickListener(("addReplaceRuleButton"), addReplaceRule)
       HtmlUtils.addClickListener(("addWordReplaceRuleButton"), addWordReplaceRule)
       HtmlUtils.addClickListener(("insertNewNoteDelimiterButton"), () => {
-        TextAreas.appendTextAndPutCursorAfter(mainEditorTextarea, '\n' + NEW_NOTE_DELIMITER)
-        saveMainEditor()
+        appendToMainEditor('\n' + NEW_NOTE_DELIMITER)
       })
 
 // cancelRecording
@@ -468,6 +467,12 @@ export namespace UiFunctions {
       saveMainEditor()
     }
     suppressUnusedWarning(insertTextIntoMainEditor)
+
+    const appendToMainEditor = (insertedString: string) => {
+      TextAreas.appendTextAndPutCursorAfter(mainEditorTextarea, insertedString)
+      saveMainEditor()
+      TextAreas.scrollToEnd(mainEditorTextarea);
+    }
 
     // addReplaceRuleButton
     const addReplaceRule = (wordsOnly = false) => {

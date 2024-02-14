@@ -363,8 +363,7 @@ export var UiFunctions;
             HtmlUtils.addClickListener(("addReplaceRuleButton"), addReplaceRule);
             HtmlUtils.addClickListener(("addWordReplaceRuleButton"), Buttons.addWordReplaceRule);
             HtmlUtils.addClickListener(("insertNewNoteDelimiterButton"), () => {
-                TextAreas.appendTextAndPutCursorAfter(mainEditorTextarea, '\n' + NEW_NOTE_DELIMITER);
-                saveMainEditor();
+                appendToMainEditor('\n' + NEW_NOTE_DELIMITER);
             });
             // cancelRecording
             addMenuItem("cancelRecording", Buttons.Media.cancelRecording);
@@ -417,6 +416,11 @@ export var UiFunctions;
             saveMainEditor();
         };
         suppressUnusedWarning(insertTextIntoMainEditor);
+        const appendToMainEditor = (insertedString) => {
+            TextAreas.appendTextAndPutCursorAfter(mainEditorTextarea, insertedString);
+            saveMainEditor();
+            TextAreas.scrollToEnd(mainEditorTextarea);
+        };
         // addReplaceRuleButton
         const addReplaceRule = (wordsOnly = false) => {
             const selectedText = TextAreas.selectedText(mainEditorTextarea);
