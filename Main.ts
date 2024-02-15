@@ -58,7 +58,6 @@ export namespace UiFunctions {
   import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
 
   export namespace Buttons {
-    import insertTextAtCursor = HtmlUtils.TextAreas.insertTextAndPutCursorAfter;
     import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
     import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
     import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
@@ -179,14 +178,13 @@ export namespace UiFunctions {
           StateIndicator.update()
           const apiName = getApiSelectedInUi()
           if (!apiName) {
-            insertTextAndPutCursorAfter("You must select an API below.")
+            TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, "You must select an API below.")
             return
           }
           const transcriptionText = await getTranscriptionText()
 
           if (whereToPutTranscription=="insertAtCursor") {
-            insertTextAndPutCursorAfter(aSpaceIfNeeded()
-                + removeLastDotIfNotAtEnd(transcriptionText))
+            TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, aSpaceIfNeeded() + removeLastDotIfNotAtEnd(transcriptionText))
           } else {
             trimMainEditor().appendTextAndPutCursorAfter(transcriptionText)
           }
@@ -383,7 +381,7 @@ export namespace UiFunctions {
 
 // ############## backslashButton ##############
       HtmlUtils.addClickListener(("backslashButton"), () => {
-        insertTextAtCursor(replaceRulesTextArea,"\\b")
+        TextAreas.insertTextAndPutCursorAfter(replaceRulesTextArea,"\\b")
       })
 
 // ############## Undo #############
@@ -419,7 +417,7 @@ export namespace UiFunctions {
 // aboutButton
       HtmlUtils.addClickListener(("pasteButton"), () => {
         navigator.clipboard.readText().then(text => {
-          insertTextAndPutCursorAfter(text)
+          TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, text)
         })
       })
 
@@ -574,10 +572,6 @@ textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions
   TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea', handleAutoSaveError, BrowserStorage.LocalStorage)
   TextAreas.setAutoSave('editorText', 'mainEditorTextarea', handleAutoSaveError, BrowserStorage.LocalStorage)
   TextAreas.setAutoSave('prompt', 'transcriptionPromptEditor', handleAutoSaveError, BrowserStorage.LocalStorage)
-}
-
-const insertTextAndPutCursorAfter = (text: string) => {
-  TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, text)
 }
 
 const getApiSelectedInUi = () => (apiSelector.value as HelgeUtils.Transcription.ApiName)

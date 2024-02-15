@@ -50,7 +50,6 @@ export var UiFunctions;
     var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
     let Buttons;
     (function (Buttons) {
-        var insertTextAtCursor = HtmlUtils.TextAreas.insertTextAndPutCursorAfter;
         var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
         var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
         var inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
@@ -164,13 +163,12 @@ export var UiFunctions;
                     StateIndicator.update();
                     const apiName = getApiSelectedInUi();
                     if (!apiName) {
-                        insertTextAndPutCursorAfter("You must select an API below.");
+                        TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, "You must select an API below.");
                         return;
                     }
                     const transcriptionText = await getTranscriptionText();
                     if (whereToPutTranscription == "insertAtCursor") {
-                        insertTextAndPutCursorAfter(aSpaceIfNeeded()
-                            + removeLastDotIfNotAtEnd(transcriptionText));
+                        TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, aSpaceIfNeeded() + removeLastDotIfNotAtEnd(transcriptionText));
                     }
                     else {
                         trimMainEditor().appendTextAndPutCursorAfter(transcriptionText);
@@ -349,7 +347,7 @@ export var UiFunctions;
             });
             // ############## backslashButton ##############
             HtmlUtils.addClickListener(("backslashButton"), () => {
-                insertTextAtCursor(replaceRulesTextArea, "\\b");
+                TextAreas.insertTextAndPutCursorAfter(replaceRulesTextArea, "\\b");
             });
             // ############## Undo #############
             const addUndoClickListener = (undoButtonId, textArea) => {
@@ -380,7 +378,7 @@ export var UiFunctions;
             // aboutButton
             HtmlUtils.addClickListener(("pasteButton"), () => {
                 navigator.clipboard.readText().then(text => {
-                    insertTextAndPutCursorAfter(text);
+                    TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, text);
                 });
             });
             // cutButton
@@ -511,9 +509,6 @@ textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions
     TextAreas.setAutoSave('editorText', 'mainEditorTextarea', handleAutoSaveError, BrowserStorage.LocalStorage);
     TextAreas.setAutoSave('prompt', 'transcriptionPromptEditor', handleAutoSaveError, BrowserStorage.LocalStorage);
 }
-const insertTextAndPutCursorAfter = (text) => {
-    TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, text);
-};
 const getApiSelectedInUi = () => apiSelector.value;
 const getLanguageSelectedInUi = () => (languageSelector.value);
 var Log;
