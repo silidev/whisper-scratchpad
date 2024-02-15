@@ -5,13 +5,13 @@ var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
 var TextAreas = HtmlUtils.TextAreas;
 var blinkFast = HtmlUtils.blinkFast;
 var blinkSlow = HtmlUtils.blinkSlow;
-var escapeRegExp = HelgeUtils.Strings.escapeRegExp;
+var escapeForRegExp = HelgeUtils.Strings.escapeRegExp;
 var elementWithId = HtmlUtils.NeverNull.elementWithId;
 var TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
 var LocalStorage = HtmlUtils.BrowserStorage.LocalStorage;
 var Cookies = HtmlUtils.BrowserStorage.Cookies;
 var BrowserStorage = HtmlUtils.BrowserStorage;
-import { sendCtrlZ } from "./DontInspect.js";
+import { undoLastEdit } from "./DontInspect.js";
 import { HelgeUtils } from "./HelgeUtils.js";
 import { INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT } from "./Config.js";
 import { createCutFunction } from "./CutButton.js";
@@ -351,18 +351,18 @@ export var UiFunctions;
             HtmlUtils.addClickListener(("backslashButton"), () => {
                 insertTextAtCursor(replaceRulesTextArea, "\\");
             });
-            // ############## ctrlZButtons ##############
-            const addCtrlZButtonEventListener = (ctrlZButtonId, textArea) => {
+            // ############## Undo#############
+            const addUndoClickListener = (ctrlZButtonId, textArea) => {
                 HtmlUtils.addClickListener((ctrlZButtonId), () => {
                     textArea.focus();
-                    sendCtrlZ();
+                    undoLastEdit();
                 });
             };
-            addCtrlZButtonEventListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea);
-            addCtrlZButtonEventListener("ctrlZButtonOfPrompt", transcriptionPromptEditor);
-            HtmlUtils.addClickListener(("addReplaceRuleButton"), addReplaceRule);
-            HtmlUtils.addClickListener(("addWordReplaceRuleButton"), Buttons.addWordReplaceRule);
-            HtmlUtils.addClickListener(("insertNewNoteDelimiterButton"), () => {
+            addUndoClickListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea);
+            addUndoClickListener("ctrlZButtonOfPrompt", transcriptionPromptEditor);
+            HtmlUtils.addClickListener("addReplaceRuleButton", addReplaceRule);
+            HtmlUtils.addClickListener("addWordReplaceRuleButton", Buttons.addWordReplaceRule);
+            HtmlUtils.addClickListener("insertNewNoteDelimiterButton", () => {
                 appendToMainEditor('\n' + NEW_NOTE_DELIMITER);
             });
             // cancelRecording
@@ -422,17 +422,37 @@ export var UiFunctions;
             TextAreas.scrollToEnd(mainEditorTextarea);
         };
         // addReplaceRuleButton
-        const addReplaceRule = (wordsOnly = false) => {
-            const selectedText = TextAreas.selectedText(mainEditorTextarea);
-            const ruleString = `"${(wordsOnly ? "\\b" : "")
-                + escapeRegExp(selectedText)
-                + (wordsOnly ? "\\b" : "")}"gm->"${selectedText}"`;
+        const addReplaceRule = (requireWordBoundaryAtStart = false) => {
+            const inputStr = TextAreas.selectedText(mainEditorTextarea);
+            /* The following builds a rule like this:
+             * "REGEX"gm->"REPLACEMENT" */
+            const quote = `"`;
+            const maybeWordBoundary = requireWordBoundaryAtStart ? "\\b" : "";
+            const regEx = escapeForRegExp(inputStr);
+            const optionsAndArrow = 'gm->';
+            /** This is the part before the text selection in the UI */
+            const ruleStrPart1 = quote
+                + maybeWordBoundary
+                + regEx
+                + quote
+                + optionsAndArrow
+                + quote;
+            const ruleStrPart2 = inputStr + quote;
+            const ruleString = ruleStrPart1 + ruleStrPart2;
             const lengthBefore = replaceRulesTextArea.value.length;
             const APPEND = true;
             if (APPEND) {
-                TextAreas.appendTextAndPutCursorAfter(replaceRulesTextArea, "\n" + ruleString);
-                replaceRulesTextArea.selectionStart = lengthBefore;
-                replaceRulesTextArea.selectionEnd = replaceRulesTextArea.value.length;
+                const ruleBeforeSelection = "\n" + ruleStrPart1;
+                TextAreas.appendTextAndPutCursorAfter(replaceRulesTextArea, ruleBeforeSelection + ruleStrPart2);
+                const SELECT_REPLACEMENT = true;
+                if (SELECT_REPLACEMENT) {
+                    replaceRulesTextArea.selectionStart = lengthBefore + ruleBeforeSelection.length;
+                    replaceRulesTextArea.selectionEnd = replaceRulesTextArea.value.length - 1;
+                }
+                else { // delete this if branch later
+                    replaceRulesTextArea.selectionStart = lengthBefore;
+                    replaceRulesTextArea.selectionEnd = replaceRulesTextArea.value.length;
+                }
                 TextAreas.scrollToEnd(replaceRulesTextArea);
             }
             else {
@@ -451,7 +471,7 @@ export var UiFunctions;
             return `Das hier ist ein ziemlich langer ganz normaler Text, an dem die Rules nichts verändern sollten! Dadurch fail'en auch Rules. und das ist auch gut so.`
                 + numberToMakeItUnique;
         };
-        const createTestRule = (numberToMakeItUnique) => `\n\n"${escapeRegExp(magicText(numberToMakeItUnique))}"gm->""\n\n`;
+        const createTestRule = (numberToMakeItUnique) => `\n\n"${escapeForRegExp(magicText(numberToMakeItUnique))}"gm->""\n\n`;
         const testRules = createTestRule(1)
             + replaceRulesTextArea.value
             + createTestRule(2);

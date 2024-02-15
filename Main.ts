@@ -6,13 +6,13 @@ import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
 import TextAreas = HtmlUtils.TextAreas;
 import blinkFast = HtmlUtils.blinkFast;
 import blinkSlow = HtmlUtils.blinkSlow;
-import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
+import escapeForRegExp = HelgeUtils.Strings.escapeRegExp;
 import elementWithId = HtmlUtils.NeverNull.elementWithId;
 import TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
 import LocalStorage = HtmlUtils.BrowserStorage.LocalStorage;
 import Cookies = HtmlUtils.BrowserStorage.Cookies;
 import BrowserStorage = HtmlUtils.BrowserStorage;
-import {sendCtrlZ} from "./DontInspect.js"
+import {undoLastEdit} from "./DontInspect.js"
 import {HelgeUtils} from "./HelgeUtils.js"
 import {INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT} from "./Config.js"
 import {createCutFunction} from "./CutButton.js"
@@ -386,20 +386,20 @@ export namespace UiFunctions {
         insertTextAtCursor(replaceRulesTextArea,"\\")
       })
 
-// ############## ctrlZButtons ##############
-      const addCtrlZButtonEventListener = (ctrlZButtonId: string, textArea: HTMLTextAreaElement) => {
+// ############## Undo#############
+      const addUndoClickListener = (ctrlZButtonId: string, textArea: HTMLTextAreaElement) => {
         HtmlUtils.addClickListener((ctrlZButtonId), () => {
           textArea.focus()
-          sendCtrlZ()
+          undoLastEdit()
         })
       }
 
-      addCtrlZButtonEventListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea)
-      addCtrlZButtonEventListener("ctrlZButtonOfPrompt", transcriptionPromptEditor)
+      addUndoClickListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea)
+      addUndoClickListener("ctrlZButtonOfPrompt", transcriptionPromptEditor)
 
-      HtmlUtils.addClickListener(("addReplaceRuleButton"), addReplaceRule)
-      HtmlUtils.addClickListener(("addWordReplaceRuleButton"), addWordReplaceRule)
-      HtmlUtils.addClickListener(("insertNewNoteDelimiterButton"), () => {
+      HtmlUtils.addClickListener("addReplaceRuleButton", addReplaceRule)
+      HtmlUtils.addClickListener("addWordReplaceRuleButton", addWordReplaceRule)
+      HtmlUtils.addClickListener("insertNewNoteDelimiterButton", () => {
         appendToMainEditor('\n' + NEW_NOTE_DELIMITER)
       })
 
@@ -475,20 +475,38 @@ export namespace UiFunctions {
     }
 
     // addReplaceRuleButton
-    const addReplaceRule = (wordsOnly = false) => {
-      const selectedText = TextAreas.selectedText(mainEditorTextarea)
-      const ruleString =
-          `"${
-              (wordsOnly ? "\\b" : "")
-            + escapeRegExp(selectedText)
-            + (wordsOnly ? "\\b" : "")
-          }"gm->"${selectedText}"`
+    const addReplaceRule = (requireWordBoundaryAtStart = false) => {
+      const inputStr = TextAreas.selectedText(mainEditorTextarea)
+      /* The following builds a rule like this:
+       * "REGEX"gm->"REPLACEMENT" */
+      const quote = `"`;
+      const maybeWordBoundary = requireWordBoundaryAtStart ? "\\b" : "";
+      const regEx = escapeForRegExp(inputStr);
+      const optionsAndArrow = 'gm->';
+      /** This is the part before the text selection in the UI */
+      const ruleStrPart1 =
+            quote
+          + maybeWordBoundary
+          + regEx
+          + quote
+          + optionsAndArrow
+          + quote;
+      const ruleStrPart2 = inputStr + quote;
+      const ruleString = ruleStrPart1 + ruleStrPart2
       const lengthBefore = replaceRulesTextArea.value.length
       const APPEND = true
       if (APPEND) {
-        TextAreas.appendTextAndPutCursorAfter(replaceRulesTextArea, "\n"+ruleString)
-        replaceRulesTextArea.selectionStart = lengthBefore
-        replaceRulesTextArea.selectionEnd = replaceRulesTextArea.value.length
+        const ruleBeforeSelection = "\n" + ruleStrPart1;
+        TextAreas.appendTextAndPutCursorAfter(replaceRulesTextArea,
+            ruleBeforeSelection + ruleStrPart2)
+        const SELECT_REPLACEMENT = true;
+        if (SELECT_REPLACEMENT) {
+          replaceRulesTextArea.selectionStart = lengthBefore + ruleBeforeSelection.length
+          replaceRulesTextArea.selectionEnd = replaceRulesTextArea.value.length - 1;
+        } else { // delete this if branch later
+          replaceRulesTextArea.selectionStart = lengthBefore
+          replaceRulesTextArea.selectionEnd = replaceRulesTextArea.value.length
+        }
         TextAreas.scrollToEnd(replaceRulesTextArea)
       } else {
         TextAreas.insertTextAndPutCursorAfter(replaceRulesTextArea, ruleString+"\n")
@@ -508,7 +526,7 @@ export namespace UiFunctions {
           + numberToMakeItUnique
     }
 
-    const createTestRule = (numberToMakeItUnique: number) => `\n\n"${escapeRegExp(magicText(numberToMakeItUnique))}"gm->""\n\n`
+    const createTestRule = (numberToMakeItUnique: number) => `\n\n"${escapeForRegExp(magicText(numberToMakeItUnique))}"gm->""\n\n`
     const testRules =
         createTestRule(1)
         + replaceRulesTextArea.value
