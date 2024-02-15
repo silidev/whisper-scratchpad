@@ -383,7 +383,7 @@ export namespace UiFunctions {
 
 // ############## backslashButton ##############
       HtmlUtils.addClickListener(("backslashButton"), () => {
-        insertTextAtCursor(replaceRulesTextArea,"\\")
+        insertTextAtCursor(replaceRulesTextArea,"\\b")
       })
 
 // ############## Undo #############

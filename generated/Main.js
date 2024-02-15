@@ -349,7 +349,7 @@ export var UiFunctions;
             });
             // ############## backslashButton ##############
             HtmlUtils.addClickListener(("backslashButton"), () => {
-                insertTextAtCursor(replaceRulesTextArea, "\\");
+                insertTextAtCursor(replaceRulesTextArea, "\\b");
             });
             // ############## Undo #############
             const addUndoClickListener = (undoButtonId, textArea) => {
