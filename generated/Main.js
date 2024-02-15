@@ -11,7 +11,7 @@ var TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
 var LocalStorage = HtmlUtils.BrowserStorage.LocalStorage;
 var Cookies = HtmlUtils.BrowserStorage.Cookies;
 var BrowserStorage = HtmlUtils.BrowserStorage;
-import { undoLastEdit } from "./DontInspect.js";
+import { redoLastEdit, undoLastEdit } from "./DontInspect.js";
 import { HelgeUtils } from "./HelgeUtils.js";
 import { INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT } from "./Config.js";
 import { createCutFunction } from "./CutButton.js";
@@ -351,15 +351,16 @@ export var UiFunctions;
             HtmlUtils.addClickListener(("backslashButton"), () => {
                 insertTextAtCursor(replaceRulesTextArea, "\\");
             });
-            // ############## Undo#############
-            const addUndoClickListener = (ctrlZButtonId, textArea) => {
-                HtmlUtils.addClickListener((ctrlZButtonId), () => {
+            // ############## Undo #############
+            const addUndoClickListener = (undoButtonId, textArea) => {
+                HtmlUtils.addClickListener((undoButtonId), () => {
                     textArea.focus();
                     undoLastEdit();
                 });
             };
             addUndoClickListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea);
             addUndoClickListener("ctrlZButtonOfPrompt", transcriptionPromptEditor);
+            HtmlUtils.addClickListener("redoButton", redoLastEdit);
             HtmlUtils.addClickListener("addReplaceRuleButton", addReplaceRule);
             HtmlUtils.addClickListener("addWordReplaceRuleButton", Buttons.addWordReplaceRule);
             HtmlUtils.addClickListener("insertNewNoteDelimiterButton", () => {
