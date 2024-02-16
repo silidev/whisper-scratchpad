@@ -399,6 +399,7 @@ export namespace UiFunctions {
       HtmlUtils.addClickListener("addWordReplaceRuleButton", addWordReplaceRule)
       HtmlUtils.addClickListener("insertNewNoteDelimiterButton", () => {
         appendToMainEditor('\n' + NEW_NOTE_DELIMITER)
+        mainEditorTextarea.focus()
       })
 
 // cancelRecording

@@ -363,6 +363,7 @@ export var UiFunctions;
             HtmlUtils.addClickListener("addWordReplaceRuleButton", Buttons.addWordReplaceRule);
             HtmlUtils.addClickListener("insertNewNoteDelimiterButton", () => {
                 appendToMainEditor('\n' + NEW_NOTE_DELIMITER);
+                mainEditorTextarea.focus();
             });
             // cancelRecording
             addMenuItem("cancelRecording", Buttons.Media.cancelRecording);
