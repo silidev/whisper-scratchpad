@@ -319,6 +319,7 @@ export namespace UiFunctions {
       StateIndicator.update()
     } // End of media buttons
 
+    const clipboard = navigator.clipboard;
     export const addEventListeners = () => {
 
       addKeyboardShortcuts()
@@ -335,7 +336,7 @@ export namespace UiFunctions {
 
 // ############## Copy Backup to clipboard Menu Item ##############
       const copyBackupToClipboard = () => {
-        navigator.clipboard.writeText(
+        clipboard.writeText(
             "## Replace Rules\n" + replaceRulesTextArea.value + "\n"
             + "## Prompt\n" + transcriptionPromptEditor.value
         ).then()
@@ -348,7 +349,7 @@ export namespace UiFunctions {
 
 // ############## Du2Ich Menu Item ##############
       const du2ichMenuItem = () => {
-        navigator.clipboard.writeText(mainEditorTextarea.value).then(() => {
+        clipboard.writeText(mainEditorTextarea.value).then(() => {
           mainEditorTextarea.value = HelgeUtils.Misc.du2ich(
               mainEditorTextarea.value, ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog)
           saveMainEditor()
@@ -385,39 +386,38 @@ export namespace UiFunctions {
       })
 
 // ############## Undo #############
-      const addUndoClickListener = (undoButtonId: string, textArea: HTMLTextAreaElement) => {
-        HtmlUtils.addClickListener((undoButtonId), () => {
-          textArea.focus()
-          undoLastEdit()
-        })
-      }
-      addUndoClickListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea)
-      addUndoClickListener("ctrlZButtonOfPrompt", transcriptionPromptEditor)
+    const addUndoClickListener = (undoButtonId: string, textArea: HTMLTextAreaElement) => {
+      HtmlUtils.addClickListener((undoButtonId), () => {
+        textArea.focus()
+        undoLastEdit()
+      })
+    }
+    addUndoClickListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea)
+    addUndoClickListener("ctrlZButtonOfPrompt", transcriptionPromptEditor)
 
-      HtmlUtils.addClickListener("redoButton", redoLastEdit)
-      HtmlUtils.addClickListener("addReplaceRuleButton", addReplaceRule)
-      HtmlUtils.addClickListener("addWordReplaceRuleButton", addWordReplaceRule)
-      HtmlUtils.addClickListener("insertNewNoteDelimiterButton", () => {
+    HtmlUtils.addClickListener("redoButton", redoLastEdit)
+    HtmlUtils.addClickListener("addReplaceRuleButton", addReplaceRule)
+    HtmlUtils.addClickListener("addWordReplaceRuleButton", addWordReplaceRule)
+    HtmlUtils.addClickListener("insertNewNoteDelimiterButton", () => {
         appendToMainEditor('\n' + NEW_NOTE_DELIMITER)
         mainEditorTextarea.focus()
       })
 
 // cancelRecording
-      addMenuItem("cancelRecording", Buttons.Media.cancelRecording)
+    addMenuItem("cancelRecording", Buttons.Media.cancelRecording)
 
 // cutAllButton
-      {
-        HtmlUtils.addClickListener(("cutAllButton"), () => {
-          navigator.clipboard.writeText(mainEditorTextarea.value).then(() => {
+    addMenuItem(("cutAllButton"), () =>
+        clipboard.writeText(mainEditorTextarea.value).then(
+          () => {
             mainEditorTextarea.value = ''
             saveMainEditor()
           })
-        })
-      }
+        )
 
 // aboutButton
       HtmlUtils.addClickListener(("pasteButton"), () => {
-        navigator.clipboard.readText().then(text => {
+        clipboard.readText().then(text => {
           TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, text)
         })
       })
@@ -435,7 +435,7 @@ export namespace UiFunctions {
       /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
       const addEventListenerForCopyButton = (buttonId: string, inputElementId: string) => {
         buttonWithId(buttonId).addEventListener('click', () => {
-          navigator.clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
+          clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
             buttonWithId(buttonId).innerHTML = '⎘<br>Copied!'
             setTimeout(() => {
               buttonWithId(buttonId).innerHTML = '⎘<br>Copy'

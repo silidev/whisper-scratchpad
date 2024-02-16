@@ -299,6 +299,7 @@ export var UiFunctions;
             addMenuItem("transcribeAgainButton", transcribeAgainButton);
             StateIndicator.update();
         })(Media = Buttons.Media || (Buttons.Media = {})); // End of media buttons
+        const clipboard = navigator.clipboard;
         Buttons.addEventListeners = () => {
             addKeyboardShortcuts();
             // ############## Toggle Log Button ##############
@@ -311,7 +312,7 @@ export var UiFunctions;
             addMenuItem("cropHighlightsMenuItem", cropHighlights);
             // ############## Copy Backup to clipboard Menu Item ##############
             const copyBackupToClipboard = () => {
-                navigator.clipboard.writeText("## Replace Rules\n" + replaceRulesTextArea.value + "\n"
+                clipboard.writeText("## Replace Rules\n" + replaceRulesTextArea.value + "\n"
                     + "## Prompt\n" + transcriptionPromptEditor.value).then();
             };
             addMenuItem("copyBackupMenuItem", copyBackupToClipboard);
@@ -319,7 +320,7 @@ export var UiFunctions;
             addMenuItem("focusMainEditorMenuItem", mainEditorTextarea.focus);
             // ############## Du2Ich Menu Item ##############
             const du2ichMenuItem = () => {
-                navigator.clipboard.writeText(mainEditorTextarea.value).then(() => {
+                clipboard.writeText(mainEditorTextarea.value).then(() => {
                     mainEditorTextarea.value = HelgeUtils.Misc.du2ich(mainEditorTextarea.value, ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog);
                     saveMainEditor();
                 });
@@ -368,17 +369,13 @@ export var UiFunctions;
             // cancelRecording
             addMenuItem("cancelRecording", Buttons.Media.cancelRecording);
             // cutAllButton
-            {
-                HtmlUtils.addClickListener(("cutAllButton"), () => {
-                    navigator.clipboard.writeText(mainEditorTextarea.value).then(() => {
-                        mainEditorTextarea.value = '';
-                        saveMainEditor();
-                    });
-                });
-            }
+            addMenuItem(("cutAllButton"), () => clipboard.writeText(mainEditorTextarea.value).then(() => {
+                mainEditorTextarea.value = '';
+                saveMainEditor();
+            }));
             // aboutButton
             HtmlUtils.addClickListener(("pasteButton"), () => {
-                navigator.clipboard.readText().then(text => {
+                clipboard.readText().then(text => {
                     TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, text);
                 });
             });
@@ -390,7 +387,7 @@ export var UiFunctions;
             /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
             const addEventListenerForCopyButton = (buttonId, inputElementId) => {
                 buttonWithId(buttonId).addEventListener('click', () => {
-                    navigator.clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
+                    clipboard.writeText(inputElementWithId(inputElementId).value).then(() => {
                         buttonWithId(buttonId).innerHTML = '⎘<br>Copied!';
                         setTimeout(() => {
                             buttonWithId(buttonId).innerHTML = '⎘<br>Copy';

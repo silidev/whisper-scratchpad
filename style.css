@@ -7,6 +7,7 @@
  --buttonHeight: 55px;
  --menuItemHeight: 44px;
  --fontSize: 18px;
+ --buttonFontSize: 14px;
 }
 
 * {
@@ -54,6 +55,10 @@ a {
 
 div {
  border-collapse: collapse;
+}
+
+label {
+ font-size: var(--buttonFontSize)
 }
 
 button, input, textarea {
@@ -162,7 +167,7 @@ textarea {
  align-items: center;
  justify-content: left;
  border: 1px solid var(--mainColor);
- font-size: var(--fontSize)
+ font-size: var(--buttonFontSize)
 }
 
 .buttonMenuItem {
