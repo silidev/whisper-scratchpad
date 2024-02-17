@@ -446,8 +446,8 @@ export namespace UiFunctions {
         })
       })
 
-// cutButton
-      buttonWithId("cutButton").addEventListener('click',
+// cutNoteButton
+      buttonWithId("cutNoteButton").addEventListener('click',
           createCutFunction(mainEditorTextarea))
 // cutAnkiButton
       buttonWithId("cutAnkiButton").addEventListener('click',

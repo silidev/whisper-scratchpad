@@ -7,7 +7,7 @@ export const createCutFunction = (mainEditorTextarea, prefix = "", postfix = "")
     return () => {
         const currentNote = new CurrentNote(mainEditorTextarea);
         clipboard.writeText(prefix + currentNote.text().trim() + postfix).then(() => {
-            HtmlUtils.signalClickToUser(buttonWithId("cutButton"));
+            HtmlUtils.signalClickToUser(buttonWithId("cutNoteButton"));
             {
                 const DELETE = true;
                 if (DELETE) {

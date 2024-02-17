@@ -79,6 +79,31 @@
       </div>
 
       <div class='item' style="padding-left: 0">
+        <!-- ########### infoButton ############# -->
+        <button>  <info-button>
+          <div style="position: fixed;
+        left: 0; background-color: black; border: 1px solid green; padding: 5px;
+        width: 6cm" id="infoButton1">
+
+            <ul>
+              <li>Shift+Ctrl+X: Cut current note.</li>
+            </ul>
+
+            <h3>Because hardly anybody besides me seems to be interested in this, I
+              am not updating the info here anymore. The following is outdated.</h3>
+
+            The buttons:
+            <ul>
+              <li>Copy: Copies the content of the editor to the clipboard.</li>
+              <li>Send: This will send the current recording to the API, start a new recording and insert the transcription at the cursor position.</li>
+              <li>Replace: Replaces the text in the editor according to the ruleset.</li>
+              <li>"Tr. again": Transcribes the current recording and inserts the transcription at the cursor position.</li>
+              <li>"+ replace": Add a replace-rule with the currently selected text.</li>
+              <li>CtrlZ: This just send Ctrl-z, which es a global ctrlZ over everything in the browser, especially
+                also the other TextAreas.</li>
+            </ul>
+          </div>
+        </info-button></button>
         <button id="undoActionButton">Undo<br>Action</button>
       </div>
 
@@ -125,7 +150,7 @@
       <div class='item'>Version:&nbsp;<span id="versionSpan">Rochen</span></div>
     </wc-menu-wrapper></div>
   <!-- ########### row1EditorButtons ############# -->
-  <button id="cutButton">✂<br>Cut</button> <!--Copy icon was ⎘-->
+  <button id="cutNoteButton">✂ Cut<br>Note</button> <!--Copy icon was ⎘-->
   <button id="pasteButton"><span class="forceMainColor">📋</span><br>Paste</button>
   <span class="spinnerGroup">
       <button id="stopButton" style="width: 90px; line-height: 20px">
@@ -141,31 +166,6 @@
 
 <!-- ########### row2EditorButtons ############# -->
 <div id="row2EditorButtons" class="flexRightAndWrapContent">
-  <!-- ########### infoButton ############# -->
-  <button>  <info-button>
-    <div style="position: fixed;
-        left: 0; background-color: black; border: 1px solid green; padding: 5px;
-        width: 6cm" id="infoButton1">
-
-      <ul>
-        <li>Shift+Ctrl+X: Cut current note.</li>
-      </ul>
-
-      <h3>Because hardly anybody besides me seems to be interested in this, I
-        am not updating the info here anymore. The following is outdated.</h3>
-
-      The buttons:
-      <ul>
-        <li>Copy: Copies the content of the editor to the clipboard.</li>
-        <li>Send: This will send the current recording to the API, start a new recording and insert the transcription at the cursor position.</li>
-        <li>Replace: Replaces the text in the editor according to the ruleset.</li>
-        <li>"Tr. again": Transcribes the current recording and inserts the transcription at the cursor position.</li>
-        <li>"+ replace": Add a replace-rule with the currently selected text.</li>
-        <li>CtrlZ: This just send Ctrl-z, which es a global ctrlZ over everything in the browser, especially
-          also the other TextAreas.</li>
-      </ul>
-    </div>
-  </info-button></button>
   <button id="addWordReplaceRuleButton"><span style="font-size: 16px">\b
     -></span></button>
   <button id="addReplaceRuleButton"><span style="font-size: 16px">""->""</span></button>

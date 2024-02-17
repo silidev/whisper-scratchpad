@@ -399,8 +399,8 @@ export var UiFunctions;
                     TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, text);
                 });
             });
-            // cutButton
-            buttonWithId("cutButton").addEventListener('click', createCutFunction(mainEditorTextarea));
+            // cutNoteButton
+            buttonWithId("cutNoteButton").addEventListener('click', createCutFunction(mainEditorTextarea));
             // cutAnkiButton
             buttonWithId("cutAnkiButton").addEventListener('click', createCutFunction(mainEditorTextarea, "{{c1::", "}}"));
             // copyButtons
