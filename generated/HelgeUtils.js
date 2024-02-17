@@ -276,7 +276,8 @@ export var HelgeUtils;
             formData.append('model', 'whisper-1'); // Using the largest model
             formData.append('prompt', prompt);
             /* Language. Anything in a different language will be translated to the target language. */
-            formData.append('language', language);
+            formData.append('language', language); // e.g. "en"
+            /* Docs: https://platform.openai.com/docs/api-reference/audio/createTranscription */
             const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
                 method: 'POST',
                 headers: {
