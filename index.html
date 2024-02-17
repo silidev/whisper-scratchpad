@@ -38,13 +38,14 @@
         <button id="du2ichMenuItem">du2ich</button>
         <button id="cancelRecording">x<br>Cancel</button>
         <button id="toggleLogButton">Show<br>Log</button>
-        <span style="display: flex; align-items: center; border: 1px solid
-        var(--mainColor); height: var(--buttonHeight);">
+
+        <span class="buttonLikeBox">
           <input type="checkbox" id="logReplaceRulesCheckbox" style="margin-left: 8px" class="forceMainColor">
           <label style="margin: 8px;" for="logReplaceRulesCheckbox">
             Log
           </label>
         </span>
+
       </div>
       <div class='item' style="padding-left: 0">
         <button id="updateButton"
@@ -54,6 +55,15 @@
           Update w/o save
         </button>
         <button id="redoButton">Redo edit</button>
+
+        <span class="buttonLikeBox">
+          <input type="checkbox" id="translateCheckbox"
+                 style="margin-left: 8px" class="forceMainColor">
+          <label style="margin: 8px;" for="translateCheckbox">
+            Translate
+          </label>
+        </span>
+
       </div>
       <div class='item'>
         <!--############## Language Selector ##############-->

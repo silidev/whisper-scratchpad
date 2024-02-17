@@ -284,7 +284,7 @@ export namespace HelgeUtils {
     export type ApiName = "OpenAI" | "Gladia"
 
     const withOpenAi = async (audioBlob: Blob, apiKey: string, prompt: string,
-                              language: string = "") => {
+                              language: string = "", translateToEnglish = false) => {
       const formData = new FormData()
       formData.append('file', audioBlob)
       formData.append('model', 'whisper-1'); // Using the largest model
@@ -293,7 +293,10 @@ export namespace HelgeUtils {
       formData.append('language', language) // e.g. "en"
 
       /* Docs: https://platform.openai.com/docs/api-reference/audio/createTranscription */
-      const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+      const response = await fetch(
+          "https://api.openai.com/v1/audio/"
+          +(translateToEnglish?'translations':'transcriptions')
+          , {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${apiKey}`
@@ -340,12 +343,13 @@ Please note that certain strong accents can possibly cause this mode to transcri
     }
 
     export const transcribe = async (api: ApiName, audioBlob: Blob, apiKey: string,
-                                     prompt: string = '', language: string = "") =>
+                                     prompt: string = '', language: string = "",
+                                     translateToEnglish = false) =>
     {
       if (!audioBlob || audioBlob.size===0) return ""
       const output =
           api === "OpenAI" ?
-              await withOpenAi(audioBlob, apiKey, prompt, language)
+              await withOpenAi(audioBlob, apiKey, prompt, language, translateToEnglish)
               : await withGladia(audioBlob, apiKey, prompt)
       if (typeof output === "string") return output
       throw new TranscriptionError(output)

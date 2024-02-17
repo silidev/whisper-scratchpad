@@ -270,7 +270,7 @@ export var HelgeUtils;
             }
         }
         Transcription.TranscriptionError = TranscriptionError;
-        const withOpenAi = async (audioBlob, apiKey, prompt, language = "") => {
+        const withOpenAi = async (audioBlob, apiKey, prompt, language = "", translateToEnglish = false) => {
             const formData = new FormData();
             formData.append('file', audioBlob);
             formData.append('model', 'whisper-1'); // Using the largest model
@@ -278,7 +278,8 @@ export var HelgeUtils;
             /* Language. Anything in a different language will be translated to the target language. */
             formData.append('language', language); // e.g. "en"
             /* Docs: https://platform.openai.com/docs/api-reference/audio/createTranscription */
-            const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+            const response = await fetch("https://api.openai.com/v1/audio/"
+                + (translateToEnglish ? 'translations' : 'transcriptions'), {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${apiKey}`
@@ -317,11 +318,11 @@ export var HelgeUtils;
             const resultText = result?.prediction;
             return resultText;
         };
-        Transcription.transcribe = async (api, audioBlob, apiKey, prompt = '', language = "") => {
+        Transcription.transcribe = async (api, audioBlob, apiKey, prompt = '', language = "", translateToEnglish = false) => {
             if (!audioBlob || audioBlob.size === 0)
                 return "";
             const output = api === "OpenAI" ?
-                await withOpenAi(audioBlob, apiKey, prompt, language)
+                await withOpenAi(audioBlob, apiKey, prompt, language, translateToEnglish)
                 : await withGladia(audioBlob, apiKey, prompt);
             if (typeof output === "string")
                 return output;

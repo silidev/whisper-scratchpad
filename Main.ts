@@ -166,7 +166,8 @@ export namespace UiFunctions {
           const getTranscriptionText = async () => await
               HelgeUtils.Transcription.transcribe(
                   apiName, audioBlob, getApiKey() as string, promptForWhisper(),
-                  getLanguageSelectedInUi())
+                  getLanguageSelectedInUi(),
+                  inputElementWithId("translateCheckbox").checked)
           const removeLastDotIfNotAtEnd = (input: string): string => {
             if (mainEditorTextarea.selectionStart < mainEditorTextarea.value.length) {
               return removeLastDot(input)

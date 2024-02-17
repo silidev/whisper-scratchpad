@@ -152,7 +152,7 @@ export var UiFunctions;
                                 ? maxEditorPrompt.slice(-maxCharsFromEditor)
                                 : "");
                     };
-                    const getTranscriptionText = async () => await HelgeUtils.Transcription.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper(), getLanguageSelectedInUi());
+                    const getTranscriptionText = async () => await HelgeUtils.Transcription.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper(), getLanguageSelectedInUi(), inputElementWithId("translateCheckbox").checked);
                     const removeLastDotIfNotAtEnd = (input) => {
                         if (mainEditorTextarea.selectionStart < mainEditorTextarea.value.length) {
                             return removeLastDot(input);
