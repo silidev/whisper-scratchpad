@@ -189,7 +189,9 @@ export namespace UiFunctions {
           } else {
             trimMainEditor().appendTextAndPutCursorAfter(transcriptionText)
           }
-          applyReplaceRulesToMainEditor()
+          if (inputElementWithId("autoReplaceCheckbox").checked) {
+            applyReplaceRulesToMainEditor()
+          }
           trimMainEditor().focus()
           saveMainEditor()
           sending = false
