@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2024 by Helge Tobias Kosuch
  */
@@ -18,6 +17,7 @@ import {HelgeUtils} from "./HelgeUtils.js"
 import {INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT} from "./Config.js"
 import {createCutFunction} from "./CutButton.js"
 import {HtmlUtils} from "./HtmlUtils.js"
+import {CurrentNote} from "./CurrentNote.js";
 
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString().slice(0, 10) === "2024-01-27"
@@ -26,7 +26,7 @@ if (RUN_TESTS) console.log("RUN_TESTS is true. This is only for " +
 
 HtmlUtils.ErrorHandling.ExceptionHandlers.installGlobalDefault()
 
-namespace MainEditor {
+export namespace MainEditor {
   export namespace Undo {
     let undoBuffer = ""
 
@@ -37,7 +37,7 @@ namespace MainEditor {
       saveMainEditor()
     }
 
-    export const makeUndoable = () => {
+    export const saveState = () => {
       undoBuffer = mainEditorTextarea.value
     };
   }
@@ -46,7 +46,7 @@ namespace MainEditor {
 namespace Misc {
 
   export const applyReplaceRulesToMainEditor = () => {
-    MainEditor.Undo.makeUndoable();
+    MainEditor.Undo.saveState();
     const selectionStart = mainEditorTextarea.selectionStart
     const selectionEnd = mainEditorTextarea.selectionEnd
 
@@ -72,7 +72,7 @@ namespace Misc {
   }
 }
 
-const trimMainEditor = () => mainEditor.trim().append(" ")
+const trimMainEditor = () => mainEditorTextareaWrapper.trim().append(" ")
 
 export namespace UiFunctions {
   import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
@@ -354,7 +354,7 @@ export namespace UiFunctions {
 
 // ############## Crop Highlights Menu Item ##############
       const cropHighlights = () => {
-        MainEditor.Undo.makeUndoable()
+        MainEditor.Undo.saveState()
         mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ')
         saveMainEditor()
       }
@@ -375,8 +375,22 @@ export namespace UiFunctions {
 
 // ############## Du2Ich Menu Item ##############
       const du2ichMenuItem = () => {
-        MainEditor.Undo.makeUndoable();
-        mainEditorTextarea.value = HelgeUtils.Misc.du2ich(mainEditorTextarea.value, ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog)
+        MainEditor.Undo.saveState();
+
+        const currentNote = new CurrentNote(mainEditorTextarea)
+        const changedText = HelgeUtils.Misc.du2ich(currentNote.text(),
+            ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog
+        );
+        currentNote.delete()
+
+        const cursorIsAtTheEndOfTheTextarea = mainEditorTextarea.value.length == mainEditorTextarea.selectionStart;
+        if (cursorIsAtTheEndOfTheTextarea) {
+          mainEditorTextareaWrapper.insertTextAndPutCursorAfter(
+              NEW_NOTE_DELIMITER + changedText)
+        } else {
+          mainEditorTextareaWrapper.insertTextAndPutCursorAfter(
+              changedText + NEW_NOTE_DELIMITER)
+        }
         saveMainEditor()
       }
       addMenuItem("du2ichMenuItem", du2ichMenuItem)
@@ -570,11 +584,11 @@ const languageSelector = document.getElementById('languageSelector') as HTMLSele
 
 const apiKeyInput = document.getElementById('apiKeyInputField') as HTMLTextAreaElement
 const mainEditorTextarea = document.getElementById('mainEditorTextarea') as HTMLTextAreaElement
-const mainEditor = new TextAreaWrapper(mainEditorTextarea)
+const mainEditorTextareaWrapper = new TextAreaWrapper(mainEditorTextarea)
 const transcriptionPromptEditor = document.getElementById('transcriptionPromptEditor') as HTMLTextAreaElement
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement
 
-export const saveMainEditor = () => {
+export const saveMainEditor = () => { //TODOhStu: Move to namespace MainEditor
   LocalStorage.set("editorText", textAreaWithId("mainEditorTextarea").value);
   Cookies.set("editorText", ""); // This used to be stored in a cookie.
   // Delete old cookie
@@ -715,7 +729,7 @@ const init = () => {
   registerServiceWorker()
   loadFormData()
   elementWithId("versionSpan").innerHTML = VERSION
-  mainEditor.setCursorAtEnd().focus()
+  mainEditorTextareaWrapper.setCursorAtEnd().focus()
 }
 
 init()

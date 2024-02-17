@@ -1,5 +1,5 @@
 import {HtmlUtils} from "./HtmlUtils.js"
-import {saveMainEditor} from "./Main.js"
+import {MainEditor, saveMainEditor} from "./Main.js"
 import {CurrentNote} from "./CurrentNote.js"
 import buttonWithId = HtmlUtils.NeverNull.buttonWithId
 
@@ -10,7 +10,7 @@ export const createCutFunction =
      prefix = "", postfix = "") => {
 
   return () => {
-
+    MainEditor.Undo.saveState()
     const currentNote = new CurrentNote(mainEditorTextarea)
     clipboard.writeText(prefix + currentNote.text().trim() + postfix).then(() => {
       HtmlUtils.signalClickToUser(buttonWithId("cutNoteButton"))

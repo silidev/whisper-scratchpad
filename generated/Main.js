@@ -16,13 +16,14 @@ import { HelgeUtils } from "./HelgeUtils.js";
 import { INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT } from "./Config.js";
 import { createCutFunction } from "./CutButton.js";
 import { HtmlUtils } from "./HtmlUtils.js";
+import { CurrentNote } from "./CurrentNote.js";
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString().slice(0, 10) === "2024-01-27";
 if (RUN_TESTS)
     console.log("RUN_TESTS is true. This is only for " +
         "testing. Set it to false in production.");
 HtmlUtils.ErrorHandling.ExceptionHandlers.installGlobalDefault();
-var MainEditor;
+export var MainEditor;
 (function (MainEditor) {
     let Undo;
     (function (Undo) {
@@ -33,7 +34,7 @@ var MainEditor;
             undoBuffer = swapBuffer;
             saveMainEditor();
         };
-        Undo.makeUndoable = () => {
+        Undo.saveState = () => {
             undoBuffer = mainEditorTextarea.value;
         };
     })(Undo = MainEditor.Undo || (MainEditor.Undo = {}));
@@ -41,7 +42,7 @@ var MainEditor;
 var Misc;
 (function (Misc) {
     Misc.applyReplaceRulesToMainEditor = () => {
-        MainEditor.Undo.makeUndoable();
+        MainEditor.Undo.saveState();
         const selectionStart = mainEditorTextarea.selectionStart;
         const selectionEnd = mainEditorTextarea.selectionEnd;
         mainEditorTextarea.value = ReplaceByRules.withUiLog(replaceRulesTextArea.value, mainEditorTextarea.value);
@@ -61,7 +62,7 @@ var Misc;
         });
     };
 })(Misc || (Misc = {}));
-const trimMainEditor = () => mainEditor.trim().append(" ");
+const trimMainEditor = () => mainEditorTextareaWrapper.trim().append(" ");
 export var UiFunctions;
 (function (UiFunctions) {
     var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
@@ -326,7 +327,7 @@ export var UiFunctions;
             addMenuItem("toggleLogButton", Log.toggleLog(textAreaWithId));
             // ############## Crop Highlights Menu Item ##############
             const cropHighlights = () => {
-                MainEditor.Undo.makeUndoable();
+                MainEditor.Undo.saveState();
                 mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ');
                 saveMainEditor();
             };
@@ -341,8 +342,17 @@ export var UiFunctions;
             addMenuItem("focusMainEditorMenuItem", mainEditorTextarea.focus);
             // ############## Du2Ich Menu Item ##############
             const du2ichMenuItem = () => {
-                MainEditor.Undo.makeUndoable();
-                mainEditorTextarea.value = HelgeUtils.Misc.du2ich(mainEditorTextarea.value, ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog);
+                MainEditor.Undo.saveState();
+                const currentNote = new CurrentNote(mainEditorTextarea);
+                const changedText = HelgeUtils.Misc.du2ich(currentNote.text(), ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog);
+                currentNote.delete();
+                const cursorIsAtTheEndOfTheTextarea = mainEditorTextarea.value.length == mainEditorTextarea.selectionStart;
+                if (cursorIsAtTheEndOfTheTextarea) {
+                    mainEditorTextareaWrapper.insertTextAndPutCursorAfter(NEW_NOTE_DELIMITER + changedText);
+                }
+                else {
+                    mainEditorTextareaWrapper.insertTextAndPutCursorAfter(changedText + NEW_NOTE_DELIMITER);
+                }
                 saveMainEditor();
             };
             addMenuItem("du2ichMenuItem", du2ichMenuItem);
@@ -504,7 +514,7 @@ const apiSelector = document.getElementById('apiSelector');
 const languageSelector = document.getElementById('languageSelector');
 const apiKeyInput = document.getElementById('apiKeyInputField');
 const mainEditorTextarea = document.getElementById('mainEditorTextarea');
-const mainEditor = new TextAreaWrapper(mainEditorTextarea);
+const mainEditorTextareaWrapper = new TextAreaWrapper(mainEditorTextarea);
 const transcriptionPromptEditor = document.getElementById('transcriptionPromptEditor');
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea');
 export const saveMainEditor = () => {
@@ -625,7 +635,7 @@ const init = () => {
     registerServiceWorker();
     loadFormData();
     elementWithId("versionSpan").innerHTML = VERSION;
-    mainEditor.setCursorAtEnd().focus();
+    mainEditorTextareaWrapper.setCursorAtEnd().focus();
 };
 init();
 //# sourceMappingURL=Main.js.map
