@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2024 by Helge Tobias Kosuch
  */
@@ -12,7 +13,7 @@ import TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
 import LocalStorage = HtmlUtils.BrowserStorage.LocalStorage;
 import Cookies = HtmlUtils.BrowserStorage.Cookies;
 import BrowserStorage = HtmlUtils.BrowserStorage;
-import {redoLastEdit, undoLastEdit} from "./DontInspect.js"
+import {ctrlYRedo, ctrlZUndo} from "./DontInspect.js"
 import {HelgeUtils} from "./HelgeUtils.js"
 import {INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT} from "./Config.js"
 import {createCutFunction} from "./CutButton.js"
@@ -25,8 +26,27 @@ if (RUN_TESTS) console.log("RUN_TESTS is true. This is only for " +
 
 HtmlUtils.ErrorHandling.ExceptionHandlers.installGlobalDefault()
 
+namespace MainEditor {
+  export namespace Undo {
+    let undoBuffer = ""
+
+    export const undo = () => {
+      const swapBuffer = mainEditorTextarea.value
+      mainEditorTextarea.value = undoBuffer
+      undoBuffer = swapBuffer
+      saveMainEditor()
+    }
+
+    export const makeUndoable = () => {
+      undoBuffer = mainEditorTextarea.value
+    };
+  }
+}
+
 namespace Misc {
+
   export const applyReplaceRulesToMainEditor = () => {
+    MainEditor.Undo.makeUndoable();
     const selectionStart = mainEditorTextarea.selectionStart
     const selectionEnd = mainEditorTextarea.selectionEnd
 
@@ -327,11 +347,14 @@ export namespace UiFunctions {
 
       addKeyboardShortcuts()
 
+      addMenuItem("undoActionButton", MainEditor.Undo.undo)
+
 // ############## Toggle Log Button ##############
       addMenuItem("toggleLogButton", Log.toggleLog(textAreaWithId))
 
 // ############## Crop Highlights Menu Item ##############
       const cropHighlights = () => {
+        MainEditor.Undo.makeUndoable()
         mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ')
         saveMainEditor()
       }
@@ -352,11 +375,9 @@ export namespace UiFunctions {
 
 // ############## Du2Ich Menu Item ##############
       const du2ichMenuItem = () => {
-        clipboard.writeText(mainEditorTextarea.value).then(() => {
-          mainEditorTextarea.value = HelgeUtils.Misc.du2ich(
-              mainEditorTextarea.value, ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog)
-          saveMainEditor()
-        })
+        MainEditor.Undo.makeUndoable();
+        mainEditorTextarea.value = HelgeUtils.Misc.du2ich(mainEditorTextarea.value, ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog)
+        saveMainEditor()
       }
       addMenuItem("du2ichMenuItem", du2ichMenuItem)
 
@@ -389,16 +410,16 @@ export namespace UiFunctions {
       })
 
 // ############## Undo #############
-    const addUndoClickListener = (undoButtonId: string, textArea: HTMLTextAreaElement) => {
-      HtmlUtils.addClickListener((undoButtonId), () => {
+    const addUndoClickListener = (ctrlZButtonId: string, textArea: HTMLTextAreaElement) => {
+      HtmlUtils.addClickListener(ctrlZButtonId, () => {
         textArea.focus()
-        undoLastEdit()
+        ctrlZUndo()
       })
     }
     addUndoClickListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea)
     addUndoClickListener("ctrlZButtonOfPrompt", transcriptionPromptEditor)
 
-    HtmlUtils.addClickListener("redoButton", redoLastEdit)
+    HtmlUtils.addClickListener("ctrlYButton", ctrlYRedo)
     HtmlUtils.addClickListener("addReplaceRuleButton", addReplaceRule)
     HtmlUtils.addClickListener("addWordReplaceRuleButton", addWordReplaceRule)
     HtmlUtils.addClickListener("insertNewNoteDelimiterButton", () => {

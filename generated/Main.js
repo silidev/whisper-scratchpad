@@ -11,7 +11,7 @@ var TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
 var LocalStorage = HtmlUtils.BrowserStorage.LocalStorage;
 var Cookies = HtmlUtils.BrowserStorage.Cookies;
 var BrowserStorage = HtmlUtils.BrowserStorage;
-import { redoLastEdit, undoLastEdit } from "./DontInspect.js";
+import { ctrlYRedo, ctrlZUndo } from "./DontInspect.js";
 import { HelgeUtils } from "./HelgeUtils.js";
 import { INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT } from "./Config.js";
 import { createCutFunction } from "./CutButton.js";
@@ -22,9 +22,26 @@ if (RUN_TESTS)
     console.log("RUN_TESTS is true. This is only for " +
         "testing. Set it to false in production.");
 HtmlUtils.ErrorHandling.ExceptionHandlers.installGlobalDefault();
+var MainEditor;
+(function (MainEditor) {
+    let Undo;
+    (function (Undo) {
+        let undoBuffer = "";
+        Undo.undo = () => {
+            const swapBuffer = mainEditorTextarea.value;
+            mainEditorTextarea.value = undoBuffer;
+            undoBuffer = swapBuffer;
+            saveMainEditor();
+        };
+        Undo.makeUndoable = () => {
+            undoBuffer = mainEditorTextarea.value;
+        };
+    })(Undo = MainEditor.Undo || (MainEditor.Undo = {}));
+})(MainEditor || (MainEditor = {}));
 var Misc;
 (function (Misc) {
     Misc.applyReplaceRulesToMainEditor = () => {
+        MainEditor.Undo.makeUndoable();
         const selectionStart = mainEditorTextarea.selectionStart;
         const selectionEnd = mainEditorTextarea.selectionEnd;
         mainEditorTextarea.value = ReplaceByRules.withUiLog(replaceRulesTextArea.value, mainEditorTextarea.value);
@@ -304,10 +321,12 @@ export var UiFunctions;
         const clipboard = navigator.clipboard;
         Buttons.addEventListeners = () => {
             addKeyboardShortcuts();
+            addMenuItem("undoActionButton", MainEditor.Undo.undo);
             // ############## Toggle Log Button ##############
             addMenuItem("toggleLogButton", Log.toggleLog(textAreaWithId));
             // ############## Crop Highlights Menu Item ##############
             const cropHighlights = () => {
+                MainEditor.Undo.makeUndoable();
                 mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ');
                 saveMainEditor();
             };
@@ -322,10 +341,9 @@ export var UiFunctions;
             addMenuItem("focusMainEditorMenuItem", mainEditorTextarea.focus);
             // ############## Du2Ich Menu Item ##############
             const du2ichMenuItem = () => {
-                clipboard.writeText(mainEditorTextarea.value).then(() => {
-                    mainEditorTextarea.value = HelgeUtils.Misc.du2ich(mainEditorTextarea.value, ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog);
-                    saveMainEditor();
-                });
+                MainEditor.Undo.makeUndoable();
+                mainEditorTextarea.value = HelgeUtils.Misc.du2ich(mainEditorTextarea.value, ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog);
+                saveMainEditor();
             };
             addMenuItem("du2ichMenuItem", du2ichMenuItem);
             // ############## saveAPIKeyButton ##############
@@ -353,15 +371,15 @@ export var UiFunctions;
                 TextAreas.insertTextAndPutCursorAfter(replaceRulesTextArea, "\\b");
             });
             // ############## Undo #############
-            const addUndoClickListener = (undoButtonId, textArea) => {
-                HtmlUtils.addClickListener((undoButtonId), () => {
+            const addUndoClickListener = (ctrlZButtonId, textArea) => {
+                HtmlUtils.addClickListener(ctrlZButtonId, () => {
                     textArea.focus();
-                    undoLastEdit();
+                    ctrlZUndo();
                 });
             };
             addUndoClickListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea);
             addUndoClickListener("ctrlZButtonOfPrompt", transcriptionPromptEditor);
-            HtmlUtils.addClickListener("redoButton", redoLastEdit);
+            HtmlUtils.addClickListener("ctrlYButton", ctrlYRedo);
             HtmlUtils.addClickListener("addReplaceRuleButton", addReplaceRule);
             HtmlUtils.addClickListener("addWordReplaceRuleButton", Buttons.addWordReplaceRule);
             HtmlUtils.addClickListener("insertNewNoteDelimiterButton", () => {
