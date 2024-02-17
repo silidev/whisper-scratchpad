@@ -373,23 +373,26 @@ export namespace UiFunctions {
 // ############## Focus the main editor textarea Menu Item ##############
       addMenuItem("focusMainEditorMenuItem", mainEditorTextarea.focus)
 
-// ############## Du2Ich Menu Item ##############
+// ############## du2Ich Menu Item ##############
       const du2ichMenuItem = () => {
         MainEditor.Undo.saveState();
 
         const currentNote = new CurrentNote(mainEditorTextarea)
         const changedText = HelgeUtils.Misc.du2ich(currentNote.text(),
-            ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog
-        );
+            ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog);
         currentNote.delete()
 
-        const cursorIsAtTheEndOfTheTextarea = mainEditorTextarea.value.length == mainEditorTextarea.selectionStart;
-        if (cursorIsAtTheEndOfTheTextarea) {
-          mainEditorTextareaWrapper.insertTextAndPutCursorAfter(
-              NEW_NOTE_DELIMITER + changedText)
-        } else {
-          mainEditorTextareaWrapper.insertTextAndPutCursorAfter(
-              changedText + NEW_NOTE_DELIMITER)
+        { // Insert the changed text
+          const cursorIsAtTheEndOfTheTextarea =
+              mainEditorTextarea.value.length == mainEditorTextarea.selectionStart;
+
+          if (cursorIsAtTheEndOfTheTextarea) {
+            mainEditorTextareaWrapper.insertTextAndPutCursorAfter(
+                NEW_NOTE_DELIMITER + changedText)
+          } else {
+            mainEditorTextareaWrapper.insertTextAndPutCursorAfter(
+                changedText + NEW_NOTE_DELIMITER)
+          }
         }
         saveMainEditor()
       }

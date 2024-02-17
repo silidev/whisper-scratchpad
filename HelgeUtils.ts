@@ -398,6 +398,12 @@ Please note that certain strong accents can possibly cause this mode to transcri
      *
      * Do NOT change the syntax of the rules, because they must be kept compatible with
      * https://github.com/No3371/obsidian-regex-pipeline#readme
+     *
+     * @param subject - The text to replace in.
+     * @param allRules - The rules to apply.
+     * @param wholeWords - If true, only whole words are replaced.
+     * @param logReplacements - If true, a log of the replacements is returned.
+     * @param preserveCase - If true, the case of the replaced word is preserved.
      */
     export const replaceByRules = (subject: string, allRules: string, wholeWords = false
         , logReplacements = false, preserveCase = false) => {
@@ -507,7 +513,9 @@ Please note that certain strong accents can possibly cause this mode to transcri
          new ReplaceByRules.WholeWordPreserveCaseReplaceRules(rules).applyTo(input)
     ) => {
 /**
- * Only WHOLE words are replaced.
+ * Only WHOLE words are replaced. Gotchas: Do NOT only search for a word
+ * boundary at the end, because e. g. "du" and "hast" might be endings of
+ * unrelated words!
  */
 const rules1 = `
 "akzentuierst"->"akzentuiere"
@@ -605,7 +613,6 @@ const rules1 = `
 "lernst"->"lerne"
 "liest"->"lese"
 "liest"->"lese"
-"logisierst"->"logisiere"
 "lächelst"->"lächle"
 "läufst"->"laufe"
 "machst"->"mache"
@@ -613,7 +620,6 @@ const rules1 = `
 "manifestierst"->"manifestiere"
 "mathematisierst"->"mathematisiere"
 "maximierst"->"maximiere"
-"metaphorisierst"->"metaphorisiere"
 "minimierst"->"minimiere"
 "moralisierst"->"moralisiere"
 "musst"->"muss"
@@ -641,7 +647,6 @@ const rules1 = `
 "rufst"->"rufe"
 "sagst"->"sage"
 "sammelst"->"sammle"
-"satirisierst"->"satirisiere"
 "schickst"->"schicke"
 "schläfst"->"schlafe"
 "schreibst"->"schreibe"
@@ -701,6 +706,12 @@ const rules1 = `
 "überzeugst"->"überzeuge"
 "klärst"->"kläre"
 "wirst"->"werde"
+"darfst"->"darf"
+"stellst"->"stelle"
+"anstellst"->"anstelle"
+"abstellst"->"abstelle"
+"vorstellst"->"vorstelle"
+"könnest"->"könnte"
 `
       /**
        * Here also partial words are replaced.*/

@@ -372,6 +372,12 @@ export var HelgeUtils;
          *
          * Do NOT change the syntax of the rules, because they must be kept compatible with
          * https://github.com/No3371/obsidian-regex-pipeline#readme
+         *
+         * @param subject - The text to replace in.
+         * @param allRules - The rules to apply.
+         * @param wholeWords - If true, only whole words are replaced.
+         * @param logReplacements - If true, a log of the replacements is returned.
+         * @param preserveCase - If true, the case of the replaced word is preserved.
          */
         ReplaceByRules.replaceByRules = (subject, allRules, wholeWords = false, logReplacements = false, preserveCase = false) => {
             const possiblyWordBoundaryMarker = wholeWords ? '\\b' : '';
@@ -462,7 +468,9 @@ export var HelgeUtils;
          */
         Misc.du2ich = (input, replaceFunction = (rules, input) => new ReplaceByRules.WholeWordPreserveCaseReplaceRules(rules).applyTo(input)) => {
             /**
-             * Only WHOLE words are replaced.
+             * Only WHOLE words are replaced. Gotchas: Do NOT only search for a word
+             * boundary at the end, because e. g. "du" and "hast" might be endings of
+             * unrelated words!
              */
             const rules1 = `
 "akzentuierst"->"akzentuiere"
@@ -560,7 +568,6 @@ export var HelgeUtils;
 "lernst"->"lerne"
 "liest"->"lese"
 "liest"->"lese"
-"logisierst"->"logisiere"
 "lächelst"->"lächle"
 "läufst"->"laufe"
 "machst"->"mache"
@@ -568,7 +575,6 @@ export var HelgeUtils;
 "manifestierst"->"manifestiere"
 "mathematisierst"->"mathematisiere"
 "maximierst"->"maximiere"
-"metaphorisierst"->"metaphorisiere"
 "minimierst"->"minimiere"
 "moralisierst"->"moralisiere"
 "musst"->"muss"
@@ -596,7 +602,6 @@ export var HelgeUtils;
 "rufst"->"rufe"
 "sagst"->"sage"
 "sammelst"->"sammle"
-"satirisierst"->"satirisiere"
 "schickst"->"schicke"
 "schläfst"->"schlafe"
 "schreibst"->"schreibe"
@@ -656,6 +661,12 @@ export var HelgeUtils;
 "überzeugst"->"überzeuge"
 "klärst"->"kläre"
 "wirst"->"werde"
+"darfst"->"darf"
+"stellst"->"stelle"
+"anstellst"->"anstelle"
+"abstellst"->"abstelle"
+"vorstellst"->"vorstelle"
+"könnest"->"könnte"
 `;
             /**
              * Here also partial words are replaced.*/
