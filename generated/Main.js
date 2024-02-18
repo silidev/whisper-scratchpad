@@ -13,7 +13,7 @@ var Cookies = HtmlUtils.BrowserStorage.Cookies;
 var BrowserStorage = HtmlUtils.BrowserStorage;
 import { ctrlYRedo, ctrlZUndo } from "./DontInspect.js";
 import { HelgeUtils } from "./HelgeUtils.js";
-import { INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT } from "./Config.js";
+import { INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT, WHISPER_TEMPERATURE } from "./Config.js";
 import { createCutFunction } from "./CutButton.js";
 import { HtmlUtils } from "./HtmlUtils.js";
 import { CurrentNote } from "./CurrentNote.js";
@@ -636,7 +636,7 @@ const init = () => {
     UiFunctions.Buttons.addEventListeners();
     registerServiceWorker();
     loadFormData();
-    elementWithId("versionSpan").innerHTML = VERSION;
+    elementWithId("versionSpan").innerHTML = `${VERSION}, temperature: ${WHISPER_TEMPERATURE}`;
     mainEditorTextareaWrapper.setCursorAtEnd().focus();
 };
 init();

@@ -1,5 +1,7 @@
 // noinspection JSUnusedGlobalSymbols
 
+import {WHISPER_TEMPERATURE} from "./Config.js";
+
 /**
  * HelgeUtils.ts
  * @description A collection of general utility functions not connected to a
@@ -292,7 +294,7 @@ export namespace HelgeUtils {
 
       /*  */
       formData.append('language', language) // e.g. "en". The language of the input audio. Supplying the input language in ISO-639-1 format will improve accuracy and latency.
-      formData.append('temperature', "0.1") // temperature number Optional
+      formData.append('temperature', WHISPER_TEMPERATURE) // temperature number Optional
       // Defaults to 0 The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. If set to 0, the model will use log probability to automatically increase the temperature until certain thresholds are hit. https://platform.openai.com/docs/api-reference/audio/createTranscription#audio-createtranscription-temperature
 
       /* Docs: https://platform.openai.com/docs/api-reference/audio/createTranscription */
