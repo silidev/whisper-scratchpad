@@ -275,8 +275,10 @@ export var HelgeUtils;
             formData.append('file', audioBlob);
             formData.append('model', 'whisper-1'); // Using the largest model
             formData.append('prompt', prompt);
-            /* Language. Anything in a different language will be translated to the target language. */
-            formData.append('language', language); // e.g. "en"
+            /*  */
+            formData.append('language', language); // e.g. "en". The language of the input audio. Supplying the input language in ISO-639-1 format will improve accuracy and latency.
+            formData.append('temperature', "0.1"); // temperature number Optional
+            // Defaults to 0 The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. If set to 0, the model will use log probability to automatically increase the temperature until certain thresholds are hit. https://platform.openai.com/docs/api-reference/audio/createTranscription#audio-createtranscription-temperature
             /* Docs: https://platform.openai.com/docs/api-reference/audio/createTranscription */
             const response = await fetch("https://api.openai.com/v1/audio/"
                 + (translateToEnglish ? 'translations' : 'transcriptions'), {
