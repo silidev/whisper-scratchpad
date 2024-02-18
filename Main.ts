@@ -207,7 +207,7 @@ export namespace UiFunctions {
           if (whereToPutTranscription=="insertAtCursor") {
             TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, aSpaceIfNeeded() + removeLastDotIfNotAtEnd(transcriptionText))
           } else {
-            trimMainEditor().appendTextAndPutCursorAfter(transcriptionText)
+            trimMainEditor().appendTextAndPutCursorAfter(transcriptionText.trim())
           }
           if (inputElementWithId("autoReplaceCheckbox").checked) {
             applyReplaceRulesToMainEditor()
