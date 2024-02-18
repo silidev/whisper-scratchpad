@@ -1,11 +1,11 @@
 import { HtmlUtils } from "./HtmlUtils.js";
-import { MainEditor, saveMainEditor } from "./Main.js";
+import { mainEditor } from "./Main.js";
 import { CurrentNote } from "./CurrentNote.js";
 var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
 const clipboard = navigator.clipboard;
 export const createCutFunction = (mainEditorTextarea, prefix = "", postfix = "") => {
     return () => {
-        MainEditor.Undo.saveState();
+        mainEditor.Undo.saveState();
         const currentNote = new CurrentNote(mainEditorTextarea);
         clipboard.writeText(prefix + currentNote.text().trim() + postfix).then(() => {
             HtmlUtils.signalClickToUser(buttonWithId("cutNoteButton"));
@@ -20,7 +20,7 @@ export const createCutFunction = (mainEditorTextarea, prefix = "", postfix = "")
                     currentNote.select();
                 }
             }
-            saveMainEditor();
+            mainEditor.save();
             mainEditorTextarea.focus();
         });
     };

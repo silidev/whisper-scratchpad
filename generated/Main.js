@@ -23,8 +23,8 @@ if (RUN_TESTS)
     console.log("RUN_TESTS is true. This is only for " +
         "testing. Set it to false in production.");
 HtmlUtils.ErrorHandling.ExceptionHandlers.installGlobalDefault();
-export var MainEditor;
-(function (MainEditor) {
+export var mainEditor;
+(function (mainEditor) {
     let Undo;
     (function (Undo) {
         let undoBuffer = "";
@@ -32,17 +32,22 @@ export var MainEditor;
             const swapBuffer = mainEditorTextarea.value;
             mainEditorTextarea.value = undoBuffer;
             undoBuffer = swapBuffer;
-            saveMainEditor();
+            mainEditor.save();
         };
         Undo.saveState = () => {
             undoBuffer = mainEditorTextarea.value;
         };
-    })(Undo = MainEditor.Undo || (MainEditor.Undo = {}));
-})(MainEditor || (MainEditor = {}));
+    })(Undo = mainEditor.Undo || (mainEditor.Undo = {}));
+    mainEditor.save = () => {
+        LocalStorage.set("editorText", textAreaWithId("mainEditorTextarea").value);
+        // Delete old cookie
+        // Cookies.set("editorText", ""); // This used to be stored in a cookie.
+    };
+})(mainEditor || (mainEditor = {}));
 var Misc;
 (function (Misc) {
     Misc.applyReplaceRulesToMainEditor = () => {
-        MainEditor.Undo.saveState();
+        mainEditor.Undo.saveState();
         const selectionStart = mainEditorTextarea.selectionStart;
         const selectionEnd = mainEditorTextarea.selectionEnd;
         mainEditorTextarea.value = ReplaceByRules.withUiLog(replaceRulesTextArea.value, mainEditorTextarea.value);
@@ -62,7 +67,6 @@ var Misc;
         });
     };
 })(Misc || (Misc = {}));
-const trimMainEditor = () => mainEditorTextareaWrapper.trim().append(" ");
 export var UiFunctions;
 (function (UiFunctions) {
     var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
@@ -189,13 +193,13 @@ export var UiFunctions;
                         TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, aSpaceIfNeeded() + removeLastDotIfNotAtEnd(transcriptionText));
                     }
                     else {
-                        trimMainEditor().appendTextAndPutCursorAfter(transcriptionText.trim());
+                        mainEditorTextareaWrapper.trim().appendTextAndPutCursorAfter(transcriptionText.trim());
                     }
                     if (inputElementWithId("autoReplaceCheckbox").checked) {
                         applyReplaceRulesToMainEditor();
                     }
-                    trimMainEditor().focus();
-                    saveMainEditor();
+                    mainEditorTextareaWrapper.trim().focus();
+                    mainEditor.save();
                     sending = false;
                     StateIndicator.update();
                 }
@@ -322,14 +326,14 @@ export var UiFunctions;
         const clipboard = navigator.clipboard;
         Buttons.addEventListeners = () => {
             addKeyboardShortcuts();
-            addMenuItem("undoActionButton", MainEditor.Undo.undo);
+            addMenuItem("undoActionButton", mainEditor.Undo.undo);
             // ############## Toggle Log Button ##############
             addMenuItem("toggleLogButton", Log.toggleLog(textAreaWithId));
             // ############## Crop Highlights Menu Item ##############
             const cropHighlights = () => {
-                MainEditor.Undo.saveState();
+                mainEditor.Undo.saveState();
                 mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ');
-                saveMainEditor();
+                mainEditor.save();
             };
             addMenuItem("cropHighlightsMenuItem", cropHighlights);
             // ############## Copy Backup to clipboard Menu Item ##############
@@ -342,7 +346,7 @@ export var UiFunctions;
             addMenuItem("focusMainEditorMenuItem", mainEditorTextarea.focus);
             // ############## du2Ich Menu Item ##############
             const du2ichMenuItem = () => {
-                MainEditor.Undo.saveState();
+                mainEditor.Undo.saveState();
                 const currentNote = new CurrentNote(mainEditorTextarea);
                 const changedText = HelgeUtils.Misc.du2ich(currentNote.text(), ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog);
                 currentNote.delete();
@@ -355,7 +359,7 @@ export var UiFunctions;
                         mainEditorTextareaWrapper.insertTextAndPutCursorAfter(changedText + NEW_NOTE_DELIMITER);
                     }
                 }
-                saveMainEditor();
+                mainEditor.save();
             };
             addMenuItem("du2ichMenuItem", du2ichMenuItem);
             // ############## saveAPIKeyButton ##############
@@ -395,6 +399,7 @@ export var UiFunctions;
             HtmlUtils.addClickListener("addReplaceRuleButton", addReplaceRule);
             HtmlUtils.addClickListener("addWordReplaceRuleButton", Buttons.addWordReplaceRule);
             HtmlUtils.addClickListener("insertNewNoteDelimiterButton", () => {
+                mainEditorTextareaWrapper.trim();
                 appendToMainEditor('\n' + NEW_NOTE_DELIMITER);
                 mainEditorTextarea.focus();
             });
@@ -403,7 +408,7 @@ export var UiFunctions;
             // cutAllButton
             addMenuItem(("cutAllButton"), () => clipboard.writeText(mainEditorTextarea.value).then(() => {
                 mainEditorTextarea.value = '';
-                saveMainEditor();
+                mainEditor.save();
             }));
             // aboutButton
             HtmlUtils.addClickListener(("pasteButton"), () => {
@@ -442,12 +447,12 @@ export var UiFunctions;
         };
         const insertTextIntoMainEditor = (insertedString) => {
             TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, insertedString);
-            saveMainEditor();
+            mainEditor.save();
         };
         suppressUnusedWarning(insertTextIntoMainEditor);
         const appendToMainEditor = (insertedString) => {
             TextAreas.appendTextAndPutCursorAfter(mainEditorTextarea, insertedString);
-            saveMainEditor();
+            mainEditor.save();
             TextAreas.scrollToEnd(mainEditorTextarea);
         };
         // addReplaceRuleButton
@@ -519,11 +524,6 @@ const mainEditorTextarea = document.getElementById('mainEditorTextarea');
 const mainEditorTextareaWrapper = new TextAreaWrapper(mainEditorTextarea);
 const transcriptionPromptEditor = document.getElementById('transcriptionPromptEditor');
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea');
-export const saveMainEditor = () => {
-    LocalStorage.set("editorText", textAreaWithId("mainEditorTextarea").value);
-    Cookies.set("editorText", ""); // This used to be stored in a cookie.
-    // Delete old cookie
-};
 const saveReplaceRules = () => {
     LocalStorage.set("replaceRules", textAreaWithId("replaceRulesTextArea").value);
     Cookies.set("replaceRules", ""); // This used to be stored in a cookie.

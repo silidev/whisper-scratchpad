@@ -15,10 +15,7 @@ import BrowserStorage = HtmlUtils.BrowserStorage;
 import {ctrlYRedo, ctrlZUndo} from "./DontInspect.js"
 import {HelgeUtils} from "./HelgeUtils.js"
 import {
-  INSERT_EDITOR_INTO_PROMPT,
-  NEW_NOTE_DELIMITER,
-  VERSION,
-  WHERE_TO_INSERT_AT, WHISPER_TEMPERATURE
+  INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT, WHISPER_TEMPERATURE
 } from "./Config.js"
 import {createCutFunction} from "./CutButton.js"
 import {HtmlUtils} from "./HtmlUtils.js"
@@ -31,7 +28,7 @@ if (RUN_TESTS) console.log("RUN_TESTS is true. This is only for " +
 
 HtmlUtils.ErrorHandling.ExceptionHandlers.installGlobalDefault()
 
-export namespace MainEditor {
+export namespace mainEditor {
   export namespace Undo {
     let undoBuffer = ""
 
@@ -39,19 +36,25 @@ export namespace MainEditor {
       const swapBuffer = mainEditorTextarea.value
       mainEditorTextarea.value = undoBuffer
       undoBuffer = swapBuffer
-      saveMainEditor()
+      mainEditor.save();
     }
 
     export const saveState = () => {
       undoBuffer = mainEditorTextarea.value
     };
   }
+
+  export const save = () => {
+    LocalStorage.set("editorText", textAreaWithId("mainEditorTextarea").value);
+    // Delete old cookie
+    // Cookies.set("editorText", ""); // This used to be stored in a cookie.
+  };
 }
 
 namespace Misc {
 
   export const applyReplaceRulesToMainEditor = () => {
-    MainEditor.Undo.saveState();
+    mainEditor.Undo.saveState();
     const selectionStart = mainEditorTextarea.selectionStart
     const selectionEnd = mainEditorTextarea.selectionEnd
 
@@ -76,8 +79,6 @@ namespace Misc {
     })
   }
 }
-
-const trimMainEditor = () => mainEditorTextareaWrapper.trim().append(" ")
 
 export namespace UiFunctions {
   import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
@@ -212,13 +213,13 @@ export namespace UiFunctions {
           if (whereToPutTranscription=="insertAtCursor") {
             TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, aSpaceIfNeeded() + removeLastDotIfNotAtEnd(transcriptionText))
           } else {
-            trimMainEditor().appendTextAndPutCursorAfter(transcriptionText.trim())
+            mainEditorTextareaWrapper.trim().appendTextAndPutCursorAfter(transcriptionText.trim())
           }
           if (inputElementWithId("autoReplaceCheckbox").checked) {
             applyReplaceRulesToMainEditor()
           }
-          trimMainEditor().focus()
-          saveMainEditor()
+          mainEditorTextareaWrapper.trim().focus()
+          mainEditor.save();
           sending = false
           StateIndicator.update()
         } catch (error) {
@@ -352,16 +353,16 @@ export namespace UiFunctions {
 
       addKeyboardShortcuts()
 
-      addMenuItem("undoActionButton", MainEditor.Undo.undo)
+      addMenuItem("undoActionButton", mainEditor.Undo.undo)
 
 // ############## Toggle Log Button ##############
       addMenuItem("toggleLogButton", Log.toggleLog(textAreaWithId))
 
 // ############## Crop Highlights Menu Item ##############
       const cropHighlights = () => {
-        MainEditor.Undo.saveState()
+        mainEditor.Undo.saveState()
         mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ')
-        saveMainEditor()
+        mainEditor.save();
       }
       addMenuItem("cropHighlightsMenuItem", cropHighlights)
 
@@ -380,7 +381,7 @@ export namespace UiFunctions {
 
 // ############## du2Ich Menu Item ##############
       const du2ichMenuItem = () => {
-        MainEditor.Undo.saveState();
+        mainEditor.Undo.saveState();
 
         const currentNote = new CurrentNote(mainEditorTextarea)
         const changedText = HelgeUtils.Misc.du2ich(currentNote.text(),
@@ -399,7 +400,7 @@ export namespace UiFunctions {
                 changedText + NEW_NOTE_DELIMITER)
           }
         }
-        saveMainEditor()
+        mainEditor.save();
       }
       addMenuItem("du2ichMenuItem", du2ichMenuItem)
 
@@ -445,6 +446,7 @@ export namespace UiFunctions {
     HtmlUtils.addClickListener("addReplaceRuleButton", addReplaceRule)
     HtmlUtils.addClickListener("addWordReplaceRuleButton", addWordReplaceRule)
     HtmlUtils.addClickListener("insertNewNoteDelimiterButton", () => {
+        mainEditorTextareaWrapper.trim()
         appendToMainEditor('\n' + NEW_NOTE_DELIMITER)
         mainEditorTextarea.focus()
       })
@@ -457,7 +459,7 @@ export namespace UiFunctions {
         clipboard.writeText(mainEditorTextarea.value).then(
           () => {
             mainEditorTextarea.value = ''
-            saveMainEditor()
+            mainEditor.save();
           })
         )
 
@@ -509,13 +511,13 @@ export namespace UiFunctions {
 
     const insertTextIntoMainEditor = (insertedString: string) => {
       TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, insertedString)
-      saveMainEditor()
+      mainEditor.save();
     }
     suppressUnusedWarning(insertTextIntoMainEditor)
 
     const appendToMainEditor = (insertedString: string) => {
       TextAreas.appendTextAndPutCursorAfter(mainEditorTextarea, insertedString)
-      saveMainEditor()
+      mainEditor.save();
       TextAreas.scrollToEnd(mainEditorTextarea);
     }
 
@@ -595,12 +597,6 @@ const mainEditorTextarea = document.getElementById('mainEditorTextarea') as HTML
 const mainEditorTextareaWrapper = new TextAreaWrapper(mainEditorTextarea)
 const transcriptionPromptEditor = document.getElementById('transcriptionPromptEditor') as HTMLTextAreaElement
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement
-
-export const saveMainEditor = () => { //TODOhStu: Move to namespace MainEditor
-  LocalStorage.set("editorText", textAreaWithId("mainEditorTextarea").value);
-  Cookies.set("editorText", ""); // This used to be stored in a cookie.
-  // Delete old cookie
-}
 
 const saveReplaceRules = () => {
   LocalStorage.set("replaceRules",
