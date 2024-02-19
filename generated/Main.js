@@ -159,7 +159,11 @@ export var UiFunctions;
                             && !mainEditorTextarea.value.charAt(mainEditorTextarea.selectionStart - 1).match(/\s/)
                             ? " " : "";
                     };
-                    const promptForWhisper = () => {
+                    const finalPrompt = () => {
+                        if (inputElementWithId("ignorePromptCheckbox").checked) {
+                            Log.error("Prompt ignored.");
+                            return "";
+                        }
                         const MAX_TOTAL_CHARS = 500; /* Taking the last 500
                          CHARS is for sure less than the max 250 TOKENS whisper is
                          considering. This is important because the last words of
@@ -174,7 +178,7 @@ export var UiFunctions;
                                 ? maxEditorPrompt.slice(-maxCharsFromEditor)
                                 : "");
                     };
-                    const getTranscriptionText = async () => await HelgeUtils.Transcription.transcribe(apiName, audioBlob, getApiKey(), promptForWhisper(), getLanguageSelectedInUi(), inputElementWithId("translateCheckbox").checked);
+                    const getTranscriptionText = async () => await HelgeUtils.Transcription.transcribe(apiName, audioBlob, getApiKey(), finalPrompt(), getLanguageSelectedInUi(), inputElementWithId("translateCheckbox").checked);
                     const removeLastDotIfNotAtEnd = (input) => {
                         if (mainEditorTextarea.selectionStart < mainEditorTextarea.value.length) {
                             return removeLastDot(input);

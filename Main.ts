@@ -174,7 +174,11 @@ export namespace UiFunctions {
                 mainEditorTextarea.selectionStart - 1).match(/\s/)
                 ? " " : ""
           }
-          const promptForWhisper = () => {
+          const finalPrompt = () => {
+            if (inputElementWithId("ignorePromptCheckbox").checked) {
+              Log.error("Prompt ignored.")
+              return ""
+            }
             const MAX_TOTAL_CHARS = 500; /* Taking the last 500
              CHARS is for sure less than the max 250 TOKENS whisper is
              considering. This is important because the last words of
@@ -191,7 +195,7 @@ export namespace UiFunctions {
           }
           const getTranscriptionText = async () => await
               HelgeUtils.Transcription.transcribe(
-                  apiName, audioBlob, getApiKey() as string, promptForWhisper(),
+                  apiName, audioBlob, getApiKey() as string, finalPrompt(),
                   getLanguageSelectedInUi(),
                   inputElementWithId("translateCheckbox").checked)
           const removeLastDotIfNotAtEnd = (input: string): string => {
@@ -205,7 +209,8 @@ export namespace UiFunctions {
           StateIndicator.update()
           const apiName = getApiSelectedInUi()
           if (!apiName) {
-            TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, "You must select an API below.")
+            TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea,
+                "You must select an API below.")
             return
           }
           const transcriptionText = await getTranscriptionText()
