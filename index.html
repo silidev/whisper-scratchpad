@@ -40,8 +40,8 @@
         <button id="toggleLogButton">Toggle<br>Log</button>
 
         <span class="buttonLikeBox">
-          <input type="checkbox" id="logReplaceRulesCheckbox" style="margin-left: 8px" class="forceMainColor">
-          <label style="margin: 8px;" for="logReplaceRulesCheckbox">
+          <input type="checkbox" id="logReplaceRulesCheckbox" class="forceMainColor">
+          <label style="margin-left: 8px;" for="logReplaceRulesCheckbox">
             Log
           </label>
         </span>
@@ -58,19 +58,17 @@
         <button id="ctrlYButton">Ctrl-Y<br>Redo</button>
 
         <span class="buttonLikeBox">
-          <input type="checkbox" id="translateCheckbox"
-                 style="margin-left: 8px" class="forceMainColor">
-          <label style="margin: 8px;" for="translateCheckbox">
+          <input type="checkbox" id="translateCheckbox" class="forceMainColor">
+          <label style="margin-left: 8px;" for="translateCheckbox">
             Trans-
            <br>late
           </label>
         </span>
 
         <span class="buttonLikeBox">
-          <input type="checkbox" id="autoReplaceCheckbox"
-                 style="margin-left: 8px" class="forceMainColor"
+          <input type="checkbox" id="autoReplaceCheckbox" class="forceMainColor"
                  checked="checked">
-          <label style="margin: 8px;" for="autoReplaceCheckbox">
+          <label style="margin-left: 8px;" for="autoReplaceCheckbox">
             Auto-
             <br>Replace
           </label>
@@ -108,14 +106,16 @@
 
         <span class="buttonLikeBox">
           <input type="checkbox" id="ignorePromptCheckbox"
-                 style="margin-left: 8px" class="forceMainColor">
-          <label style="margin: 8px;" for="ignorePromptCheckbox">
+                class="forceMainColor">
+          <label style="margin-left: 8px;" for="ignorePromptCheckbox">
             Ignore
             <br>Prompt
           </label>
         </span>
 
-        <label for="fileToUploadSelector" id="uploadButton">Upload File</label>
+        <label for="fileToUploadSelector" id="uploadButton" class="buttonLikeBox">
+          Upload<br>File
+        </label>
         <input type="file" id="fileToUploadSelector" style="display: none" />
       </div>
 

@@ -75,7 +75,6 @@ button, input, textarea {
 button {
  padding: 0 10px;
  margin: 0;
- /*flex-grow: 1;*/
  height: var(--buttonHeight);
  min-width:var(--buttonHeight)
 }
@@ -179,6 +178,9 @@ textarea {
  align-items: center;
  border: 1px solid var(--mainColor);
  height: var(--buttonHeight);
+ padding: 0 10px;
+ margin: 0;
+ min-width:var(--buttonHeight)
 }
 
 .heading {
