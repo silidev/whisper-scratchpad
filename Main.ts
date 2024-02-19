@@ -89,7 +89,6 @@ export namespace UiFunctions {
   import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
 
   export namespace Buttons {
-    import addMenuItem = Menu.wireMenuItem;
     import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
     import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
     import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
