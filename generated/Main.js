@@ -278,9 +278,8 @@ export var UiFunctions;
                     const file = fileInput.files[0];
                     const reader = new FileReader();
                     reader.onload = event => {
-                        if (event.target?.result === null)
+                        if (event.target === null || event.target.result === null)
                             return;
-                        // @ts-ignore
                         audioBlob = new Blob([event.target.result], { type: file.type });
                         Buttons.appendDelimiterToMainEditor();
                         Media.transcribeAudioBlob();

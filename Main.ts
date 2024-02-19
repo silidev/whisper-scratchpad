@@ -301,8 +301,7 @@ export namespace UiFunctions {
           const file = fileInput.files[0];
           const reader = new FileReader();
           reader.onload = event => {
-            if (event.target?.result === null) return
-            // @ts-ignore
+            if (event.target===null || event.target.result===null) return
             audioBlob = new Blob([event.target.result], {type: file.type});
             appendDelimiterToMainEditor()
             transcribeAudioBlob()
