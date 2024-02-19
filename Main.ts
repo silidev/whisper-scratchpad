@@ -308,7 +308,9 @@ export namespace UiFunctions {
             transcribeAudioBlob()
           };
           reader.readAsArrayBuffer(file);
+          Menu.close()
         };
+
         elementWithId('fileToUploadSelector').addEventListener('change', transcribeSelectedFile)
       };
 

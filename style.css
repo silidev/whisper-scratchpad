@@ -160,7 +160,6 @@ textarea {
 }
 
 .item, .heading {
- padding: 0 10px;
  background-color: black;
  min-height: var(--menuItemHeight);
  align-items: center;
