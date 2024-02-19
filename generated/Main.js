@@ -69,7 +69,7 @@ var Misc;
 export var Menu;
 (function (Menu) {
     var WcMenu = HtmlUtils.Menus.WcMenu;
-    Menu.addMenuItem = WcMenu.addMenuItem("editorMenuHeading");
+    Menu.wireMenuItem = WcMenu.addMenuItem("editorMenuHeading");
     Menu.close = () => WcMenu.close("editorMenuHeading");
 })(Menu || (Menu = {}));
 export var UiFunctions;
@@ -83,6 +83,11 @@ export var UiFunctions;
         var Cookies = HtmlUtils.BrowserStorage.Cookies;
         var addKeyboardShortcuts = Misc.addKeyboardShortcuts;
         var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
+        Buttons.appendDelimiterToMainEditor = () => {
+            mainEditorTextareaWrapper.trim();
+            appendToMainEditor('\n' + NEW_NOTE_DELIMITER);
+            mainEditorTextarea.focus();
+        };
         let Media;
         (function (Media) {
             var DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
@@ -96,6 +101,9 @@ export var UiFunctions;
             suppressUnusedWarning(isRecording);
             let stream;
             let sending = false;
+            Media.transcribeAudioBlob = () => {
+                transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT).then();
+            };
             let StateIndicator;
             (function (StateIndicator) {
                 var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
@@ -262,6 +270,25 @@ export var UiFunctions;
             const startRecording = (beginPaused = false) => {
                 navigator.mediaDevices.getUserMedia({ audio: true }).then(getOnStreamReady(beginPaused));
             };
+            const wireUploadButton = () => {
+                const transcribeSelectedFile = () => {
+                    const fileInput = document.getElementById('fileToUploadSelector');
+                    if (!fileInput?.files?.[0])
+                        return;
+                    const file = fileInput.files[0];
+                    const reader = new FileReader();
+                    reader.onload = event => {
+                        if (event.target?.result === null)
+                            return;
+                        // @ts-ignore
+                        audioBlob = new Blob([event.target.result], { type: file.type });
+                        Buttons.appendDelimiterToMainEditor();
+                        Media.transcribeAudioBlob();
+                    };
+                    reader.readAsArrayBuffer(file);
+                };
+                elementWithId('fileToUploadSelector').addEventListener('change', transcribeSelectedFile);
+            };
             // ############## stopButton ##############
             const stopRecording = () => {
                 mediaRecorder.onstop = StopCallbackCreator.transcribingCallback();
@@ -323,52 +350,32 @@ export var UiFunctions;
             // ############## transcribeButton ##############
             buttonWithId("transcribeButton").addEventListener('click', transcribeButton);
             buttonWithId("pauseRecordButton").addEventListener('click', pauseRecordButton);
-            // ############## transcribeAgainButton ##############
-            const transcribeAgainButton = () => {
-                transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT).then();
-            };
-            Menu.addMenuItem("transcribeAgainButton", transcribeAgainButton);
+            // ############## transcribeAudioBlob ##############
+            Menu.wireMenuItem("transcribeAgainButton", Media.transcribeAudioBlob);
             StateIndicator.update();
-            const addUploadButton = () => {
-                const uploadButton = () => {
-                    const fileInput = document.getElementById('fileUpload');
-                    if (!fileInput?.files?.[0])
-                        return;
-                    const file = fileInput.files[0];
-                    const reader = new FileReader();
-                    reader.onload = event => {
-                        if (event.target?.result === null)
-                            return;
-                        // @ts-ignore
-                        audioBlob = new Blob([event.target.result], { type: file.type });
-                    };
-                    reader.readAsArrayBuffer(file);
-                };
-                elementWithId('fileUpload').addEventListener('change', uploadButton);
-            };
-            addUploadButton();
+            wireUploadButton();
         })(Media = Buttons.Media || (Buttons.Media = {})); // End of media buttons
         const clipboard = navigator.clipboard;
         Buttons.addEventListeners = () => {
             addKeyboardShortcuts();
-            Menu.addMenuItem("undoActionButton", mainEditor.Undo.undo);
+            Menu.wireMenuItem("undoActionButton", mainEditor.Undo.undo);
             // ############## Toggle Log Button ##############
-            Menu.addMenuItem("toggleLogButton", Log.toggleLog(textAreaWithId));
+            Menu.wireMenuItem("toggleLogButton", Log.toggleLog(textAreaWithId));
             // ############## Crop Highlights Menu Item ##############
             const cropHighlights = () => {
                 mainEditor.Undo.saveState();
                 mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ');
                 mainEditor.save();
             };
-            Menu.addMenuItem("cropHighlightsMenuItem", cropHighlights);
+            Menu.wireMenuItem("cropHighlightsMenuItem", cropHighlights);
             // ############## Copy Backup to clipboard Menu Item ##############
             const copyBackupToClipboard = () => {
                 clipboard.writeText("## Replace Rules\n" + replaceRulesTextArea.value + "\n"
                     + "## Prompt\n" + transcriptionPromptEditor.value).then();
             };
-            Menu.addMenuItem("copyBackupMenuItem", copyBackupToClipboard);
+            Menu.wireMenuItem("copyBackupMenuItem", copyBackupToClipboard);
             // ############## Focus the main editor textarea Menu Item ##############
-            Menu.addMenuItem("focusMainEditorMenuItem", mainEditorTextarea.focus);
+            Menu.wireMenuItem("focusMainEditorMenuItem", mainEditorTextarea.focus);
             // ############## du2Ich Menu Item ##############
             const du2ichMenuItem = () => {
                 mainEditor.Undo.saveState();
@@ -386,7 +393,7 @@ export var UiFunctions;
                 }
                 mainEditor.save();
             };
-            Menu.addMenuItem("du2ichMenuItem", du2ichMenuItem);
+            Menu.wireMenuItem("du2ichMenuItem", du2ichMenuItem);
             // ############## saveAPIKeyButton ##############
             const saveAPIKeyButton = () => {
                 setApiKeyCookie(apiKeyInput.value);
@@ -423,15 +430,11 @@ export var UiFunctions;
             HtmlUtils.addClickListener("ctrlYButton", ctrlYRedo);
             HtmlUtils.addClickListener("addReplaceRuleButton", addReplaceRule);
             HtmlUtils.addClickListener("addWordReplaceRuleButton", Buttons.addWordReplaceRule);
-            HtmlUtils.addClickListener("insertNewNoteDelimiterButton", () => {
-                mainEditorTextareaWrapper.trim();
-                appendToMainEditor('\n' + NEW_NOTE_DELIMITER);
-                mainEditorTextarea.focus();
-            });
+            HtmlUtils.addClickListener("insertNewNoteDelimiterButton", Buttons.appendDelimiterToMainEditor);
             // cancelRecording
-            Menu.addMenuItem("cancelRecording", Buttons.Media.cancelRecording);
+            Menu.wireMenuItem("cancelRecording", Buttons.Media.cancelRecording);
             // cutAllButton
-            Menu.addMenuItem(("cutAllButton"), () => clipboard.writeText(mainEditorTextarea.value).then(() => {
+            Menu.wireMenuItem(("cutAllButton"), () => clipboard.writeText(mainEditorTextarea.value).then(() => {
                 mainEditorTextarea.value = '';
                 mainEditor.save();
             }));

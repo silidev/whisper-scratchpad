@@ -81,7 +81,7 @@ namespace Misc {
 export namespace Menu {
   import WcMenu = HtmlUtils.Menus.WcMenu;
 
-  export const addMenuItem = WcMenu.addMenuItem("editorMenuHeading")
+  export const wireMenuItem = WcMenu.addMenuItem("editorMenuHeading")
   export const close = () => WcMenu.close("editorMenuHeading")
 }
 
@@ -89,13 +89,19 @@ export namespace UiFunctions {
   import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
 
   export namespace Buttons {
-    import addMenuItem = Menu.addMenuItem;
+    import addMenuItem = Menu.wireMenuItem;
     import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
     import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
     import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
     import Cookies = HtmlUtils.BrowserStorage.Cookies;
     import addKeyboardShortcuts = Misc.addKeyboardShortcuts;
     import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
+
+    export const appendDelimiterToMainEditor = () => {
+      mainEditorTextareaWrapper.trim()
+      appendToMainEditor('\n' + NEW_NOTE_DELIMITER)
+      mainEditorTextarea.focus()
+    };
 
     export namespace Media {
 
@@ -109,6 +115,10 @@ export namespace UiFunctions {
       let isRecording = false; suppressUnusedWarning(isRecording)
       let stream: MediaStream
       let sending = false
+
+      export const transcribeAudioBlob = () => {
+        transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT).then()
+      }
 
       export namespace StateIndicator {
 
@@ -284,6 +294,25 @@ export namespace UiFunctions {
         navigator.mediaDevices.getUserMedia({audio: true}).then(getOnStreamReady(beginPaused))
       }
 
+      const wireUploadButton = () => {
+
+        const transcribeSelectedFile = () => {
+          const fileInput = document.getElementById('fileToUploadSelector') as HTMLInputElement
+          if (!fileInput?.files?.[0]) return
+          const file = fileInput.files[0];
+          const reader = new FileReader();
+          reader.onload = event => {
+            if (event.target?.result === null) return
+            // @ts-ignore
+            audioBlob = new Blob([event.target.result], {type: file.type});
+            appendDelimiterToMainEditor()
+            transcribeAudioBlob()
+          };
+          reader.readAsArrayBuffer(file);
+        };
+        elementWithId('fileToUploadSelector').addEventListener('change', transcribeSelectedFile)
+      };
+
 // ############## stopButton ##############
       const stopRecording = () => {
         mediaRecorder.onstop = StopCallbackCreator.transcribingCallback()
@@ -349,33 +378,12 @@ export namespace UiFunctions {
       buttonWithId("transcribeButton").addEventListener('click', transcribeButton)
       buttonWithId("pauseRecordButton").addEventListener('click', pauseRecordButton)
 
-// ############## transcribeAgainButton ##############
-      const transcribeAgainButton = () => {
-        transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT).then()
-      }
-      Menu.addMenuItem("transcribeAgainButton", transcribeAgainButton)
+// ############## transcribeAudioBlob ##############
+      Menu.wireMenuItem("transcribeAgainButton", transcribeAudioBlob)
 
       StateIndicator.update()
 
-      const addUploadButton = () => {
-        const uploadButton = () => {
-          const fileInput = document.getElementById('fileUpload') as HTMLInputElement
-          if (!fileInput?.files?.[0]) return
-          const file = fileInput.files[0];
-
-          const reader = new FileReader();
-          reader.onload = event => {
-            if (event.target?.result === null) return
-            // @ts-ignore
-            audioBlob = new Blob([event.target.result], {type: file.type});
-          };
-          reader.readAsArrayBuffer(file);
-        };
-
-        elementWithId('fileUpload').addEventListener('change', uploadButton)
-      };
-
-      addUploadButton();
+      wireUploadButton();
 
     } // End of media buttons
 
@@ -384,10 +392,10 @@ export namespace UiFunctions {
 
       addKeyboardShortcuts()
 
-      Menu.addMenuItem("undoActionButton", mainEditor.Undo.undo)
+      Menu.wireMenuItem("undoActionButton", mainEditor.Undo.undo)
 
 // ############## Toggle Log Button ##############
-      Menu.addMenuItem("toggleLogButton", Log.toggleLog(textAreaWithId))
+      Menu.wireMenuItem("toggleLogButton", Log.toggleLog(textAreaWithId))
 
 // ############## Crop Highlights Menu Item ##############
       const cropHighlights = () => {
@@ -395,7 +403,7 @@ export namespace UiFunctions {
         mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ')
         mainEditor.save();
       }
-      Menu.addMenuItem("cropHighlightsMenuItem", cropHighlights)
+      Menu.wireMenuItem("cropHighlightsMenuItem", cropHighlights)
 
 // ############## Copy Backup to clipboard Menu Item ##############
       const copyBackupToClipboard = () => {
@@ -405,10 +413,10 @@ export namespace UiFunctions {
         ).then()
       }
 
-      Menu.addMenuItem("copyBackupMenuItem", copyBackupToClipboard)
+      Menu.wireMenuItem("copyBackupMenuItem", copyBackupToClipboard)
 
 // ############## Focus the main editor textarea Menu Item ##############
-      Menu.addMenuItem("focusMainEditorMenuItem", mainEditorTextarea.focus)
+      Menu.wireMenuItem("focusMainEditorMenuItem", mainEditorTextarea.focus)
 
 // ############## du2Ich Menu Item ##############
       const du2ichMenuItem = () => {
@@ -433,7 +441,7 @@ export namespace UiFunctions {
         }
         mainEditor.save();
       }
-      Menu.addMenuItem("du2ichMenuItem", du2ichMenuItem)
+      Menu.wireMenuItem("du2ichMenuItem", du2ichMenuItem)
 
 // ############## saveAPIKeyButton ##############
       const saveAPIKeyButton = () => {
@@ -476,17 +484,13 @@ export namespace UiFunctions {
     HtmlUtils.addClickListener("ctrlYButton", ctrlYRedo)
     HtmlUtils.addClickListener("addReplaceRuleButton", addReplaceRule)
     HtmlUtils.addClickListener("addWordReplaceRuleButton", addWordReplaceRule)
-    HtmlUtils.addClickListener("insertNewNoteDelimiterButton", () => {
-        mainEditorTextareaWrapper.trim()
-        appendToMainEditor('\n' + NEW_NOTE_DELIMITER)
-        mainEditorTextarea.focus()
-      })
+    HtmlUtils.addClickListener("insertNewNoteDelimiterButton", appendDelimiterToMainEditor)
 
 // cancelRecording
-    Menu.addMenuItem("cancelRecording", Buttons.Media.cancelRecording)
+    Menu.wireMenuItem("cancelRecording", Buttons.Media.cancelRecording)
 
 // cutAllButton
-    Menu.addMenuItem(("cutAllButton"), () =>
+    Menu.wireMenuItem(("cutAllButton"), () =>
         clipboard.writeText(mainEditorTextarea.value).then(
           () => {
             mainEditorTextarea.value = ''
