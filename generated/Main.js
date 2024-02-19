@@ -54,7 +54,6 @@ var Misc;
         mainEditorTextarea.selectionStart = selectionStart;
         mainEditorTextarea.selectionEnd = selectionEnd;
     };
-    Misc.addMenuItem = HtmlUtils.Menus.WcMenu.addMenuItem("editorMenuHeading");
     Misc.addKeyboardShortcuts = () => {
         const cutFromMainEditor = createCutFunction(mainEditorTextarea, "{{c1::", "}}");
         document.addEventListener('keyup', (event) => {
@@ -67,24 +66,28 @@ var Misc;
         });
     };
 })(Misc || (Misc = {}));
+export var Menu;
+(function (Menu) {
+    var WcMenu = HtmlUtils.Menus.WcMenu;
+    Menu.addMenuItem = WcMenu.addMenuItem("editorMenuHeading");
+    Menu.close = () => WcMenu.close("editorMenuHeading");
+})(Menu || (Menu = {}));
 export var UiFunctions;
 (function (UiFunctions) {
     var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
     let Buttons;
     (function (Buttons) {
-        var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
         var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
         var inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
-        var addMenuItem = Misc.addMenuItem;
+        var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
         var Cookies = HtmlUtils.BrowserStorage.Cookies;
         var addKeyboardShortcuts = Misc.addKeyboardShortcuts;
         var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
         let Media;
         (function (Media) {
-            var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
             var DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
             var applyReplaceRulesToMainEditor = Misc.applyReplaceRulesToMainEditor;
-            var addMenuItem = Misc.addMenuItem;
+            var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
             var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
             let mediaRecorder;
             let audioChunks = [];
@@ -324,30 +327,48 @@ export var UiFunctions;
             const transcribeAgainButton = () => {
                 transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT).then();
             };
-            addMenuItem("transcribeAgainButton", transcribeAgainButton);
+            Menu.addMenuItem("transcribeAgainButton", transcribeAgainButton);
             StateIndicator.update();
+            const addUploadButton = () => {
+                const uploadButton = () => {
+                    const fileInput = document.getElementById('fileUpload');
+                    if (!fileInput?.files?.[0])
+                        return;
+                    const file = fileInput.files[0];
+                    const reader = new FileReader();
+                    reader.onload = event => {
+                        if (event.target?.result === null)
+                            return;
+                        // @ts-ignore
+                        audioBlob = new Blob([event.target.result], { type: file.type });
+                    };
+                    reader.readAsArrayBuffer(file);
+                };
+                elementWithId('fileUpload').addEventListener('change', uploadButton);
+            };
+            addUploadButton();
         })(Media = Buttons.Media || (Buttons.Media = {})); // End of media buttons
         const clipboard = navigator.clipboard;
         Buttons.addEventListeners = () => {
             addKeyboardShortcuts();
-            addMenuItem("undoActionButton", mainEditor.Undo.undo);
+            Menu.addMenuItem("undoActionButton", mainEditor.Undo.undo);
             // ############## Toggle Log Button ##############
-            addMenuItem("toggleLogButton", Log.toggleLog(textAreaWithId));
+            Menu.addMenuItem("toggleLogButton", Log.toggleLog(textAreaWithId));
             // ############## Crop Highlights Menu Item ##############
             const cropHighlights = () => {
                 mainEditor.Undo.saveState();
                 mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ');
                 mainEditor.save();
             };
-            addMenuItem("cropHighlightsMenuItem", cropHighlights);
+            Menu.addMenuItem("cropHighlightsMenuItem", cropHighlights);
             // ############## Copy Backup to clipboard Menu Item ##############
             const copyBackupToClipboard = () => {
                 clipboard.writeText("## Replace Rules\n" + replaceRulesTextArea.value + "\n"
                     + "## Prompt\n" + transcriptionPromptEditor.value).then();
             };
-            addMenuItem("copyBackupMenuItem", copyBackupToClipboard);
+            Menu.addMenuItem("copyBackupMenuItem", copyBackupToClipboard);
             // ############## Focus the main editor textarea Menu Item ##############
-            addMenuItem("focusMainEditorMenuItem", mainEditorTextarea.focus);
+            Menu.addMenuItem("focusMainEditorMenuItem", mainEditorTextarea.focus);
             // ############## du2Ich Menu Item ##############
             const du2ichMenuItem = () => {
                 mainEditor.Undo.saveState();
@@ -365,7 +386,7 @@ export var UiFunctions;
                 }
                 mainEditor.save();
             };
-            addMenuItem("du2ichMenuItem", du2ichMenuItem);
+            Menu.addMenuItem("du2ichMenuItem", du2ichMenuItem);
             // ############## saveAPIKeyButton ##############
             const saveAPIKeyButton = () => {
                 setApiKeyCookie(apiKeyInput.value);
@@ -408,9 +429,9 @@ export var UiFunctions;
                 mainEditorTextarea.focus();
             });
             // cancelRecording
-            addMenuItem("cancelRecording", Buttons.Media.cancelRecording);
+            Menu.addMenuItem("cancelRecording", Buttons.Media.cancelRecording);
             // cutAllButton
-            addMenuItem(("cutAllButton"), () => clipboard.writeText(mainEditorTextarea.value).then(() => {
+            Menu.addMenuItem(("cutAllButton"), () => clipboard.writeText(mainEditorTextarea.value).then(() => {
                 mainEditorTextarea.value = '';
                 mainEditor.save();
             }));

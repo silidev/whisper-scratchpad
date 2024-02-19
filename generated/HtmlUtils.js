@@ -325,12 +325,14 @@ export var HtmlUtils;
         let WcMenu;
         (function (WcMenu) {
             var elementWithId = NeverNull.elementWithId;
+            WcMenu.close = (menuHeadingId) => {
+                elementWithId(menuHeadingId).dispatchEvent(new CustomEvent('rootMenuClose'));
+            };
             WcMenu.addMenuItem = (menuHeadingId) => {
                 return (id, menuFunction) => {
                     HtmlUtils.addClickListener(id, () => {
                         menuFunction();
-                        // Close the menu:
-                        elementWithId(menuHeadingId).dispatchEvent(new CustomEvent('rootMenuClose'));
+                        WcMenu.close(menuHeadingId);
                     });
                 };
             };

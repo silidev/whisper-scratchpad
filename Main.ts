@@ -64,8 +64,6 @@ namespace Misc {
     mainEditorTextarea.selectionEnd = selectionEnd
   }
 
-  export const addMenuItem = HtmlUtils.Menus.WcMenu.addMenuItem("editorMenuHeading")
-
   export const addKeyboardShortcuts = () => {
     const cutFromMainEditor = createCutFunction(mainEditorTextarea, "{{c1::", "}}")
 
@@ -80,23 +78,30 @@ namespace Misc {
   }
 }
 
+export namespace Menu {
+  import WcMenu = HtmlUtils.Menus.WcMenu;
+
+  export const addMenuItem = WcMenu.addMenuItem("editorMenuHeading")
+  export const close = () => WcMenu.close("editorMenuHeading")
+}
+
 export namespace UiFunctions {
   import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
 
   export namespace Buttons {
-    import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
+    import addMenuItem = Menu.addMenuItem;
     import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
     import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
-    import addMenuItem = Misc.addMenuItem;
+    import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
     import Cookies = HtmlUtils.BrowserStorage.Cookies;
     import addKeyboardShortcuts = Misc.addKeyboardShortcuts;
     import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
 
     export namespace Media {
-      import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
+
       import DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
       import applyReplaceRulesToMainEditor = Misc.applyReplaceRulesToMainEditor;
-      import addMenuItem = Misc.addMenuItem;
+      import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
       import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
       let mediaRecorder: MediaRecorder
       let audioChunks: Blob[] = []
@@ -348,9 +353,30 @@ export namespace UiFunctions {
       const transcribeAgainButton = () => {
         transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT).then()
       }
-      addMenuItem("transcribeAgainButton", transcribeAgainButton)
+      Menu.addMenuItem("transcribeAgainButton", transcribeAgainButton)
 
       StateIndicator.update()
+
+      const addUploadButton = () => {
+        const uploadButton = () => {
+          const fileInput = document.getElementById('fileUpload') as HTMLInputElement
+          if (!fileInput?.files?.[0]) return
+          const file = fileInput.files[0];
+
+          const reader = new FileReader();
+          reader.onload = event => {
+            if (event.target?.result === null) return
+            // @ts-ignore
+            audioBlob = new Blob([event.target.result], {type: file.type});
+          };
+          reader.readAsArrayBuffer(file);
+        };
+
+        elementWithId('fileUpload').addEventListener('change', uploadButton)
+      };
+
+      addUploadButton();
+
     } // End of media buttons
 
     const clipboard = navigator.clipboard;
@@ -358,10 +384,10 @@ export namespace UiFunctions {
 
       addKeyboardShortcuts()
 
-      addMenuItem("undoActionButton", mainEditor.Undo.undo)
+      Menu.addMenuItem("undoActionButton", mainEditor.Undo.undo)
 
 // ############## Toggle Log Button ##############
-      addMenuItem("toggleLogButton", Log.toggleLog(textAreaWithId))
+      Menu.addMenuItem("toggleLogButton", Log.toggleLog(textAreaWithId))
 
 // ############## Crop Highlights Menu Item ##############
       const cropHighlights = () => {
@@ -369,7 +395,7 @@ export namespace UiFunctions {
         mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ')
         mainEditor.save();
       }
-      addMenuItem("cropHighlightsMenuItem", cropHighlights)
+      Menu.addMenuItem("cropHighlightsMenuItem", cropHighlights)
 
 // ############## Copy Backup to clipboard Menu Item ##############
       const copyBackupToClipboard = () => {
@@ -379,10 +405,10 @@ export namespace UiFunctions {
         ).then()
       }
 
-      addMenuItem("copyBackupMenuItem", copyBackupToClipboard)
+      Menu.addMenuItem("copyBackupMenuItem", copyBackupToClipboard)
 
 // ############## Focus the main editor textarea Menu Item ##############
-      addMenuItem("focusMainEditorMenuItem", mainEditorTextarea.focus)
+      Menu.addMenuItem("focusMainEditorMenuItem", mainEditorTextarea.focus)
 
 // ############## du2Ich Menu Item ##############
       const du2ichMenuItem = () => {
@@ -407,7 +433,7 @@ export namespace UiFunctions {
         }
         mainEditor.save();
       }
-      addMenuItem("du2ichMenuItem", du2ichMenuItem)
+      Menu.addMenuItem("du2ichMenuItem", du2ichMenuItem)
 
 // ############## saveAPIKeyButton ##############
       const saveAPIKeyButton = () => {
@@ -457,10 +483,10 @@ export namespace UiFunctions {
       })
 
 // cancelRecording
-    addMenuItem("cancelRecording", Buttons.Media.cancelRecording)
+    Menu.addMenuItem("cancelRecording", Buttons.Media.cancelRecording)
 
 // cutAllButton
-    addMenuItem(("cutAllButton"), () =>
+    Menu.addMenuItem(("cutAllButton"), () =>
         clipboard.writeText(mainEditorTextarea.value).then(
           () => {
             mainEditorTextarea.value = ''

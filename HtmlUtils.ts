@@ -386,13 +386,15 @@ export namespace HtmlUtils {
     /** https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper */
     export namespace WcMenu {
       import elementWithId = NeverNull.elementWithId
+
+      export const close = (menuHeadingId: string) => {
+        elementWithId(menuHeadingId).dispatchEvent(new CustomEvent('rootMenuClose'))
+      };
       export const addMenuItem = (menuHeadingId: string) => {
         return (id: string, menuFunction: () => void) => {
           HtmlUtils.addClickListener(id, () => {
             menuFunction()
-            // Close the menu:
-            elementWithId(menuHeadingId).dispatchEvent(
-                new CustomEvent('rootMenuClose'))
+            close(menuHeadingId);
           })
         }
       }

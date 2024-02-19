@@ -115,6 +115,10 @@
           </label>
         </span>
 
+<!--        <button id="uploadButton">Upload<br>Audio</button>-->
+<!--        <input type="file" id="fileUpload" />-->
+        <label for="fileUpload" id="uploadButton">Upload File</label>
+        <input type="file" id="fileUpload" style="display: none" />
       </div>
 
       <div class='item'>
@@ -141,7 +145,7 @@
         </select>
       </div>
       <div class='item'>
-        <!--############## RrSelector ##############-->
+        <!--############## Replaces Rules Selector ##############-->
         Replace Rules Set Selector:
         <select id="rrSelector" style="min-height: var(--menuItemHeight); border: none">
           <option value="auto">auto</option>
@@ -159,6 +163,10 @@
       <div class='item' id="downloadLinkMenuItem"><a id="downloadLink">Download audio</a></div>
       <div class='item'>Version:&nbsp;<span id="versionSpan">Rochen</span></div>
     </wc-menu-wrapper></div>
+
+
+  <!-- ########### mainEditorButtons ############# -->
+
   <!-- ########### row1EditorButtons ############# -->
   <button id="cutNoteButton">✂ Cut<br>Note</button> <!--Copy icon was ⎘-->
   <button id="pasteButton"><span class="forceMainColor">📋</span><br>Paste</button>
