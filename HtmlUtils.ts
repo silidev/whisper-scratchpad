@@ -95,8 +95,9 @@ export namespace HtmlUtils {
         return TextAreas.getCursor(this.textArea)
       }
 
-      public setAutoSave(cookieName: string, handleError: (msg: string) => void){
-        TextAreas.setAutoSave(cookieName, this.textArea.id, handleError, BrowserStorage.LocalStorage)
+      public setAutoSave(cookieName: string, handleError: (msg: string) => void,
+                         storage: HtmlUtils.BrowserStorage.BsProvider) {
+        TextAreas.setAutoSave(cookieName, this.textArea.id, handleError, storage)
         return this
       }
 
@@ -146,14 +147,16 @@ export namespace HtmlUtils {
      * @param storageKey - The name of the cookie to store the text area content.
      * @param id - The ID of the text area element.
      * @param handleError - A function to call when an error occurs.
-     * @param bsProvider
+     * @param storage
      */
-    export const setAutoSave = (storageKey: string, id: string, handleError: (msg: string) => void, bsProvider: HtmlUtils.BrowserStorage.BsProvider) => {
+    export const setAutoSave = (storageKey: string, id: string,
+                                handleError: (msg: string) => void,
+                                storage: BrowserStorage.BsProvider) => {
       textAreaWithId(id).addEventListener('input', () => {
         const text = textAreaWithId(id).value
         try {
-          bsProvider.set(storageKey,
-              text.slice(0, MAX_COOKIE_SIZE - 1))
+          storage.set(storageKey,
+              text)
         } catch (e) {
           handleError(`${storageKey}: Text area content exceeds 4095 characters. Content will not be saved.`)
         }
@@ -203,6 +206,21 @@ export namespace HtmlUtils {
     export interface BsProvider {
       set(itemName: string, itemValue: string): void
       get(name: string): string | null
+    }
+
+    export namespace LocalStorageVerified {
+      export const set = (itemName: string, itemValue: string) => {
+        LocalStorage.set(itemName, itemValue)
+        // console.log(`itemValue: ${itemValue.length}`)
+        const reread = LocalStorage.get(itemName);
+        // console.log(`reread: ${reread?.length}`)
+        if (reread !== itemValue) {
+          throw new Error(`Local storage item "${itemName}"'s was not stored correctly!`)
+        }
+      }
+      export const get = (name: string) => {
+        return LocalStorage.get(name)
+      }
     }
 
     export namespace LocalStorage {

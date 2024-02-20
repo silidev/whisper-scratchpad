@@ -33,7 +33,7 @@ export declare namespace HtmlUtils {
             setCursor(position: number): this;
             insertTextAndPutCursorAfter(addedText: string): this;
             getCursor(): number;
-            setAutoSave(cookieName: string, handleError: (msg: string) => void): this;
+            setAutoSave(cookieName: string, handleError: (msg: string) => void, storage: HtmlUtils.BrowserStorage.BsProvider): this;
             value(): string;
             setValue(value: string): this;
             focus(): this;
@@ -48,9 +48,9 @@ export declare namespace HtmlUtils {
          * @param storageKey - The name of the cookie to store the text area content.
          * @param id - The ID of the text area element.
          * @param handleError - A function to call when an error occurs.
-         * @param bsProvider
+         * @param storage
          */
-        const setAutoSave: (storageKey: string, id: string, handleError: (msg: string) => void, bsProvider: HtmlUtils.BrowserStorage.BsProvider) => void;
+        const setAutoSave: (storageKey: string, id: string, handleError: (msg: string) => void, storage: BrowserStorage.BsProvider) => void;
         const getCursor: (textArea: HTMLTextAreaElement) => number;
         const setCursor: (textArea: HTMLTextAreaElement, position: number) => void;
         /**
@@ -66,6 +66,10 @@ export declare namespace HtmlUtils {
         interface BsProvider {
             set(itemName: string, itemValue: string): void;
             get(name: string): string | null;
+        }
+        namespace LocalStorageVerified {
+            const set: (itemName: string, itemValue: string) => void;
+            const get: (name: string) => string | null;
         }
         namespace LocalStorage {
             /**
