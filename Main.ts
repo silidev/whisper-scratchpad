@@ -9,9 +9,7 @@ import blinkSlow = HtmlUtils.blinkSlow;
 import escapeForRegExp = HelgeUtils.Strings.escapeRegExp;
 import elementWithId = HtmlUtils.NeverNull.elementWithId;
 import TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
-import LocalStorage = HtmlUtils.BrowserStorage.LocalStorage;
 import Cookies = HtmlUtils.BrowserStorage.Cookies;
-import BrowserStorage = HtmlUtils.BrowserStorage;
 import {ctrlYRedo, ctrlZUndo} from "./DontInspect.js"
 import {HelgeUtils} from "./HelgeUtils.js"
 import {
@@ -21,9 +19,7 @@ import {createCutFunction} from "./CutButton.js"
 import {HtmlUtils} from "./HtmlUtils.js"
 import {CurrentNote} from "./CurrentNote.js";
 
-import { mkConfig, generateCsv, download } from
-// @ts-ignore
-      "../nodecopy/export-to-csv/output/index.js";
+import {download, generateCsv, mkConfig} from "../node_modules/export-to-csv/output/index.js";
 
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString()
@@ -65,7 +61,7 @@ export namespace Csv {
 }
 
 export namespace mainEditor {
-  import LocalStorageVerified = HtmlUtils.BrowserStorage.LocalStorageVerified;
+
   export namespace Undo {
     let undoBuffer = ""
 
