@@ -1,31 +1,26 @@
 {
   "compilerOptions": {
-    "module": "es2022",
-    "target": "es2022",
+    "module": "esnext",
+    "target": "esnext",
     "sourceMap": true,
     "outDir": "./generated",
     "noImplicitAny": true,
     "strictNullChecks": true, // Otherwise you spent hours debugging why your code doesn't work
-    "emitDecoratorMetadata": true,
-//    "experimentalDecorators": true,
     "declaration": true,
-    "types": ["bun-types"],
-    "lib": ["es2022","dom"],
-    "moduleResolution": "bundler",
-    "moduleDetection": "force",
+    "lib": ["esnext","dom"],
+    "moduleResolution": "node",
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "composite": true,
-//    "downlevelIteration": true,
-    /* TODOh Test this
-        "lib": ["dom", "es6"],
-        "strict": true,
-        "esModuleInterop": true
-    */
+    "baseUrl": ".", // This must be specified if "paths" is.
+    "paths": {
+      "../node_modules/*": ["./node_modules/*"] // This does NOT help. Instead I have to use tsignore
+    }
   },
   "include": [
     "**/*.js",
-    "**/*.ts"
+    "**/*.ts",
+    "node_modules/**/*.ts"
   ],
 //  "exclude": ["node_modules"]
 }

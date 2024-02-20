@@ -21,6 +21,7 @@ import {createCutFunction} from "./CutButton.js"
 import {HtmlUtils} from "./HtmlUtils.js"
 import {CurrentNote} from "./CurrentNote.js";
 
+// @ts-ignore
 import { mkConfig, generateCsv, download } from "../node_modules/export-to-csv/output/index.js";
 
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
@@ -55,9 +56,6 @@ export namespace Csv {
 
 // Converts your Array<Object> to a CsvOutput string based on the configs
   const csv = generateCsv(csvConfig)(mockData);
-
-// Get the button in your HTML
-  const csvBtn = document.querySelector("#csv");
 
 // Add a click handler that will run the `download` function.
 // `download` takes `csvConfig` and the generated `CsvOutput`

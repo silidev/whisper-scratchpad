@@ -1,3 +1,4 @@
+"use strict";
 class InfoButton extends HTMLElement {
     shadow;
     toggleHiddenClass;
@@ -36,5 +37,4 @@ class InfoButton extends HTMLElement {
     }
 }
 customElements.define('info-button', InfoButton);
-export {};
 //# sourceMappingURL=InfoButton.js.map
