@@ -21,12 +21,49 @@ import {createCutFunction} from "./CutButton.js"
 import {HtmlUtils} from "./HtmlUtils.js"
 import {CurrentNote} from "./CurrentNote.js";
 
+import { mkConfig, generateCsv, download } from "../node_modules/export-to-csv/output/index.js";
+
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
-const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString().slice(0, 10) === "2024-01-27"
+const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString()
+    .slice(0, 10) === "2024-01-27"
 if (RUN_TESTS) console.log("RUN_TESTS is true. This is only for " +
     "testing. Set it to false in production.")
 
 HtmlUtils.ErrorHandling.ExceptionHandlers.installGlobalDefault()
+
+export namespace Csv {
+
+// mkConfig merges your options with the defaults
+// and returns WithDefaults<ConfigOptions>
+  import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
+  const csvConfig = mkConfig({ useKeysAsHeaders: true });
+
+  const mockData = [
+    {
+      name: "Rouky",
+      date: "2023-09-01",
+      percentage: 0.4,
+      quoted: '"Pickles"',
+    },
+    {
+      name: "Keiko",
+      date: "2023-09-01",
+      percentage: 0.9,
+      quoted: '"Cactus"',
+    },
+  ];
+
+// Converts your Array<Object> to a CsvOutput string based on the configs
+  const csv = generateCsv(csvConfig)(mockData);
+
+// Get the button in your HTML
+  const csvBtn = document.querySelector("#csv");
+
+// Add a click handler that will run the `download` function.
+// `download` takes `csvConfig` and the generated `CsvOutput`
+// from `generateCsv`.
+  buttonWithId("downloadCsvButton").addEventListener("click", () => download(csvConfig)(csv));
+}
 
 export namespace mainEditor {
   export namespace Undo {
@@ -43,6 +80,18 @@ export namespace mainEditor {
       undoBuffer = mainEditorTextarea.value
     };
   }
+
+  export const append = (insertedString: string) => {
+    TextAreas.appendTextAndPutCursorAfter(mainEditorTextarea, insertedString)
+    mainEditor.save();
+    TextAreas.scrollToEnd(mainEditorTextarea);
+  }
+
+  export const appendDelimiter = () => {
+    mainEditorTextareaWrapper.trim()
+    append('\n' + NEW_NOTE_DELIMITER)
+    mainEditorTextarea.focus()
+  };
 
   export const save = () => {
     LocalStorage.set("editorText", textAreaWithId("mainEditorTextarea").value);
@@ -81,7 +130,7 @@ namespace Misc {
 export namespace Menu {
   import WcMenu = HtmlUtils.Menus.WcMenu;
 
-  export const wireMenuItem = WcMenu.addMenuItem("editorMenuHeading")
+  export const wireMenuItem = WcMenu.addItem("editorMenuHeading")
   export const close = () => WcMenu.close("editorMenuHeading")
 }
 
@@ -95,12 +144,6 @@ export namespace UiFunctions {
     import Cookies = HtmlUtils.BrowserStorage.Cookies;
     import addKeyboardShortcuts = Misc.addKeyboardShortcuts;
     import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
-
-    export const appendDelimiterToMainEditor = () => {
-      mainEditorTextareaWrapper.trim()
-      appendToMainEditor('\n' + NEW_NOTE_DELIMITER)
-      mainEditorTextarea.focus()
-    };
 
     export namespace Media {
 
@@ -296,14 +339,16 @@ export namespace UiFunctions {
       const wireUploadButton = () => {
 
         const transcribeSelectedFile = () => {
-          const fileInput = document.getElementById('fileToUploadSelector') as HTMLInputElement
-          if (!fileInput?.files?.[0]) return
+          const fileInput = inputElementWithId('fileToUploadSelector')
+          if (!fileInput?.files?.[0])
+            return
           const file = fileInput.files[0];
           const reader = new FileReader();
           reader.onload = event => {
-            if (event.target===null || event.target.result===null) return
+            if (event.target===null || event.target.result===null)
+              return
             audioBlob = new Blob([event.target.result], {type: file.type});
-            appendDelimiterToMainEditor()
+            mainEditor.appendDelimiter()
             transcribeAudioBlob()
           };
           reader.readAsArrayBuffer(file);
@@ -484,7 +529,8 @@ export namespace UiFunctions {
     HtmlUtils.addClickListener("ctrlYButton", ctrlYRedo)
     HtmlUtils.addClickListener("addReplaceRuleButton", addReplaceRule)
     HtmlUtils.addClickListener("addWordReplaceRuleButton", addWordReplaceRule)
-    HtmlUtils.addClickListener("insertNewNoteDelimiterButton", appendDelimiterToMainEditor)
+    HtmlUtils.addClickListener("insertNewNoteDelimiterButton",
+        mainEditor.appendDelimiter)
 
 // cancelRecording
     Menu.wireMenuItem("cancelRecording", Buttons.Media.cancelRecording)
@@ -549,12 +595,6 @@ export namespace UiFunctions {
       mainEditor.save();
     }
     suppressUnusedWarning(insertTextIntoMainEditor)
-
-    const appendToMainEditor = (insertedString: string) => {
-      TextAreas.appendTextAndPutCursorAfter(mainEditorTextarea, insertedString)
-      mainEditor.save();
-      TextAreas.scrollToEnd(mainEditorTextarea);
-    }
 
     // addReplaceRuleButton
     const addReplaceRule = (requireWordBoundaryAtStart = false) => {
@@ -643,7 +683,8 @@ const saveReplaceRules = () => {
 textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions
     .replaceRulesTextAreaOnInput)
 
-{ // Autosaves
+// Autosaves
+{
   const handleAutoSaveError = (msg: string) => {
     Log.error(msg)
   }
@@ -724,7 +765,6 @@ namespace ReplaceByRules {
     return withUiLog(rules, subject, true, true)
   }
 }
-
 
 const getApiKey = () => Cookies.get(apiSelector.value + 'ApiKey')
 

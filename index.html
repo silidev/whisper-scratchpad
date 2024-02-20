@@ -13,7 +13,7 @@
   <script type="module" src="generated/DontInspect.js"></script>
   <script type="module" src="generated/HelgeUtils.js"></script>
   <script type="module" src="generated/HtmlUtils.js"></script>
-  <script src="generated/InfoButton.js"></script>
+  <script type="module" src="generated/InfoButton.js"></script>
   <script defer src='lib/wc-menu-wrapper.min.js'></script>
 </head>
 <body>
@@ -117,6 +117,10 @@
           Upload<br>File
         </label>
         <input type="file" id="fileToUploadSelector" style="display: none" />
+      </div>
+
+      <div class='item'>
+        <button id="downloadCsvButton">Download<br>CSV</button>
       </div>
 
       <div class='item'>

@@ -48,6 +48,7 @@ export var HtmlUtils;
         var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
         var trimExceptASingleNewlineAtTheEnd = HelgeUtils.Strings.trimExceptASingleNewlineAtTheEnd;
         class TextAreaWrapper {
+            textArea;
             constructor(textArea) {
                 this.textArea = textArea;
             }
@@ -328,7 +329,7 @@ export var HtmlUtils;
             WcMenu.close = (menuHeadingId) => {
                 elementWithId(menuHeadingId).dispatchEvent(new CustomEvent('rootMenuClose'));
             };
-            WcMenu.addMenuItem = (menuHeadingId) => {
+            WcMenu.addItem = (menuHeadingId) => {
                 return (id, menuFunction) => {
                     HtmlUtils.addClickListener(id, () => {
                         menuFunction();

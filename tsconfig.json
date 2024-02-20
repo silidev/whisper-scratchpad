@@ -1,19 +1,31 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
-    "target": "es2021",
+    "module": "es2022",
+    "target": "es2022",
     "sourceMap": true,
     "outDir": "./generated",
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "strictNullChecks": true, // Otherwise you spent hours debugging why your code doesn't work
-
-/* TODOh Test this
-    "lib": ["dom", "es6"],
+    "emitDecoratorMetadata": true,
+//    "experimentalDecorators": true,
+    "declaration": true,
+    "types": ["bun-types"],
+    "lib": ["es2022","dom"],
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
     "strict": true,
-    "esModuleInterop": true
-*/
+    "forceConsistentCasingInFileNames": true,
+    "composite": true,
+//    "downlevelIteration": true,
+    /* TODOh Test this
+        "lib": ["dom", "es6"],
+        "strict": true,
+        "esModuleInterop": true
+    */
   },
-  "exclude": [
-    "node_modules"
+  "include": [
+    "**/*.js",
+    "**/*.ts"
   ],
+//  "exclude": ["node_modules"]
 }

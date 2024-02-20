@@ -390,7 +390,7 @@ export namespace HtmlUtils {
       export const close = (menuHeadingId: string) => {
         elementWithId(menuHeadingId).dispatchEvent(new CustomEvent('rootMenuClose'))
       };
-      export const addMenuItem = (menuHeadingId: string) => {
+      export const addItem = (menuHeadingId: string) => {
         return (id: string, menuFunction: () => void) => {
           HtmlUtils.addClickListener(id, () => {
             menuFunction()

@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "diff": "^5.1.0"
+    "diff": "^5.1.0",
+    "export-to-csv": "^1.2.2"
   }
 }

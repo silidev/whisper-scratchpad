@@ -3,6 +3,7 @@ import { NEW_NOTE_DELIMITER } from "./Config.js";
 var DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
 /** The current note is the text between the two newNoteDelimiters. */
 export class CurrentNote {
+    mainEditorTextarea;
     constructor(mainEditorTextarea) {
         this.mainEditorTextarea = mainEditorTextarea;
     }

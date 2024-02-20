@@ -137,7 +137,6 @@ export var HelgeUtils;
     })(Tests = HelgeUtils.Tests || (HelgeUtils.Tests = {}));
     let Strings;
     (function (Strings) {
-        var _a;
         var assertEquals = HelgeUtils.Tests.assertEquals;
         /**
          * Trim whitespace but leave a single newline at the end if there is
@@ -171,14 +170,15 @@ export var HelgeUtils;
         /**
          * text.substring(leftIndex, rightIndex) is the string between the delimiters. */
         class DelimiterSearch {
+            delimiter;
             constructor(delimiter) {
                 this.delimiter = delimiter;
             }
             leftIndex(text, startIndex) {
-                return _a.index(this.delimiter, text, startIndex, false);
+                return DelimiterSearch.index(this.delimiter, text, startIndex, false);
             }
             rightIndex(text, startIndex) {
-                return _a.index(this.delimiter, text, startIndex, true);
+                return DelimiterSearch.index(this.delimiter, text, startIndex, true);
             }
             /** If search backwards the position after the delimiter is */
             static index(delimiter, text, startIndex, searchForward) {
@@ -198,60 +198,59 @@ export var HelgeUtils;
                 }
                 return searchForward ? text.length : 0;
             }
-        } //end of class DelimiterSearch
-        _a = DelimiterSearch;
-        DelimiterSearch.runTests = () => {
-            _a.testDelimiterSearch();
-            _a.testDeleteBetweenDelimiters();
-        };
-        DelimiterSearch.testDelimiterSearch = () => {
-            const delimiter = '---\n';
-            const instance = new _a(delimiter);
-            const runTest = (input, index, expected) => assertEquals(input.substring(instance.leftIndex(input, index), instance.rightIndex(input, index)), expected);
-            {
-                const inputStr = "abc" + delimiter;
-                runTest(inputStr, 0, "abc");
-                runTest(inputStr, 3, "abc");
-                runTest(inputStr, 4, "");
-                runTest(inputStr, 3 + delimiter.length, "");
-                runTest(inputStr, 3 + delimiter.length + 1, "");
-            }
-            {
-                const inputStr = delimiter + "abc";
-                runTest(inputStr, 0, "");
-                runTest(inputStr, delimiter.length, "abc");
-                runTest(inputStr, delimiter.length + 3, "abc");
-            }
-        };
-        /** Deletes a note from the given text.
-         * @param input - The text to delete from.
-         * @param left - The index of the left delimiter.
-         * @param right - The index of the right delimiter.
-         * @param delimiter - The delimiter.
-         * */
-        DelimiterSearch.deleteNote = (input, left, right, delimiter) => {
-            const str1 = (input.substring(0, left) + input.substring(right)).replaceAll(delimiter + delimiter, delimiter);
-            if (str1 === delimiter + delimiter)
-                return "";
-            if (str1.startsWith(delimiter))
-                return str1.substring(delimiter.length);
-            if (str1.endsWith(delimiter))
-                return str1.substring(0, str1.length - delimiter.length);
-            return str1;
-        };
-        DelimiterSearch.testDeleteBetweenDelimiters = () => {
-            const delimiter = ')))---(((\n';
-            const runTest = (cursorPosition, input, expected) => {
-                const delimiterSearch = new Strings.DelimiterSearch(delimiter);
-                const left = delimiterSearch.leftIndex(input, cursorPosition);
-                const right = delimiterSearch.rightIndex(input, cursorPosition);
-                assertEquals(_a.deleteNote(input, left, right, delimiter), expected);
+            static runTests = () => {
+                this.testDelimiterSearch();
+                this.testDeleteBetweenDelimiters();
             };
-            runTest(0, "abc" + delimiter, "");
-            runTest(delimiter.length, delimiter + "abc", "");
-            runTest(delimiter.length, delimiter + "abc" + delimiter, "");
-            runTest(1 + delimiter.length, "0" + delimiter + "abc" + delimiter + "1", "0" + delimiter + "1");
-        };
+            static testDelimiterSearch = () => {
+                const delimiter = '---\n';
+                const instance = new DelimiterSearch(delimiter);
+                const runTest = (input, index, expected) => assertEquals(input.substring(instance.leftIndex(input, index), instance.rightIndex(input, index)), expected);
+                {
+                    const inputStr = "abc" + delimiter;
+                    runTest(inputStr, 0, "abc");
+                    runTest(inputStr, 3, "abc");
+                    runTest(inputStr, 4, "");
+                    runTest(inputStr, 3 + delimiter.length, "");
+                    runTest(inputStr, 3 + delimiter.length + 1, "");
+                }
+                {
+                    const inputStr = delimiter + "abc";
+                    runTest(inputStr, 0, "");
+                    runTest(inputStr, delimiter.length, "abc");
+                    runTest(inputStr, delimiter.length + 3, "abc");
+                }
+            };
+            /** Deletes a note from the given text.
+             * @param input - The text to delete from.
+             * @param left - The index of the left delimiter.
+             * @param right - The index of the right delimiter.
+             * @param delimiter - The delimiter.
+             * */
+            static deleteNote = (input, left, right, delimiter) => {
+                const str1 = (input.substring(0, left) + input.substring(right)).replaceAll(delimiter + delimiter, delimiter);
+                if (str1 === delimiter + delimiter)
+                    return "";
+                if (str1.startsWith(delimiter))
+                    return str1.substring(delimiter.length);
+                if (str1.endsWith(delimiter))
+                    return str1.substring(0, str1.length - delimiter.length);
+                return str1;
+            };
+            static testDeleteBetweenDelimiters = () => {
+                const delimiter = ')))---(((\n';
+                const runTest = (cursorPosition, input, expected) => {
+                    const delimiterSearch = new Strings.DelimiterSearch(delimiter);
+                    const left = delimiterSearch.leftIndex(input, cursorPosition);
+                    const right = delimiterSearch.rightIndex(input, cursorPosition);
+                    assertEquals(DelimiterSearch.deleteNote(input, left, right, delimiter), expected);
+                };
+                runTest(0, "abc" + delimiter, "");
+                runTest(delimiter.length, delimiter + "abc", "");
+                runTest(delimiter.length, delimiter + "abc" + delimiter, "");
+                runTest(1 + delimiter.length, "0" + delimiter + "abc" + delimiter + "1", "0" + delimiter + "1");
+            };
+        } //end of class DelimiterSearch
         Strings.DelimiterSearch = DelimiterSearch;
         function runTests() {
             DelimiterSearch.runTests();
@@ -264,6 +263,7 @@ export var HelgeUtils;
     let Transcription;
     (function (Transcription) {
         class TranscriptionError extends Error {
+            payload;
             constructor(payload) {
                 super("TranscriptionError");
                 this.name = "TranscriptionError";
@@ -335,39 +335,42 @@ export var HelgeUtils;
     let ReplaceByRules;
     (function (ReplaceByRules) {
         class ReplaceRules {
+            rules;
             constructor(rules) {
                 this.rules = rules;
-                this.applyTo = (subject) => {
-                    return ReplaceByRules.replaceByRules(subject, this.rules, false, false).resultingText;
-                };
-                this.applyToWithLog = (subject) => {
-                    return ReplaceByRules.replaceByRules(subject, this.rules, false, true);
-                };
             }
+            applyTo = (subject) => {
+                return ReplaceByRules.replaceByRules(subject, this.rules, false, false).resultingText;
+            };
+            applyToWithLog = (subject) => {
+                return ReplaceByRules.replaceByRules(subject, this.rules, false, true);
+            };
         }
         ReplaceByRules.ReplaceRules = ReplaceRules;
         class WholeWordReplaceRules {
+            rules;
             constructor(rules) {
                 this.rules = rules;
-                this.applyTo = (subject) => {
-                    return ReplaceByRules.replaceByRules(subject, this.rules, true, false).resultingText;
-                };
-                this.applyToWithLog = (subject) => {
-                    return ReplaceByRules.replaceByRules(subject, this.rules, true, true);
-                };
             }
+            applyTo = (subject) => {
+                return ReplaceByRules.replaceByRules(subject, this.rules, true, false).resultingText;
+            };
+            applyToWithLog = (subject) => {
+                return ReplaceByRules.replaceByRules(subject, this.rules, true, true);
+            };
         }
         ReplaceByRules.WholeWordReplaceRules = WholeWordReplaceRules;
         class WholeWordPreserveCaseReplaceRules {
+            rules;
             constructor(rules) {
                 this.rules = rules;
-                this.applyTo = (subject) => {
-                    return ReplaceByRules.replaceByRules(subject, this.rules, true, false, true).resultingText;
-                };
-                this.applyToWithLog = (subject) => {
-                    return ReplaceByRules.replaceByRules(subject, this.rules, true, true, true);
-                };
             }
+            applyTo = (subject) => {
+                return ReplaceByRules.replaceByRules(subject, this.rules, true, false, true).resultingText;
+            };
+            applyToWithLog = (subject) => {
+                return ReplaceByRules.replaceByRules(subject, this.rules, true, true, true);
+            };
         }
         ReplaceByRules.WholeWordPreserveCaseReplaceRules = WholeWordPreserveCaseReplaceRules;
         /**

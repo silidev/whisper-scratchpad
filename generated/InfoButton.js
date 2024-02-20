@@ -1,4 +1,6 @@
 class InfoButton extends HTMLElement {
+    shadow;
+    toggleHiddenClass;
     constructor() {
         super();
         this.shadow = this.attachShadow({ mode: 'open' });
@@ -34,4 +36,5 @@ class InfoButton extends HTMLElement {
     }
 }
 customElements.define('info-button', InfoButton);
+export {};
 //# sourceMappingURL=InfoButton.js.map
