@@ -17,8 +17,9 @@ import { INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT
 import { createCutFunction } from "./CutButton.js";
 import { HtmlUtils } from "./HtmlUtils.js";
 import { CurrentNote } from "./CurrentNote.js";
+import { mkConfig, generateCsv, download } from 
 // @ts-ignore
-import { mkConfig, generateCsv, download } from "../node_modules/export-to-csv/output/i.js";
+"../nodecopy/export-to-csv/output/index.js";
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString()
     .slice(0, 10) === "2024-01-27";
