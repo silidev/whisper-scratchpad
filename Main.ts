@@ -22,7 +22,7 @@ import {HtmlUtils} from "./HtmlUtils.js"
 import {CurrentNote} from "./CurrentNote.js";
 
 // @ts-ignore
-import { mkConfig, generateCsv, download } from "../node_modules/export-to-csv/output/index.js";
+import { mkConfig, generateCsv, download } from "../node_modules/export-to-csv/output/i.js";
 
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString()
