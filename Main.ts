@@ -19,6 +19,7 @@ import {createCutFunction} from "./CutButton.js"
 import {HtmlUtils} from "./HtmlUtils.js"
 import {CurrentNote} from "./CurrentNote.js";
 
+// @ts-ignore
 import {download, generateCsv, mkConfig} from "../node_modules/export-to-csv/output/index.js";
 
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
