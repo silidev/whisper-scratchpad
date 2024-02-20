@@ -5,6 +5,7 @@
  * Should be named WebUtils... but I am used to HtmlUtils.
  * */
 import {HelgeUtils} from "./HelgeUtils.js"
+import {BsProvider} from "./HtmlUtilsDefs.js";
 
 const MAX_COOKIE_SIZE = 4096
 
@@ -96,7 +97,7 @@ export namespace HtmlUtils {
       }
 
       public setAutoSave(cookieName: string, handleError: (msg: string) => void,
-                         storage: HtmlUtils.BrowserStorage.BsProvider) {
+                         storage: BsProvider) {
         TextAreas.setAutoSave(cookieName, this.textArea.id, handleError, storage)
         return this
       }
@@ -151,7 +152,7 @@ export namespace HtmlUtils {
      */
     export const setAutoSave = (storageKey: string, id: string,
                                 handleError: (msg: string) => void,
-                                storage: BrowserStorage.BsProvider) => {
+                                storage: BsProvider) => {
       textAreaWithId(id).addEventListener('input', () => {
         const text = textAreaWithId(id).value
         try {
@@ -203,10 +204,6 @@ export namespace HtmlUtils {
   }
 
   export namespace BrowserStorage {
-    export interface BsProvider {
-      set(itemName: string, itemValue: string): void
-      get(name: string): string | null
-    }
 
     export namespace LocalStorageVerified {
       export const set = (itemName: string, itemValue: string) => {

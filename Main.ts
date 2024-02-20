@@ -13,7 +13,7 @@ import Cookies = HtmlUtils.BrowserStorage.Cookies;
 import {ctrlYRedo, ctrlZUndo} from "./DontInspect.js"
 import {HelgeUtils} from "./HelgeUtils.js"
 import {
-  INSERT_EDITOR_INTO_PROMPT, LONG_STORAGE_PROVIDER, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT, WHISPER_TEMPERATURE
+  INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERIFY_LARGE_STORAGE, VERSION, WHERE_TO_INSERT_AT, WHISPER_TEMPERATURE
 } from "./Config.js"
 import {createCutFunction} from "./CutButton.js"
 import {HtmlUtils} from "./HtmlUtils.js"
@@ -21,6 +21,11 @@ import {CurrentNote} from "./CurrentNote.js";
 
 // @ts-ignore
 import {download, generateCsv, mkConfig} from "../node_modules/export-to-csv/output/index.js";
+
+const LARGE_STORAGE_PROVIDER =
+    VERIFY_LARGE_STORAGE
+        ? HtmlUtils.BrowserStorage.LocalStorageVerified
+        : HtmlUtils.BrowserStorage.LocalStorage;
 
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString()
@@ -61,7 +66,7 @@ export namespace mainEditor {
 
   export const save = () => {
     try {
-      LONG_STORAGE_PROVIDER.set("editorText", textAreaWithId("mainEditorTextarea").value);
+      LARGE_STORAGE_PROVIDER.set("editorText", textAreaWithId("mainEditorTextarea").value);
     } catch (e) {
       prompt("Error saving editor text: " + e)
     }
@@ -651,7 +656,7 @@ const transcriptionPromptEditor = document.getElementById('transcriptionPromptEd
 const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement
 
 const saveReplaceRules = () => {
-  LONG_STORAGE_PROVIDER.set("replaceRules",
+  LARGE_STORAGE_PROVIDER.set("replaceRules",
       textAreaWithId("replaceRulesTextArea").value)
   Cookies.set("replaceRules", ""); // This used to be stored in a cookie.
   // Delete old cookie
@@ -665,9 +670,9 @@ textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions
   const handleAutoSaveError = (msg: string) => {
     Log.error(msg)
   }
-  TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea', handleAutoSaveError, LONG_STORAGE_PROVIDER)
-  TextAreas.setAutoSave('editorText', 'mainEditorTextarea', handleAutoSaveError, LONG_STORAGE_PROVIDER)
-  TextAreas.setAutoSave('prompt', 'transcriptionPromptEditor', handleAutoSaveError, LONG_STORAGE_PROVIDER)
+  TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea', handleAutoSaveError, LARGE_STORAGE_PROVIDER)
+  TextAreas.setAutoSave('editorText', 'mainEditorTextarea', handleAutoSaveError, LARGE_STORAGE_PROVIDER)
+  TextAreas.setAutoSave('prompt', 'transcriptionPromptEditor', handleAutoSaveError, LARGE_STORAGE_PROVIDER)
 }
 
 const getApiSelectedInUi = () => (apiSelector.value as HelgeUtils.Transcription.ApiName)
@@ -751,7 +756,7 @@ const setApiKeyCookie = (apiKey: string) => {
 
 export const loadFormData = () => {
   const getLocalStorageOrCookie = (key: string) => {
-    return LONG_STORAGE_PROVIDER.get(key) ?? Cookies.get(key)
+    return LARGE_STORAGE_PROVIDER.get(key) ?? Cookies.get(key)
   }
 
   mainEditorTextarea.value = getLocalStorageOrCookie("editorText")??""
