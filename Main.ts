@@ -30,37 +30,6 @@ if (RUN_TESTS) console.log("RUN_TESTS is true. This is only for " +
 
 HtmlUtils.ErrorHandling.ExceptionHandlers.installGlobalDefault()
 
-export namespace Csv {
-
-// mkConfig merges your options with the defaults
-// and returns WithDefaults<ConfigOptions>
-  import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
-  const csvConfig = mkConfig({ useKeysAsHeaders: true });
-
-  const mockData = [
-    {
-      name: "Rouky",
-      date: "2023-09-01",
-      percentage: 0.4,
-      quoted: '"Pickles"',
-    },
-    {
-      name: "Keiko",
-      date: "2023-09-01",
-      percentage: 0.9,
-      quoted: '"Cactus"',
-    },
-  ];
-
-// Converts your Array<Object> to a CsvOutput string based on the configs
-  const csv = generateCsv(csvConfig)(mockData);
-
-// Add a click handler that will run the `download` function.
-// `download` takes `csvConfig` and the generated `CsvOutput`
-// from `generateCsv`.
-  buttonWithId("downloadCsvButton").addEventListener("click", () => download(csvConfig)(csv));
-}
-
 export namespace mainEditor {
 
   export namespace Undo {
@@ -426,6 +395,13 @@ export namespace UiFunctions {
 
 // ############## transcribeAudioBlob ##############
       Menu.wireMenuItem("transcribeAgainButton", transcribeAudioBlob)
+
+      buttonWithId("downloadCsvButton").addEventListener("click", () => {
+        const csvConfig = mkConfig({ useKeysAsHeaders: true });
+        const csvData = mainEditorTextareaWrapper.value().split(NEW_NOTE_DELIMITER)
+        const csv = generateCsv(csvConfig)(csvData);
+        return download(csvConfig)(csv);
+      });
 
       StateIndicator.update()
 

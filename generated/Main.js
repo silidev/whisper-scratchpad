@@ -24,33 +24,6 @@ if (RUN_TESTS)
     console.log("RUN_TESTS is true. This is only for " +
         "testing. Set it to false in production.");
 HtmlUtils.ErrorHandling.ExceptionHandlers.installGlobalDefault();
-export var Csv;
-(function (Csv) {
-    // mkConfig merges your options with the defaults
-    // and returns WithDefaults<ConfigOptions>
-    var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
-    const csvConfig = mkConfig({ useKeysAsHeaders: true });
-    const mockData = [
-        {
-            name: "Rouky",
-            date: "2023-09-01",
-            percentage: 0.4,
-            quoted: '"Pickles"',
-        },
-        {
-            name: "Keiko",
-            date: "2023-09-01",
-            percentage: 0.9,
-            quoted: '"Cactus"',
-        },
-    ];
-    // Converts your Array<Object> to a CsvOutput string based on the configs
-    const csv = generateCsv(csvConfig)(mockData);
-    // Add a click handler that will run the `download` function.
-    // `download` takes `csvConfig` and the generated `CsvOutput`
-    // from `generateCsv`.
-    buttonWithId("downloadCsvButton").addEventListener("click", () => download(csvConfig)(csv));
-})(Csv || (Csv = {}));
 export var mainEditor;
 (function (mainEditor) {
     let Undo;
@@ -390,6 +363,12 @@ export var UiFunctions;
             buttonWithId("pauseRecordButton").addEventListener('click', pauseRecordButton);
             // ############## transcribeAudioBlob ##############
             Menu.wireMenuItem("transcribeAgainButton", Media.transcribeAudioBlob);
+            buttonWithId("downloadCsvButton").addEventListener("click", () => {
+                const csvConfig = mkConfig({ useKeysAsHeaders: true });
+                const csvData = mainEditorTextareaWrapper.value().split(NEW_NOTE_DELIMITER);
+                const csv = generateCsv(csvConfig)(csvData);
+                return download(csvConfig)(csv);
+            });
             StateIndicator.update();
             wireUploadButton();
         })(Media = Buttons.Media || (Buttons.Media = {})); // End of media buttons

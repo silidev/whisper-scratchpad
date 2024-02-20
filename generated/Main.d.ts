@@ -1,5 +1,3 @@
-export declare namespace Csv {
-}
 export declare namespace mainEditor {
     namespace Undo {
         const undo: () => void;
