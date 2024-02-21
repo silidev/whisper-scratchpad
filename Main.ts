@@ -564,22 +564,26 @@ export namespace UiFunctions {
         Cookies.set('languageSelector', languageSelector.value)
       })
 
-// ############## ankiClozeCsv ##############
-      const ankiClozeCsv = () => {
+// ############## downloadCsvs ##############
+      const downloadCsv = (prefix = "", postfix = "") => {
         // Uses https://github.com/alexcaza/export-to-csv
         const csvConfig = mkConfig({
-          columnHeaders: ["t1"],
-          showColumnHeaders: false,
-          useTextFile: true });
+          columnHeaders: ["t1"], showColumnHeaders: false, useTextFile: true
+        });
         const textArray = mainEditorTextareaWrapper.value().split(NEW_NOTE_DELIMITER)
         // Build a new array with elements like this: { text: textArray[i] }
         const csvData = textArray.map((text: string) => ({
-          t1: "{{c1::"+text+"}}"
+          t1: prefix + text + postfix
         }))
         const csv = generateCsv(csvConfig)(csvData);
         return download(csvConfig)(csv);
       };
+
+      const ankiClozeCsv = () => {
+        return downloadCsv("{{c1::", "}}");
+      };
       Menu.wireMenuItem("ankiClozeCsv", ankiClozeCsv);
+      Menu.wireMenuItem("downloadCsv", downloadCsv);
 
     }
 
