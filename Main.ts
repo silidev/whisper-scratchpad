@@ -567,7 +567,7 @@ export namespace UiFunctions {
 // ############## downloadCsvButton ##############
       const downloadCsvButton = () => {
         // Uses https://github.com/alexcaza/export-to-csv
-        const csvConfig = mkConfig({ useKeysAsHeaders: true });
+        const csvConfig = mkConfig({ useKeysAsHeaders: true, useTextFile: true });
         const textArray = mainEditorTextareaWrapper.value().split(NEW_NOTE_DELIMITER)
         // Build a new array with elements like this: { text: textArray[i] }
         const csvData = textArray.map((text: string) => ({ text: text }))
