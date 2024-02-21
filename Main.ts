@@ -567,14 +567,19 @@ export namespace UiFunctions {
 // ############## downloadCsvButton ##############
       const downloadCsvButton = () => {
         // Uses https://github.com/alexcaza/export-to-csv
-        const csvConfig = mkConfig({ useKeysAsHeaders: true, useTextFile: true });
+        const csvConfig = mkConfig({
+          columnHeaders: ["t1"],
+          showColumnHeaders: false,
+          useTextFile: true });
         const textArray = mainEditorTextareaWrapper.value().split(NEW_NOTE_DELIMITER)
         // Build a new array with elements like this: { text: textArray[i] }
-        const csvData = textArray.map((text: string) => ({ text: text }))
+        const csvData = textArray.map((text: string) => ({
+          t1: "{{c1::"+text+"}}"
+        }))
         const csv = generateCsv(csvConfig)(csvData);
         return download(csvConfig)(csv);
       };
-      buttonWithId("downloadCsvButton").addEventListener("click", downloadCsvButton);
+      Menu.wireMenuItem("downloadCsvButton", downloadCsvButton);
 
     }
 
