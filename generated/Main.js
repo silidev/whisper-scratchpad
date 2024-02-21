@@ -488,8 +488,8 @@ export var UiFunctions;
             languageSelector.addEventListener('change', () => {
                 Cookies.set('languageSelector', languageSelector.value);
             });
-            // ############## ankiCLozeCsv ##############
-            const ankiCLozeCsv = () => {
+            // ############## ankiClozeCsv ##############
+            const ankiClozeCsv = () => {
                 // Uses https://github.com/alexcaza/export-to-csv
                 const csvConfig = mkConfig({
                     columnHeaders: ["t1"],
@@ -504,7 +504,7 @@ export var UiFunctions;
                 const csv = generateCsv(csvConfig)(csvData);
                 return download(csvConfig)(csv);
             };
-            Menu.wireMenuItem("ankiCLozeCsv", ankiCLozeCsv);
+            Menu.wireMenuItem("ankiClozeCsv", ankiClozeCsv);
         };
         const insertTextIntoMainEditor = (insertedString) => {
             TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, insertedString);
