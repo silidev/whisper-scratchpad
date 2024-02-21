@@ -366,14 +366,9 @@ export var UiFunctions;
             buttonWithId("pauseRecordButton").addEventListener('click', pauseRecordButton);
             // ############## transcribeAudioBlob ##############
             Menu.wireMenuItem("transcribeAgainButton", Media.transcribeAudioBlob);
-            buttonWithId("downloadCsvButton").addEventListener("click", () => {
-                const csvConfig = mkConfig({ useKeysAsHeaders: true });
-                const csvData = mainEditorTextareaWrapper.value().split(NEW_NOTE_DELIMITER);
-                const csv = generateCsv(csvConfig)(csvData);
-                return download(csvConfig)(csv);
-            });
-            StateIndicator.update();
+            // ############## Misc ##############
             wireUploadButton();
+            StateIndicator.update();
         })(Media = Buttons.Media || (Buttons.Media = {})); // End of media buttons
         const clipboard = navigator.clipboard;
         Buttons.addEventListeners = () => {
@@ -483,6 +478,7 @@ export var UiFunctions;
             // copyButtons
             addEventListenerForCopyButton("copyReplaceRulesButton", "replaceRulesTextArea");
             addEventListenerForCopyButton("copyPromptButton", "transcriptionPromptEditor");
+            // ############## Misc ##############
             buttonWithId("saveAPIKeyButton").addEventListener('click', function () {
                 inputElementWithId('apiKeyInputField').value = ''; // Clear the input field
             });
@@ -492,6 +488,17 @@ export var UiFunctions;
             languageSelector.addEventListener('change', () => {
                 Cookies.set('languageSelector', languageSelector.value);
             });
+            // ############## downloadCsvButton ##############
+            const downloadCsvButton = () => {
+                // Uses https://github.com/alexcaza/export-to-csv
+                const csvConfig = mkConfig({ useKeysAsHeaders: true });
+                const textArray = mainEditorTextareaWrapper.value().split(NEW_NOTE_DELIMITER);
+                // Build a new array with elements like this: { text: textArray[i] }
+                const csvData = textArray.map((text) => ({ text: text }));
+                const csv = generateCsv(csvConfig)(csvData);
+                return download(csvConfig)(csv);
+            };
+            buttonWithId("downloadCsvButton").addEventListener("click", downloadCsvButton);
         };
         const insertTextIntoMainEditor = (insertedString) => {
             TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, insertedString);

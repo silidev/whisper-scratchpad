@@ -1,0 +1,2 @@
+This is for github pages. Without this file the node_modules folder will NOT be
+served by the web server.
