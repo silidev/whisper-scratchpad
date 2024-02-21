@@ -14,7 +14,7 @@
     "composite": true,
     "baseUrl": ".", // This must be specified if "paths" is.
     "paths": {
-      "../node_modules/*": ["./node_modules/*"] // This does NOT help. Instead I have to use tsignore
+      "../node_modules/*": ["./node_modules/*"] // This does NOT help. Instead I have to use ts-ignore
     }
   },
   "include": [

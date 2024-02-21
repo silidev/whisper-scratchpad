@@ -1,4 +1,3 @@
-import { BsProvider } from "./HtmlUtilsDefs.js";
 export declare namespace HtmlUtils {
     /**
      * .blinkingFast {
@@ -34,7 +33,7 @@ export declare namespace HtmlUtils {
             setCursor(position: number): this;
             insertTextAndPutCursorAfter(addedText: string): this;
             getCursor(): number;
-            setAutoSave(cookieName: string, handleError: (msg: string) => void, storage: BsProvider): this;
+            setAutoSave(cookieName: string, handleError: (msg: string) => void, storage: BrowserStorage.BsProvider): this;
             value(): string;
             setValue(value: string): this;
             focus(): this;
@@ -51,7 +50,7 @@ export declare namespace HtmlUtils {
          * @param handleError - A function to call when an error occurs.
          * @param storage
          */
-        const setAutoSave: (storageKey: string, id: string, handleError: (msg: string) => void, storage: BsProvider) => void;
+        const setAutoSave: (storageKey: string, id: string, handleError: (msg: string) => void, storage: BrowserStorage.BsProvider) => void;
         const getCursor: (textArea: HTMLTextAreaElement) => number;
         const setCursor: (textArea: HTMLTextAreaElement, position: number) => void;
         /**
@@ -64,6 +63,10 @@ export declare namespace HtmlUtils {
         const releaseMicrophone: (stream: MediaStream) => void;
     }
     namespace BrowserStorage {
+        interface BsProvider {
+            set: (key: string, value: string) => void;
+            get: (key: string) => string | null;
+        }
         namespace LocalStorageVerified {
             const set: (itemName: string, itemValue: string) => void;
             const get: (name: string) => string | null;
