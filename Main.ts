@@ -564,8 +564,8 @@ export namespace UiFunctions {
         Cookies.set('languageSelector', languageSelector.value)
       })
 
-// ############## downloadCsvButton ##############
-      const downloadCsvButton = () => {
+// ############## ankiCLozeCsv ##############
+      const ankiCLozeCsv = () => {
         // Uses https://github.com/alexcaza/export-to-csv
         const csvConfig = mkConfig({
           columnHeaders: ["t1"],
@@ -579,7 +579,7 @@ export namespace UiFunctions {
         const csv = generateCsv(csvConfig)(csvData);
         return download(csvConfig)(csv);
       };
-      Menu.wireMenuItem("downloadCsvButton", downloadCsvButton);
+      Menu.wireMenuItem("ankiCLozeCsv", ankiCLozeCsv);
 
     }
 
