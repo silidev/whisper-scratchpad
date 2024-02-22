@@ -323,11 +323,11 @@ export var HtmlUtils;
         };
     })(Clipboard = HtmlUtils.Clipboard || (HtmlUtils.Clipboard = {}));
     /**
-     * Deprecated! Use copyToClipboard instead.
+     * @deprecated Use copyToClipboard instead.
      * @param str
      */
     HtmlUtils.putIntoClipboard = (str) => {
-        navigator.clipboard.writeText(str).then();
+        navigator.clipboard.writeText(str).then().catch(ErrorHandling.printError);
     };
     HtmlUtils.stripHtmlTags = (input) => {
         return input.replace(/<\/?[^>]+(>|$)/g, "");

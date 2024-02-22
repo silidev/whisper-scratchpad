@@ -34,5 +34,13 @@ export declare namespace UiFunctions {
     }
     const replaceRulesTextAreaOnInput: () => () => void;
 }
+export declare namespace Log {
+    const turnOnLogging: () => void;
+    const writeIfLoggingEnabled: (message: string) => void;
+    const error: (message: string) => void;
+    /** This only shows the log. It does NOT turn logging on! */
+    const showLog: () => void;
+    const toggleLog: (textAreaWithId: (id: string) => HTMLTextAreaElement) => () => void;
+}
 export declare const loadFormData: () => void;
 export declare const registerServiceWorker: () => void;

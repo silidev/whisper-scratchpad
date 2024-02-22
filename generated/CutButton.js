@@ -1,5 +1,5 @@
 import { HtmlUtils } from "./HtmlUtils.js";
-import { mainEditor } from "./Main.js";
+import { Log, mainEditor } from "./Main.js";
 import { CurrentNote } from "./CurrentNote.js";
 var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
 const clipboard = navigator.clipboard;
@@ -22,7 +22,7 @@ export const createCutFunction = (mainEditorTextarea, prefix = "", postfix = "")
             }
             mainEditor.save();
             mainEditorTextarea.focus();
-        });
+        }).catch(Log.error);
     };
 };
 //# sourceMappingURL=CutButton.js.map

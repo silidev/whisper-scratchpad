@@ -1,5 +1,5 @@
 import {HtmlUtils} from "./HtmlUtils.js"
-import {mainEditor} from "./Main.js"
+import {Log, mainEditor} from "./Main.js"
 import {CurrentNote} from "./CurrentNote.js"
 import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
 
@@ -26,6 +26,6 @@ export const createCutFunction =
       }
       mainEditor.save();
       mainEditorTextarea.focus()
-    })
+    }).catch(Log.error)
   }
 }

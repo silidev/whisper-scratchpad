@@ -116,7 +116,8 @@ export var UiFunctions;
             let stream;
             let sending = false;
             Media.transcribeAudioBlob = () => {
-                transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT).then();
+                transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
+                    .then().catch(Log.error);
             };
             let StateIndicator;
             (function (StateIndicator) {
@@ -261,7 +262,7 @@ export var UiFunctions;
                             downloadLink.style.display = 'block';
                         }
                         transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
-                            .then();
+                            .then().catch(Log.error);
                     };
                 };
             })(StopCallbackCreator = Media.StopCallbackCreator || (Media.StopCallbackCreator = {}));
@@ -282,7 +283,8 @@ export var UiFunctions;
                 };
             };
             const startRecording = (beginPaused = false) => {
-                navigator.mediaDevices.getUserMedia({ audio: true }).then(getOnStreamReady(beginPaused));
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(getOnStreamReady(beginPaused)).catch(Log.error);
             };
             const wireUploadButton = () => {
                 const transcribeSelectedFile = () => {
@@ -333,7 +335,8 @@ export var UiFunctions;
                     audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                     audioChunks = [];
                     sending = true;
-                    transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT).then();
+                    transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
+                        .then().catch(Log.error);
                     startRecording(true);
                 };
                 mediaRecorder.stop();
@@ -386,7 +389,7 @@ export var UiFunctions;
             // ############## Copy Backup to clipboard Menu Item ##############
             const copyBackupToClipboard = () => {
                 clipboard.writeText("## Replace Rules\n" + replaceRulesTextArea.value + "\n"
-                    + "## Prompt\n" + transcriptionPromptEditor.value).then();
+                    + "## Prompt\n" + transcriptionPromptEditor.value).then().catch(Log.error);
             };
             Menu.wireMenuItem("copyBackupMenuItem", copyBackupToClipboard);
             // ############## Focus the main editor textarea Menu Item ##############
@@ -452,12 +455,12 @@ export var UiFunctions;
             Menu.wireMenuItem(("cutAllButton"), () => clipboard.writeText(mainEditorTextarea.value).then(() => {
                 mainEditorTextarea.value = '';
                 mainEditor.save();
-            }));
+            }).catch(Log.error));
             // aboutButton
             HtmlUtils.addClickListener(("pasteButton"), () => {
                 clipboard.readText().then(text => {
                     TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, text);
-                });
+                }).catch(Log.error);
             });
             // cutNoteButton
             buttonWithId("cutNoteButton").addEventListener('click', createCutFunction(mainEditorTextarea));
@@ -472,7 +475,7 @@ export var UiFunctions;
                         setTimeout(() => {
                             buttonWithId(buttonId).innerHTML = '⎘<br>Copy';
                         }, 500);
-                    });
+                    }).catch(Log.error);
                 });
             };
             // copyButtons
@@ -600,7 +603,7 @@ textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions
 }
 const getApiSelectedInUi = () => apiSelector.value;
 const getLanguageSelectedInUi = () => (languageSelector.value);
-var Log;
+export var Log;
 (function (Log) {
     var inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
     const MAX_LOG_LEN = 1000;
@@ -682,7 +685,7 @@ export const registerServiceWorker = () => {
             console.log('ServiceWorker registration successful with scope: ', registration.scope);
         }, err => {
             console.log('ServiceWorker registration failed: ', err);
-        });
+        }).catch(Log.error);
     }
 };
 const runTests = () => {

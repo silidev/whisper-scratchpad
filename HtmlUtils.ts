@@ -386,11 +386,11 @@ export namespace HtmlUtils {
   }
 
   /**
-   * Deprecated! Use copyToClipboard instead.
+   * @deprecated Use copyToClipboard instead.
    * @param str
    */
   export const putIntoClipboard = (str: string) => {
-    navigator.clipboard.writeText(str).then()
+    navigator.clipboard.writeText(str).then().catch(ErrorHandling.printError)
   }
 
   export const stripHtmlTags = (input: string): string => {

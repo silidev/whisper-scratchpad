@@ -130,7 +130,7 @@ export declare namespace HtmlUtils {
         const write: () => never;
     }
     /**
-     * Deprecated! Use copyToClipboard instead.
+     * @deprecated Use copyToClipboard instead.
      * @param str
      */
     const putIntoClipboard: (str: string) => void;

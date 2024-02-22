@@ -134,7 +134,8 @@ export namespace UiFunctions {
       let sending = false
 
       export const transcribeAudioBlob = () => {
-        transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT).then()
+        transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
+            .then().catch(Log.error)
       }
 
       export namespace StateIndicator {
@@ -286,7 +287,7 @@ export namespace UiFunctions {
               downloadLink.style.display = 'block'
             }
             transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
-                .then()
+                .then().catch(Log.error)
           }
         }
       }
@@ -308,7 +309,8 @@ export namespace UiFunctions {
       }
 
       const startRecording = (beginPaused: boolean = false) => {
-        navigator.mediaDevices.getUserMedia({audio: true}).then(getOnStreamReady(beginPaused))
+        navigator.mediaDevices.getUserMedia({audio: true})
+            .then(getOnStreamReady(beginPaused)).catch(Log.error)
       }
 
       const wireUploadButton = () => {
@@ -365,7 +367,8 @@ export namespace UiFunctions {
           audioBlob = new Blob(audioChunks, {type: 'audio/wav'})
           audioChunks = []
           sending = true
-          transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT).then()
+          transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
+              .then().catch(Log.error)
           startRecording(true)
         }
         mediaRecorder.stop()
@@ -431,7 +434,7 @@ export namespace UiFunctions {
         clipboard.writeText(
             "## Replace Rules\n" + replaceRulesTextArea.value + "\n"
             + "## Prompt\n" + transcriptionPromptEditor.value
-        ).then()
+        ).then().catch(Log.error)
       }
 
       Menu.wireMenuItem("copyBackupMenuItem", copyBackupToClipboard)
@@ -517,14 +520,14 @@ export namespace UiFunctions {
           () => {
             mainEditorTextarea.value = ''
             mainEditor.save();
-          })
+          }).catch(Log.error)
         )
 
 // aboutButton
       HtmlUtils.addClickListener(("pasteButton"), () => {
         clipboard.readText().then(text => {
           TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, text)
-        })
+        }).catch(Log.error)
       })
 
 // cutNoteButton
@@ -543,7 +546,7 @@ export namespace UiFunctions {
             setTimeout(() => {
               buttonWithId(buttonId).innerHTML = '⎘<br>Copy'
             }, 500)
-          })
+          }).catch(Log.error)
         })
       }
 
@@ -693,7 +696,7 @@ textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions
 const getApiSelectedInUi = () => (apiSelector.value as HelgeUtils.Transcription.ApiName)
 const getLanguageSelectedInUi = () => (languageSelector.value)
 
-namespace Log {
+export namespace Log {
   import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
   const MAX_LOG_LEN = 1000
 
@@ -790,7 +793,7 @@ export const registerServiceWorker = () => {
           console.log('ServiceWorker registration successful with scope: ', registration.scope)
         }, err => {
           console.log('ServiceWorker registration failed: ', err)
-        })
+        }).catch(Log.error)
   }
 }
 
