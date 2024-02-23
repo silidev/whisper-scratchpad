@@ -34,23 +34,23 @@ export declare namespace HelgeUtils {
          </template>
          </pre>*/
         const unhandledExceptionAlert: (e: Error | string) => string;
-        /**
+        /** swallowAll
          * Wraps the given void function in a try-catch block and swallows any exceptions.
          *
          * Example use:
-         *     const produceError = () => {throw "error"}
-         *     const noError = swallowAll(produceError);
-         *     noError(); // Does NOT throw an exception.
+              const produceError = () => {throw "error"}
+              const noError = swallowAll(produceError);
+              noError(); // Does NOT throw an exception.
          *
          * @param func
          */
-        const swallowAll: <T, R>(func: (...args: T[]) => void) => (...args: T[]) => void;
+        const swallowAll: <T>(func: (...args: T[]) => void) => (...args: T[]) => void;
         /** Alias for swallowAll
          * @deprecated */
-        const catchAll: <T, R>(func: (...args: T[]) => void) => (...args: T[]) => void;
+        const catchAll: <T>(func: (...args: T[]) => void) => (...args: T[]) => void;
         /** Alias for swallowAll
          * @deprecated */
-        const unthrow: <T, R>(func: (...args: T[]) => void) => (...args: T[]) => void;
+        const unthrow: <T>(func: (...args: T[]) => void) => (...args: T[]) => void;
         /**
          * Calls the function and swallows any exceptions. */
         const callSwallowingExceptions: (f: () => void) => void;
@@ -135,6 +135,8 @@ export declare namespace HelgeUtils {
             };
         }
         /**
+         * NOT reliable in Anki and AnkiDroid.
+         *
          * Deprecated! Use ReplaceRules or WholeWordReplaceRules instead.
          *
          * Do NOT change the syntax of the rules, because they must be kept compatible with
@@ -158,7 +160,8 @@ export declare namespace HelgeUtils {
     const memoize: <T, R>(func: (...args: T[]) => R) => (...args: T[]) => R;
     const extractHighlights: (input: string) => string[];
     namespace Misc {
-        /**
+        /** nullFilter
+         *
          * Throws an exception if the input is null.
          *
          * I use "strictNullChecks": true to avoid bugs. Therefore, I need this
@@ -172,6 +175,6 @@ export declare namespace HelgeUtils {
         /**
          * Converts "Du" to "Ich" and "Dein" to "Mein" and so on.
          */
-        const du2ich: (input: string, replaceFunction?: (rules: string, input: string) => string) => string;
+        const du2ich: (input: string) => string;
     }
 }

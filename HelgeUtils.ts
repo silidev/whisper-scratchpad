@@ -1,7 +1,5 @@
 // noinspection JSUnusedGlobalSymbols
 
-import {WHISPER_TEMPERATURE} from "./Config.js";
-
 /**
  * HelgeUtils.ts
  * @description A collection of general utility functions not connected to a
@@ -52,18 +50,19 @@ export namespace HelgeUtils {
       return str
     }
 
-    /**
+    // noinspection JSArrowFunctionBracesCanBeRemoved
+    /** swallowAll
      * Wraps the given void function in a try-catch block and swallows any exceptions.
      *
      * Example use:
-     *     const produceError = () => {throw "error"}
-     *     const noError = swallowAll(produceError);
-     *     noError(); // Does NOT throw an exception.
+          const produceError = () => {throw "error"}
+          const noError = swallowAll(produceError);
+          noError(); // Does NOT throw an exception.
      *
      * @param func
      */
     export const swallowAll =
-        <T, R>(func: (...args: T[]) => void): (...args: T[]) => void => {
+        <T>(func: (...args: T[]) => void): (...args: T[]) => void => {
           return (...args: T[]): void => {
             try {
               func(...args)
@@ -140,7 +139,7 @@ export namespace HelgeUtils {
           HelgeUtils.Exceptions.alertAndThrow(message
               || `Assertion failed: Expected ${expectedShortened}, but got ${actualShortened}`)
         }
-        HelgeUtils.Exceptions.alertAndThrow(message
+        throw (message
             || `Assertion failed: Expected ${expected}, but got ${actual}`)
       }
     }
@@ -291,10 +290,13 @@ export namespace HelgeUtils {
       formData.append('file', audioBlob)
       formData.append('model', 'whisper-1'); // Using the largest model
       formData.append('prompt', prompt)
+      /* Language. Anything in a different language will be translated to the target language. */
+      formData.append('language', language)
 
       /*  */
       formData.append('language', language) // e.g. "en". The language of the input audio. Supplying the input language in ISO-639-1 format will improve accuracy and latency.
-      formData.append('temperature', WHISPER_TEMPERATURE) // temperature number Optional
+
+      // formData.append('temperature', WHISPER_TEMPERATURE) // temperature number Optional
       // Defaults to 0 The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. If set to 0, the model will use log probability to automatically increase the temperature until certain thresholds are hit. https://platform.openai.com/docs/api-reference/audio/createTranscription#audio-createtranscription-temperature
 
       /* Docs: https://platform.openai.com/docs/api-reference/audio/createTranscription */
@@ -361,6 +363,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
     }
   }
 
+  /* NOT reliable in Anki and AnkiDroid. */
   export namespace ReplaceByRules {
     export class ReplaceRules {
       public constructor(private rules: string) {
@@ -399,6 +402,8 @@ Please note that certain strong accents can possibly cause this mode to transcri
     }
 
     /**
+     * NOT reliable in Anki and AnkiDroid.
+     *
      * Deprecated! Use ReplaceRules or WholeWordReplaceRules instead.
      *
      * Do NOT change the syntax of the rules, because they must be kept compatible with
@@ -414,7 +419,6 @@ Please note that certain strong accents can possibly cause this mode to transcri
         , logReplacements = false, preserveCase = false) => {
       const possiblyWordBoundaryMarker = wholeWords ? '\\b' : ''
       let count = 0
-      const ruleParser = /^"(.+?)"([a-z]*?)(?:\r\n|\r|\n)?->(?:\r\n|\r|\n)?"(.*?)"([a-z]*?)(?:\r\n|\r|\n)?$/gmus
       let log = ''
 
       function applyRule(rawTarget: string, regexFlags: string, replacementString: string, replacementFlags: string) {
@@ -434,7 +438,12 @@ Please note that certain strong accents can possibly cause this mode to transcri
       }
 
       let rule: RegExpExecArray | null
-      while (rule = ruleParser.exec(allRules)) {
+      const ruleParser = /^"(.+?)"([a-z]*?)(?:\r\n|\r|\n)?->(?:\r\n|\r|\n)?"(.*?)"([a-z]*?)(?:\r\n|\r|\n)?$/gmus
+      while (
+          rule = ruleParser.exec(allRules) /* This works fine in a Chrome
+           but at least sometimes returns falsely null inside Anki and
+            AnkiDroid. */
+          ) {
         const [
           , target
           , regexFlags
@@ -490,7 +499,8 @@ Please note that certain strong accents can possibly cause this mode to transcri
   }
 
   export namespace Misc {
-    /**
+    /** nullFilter
+     *
      * Throws an exception if the input is null.
      *
      * I use "strictNullChecks": true to avoid bugs. Therefore, I need this
@@ -513,566 +523,524 @@ Please note that certain strong accents can possibly cause this mode to transcri
     /**
      * Converts "Du" to "Ich" and "Dein" to "Mein" and so on.
      */
-    export const du2ich = (input: string,
-         replaceFunction = (rules: string,input: string) =>
-         new ReplaceByRules.WholeWordPreserveCaseReplaceRules(rules).applyTo(input)
-    ) => {
-/**
- * Only WHOLE words are replaced. Gotchas: Do NOT only search for a word
- * boundary at the end, because e. g. "du" and "hast" might be endings of
- * unrelated words!
- */
-const rules1 = `
-"abstellst"->"abstelle"
-"aktivierst"->"aktiviere"
-"aktualisierst"->"aktualisiere"
-"akzentuierst"->"akzentuiere"
-"akzeptierst"->"akzeptiere"
-"allegorisierst"->"allegorisiere"
-"analysierst"->"analysiere"
-"anstellst"->"anstelle"
-"antwortest"->"antworte"
-"arbeitest"->"arbeite"
-"assoziierst"->"assoziiere"
-"assoziiert"->"assoziiere"
-"authentifizierst"->"authentifiziere"
-"autorisierst"->"autorisiere"
-"basiert"->"basiere"
-"baust"->"baue"
-"beachtest"->"beachte"
-"bearbeitest"->"bearbeite"
-"bedankst"->"bedanke"
-"bedeckst"->"bedecke"
-"bedenkst"->"bedenke"
-"bedeutest"->"bedeute"
-"bedienst"->"bediene"
-"beeinflusst"->"beeinflusse"
-"beeinträchtigst"->"beeinträchtige"
-"beendest"->"beende"
-"befasst"->"befasse"
-"befindest"->"befinde"
-"begeisterst"->"begeistere"
-"beginnst"->"beginne"
-"begrüßt"->"begrüße"
-"behandelst"->"behandle"
-"behauptest"->"behaupte"
-"behältst"->"behalte"
-"bekommst"->"bekomme"
-"bekämpfst"->"bekämpfe"
-"bemühst"->"bemühe"
-"benutzt"->"benutze"
-"benötigst"->"benötige"
-"beobachtest"->"beobachte"
-"berechnest"->"berechne"
-"bereitest"->"bereite"
-"berichtest"->"berichte"
-"beruhst"->"beruhe"
-"berücksichtigst"->"berücksichtige"
-"beschleunigst"->"beschleunige"
-"beschränkst"->"beschränke"
-"beschwerst"->"beschwere"
-"beschäftigst"->"beschäftige"
-"beschützt"->"beschütze"
-"besitzt"->"besitze"
-"bestehst"->"bestehe"
-"bestimmst"->"bestimme"
-"bestätigst"->"bestätige"
-"besuchst"->"besuche"
-"betonst"->"betone"
-"betrachtest"->"betrachte"
-"betreibst"->"betreibe"
-"betrifft"->"betrifft"
-"beurteilst"->"beurteile"
-"bewegst"->"bewege"
-"beweist"->"beweise"
-"bewertest"->"bewerte"
-"bewirkst"->"bewirke"
-"bezahlst"->"bezahle"
-"beziehst"->"beziehe"
-"bietest"->"biete"
-"bildest"->"bilde"
-"bist"->"bin"
-"bittest"->"bitte"
-"bleibst"->"bleibe"
-"brauchst"->"brauche"
-"breitest"->"breite"
-"brichst"->"breche"
-"bringst"->"bringe"
-"dankst"->"danke"
-"darfst"->"darf"
-"deaktivierst"->"deaktiviere"
-"deckst"->"decke"
-"definierst"->"definiere"
-"dein"->"mein"
-"deine"->"meine"
-"deiner"->"meiner"
-"demokratisierst"->"demokratisiere"
-"demonstrierst"->"demonstriere"
-"denkst"->"denke"
-"diagnostizierst"->"diagnostiziere"
-"dich"->"mich"
-"dienst"->"diene"
-"differenzierst"->"differenziere"
-"digitalisierst"->"digitalisiere"
-"dir"->"mir"
-"diskutierst"->"diskutiere"
-"diversifizierst"->"diversifiziere"
-"doppelst"->"dopple"
-"dramatisierst"->"dramatisiere"
-"drehst"->"drehe"
-"drittelst"->"drittele"
-"druckst"->"drucke"
-"drückst"->"drücke"
-"du"->"ich"
-"einst"->"ein"
-"empfiehlst"->"empfehle"
-"empfängst"->"empfange"
-"endest"->"ende"
-"entdeckst"->"entdecke"
-"entfernst"->"entferne"
-"enthältst"->"enthalte"
-"entscheidest"->"entscheide"
-"entschuldigst"->"entschuldige"
-"entspannst"->"entspanne"
-"entsprichst"->"entspreche"
-"entstehst"->"entstehe"
-"entwickelst"->"entwickle"
-"erfasst"->"erfasse"
-"erfolgst"->"erfolge"
-"erforderst"->"erfordere"
-"erfährst"->"erfahre"
-"erfüllst"->"erfülle"
-"ergibst"->"ergebe"
-"ergreifst"->"ergreife"
-"erhebst"->"erhebe"
-"erholst"->"erhole"
-"erhältst"->"erhalte"
-"erhöhst"->"erhöhe"
-"erinnerst"->"erinnere"
-"erkennst"->"erkenne"
-"erklärst"->"erkläre"
-"erlaubst"->"erlaube"
-"erlebst"->"erlebe"
-"erleichterst"->"erleichtere"
-"erlässt"->"erlasse"
-"ermittelst"->"ermittle"
-"ermunterst"->"ermuntere"
-"ermöglichst"->"ermögliche"
-"erreichst"->"erreiche"
-"erscheinst"->"erscheine"
-"erschreckst"->"erschrecke"
-"ersetzt"->"ersetze"
-"ersiehst"->"ersiehe"
-"erstellst"->"erstelle"
-"erstreckst"->"erstrecke"
-"ersuchst"->"ersuche"
-"erteilst"->"erteile"
-"erwartest"->"erwarte"
-"erweiterst"->"erweitere"
-"erwärmst"->"erwärme"
-"erzeugst"->"erzeuge"
-"erzielst"->"erziele"
-"erzählst"->"erzähle"
-"exportierst"->"exportiere"
-"fasert"->"fasere"
-"feierst"->"feiere"
-"findest"->"finde"
-"findet"->"finde"
-"fliegst"->"fliege"
-"folgst"->"folge"
-"forderst"->"fordere"
-"formst"->"forme"
-"fragst"->"frage"
-"freist"->"freie"
-"friedest"->"friede"
-"funktionierst"->"funktioniere"
-"fährst"->"fahre"
-"fällst"->"falle"
-"fängst"->"fange"
-"förderst"->"fördere"
-"fügst"->"füge"
-"fühlst"->"fühle"
-"führst"->"führe"
-"garantierst"->"garantiere"
-"gebietest"->"gebiete"
-"gefällst"->"gefalle"
-"gehst"->"gehe"
-"gehörst"->"gehöre"
-"gelangst"->"gelange"
-"genießt"->"genieße"
-"gerätst"->"gerate"
-"geschieht"->"geschehe"
-"gestaltest"->"gestalte"
-"gestattest"->"gestatte"
-"gewinnst"->"gewinne"
-"gewährleistest"->"gewährleiste"
-"gewährst"->"gewähre"
-"gibst"->"gebe"
-"giltst"->"gelte"
-"glaubst"->"glaube"
-"gleichst"->"gleiche"
-"globalisierst"->"globalisiere"
-"greifst"->"greife"
-"grenzt"->"grenze"
-"gründest"->"gründe"
-"habst"->"habe"
-"hakst"->"hake"
-"handelst"->"handle"
-"harmonisierst"->"harmonisiere"
-"hast"->"habe"
-"heiratest"->"heirate"
-"heißt"->"heiße"
-"hilfst"->"helfe"
-"hoffst"->"hoffe"
-"holst"->"hole"
-"hältst"->"halte"
-"hängst"->"hänge"
-"hörst"->"höre"
-"identifizierst"->"identifiziere"
-"ideologisierst"->"ideologisiere"
-"illustrierst"->"illustriere"
-"importierst"->"importiere"
-"individualisierst"->"individualisiere"
-"informierst"->"informiere"
-"inspirierst"->"inspiriere"
-"installierst"->"installiere"
-"intensivierst"->"intensiviere"
-"interessierst"->"interessiere"
-"interpretierst"->"interpretiere"
-"investierst"->"investiere"
-"ironisierst"->"ironisiere"
-"isst"->"esse"
-"jungst"->"junge"
-"kannst"->"kann"
-"kantest"->"kante"
-"karikierst"->"karikiere"
-"kategorisierst"->"kategorisiere"
-"kaufst"->"kaufe"
-"kennst"->"kenne"
-"klassifizierst"->"klassifiziere"
-"klickst"->"klicke"
-"klärst"->"kläre"
-"knotest"->"knote"
-"kochst"->"koche"
-"kommentierst"->"kommentiere"
-"kommst"->"komme"
-"komplizierst"->"kompliziere"
-"konfigurierst"->"konfiguriere"
-"kontrollierst"->"kontrolliere"
-"konzentrierst"->"konzentriere"
-"kopierst"->"kopiere"
-"korrigierst"->"korrigiere"
-"kostest"->"koste"
-"kriegst"->"kriege"
-"kritisierst"->"kritisiere"
-"krümelst"->"krümele"
-"kämpfst"->"kämpfe"
-"könnest"->"könnte"
-"kümmerst"->"kümmere"
-"lachst"->"lache"
-"langst"->"lange"
-"lastest"->"laste"
-"lebst"->"lebe"
-"legitimierst"->"legitimiere"
-"legst"->"lege"
-"leibst"->"leibe"
-"leidest"->"leide"
-"leihst"->"leihe"
-"leistest"->"leiste"
-"leitest"->"leite"
-"lernst"->"lerne"
-"liebst"->"liebe"
-"lieferst"->"liefere"
-"liegst"->"liege"
-"liest"->"lese"
-"linkst"->"linke"
-"listest"->"liste"
-"loderst"->"lodere"
-"lächelst"->"lächle"
-"lädst"->"lade"
-"ländest"->"lande"
-"lässt"->"lasse"
-"läufst"->"laufe"
-"löschst"->"lösche"
-"löst"->"löse"
-"machst"->"mache"
-"magst"->"mag"
-"manifestierst"->"manifestiere"
-"markierst"->"markiere"
-"mathematisierst"->"mathematisiere"
-"maximierst"->"maximiere"
-"meinst"->"meine"
-"meisterst"->"meistere"
-"meldest"->"melde"
-"mengst"->"menge"
-"minimierst"->"minimiere"
-"misst"->"messe"
-"moralisierst"->"moralisiere"
-"moserst"->"mosere"
-"musst"->"muss"
-"navigierst"->"navigiere"
-"nennst"->"nenne"
-"nimmst"->"nehme"
-"normst"->"norme"
-"nutest"->"nute"
-"nutzt"->"nutze"
-"optimierst"->"optimiere"
-"ordnest"->"ordne"
-"parodierst"->"parodiere"
-"passierst"->"passiere"
-"passt"->"passe"
-"pflanzt"->"pflanze"
-"philosophierst"->"philosophiere"
-"planst"->"plane"
-"poetisierst"->"poetisiere"
-"politisierst"->"politisiere"
-"polst"->"polste"
-"positionierst"->"positioniere"
-"postest"->"poste"
-"preist"->"preise"
-"priorisierst"->"priorisiere"
-"probst"->"probe"
-"profitierst"->"profitiere"
-"prognostizierst"->"prognostiziere"
-"präsentierst"->"präsentiere"
-"prüfst"->"prüfe"
-"punktest"->"punkte"
-"qualifizierst"->"qualifiziere"
-"quantifizierst"->"quantifiziere"
-"quellst"->"quelle"
-"ragst"->"rage"
-"rahmst"->"rahme"
-"rationalisierst"->"rationalisiere"
-"reagierst"->"reagiere"
-"rechnest"->"rechne"
-"rechtst"->"rechte"
-"redest"->"rede"
-"reduzierst"->"reduziere"
-"regelst"->"regele"
-"reichst"->"reiche"
-"reifst"->"reife"
-"reinigst"->"reinige"
-"reist"->"reise"
-"rennst"->"renne"
-"repräsentierst"->"repräsentiere"
-"resümierst"->"resümiere"
-"rettest"->"rette"
-"rettst"->"rette"
-"richtest"->"richte"
-"riechst"->"rieche"
-"rinnst"->"rinne"
-"rollst"->"rolle"
-"romantisierst"->"romantisiere"
-"rufst"->"rufe"
-"rückst"->"rücke"
-"sagst"->"sage"
-"sammelst"->"sammle"
-"schadest"->"schade"
-"schaffst"->"schaffe"
-"schaltest"->"schalte"
-"schattest"->"schatte"
-"schaust"->"schaue"
-"scheidest"->"scheide"
-"scheinst"->"scheine"
-"scherst"->"scherze"
-"schichtest"->"schichte"
-"schickst"->"schicke"
-"schiebst"->"schiebe"
-"schließt"->"schließe"
-"schläfst"->"schlafe"
-"schlägst"->"schlage"
-"schmerzt"->"schmerze"
-"schmilzt"->"schmelze"
-"schneidest"->"schneide"
-"schnellst"->"schnelle"
-"schreibst"->"schreibe"
-"schreitest"->"schreite"
-"schuldest"->"schulde"
-"schwellst"->"schwelle"
-"schätzt"->"schätze"
-"schönst"->"schöne"
-"schützt"->"schütze"
-"seihst"->"seihe"
-"sendest"->"sende"
-"senkst"->"senke"
-"setzt"->"setze"
-"sicherst"->"sichere"
-"siebst"->"siebe"
-"siehst"->"sehe"
-"sitzt"->"sitze"
-"sollst"->"soll"
-"sonderst"->"sondere"
-"sorgst"->"sorge"
-"sortierst"->"sortiere"
-"sozialisierst"->"sozialisiere"
-"spaltest"->"spalte"
-"sparst"->"spare"
-"speicherst"->"speichere"
-"spezialisierst"->"spezialisiere"
-"spielst"->"spiele"
-"sprichst"->"spreche"
-"spürst"->"spüre"
-"stabilisierst"->"stabilisiere"
-"stammst"->"stamme"
-"standardisierst"->"standardisiere"
-"startest"->"starte"
-"stehst"->"stehe"
-"steigerst"->"steigere"
-"stellst"->"stelle"
-"steuerst"->"steuere"
-"stilisierst"->"stilisiere"
-"stimmst"->"stimme"
-"stirbst"->"sterbe"
-"stopst"->"stopfe"
-"stoßt"->"stoße"
-"studierst"->"studiere"
-"stundest"->"stunde"
-"stärkst"->"stärke"
-"stürzt"->"stürze"
-"stützt"->"stütze"
-"suchst"->"suche"
-"symbolisierst"->"symbolisiere"
-"synchronisierst"->"synchronisiere"
-"synthetisierst"->"synthetisiere"
-"säufst"->"säufe"
-"tagst"->"tage"
-"tanzt"->"tanze"
-"teilst"->"teile"
-"testest"->"teste"
-"theologisierst"->"theologisiere"
-"tickst"->"ticke"
-"treibst"->"treibe"
-"trennst"->"trenne"
-"triffst"->"treffe"
-"trinkst"->"trinke"
-"trittst"->"trete"
-"trägst"->"trage"
-"tust"->"tue"
-"tötest"->"töte"
-"umfasst"->"umfasse"
-"umgibst"->"umgebe"
-"unterliegst"->"unterliege"
-"unternimmst"->"unternehme"
-"unterscheidest"->"unterscheide"
-"unterstützt"->"unterstütze"
-"untersuchst"->"untersuche"
-"validierst"->"validiere"
-"verbesserst"->"verbessere"
-"verbindest"->"verbinde"
-"verbrichst"->"verbriche"
-"verbringst"->"verbringe"
-"verdienst"->"verdiene"
-"vereinfachst"->"vereinfache"
-"verfolgst"->"verfolge"
-"verfährst"->"verfahre"
-"verfügst"->"verfüge"
-"vergisst"->"vergesse"
-"vergleichst"->"vergleiche"
-"vergrößerst"->"vergrößere"
-"verhinderst"->"verhindere"
-"verhältst"->"verhalte"
-"verifizierst"->"verifiziere"
-"verkaufst"->"verkaufe"
-"verlangst"->"verlange"
-"verleihst"->"verleihe"
-"verlierst"->"verliere"
-"verlässt"->"verlasse"
-"vermeidest"->"vermeide"
-"verringerst"->"verringere"
-"verrätst"->"verrate"
-"verscheidest"->"verscheide"
-"verschiebst"->"verschiebe"
-"verschilfst"->"verschilfe"
-"verschneist"->"verschneie"
-"verschwindest"->"verschwinde"
-"versehst"->"versehe"
-"versprichst"->"verspreche"
-"versteckst"->"verstecke"
-"verstehst"->"verstehe"
-"verstärkst"->"verstärke"
-"versuchst"->"versuche"
-"verteidigst"->"verteidige"
-"vertraust"->"vertraue"
-"vertrittst"->"vertrete"
-"vervielfältigst"->"vervielfältige"
-"vervollständigst"->"vervollständige"
-"verwaltest"->"verwalte"
-"verwehst"->"verwehe"
-"verwendest"->"verwende"
-"verzichtest"->"verzichte"
-"veränderst"->"verändere"
-"veröffentlichst"->"veröffentliche"
-"vorstellst"->"vorstelle"
-"wagst"->"wage"
-"wartest"->"warte"
-"webst"->"webe"
-"wechselst"->"wechsle"
-"weist"->"weise"
-"weißt"->"weiß"
-"wendest"->"wende"
-"wertest"->"werte"
-"west"->"weste"
-"wettest"->"wette"
-"wiederholst"->"wiederhole"
-"willst"->"will"
-"winkst"->"winke"
-"wirfst"->"werfe"
-"wirkst"->"wirke"
-"wirst"->"werde"
-"wohnst"->"wohne"
-"wunderst"->"wundere"
-"wählst"->"wähle"
-"wünschst"->"wünsche"
-"zahlst"->"zahle"
-"zeichnest"->"zeichne"
-"zeigst"->"zeige"
-"zerstörst"->"zerstöre"
-"zertifizierst"->"zertifiziere"
-"ziehst"->"ziehe"
-"zielst"->"ziele"
-"zivilisierst"->"zivilisiere"
-"zählst"->"zähle"
-"änderst"->"ändere"
-"ästhetisierst"->"ästhetisiere"
-"äußerst"->"äußere"
-"öffnest"->"öffne"
-"überlebst"->"überlebe"
-"überlegst"->"überlege"
-"überliegst"->"überliege"
-"übermittelst"->"übermittele"
-"übernimmst"->"übernehme"
-"überprüfst"->"überprüfe"
-"überschreist"->"überschreie"
-"übertriffst"->"übertriff"
-"überträgst"->"übertrage"
-"überwachst"->"überwache"
-"überzeugst"->"überzeuge"
-`
-      /**
-       * Here also partial words are replaced.*/
-// const rules3 = `
-//     "I"->"Ist"
-//     "i"->"ist"
-// "\\berst\\b"->"x(ersxt)x"
-// :: Bug: The following does not work for all occurrences: //TODOh
-// "st\\b"->""
-// `
-// noinspection SpellCheckingInspection
-      /**
-       * Here also partial words are replaced.*/
-// const rules4 = `
-// "\\bx\\(ersxt\\)x\\b"->"erst"
-// `
-      const applyRules1 = (input: string) => replaceFunction(rules1, input)
-      // const applyRules2 = (input: string) => replaceFunction(rules2,input)
-// const applyRules3 = (input: string) => ReplaceByRules.withUiLog(rules3,input)
-// const applyRules4 = (input: string) => ReplaceByRules.withUiLog(rules3,input)
-      return (
-// applyRules3
-          (
-// applyRules2
-          (
-              applyRules1(input))))
-    } //end of namespace du2ich
+    export const du2ich = (input: string) => {
+      const replacements = [
+              ["abstellst","abstelle"                ],
+          ["aktivierst","aktiviere"              ],
+          ["aktualisierst","aktualisiere"        ],
+          ["akzentuierst","akzentuiere"          ],
+          ["akzeptierst","akzeptiere"            ],
+          ["allegorisierst","allegorisiere"      ],
+          ["analysierst","analysiere"            ],
+          ["anstellst","anstelle"                ],
+          ["antwortest","antworte"               ],
+          ["arbeitest","arbeite"                 ],
+          ["assoziierst","assoziiere"            ],
+          ["assoziiert","assoziiere"             ],
+          ["authentifizierst","authentifiziere"  ],
+          ["autorisierst","autorisiere"          ],
+          ["basiert","basiere"                   ],
+          ["baust","baue"                        ],
+          ["beachtest","beachte"                 ],
+          ["bearbeitest","bearbeite"             ],
+          ["bedankst","bedanke"                  ],
+          ["bedeckst","bedecke"                  ],
+          ["bedenkst","bedenke"                  ],
+          ["bedeutest","bedeute"                 ],
+          ["bedienst","bediene"                  ],
+          ["beeinflusst","beeinflusse"           ],
+          ["beeinträchtigst","beeinträchtige"    ],
+          ["beendest","beende"                   ],
+          ["befasst","befasse"                   ],
+          ["befindest","befinde"                 ],
+          ["begeisterst","begeistere"            ],
+          ["beginnst","beginne"                  ],
+          ["begrüßt","begrüße"                   ],
+          ["behandelst","behandle"               ],
+          ["behauptest","behaupte"               ],
+          ["behältst","behalte"                  ],
+          ["bekommst","bekomme"                  ],
+          ["bekämpfst","bekämpfe"                ],
+          ["bemühst","bemühe"                    ],
+          ["benutzt","benutze"                   ],
+          ["benötigst","benötige"                ],
+          ["beobachtest","beobachte"             ],
+          ["berechnest","berechne"               ],
+          ["bereitest","bereite"                 ],
+          ["berichtest","berichte"               ],
+          ["beruhst","beruhe"                    ],
+          ["berücksichtigst","berücksichtige"    ],
+          ["beschleunigst","beschleunige"        ],
+          ["beschränkst","beschränke"            ],
+          ["beschwerst","beschwere"              ],
+          ["beschäftigst","beschäftige"          ],
+          ["beschützt","beschütze"               ],
+          ["besitzt","besitze"                   ],
+          ["bestehst","bestehe"                  ],
+          ["bestimmst","bestimme"                ],
+          ["bestätigst","bestätige"              ],
+          ["besuchst","besuche"                  ],
+          ["betonst","betone"                    ],
+          ["betrachtest","betrachte"             ],
+          ["betreibst","betreibe"                ],
+          ["betrifft","betrifft"                 ],
+          ["beurteilst","beurteile"              ],
+          ["bewegst","bewege"                    ],
+          ["beweist","beweise"                   ],
+          ["bewertest","bewerte"                 ],
+          ["bewirkst","bewirke"                  ],
+          ["bezahlst","bezahle"                  ],
+          ["beziehst","beziehe"                  ],
+          ["bietest","biete"                     ],
+          ["bildest","bilde"                     ],
+          ["bist","bin"                          ],
+          ["bittest","bitte"                     ],
+          ["bleibst","bleibe"                    ],
+          ["brauchst","brauche"                  ],
+          ["breitest","breite"                   ],
+          ["brichst","breche"                    ],
+          ["bringst","bringe"                    ],
+          ["dankst","danke"                      ],
+          ["darfst","darf"                       ],
+          ["deaktivierst","deaktiviere"          ],
+          ["deckst","decke"                      ],
+          ["definierst","definiere"              ],
+          ["dein","mein"                         ],
+          ["deine","meine"                       ],
+          ["deiner","meiner"                     ],
+          ["demokratisierst","demokratisiere"    ],
+          ["demonstrierst","demonstriere"        ],
+          ["denkst","denke"                      ],
+          ["diagnostizierst","diagnostiziere"    ],
+          ["dich","mich"                         ],
+          ["dienst","diene"                      ],
+          ["differenzierst","differenziere"      ],
+          ["digitalisierst","digitalisiere"      ],
+          ["dir","mir"                           ],
+          ["diskutierst","diskutiere"            ],
+          ["diversifizierst","diversifiziere"    ],
+          ["doppelst","dopple"                   ],
+          ["dramatisierst","dramatisiere"        ],
+          ["drehst","drehe"                      ],
+          ["drittelst","drittele"                ],
+          ["druckst","drucke"                    ],
+          ["drückst","drücke"                    ],
+          ["du","ich"                            ],
+          ["einst","ein"                         ],
+          ["empfiehlst","empfehle"               ],
+          ["empfängst","empfange"                ],
+          ["endest","ende"                       ],
+          ["entdeckst","entdecke"                ],
+          ["entfernst","entferne"                ],
+          ["enthältst","enthalte"                ],
+          ["entscheidest","entscheide"           ],
+          ["entschuldigst","entschuldige"        ],
+          ["entspannst","entspanne"              ],
+          ["entsprichst","entspreche"            ],
+          ["entstehst","entstehe"                ],
+          ["entwickelst","entwickle"             ],
+          ["erfasst","erfasse"                   ],
+          ["erfolgst","erfolge"                  ],
+          ["erforderst","erfordere"              ],
+          ["erfährst","erfahre"                  ],
+          ["erfüllst","erfülle"                  ],
+          ["ergibst","ergebe"                    ],
+          ["ergreifst","ergreife"                ],
+          ["erhebst","erhebe"                    ],
+          ["erholst","erhole"                    ],
+          ["erhältst","erhalte"                  ],
+          ["erhöhst","erhöhe"                    ],
+          ["erinnerst","erinnere"                ],
+          ["erkennst","erkenne"                  ],
+          ["erklärst","erkläre"                  ],
+          ["erlaubst","erlaube"                  ],
+          ["erlebst","erlebe"                    ],
+          ["erleichterst","erleichtere"          ],
+          ["erlässt","erlasse"                   ],
+          ["ermittelst","ermittle"               ],
+          ["ermunterst","ermuntere"              ],
+          ["ermöglichst","ermögliche"            ],
+          ["erreichst","erreiche"                ],
+          ["erscheinst","erscheine"              ],
+          ["erschreckst","erschrecke"            ],
+          ["ersetzt","ersetze"                   ],
+          ["erstellst","erstelle"                ],
+          ["erstreckst","erstrecke"              ],
+          ["ersuchst","ersuche"                  ],
+          ["erteilst","erteile"                  ],
+          ["erwartest","erwarte"                 ],
+          ["erweiterst","erweitere"              ],
+          ["erwärmst","erwärme"                  ],
+          ["erzeugst","erzeuge"                  ],
+          ["erzielst","erziele"                  ],
+          ["erzählst","erzähle"                  ],
+          ["exportierst","exportiere"            ],
+          ["fasert","fasere"                     ],
+          ["feierst","feiere"                    ],
+          ["findest","finde"                     ],
+          ["findet","finde"                      ],
+          ["fliegst","fliege"                    ],
+          ["folgst","folge"                      ],
+          ["forderst","fordere"                  ],
+          ["formst","forme"                      ],
+          ["fragst","frage"                      ],
+          ["freist","freie"                      ],
+          ["funktionierst","funktioniere"        ],
+          ["fährst","fahre"                      ],
+          ["fällst","falle"                      ],
+          ["fängst","fange"                      ],
+          ["förderst","fördere"                  ],
+          ["fügst","füge"                        ],
+          ["fühlst","fühle"                      ],
+          ["führst","führe"                      ],
+          ["garantierst","garantiere"            ],
+          ["gebietest","gebiete"                 ],
+          ["gefällst","gefalle"                  ],
+          ["gehst","gehe"                        ],
+          ["gehörst","gehöre"                    ],
+          ["gelangst","gelange"                  ],
+          ["genießt","genieße"                   ],
+          ["gerätst","gerate"                    ],
+          ["geschieht","geschehe"                ],
+          ["gestaltest","gestalte"               ],
+          ["gestattest","gestatte"               ],
+          ["gewinnst","gewinne"                  ],
+          ["gewährleistest","gewährleiste"       ],
+          ["gewährst","gewähre"                  ],
+          ["gibst","gebe"                        ],
+          ["giltst","gelte"                      ],
+          ["glaubst","glaube"                    ],
+          ["gleichst","gleiche"                  ],
+          ["globalisierst","globalisiere"        ],
+          ["greifst","greife"                    ],
+          ["grenzt","grenze"                     ],
+          ["gründest","gründe"                   ],
+          ["hast","habe"                        ],
+          ["hakst","hake"                        ],
+          ["handelst","handle"                   ],
+          ["harmonisierst","harmonisiere"        ],
+          ["hast","habe"                         ],
+          ["heiratest","heirate"                 ],
+          ["heißt","heiße"                       ],
+          ["hilfst","helfe"                      ],
+          ["hoffst","hoffe"                      ],
+          ["holst","hole"                        ],
+          ["hältst","halte"                      ],
+          ["hängst","hänge"                      ],
+          ["hörst","höre"                        ],
+          ["identifizierst","identifiziere"      ],
+          ["ideologisierst","ideologisiere"      ],
+          ["illustrierst","illustriere"          ],
+          ["importierst","importiere"            ],
+          ["informierst","informiere"            ],
+          ["inspirierst","inspiriere"            ],
+          ["installierst","installiere"          ],
+          ["intensivierst","intensiviere"        ],
+          ["interessierst","interessiere"        ],
+          ["interpretierst","interpretiere"      ],
+          ["investierst","investiere"            ],
+          ["ironisierst","ironisiere"            ],
+          ["isst","esse"                         ],
+          ["jungst","junge"                      ],
+          ["kannst","kann"                       ],
+          ["kantest","kante"                     ],
+          ["karikierst","karikiere"              ],
+          ["kategorisierst","kategorisiere"      ],
+          ["kaufst","kaufe"                      ],
+          ["kennst","kenne"                      ],
+          ["klassifizierst","klassifiziere"      ],
+          ["klickst","klicke"                    ],
+          ["klärst","kläre"                      ],
+          ["knotest","knote"                     ],
+          ["kochst","koche"                      ],
+          ["kommentierst","kommentiere"          ],
+          ["kommst","komme"                      ],
+          ["komplizierst","kompliziere"          ],
+          ["konfigurierst","konfiguriere"        ],
+          ["kontrollierst","kontrolliere"        ],
+          ["konzentrierst","konzentriere"        ],
+          ["kopierst","kopiere"                  ],
+          ["korrigierst","korrigiere"            ],
+          ["kostest","koste"                     ],
+          ["kriegst","kriege"                    ],
+          ["kritisierst","kritisiere"            ],
+          ["krümelst","krümele"                  ],
+          ["kämpfst","kämpfe"                    ],
+          ["könnest","könnte"                    ],
+          ["kümmerst","kümmere"                  ],
+          ["lachst","lache"                      ],
+          ["langst","lange"                      ],
+          ["lastest","laste"                     ],
+          ["lebst","lebe"                        ],
+          ["legitimierst","legitimiere"          ],
+          ["legst","lege"                        ],
+          ["leidest","leide"                     ],
+          ["leihst","leihe"                      ],
+          ["leistest","leiste"                   ],
+          ["leitest","leite"                     ],
+          ["lernst","lerne"                      ],
+          ["liebst","liebe"                      ],
+          ["lieferst","liefere"                  ],
+          ["liegst","liege"                      ],
+          ["liest","lese"                        ],
+          ["linkst","linke"                      ],
+          ["listest","liste"                     ],
+          ["loderst","lodere"                    ],
+          ["lächelst","lächle"                   ],
+          ["lädst","lade"                        ],
+          ["ländest","lande"                     ],
+          ["lässt","lasse"                       ],
+          ["läufst","laufe"                      ],
+          ["löschst","lösche"                    ],
+          ["löst","löse"                         ],
+          ["machst","mache"                      ],
+          ["magst","mag"                         ],
+          ["manifestierst","manifestiere"        ],
+          ["markierst","markiere"                ],
+          ["mathematisierst","mathematisiere"    ],
+          ["maximierst","maximiere"              ],
+          ["meinst","meine"                      ],
+          ["meisterst","meistere"                ],
+          ["meldest","melde"                     ],
+          ["mengst","menge"                      ],
+          ["minimierst","minimiere"              ],
+          ["misst","messe"                       ],
+          ["moralisierst","moralisiere"          ],
+          ["moserst","mosere"                    ],
+          ["musst","muss"                        ],
+          ["navigierst","navigiere"              ],
+          ["nennst","nenne"                      ],
+          ["nimmst","nehme"                      ],
+          ["nutzt","nutze"                       ],
+          ["optimierst","optimiere"              ],
+          ["ordnest","ordne"                     ],
+          ["parodierst","parodiere"              ],
+          ["passierst","passiere"                ],
+          ["passt","passe"                       ],
+          ["pflanzt","pflanze"                   ],
+          ["philosophierst","philosophiere"      ],
+          ["planst","plane"                      ],
+          ["poetisierst","poetisiere"            ],
+          ["politisierst","politisiere"          ],
+          ["positionierst","positioniere"        ],
+          ["postest","poste"                     ],
+          ["preist","preise"                     ],
+          ["priorisierst","priorisiere"          ],
+          ["probst","probe"                      ],
+          ["profitierst","profitiere"            ],
+          ["prognostizierst","prognostiziere"    ],
+          ["präsentierst","präsentiere"          ],
+          ["prüfst","prüfe"                      ],
+          ["punktest","punkte"                   ],
+          ["qualifizierst","qualifiziere"        ],
+          ["quantifizierst","quantifiziere"      ],
+          ["ragst","rage"                        ],
+          ["rahmst","rahme"                      ],
+          ["rationalisierst","rationalisiere"    ],
+          ["reagierst","reagiere"                ],
+          ["rechnest","rechne"                   ],
+          ["redest","rede"                       ],
+          ["reduzierst","reduziere"              ],
+          ["regelst","regele"                    ],
+          ["reichst","reiche"                    ],
+          ["reifst","reife"                      ],
+          ["reinigst","reinige"                  ],
+          ["reist","reise"                       ],
+          ["rennst","renne"                      ],
+          ["repräsentierst","repräsentiere"      ],
+          ["resümierst","resümiere"              ],
+          ["rettest","rette"                     ],
+          ["rettest","rette"                      ],
+          ["richtest","richte"                   ],
+          ["riechst","rieche"                    ],
+          ["rinnst","rinne"                      ],
+          ["rollst","rolle"                      ],
+          ["romantisierst","romantisiere"        ],
+          ["rufst","rufe"                        ],
+          ["rückst","rücke"                      ],
+          ["sagst","sage"                        ],
+          ["sammelst","sammle"                   ],
+          ["schadest","schade"                   ],
+          ["schaffst","schaffe"                  ],
+          ["schaltest","schalte"                 ],
+          ["schaust","schaue"                    ],
+          ["scheidest","scheide"                 ],
+          ["scheinst","scheine"                  ],
+          ["scherst","scherze"                   ],
+          ["schichtest","schichte"               ],
+          ["schickst","schicke"                  ],
+          ["schiebst","schiebe"                  ],
+          ["schließt","schließe"                 ],
+          ["schläfst","schlafe"                  ],
+          ["schlägst","schlage"                  ],
+          ["schmerzt","schmerze"                 ],
+          ["schmilzt","schmelze"                 ],
+          ["schneidest","schneide"               ],
+          ["schnellst","schnelle"                ],
+          ["schreibst","schreibe"                ],
+          ["schreitest","schreite"               ],
+          ["schuldest","schulde"                 ],
+          ["schätzt","schätze"                   ],
+          ["schönst","schöne"                    ],
+          ["schützt","schütze"                   ],
+          ["sendest","sende"                     ],
+          ["senkst","senke"                      ],
+          ["setzt","setze"                       ],
+          ["sicherst","sichere"                  ],
+          ["siebst","siebe"                      ],
+          ["siehst","sehe"                       ],
+          ["sitzt","sitze"                       ],
+          ["sollst","soll"                       ],
+          ["sonderst","sondere"                  ],
+          ["sorgst","sorge"                      ],
+          ["sortierst","sortiere"                ],
+          ["sozialisierst","sozialisiere"        ],
+          ["spaltest","spalte"                   ],
+          ["sparst","spare"                      ],
+          ["speicherst","speichere"              ],
+          ["spezialisierst","spezialisiere"      ],
+          ["spielst","spiele"                    ],
+          ["sprichst","spreche"                  ],
+          ["spürst","spüre"                      ],
+          ["stabilisierst","stabilisiere"        ],
+          ["stammst","stamme"                    ],
+          ["standardisierst","standardisiere"    ],
+          ["startest","starte"                   ],
+          ["stehst","stehe"                      ],
+          ["steigerst","steigere"                ],
+          ["stellst","stelle"                    ],
+          ["steuerst","steuere"                  ],
+          ["stilisierst","stilisiere"            ],
+          ["stimmst","stimme"                    ],
+          ["stirbst","sterbe"                    ],
+          ["stopfst","stopfe"                     ],
+          ["stoßt","stoße"                       ],
+          ["studierst","studiere"                ],
+          ["stundest","stunde"                   ],
+          ["stärkst","stärke"                    ],
+          ["stürzt","stürze"                     ],
+          ["stützt","stütze"                     ],
+          ["suchst","suche"                      ],
+          ["symbolisierst","symbolisiere"        ],
+          ["synchronisierst","synchronisiere"    ],
+          ["synthetisierst","synthetisiere"      ],
+          ["säufst","säufe"                      ],
+          ["tagst","tage"                        ],
+          ["tanzt","tanze"                       ],
+          ["teilst","teile"                      ],
+          ["testest","teste"                     ],
+          ["tickst","ticke"                      ],
+          ["treibst","treibe"                    ],
+          ["trennst","trenne"                    ],
+          ["triffst","treffe"                    ],
+          ["trinkst","trinke"                    ],
+          ["trittst","trete"                     ],
+          ["trägst","trage"                      ],
+          ["tust","tue"                          ],
+          ["tötest","töte"                       ],
+          ["umfasst","umfasse"                   ],
+          ["umgibst","umgebe"                    ],
+          ["unterliegst","unterliege"            ],
+          ["unternimmst","unternehme"            ],
+          ["unterscheidest","unterscheide"       ],
+          ["unterstützt","unterstütze"           ],
+          ["untersuchst","untersuche"            ],
+          ["validierst","validiere"              ],
+          ["verbesserst","verbessere"            ],
+          ["verbindest","verbinde"               ],
+          ["verbrichst","verbreche"              ],
+          ["verbringst","verbringe"              ],
+          ["verdienst","verdiene"                ],
+          ["vereinfachst","vereinfache"          ],
+          ["verfolgst","verfolge"                ],
+          ["verfährst","verfahre"                ],
+          ["verfügst","verfüge"                  ],
+          ["vergisst","vergesse"                 ],
+          ["vergleichst","vergleiche"            ],
+          ["vergrößerst","vergrößere"            ],
+          ["verhinderst","verhindere"            ],
+          ["verhältst","verhalte"                ],
+          ["verifizierst","verifiziere"          ],
+          ["verkaufst","verkaufe"                ],
+          ["verlangst","verlange"                ],
+          ["verleihst","verleihe"                ],
+          ["verlierst","verliere"                ],
+          ["verlässt","verlasse"                 ],
+          ["vermeidest","vermeide"               ],
+          ["verringerst","verringere"            ],
+          ["verrätst","verrate"                  ],
+          ["verscheidest","verscheide"           ],
+          ["verschiebst","verschiebe"            ],
+          ["verschwindest","verschwinde"         ],
+          ["versprichst","verspreche"            ],
+          ["versteckst","verstecke"              ],
+          ["verstehst","verstehe"                ],
+          ["verstärkst","verstärke"              ],
+          ["versuchst","versuche"                ],
+          ["verteidigst","verteidige"            ],
+          ["vertraust","vertraue"                ],
+          ["vertrittst","vertrete"               ],
+          ["vervielfältigst","vervielfältige"    ],
+          ["vervollständigst","vervollständige"  ],
+          ["verwaltest","verwalte"               ],
+          ["verwehst","verwehe"                  ],
+          ["verwendest","verwende"               ],
+          ["verzichtest","verzichte"             ],
+          ["veränderst","verändere"              ],
+          ["veröffentlichst","veröffentliche"    ],
+          ["vorstellst","vorstelle"              ],
+          ["wagst","wage"                        ],
+          ["wartest","warte"                     ],
+          ["webst","webe"                        ],
+          ["wechselst","wechsle"                 ],
+          ["weist","weise"                       ],
+          ["weißt","weiß"                        ],
+          ["wendest","wende"                     ],
+          ["wertest","werte"                     ],
+          ["west","weste"                        ],
+          ["wettest","wette"                     ],
+          ["wiederholst","wiederhole"            ],
+          ["willst","will"                       ],
+          ["winkst","winke"                      ],
+          ["wirfst","werfe"                      ],
+          ["wirkst","wirke"                      ],
+          ["wirst","werde"                       ],
+          ["wohnst","wohne"                      ],
+          ["wunderst","wundere"                  ],
+          ["wählst","wähle"                      ],
+          ["wünschst","wünsche"                  ],
+          ["zahlst","zahle"                      ],
+          ["zeichnest","zeichne"                 ],
+          ["zeigst","zeige"                      ],
+          ["zerstörst","zerstöre"                ],
+          ["zertifizierst","zertifiziere"        ],
+          ["ziehst","ziehe"                      ],
+          ["zielst","ziele"                      ],
+          ["zivilisierst","zivilisiere"          ],
+          ["zählst","zähle"                      ],
+          ["änderst","ändere"                    ],
+          ["äußerst","äußere"                    ],
+          ["öffnest","öffne"                     ],
+          ["überlebst","überlebe"                ],
+          ["überlegst","überlege"                ],
+          ["übermittelst","übermittele"          ],
+          ["übernimmst","übernehme"              ],
+          ["überprüfst","überprüfe"              ],
+          ["übertriffst","übertriff"             ],
+          ["überträgst","übertrage"              ],
+          ["überwachst","überwache"              ],
+          ["überzeugst","überzeuge"              ],
+          ["überziehst","überziehe"              ],
+          ["übst","übe"                          ]
+    ];
+      let output = input
+      for (const [duWort, ichWort] of replacements) {
+        output = output
+            .replaceAll(duWort, ichWort)
+            .replaceAll(Strings.toUppercaseFirstChar(duWort),
+                        Strings.toUppercaseFirstChar(ichWort))
+      }
+      return output
+    }
   } //end of namespace Misc
 }

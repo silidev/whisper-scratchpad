@@ -29,7 +29,7 @@ const LARGE_STORAGE_PROVIDER =
 
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString()
-    .slice(0, 10) === "2024-01-27"
+    .slice(0, 10) === "2024-02-23"
 if (RUN_TESTS) console.log("RUN_TESTS is true. This is only for " +
     "testing. Set it to false in production.")
 
@@ -112,6 +112,10 @@ export namespace Menu {
 export namespace UiFunctions {
   import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
 
+  export const runTests = () => {
+    Buttons.runTests()
+  }
+
   export namespace Buttons {
     import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
     import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
@@ -119,6 +123,50 @@ export namespace UiFunctions {
     import Cookies = HtmlUtils.BrowserStorage.Cookies;
     import addKeyboardShortcuts = Misc.addKeyboardShortcuts;
     import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
+
+    export const runTests = () => {
+      PunctuationNearCursor.runTests()
+    }
+
+    /** From the current cursor position go back to the last word beginning.
+     * Then got to the next comma, semicolon, period, colon, or newline and
+     * remove it. Put the cursor at the end of the word. */
+    export namespace PunctuationNearCursor {
+      import assertEquals = HelgeUtils.Tests.assertEquals;
+      const doit = (text: string, cursorPosition: number) => {
+        const wordStart = text.slice(0, cursorPosition).search(/\S+$/)
+        const endOfWord = text.slice(cursorPosition).search(/\s/)
+        const nextWord = text.slice(cursorPosition).search(/\s/)
+        // const punctuationEnd = text.slice(cursorPosition).search(/[^\w]/g)
+        const newText = text.slice(0, cursorPosition + nextWord) + text.slice(cursorPosition + nextWord + 1)
+        return {wordStart, newText};
+      };
+
+      export const runTests = () => {
+        const text = "This is a test  .   Bra."
+        const cursorPosition = 13
+        const {wordStart, newText} = doit(text, cursorPosition)
+        assertEquals(newText, "This is a test Bra.")
+        assertEquals(wordStart, 10)
+      }
+
+      export const kill = () => {
+        const text = mainEditorTextarea.value
+        const cursorPosition = mainEditorTextarea.selectionStart
+        const {wordStart, newText} = doit(text, cursorPosition);
+
+        mainEditorTextarea.value = newText
+        mainEditorTextarea.selectionStart = wordStart
+        mainEditorTextarea.selectionEnd = wordStart
+        mainEditor.save()
+      }
+
+      export const addButtonEventListener = () => {
+        buttonWithId("removePunctuationButton").addEventListener('click', kill)
+      }
+    }
+
+    PunctuationNearCursor.addButtonEventListener()
 
     export namespace Media {
 
@@ -249,7 +297,8 @@ export namespace UiFunctions {
           const transcriptionText = await getTranscriptionText()
 
           if (whereToPutTranscription=="insertAtCursor") {
-            TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, aSpaceIfNeeded() + removeLastDotIfNotAtEnd(transcriptionText))
+            TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea,
+                aSpaceIfNeeded() + removeLastDotIfNotAtEnd(transcriptionText))
           } else {
             mainEditorTextareaWrapper.trim().appendTextAndPutCursorAfter(transcriptionText.trim())
           }
@@ -447,8 +496,7 @@ export namespace UiFunctions {
         mainEditor.Undo.saveState();
 
         const currentNote = new CurrentNote(mainEditorTextarea)
-        const changedText = HelgeUtils.Misc.du2ich(currentNote.text(),
-            ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog);
+        const changedText = HelgeUtils.Misc.du2ich(currentNote.text());
         currentNote.delete()
 
         { // Insert the changed text
@@ -761,6 +809,7 @@ namespace ReplaceByRules {
   export function onlyWholeWordsWithUiLog(rules: string, subject: string) {
     return withUiLog(rules, subject, true)
   }
+  // noinspection JSUnusedGlobalSymbols
   export function onlyWholeWordsPreserveCaseWithUiLog(rules: string, subject: string) {
     return withUiLog(rules, subject, true, true)
   }
@@ -800,6 +849,7 @@ export const registerServiceWorker = () => {
 const runTests = () => {
   if (!RUN_TESTS) return
   HelgeUtils.runTests()
+  UiFunctions.runTests()
 }
 
 const init = () => {

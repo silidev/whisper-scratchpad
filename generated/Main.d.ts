@@ -12,7 +12,17 @@ export declare namespace Menu {
     const close: () => void;
 }
 export declare namespace UiFunctions {
+    const runTests: () => void;
     namespace Buttons {
+        const runTests: () => void;
+        /** From the current cursor position go back to the last word beginning.
+         * Then got to the next comma, semicolon, period, colon, or newline and
+         * remove it. Put the cursor at the end of the word. */
+        namespace PunctuationNearCursor {
+            const runTests: () => void;
+            const kill: () => void;
+            const addButtonEventListener: () => void;
+        }
         namespace Media {
             const transcribeAudioBlob: () => void;
             namespace StateIndicator {

@@ -22,7 +22,7 @@ const LARGE_STORAGE_PROVIDER = VERIFY_LARGE_STORAGE
     : HtmlUtils.BrowserStorage.LocalStorage;
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString()
-    .slice(0, 10) === "2024-01-27";
+    .slice(0, 10) === "2024-02-23";
 if (RUN_TESTS)
     console.log("RUN_TESTS is true. This is only for " +
         "testing. Set it to false in production.");
@@ -94,6 +94,9 @@ export var Menu;
 export var UiFunctions;
 (function (UiFunctions) {
     var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
+    UiFunctions.runTests = () => {
+        Buttons.runTests();
+    };
     let Buttons;
     (function (Buttons) {
         var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
@@ -102,6 +105,44 @@ export var UiFunctions;
         var Cookies = HtmlUtils.BrowserStorage.Cookies;
         var addKeyboardShortcuts = Misc.addKeyboardShortcuts;
         var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
+        Buttons.runTests = () => {
+            PunctuationNearCursor.runTests();
+        };
+        /** From the current cursor position go back to the last word beginning.
+         * Then got to the next comma, semicolon, period, colon, or newline and
+         * remove it. Put the cursor at the end of the word. */
+        let PunctuationNearCursor;
+        (function (PunctuationNearCursor) {
+            var assertEquals = HelgeUtils.Tests.assertEquals;
+            const doit = (text, cursorPosition) => {
+                const wordStart = text.slice(0, cursorPosition).search(/\S+$/);
+                const endOfWord = text.slice(cursorPosition).search(/\s/);
+                const nextWord = text.slice(cursorPosition).search(/\s/);
+                // const punctuationEnd = text.slice(cursorPosition).search(/[^\w]/g)
+                const newText = text.slice(0, cursorPosition + nextWord) + text.slice(cursorPosition + nextWord + 1);
+                return { wordStart, newText };
+            };
+            PunctuationNearCursor.runTests = () => {
+                const text = "This is a test  .   Bra.";
+                const cursorPosition = 13;
+                const { wordStart, newText } = doit(text, cursorPosition);
+                assertEquals(newText, "This is a test Bra.");
+                assertEquals(wordStart, 10);
+            };
+            PunctuationNearCursor.kill = () => {
+                const text = mainEditorTextarea.value;
+                const cursorPosition = mainEditorTextarea.selectionStart;
+                const { wordStart, newText } = doit(text, cursorPosition);
+                mainEditorTextarea.value = newText;
+                mainEditorTextarea.selectionStart = wordStart;
+                mainEditorTextarea.selectionEnd = wordStart;
+                mainEditor.save();
+            };
+            PunctuationNearCursor.addButtonEventListener = () => {
+                buttonWithId("removePunctuationButton").addEventListener('click', PunctuationNearCursor.kill);
+            };
+        })(PunctuationNearCursor = Buttons.PunctuationNearCursor || (Buttons.PunctuationNearCursor = {}));
+        PunctuationNearCursor.addButtonEventListener();
         let Media;
         (function (Media) {
             var DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
@@ -398,7 +439,7 @@ export var UiFunctions;
             const du2ichMenuItem = () => {
                 mainEditor.Undo.saveState();
                 const currentNote = new CurrentNote(mainEditorTextarea);
-                const changedText = HelgeUtils.Misc.du2ich(currentNote.text(), ReplaceByRules.onlyWholeWordsPreserveCaseWithUiLog);
+                const changedText = HelgeUtils.Misc.du2ich(currentNote.text());
                 currentNote.delete();
                 { // Insert the changed text
                     const cursorIsAtTheEndOfTheTextarea = mainEditorTextarea.value.length == mainEditorTextarea.selectionStart;
@@ -658,6 +699,7 @@ var ReplaceByRules;
         return withUiLog(rules, subject, true);
     }
     ReplaceByRules.onlyWholeWordsWithUiLog = onlyWholeWordsWithUiLog;
+    // noinspection JSUnusedGlobalSymbols
     function onlyWholeWordsPreserveCaseWithUiLog(rules, subject) {
         return withUiLog(rules, subject, true, true);
     }
@@ -692,6 +734,7 @@ const runTests = () => {
     if (!RUN_TESTS)
         return;
     HelgeUtils.runTests();
+    UiFunctions.runTests();
 };
 const init = () => {
     runTests();
