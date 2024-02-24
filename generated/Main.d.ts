@@ -44,6 +44,9 @@ export declare namespace UiFunctions {
             const replaceWithSpaceInMainEditor: () => void;
             const addButtonEventListener: () => void;
         }
+        namespace FixClipboard {
+            const addButtonEventListener: () => void;
+        }
         namespace Media {
             const transcribeAudioBlob: () => void;
             namespace StateIndicator {

@@ -31,7 +31,7 @@ const LARGE_STORAGE_PROVIDER =
 const RUN_TESTS = (() => {
   const d = new Date().toISOString().slice(0, 10);
   return HtmlUtils.isMsWindows()
-      && (d === "2024-02-24" || d === "2024-02-25");
+      && (d === "2024-02-21" || d === "2024-02-22");
 })()
 if (RUN_TESTS) console.log("RUN_TESTS is true. This is only for " +
     "testing. Set it to false in production.")
@@ -211,6 +211,25 @@ export namespace UiFunctions {
     }
 
     NonWordChars.addButtonEventListener()
+
+    export namespace FixClipboard {
+      import du2ich = HelgeUtils.Misc.du2ich;
+      const fixClipboard = () => {
+        clipboard.readText().then(text => {
+          clipboard.writeText(
+              du2ich(
+                  ReplaceByRules.withUiLog(
+                      replaceRulesTextArea.value, text))
+          ).then().catch(Log.error)
+        }).catch(Log.error)
+      }
+
+      export const addButtonEventListener = () => {
+        buttonWithId("fixClipboardButton").addEventListener('click', fixClipboard)
+      }
+    }
+
+    FixClipboard.addButtonEventListener()
 
     export namespace Media {
 

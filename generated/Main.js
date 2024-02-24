@@ -24,7 +24,7 @@ const LARGE_STORAGE_PROVIDER = VERIFY_LARGE_STORAGE
 const RUN_TESTS = (() => {
     const d = new Date().toISOString().slice(0, 10);
     return HtmlUtils.isMsWindows()
-        && (d === "2024-02-24" || d === "2024-02-25");
+        && (d === "2024-02-21" || d === "2024-02-22");
 })();
 if (RUN_TESTS)
     console.log("RUN_TESTS is true. This is only for " +
@@ -177,6 +177,19 @@ export var UiFunctions;
             };
         })(NonWordChars = Buttons.NonWordChars || (Buttons.NonWordChars = {}));
         NonWordChars.addButtonEventListener();
+        let FixClipboard;
+        (function (FixClipboard) {
+            var du2ich = HelgeUtils.Misc.du2ich;
+            const fixClipboard = () => {
+                clipboard.readText().then(text => {
+                    clipboard.writeText(du2ich(ReplaceByRules.withUiLog(replaceRulesTextArea.value, text))).then().catch(Log.error);
+                }).catch(Log.error);
+            };
+            FixClipboard.addButtonEventListener = () => {
+                buttonWithId("fixClipboardButton").addEventListener('click', fixClipboard);
+            };
+        })(FixClipboard = Buttons.FixClipboard || (Buttons.FixClipboard = {}));
+        FixClipboard.addButtonEventListener();
         let Media;
         (function (Media) {
             var DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
