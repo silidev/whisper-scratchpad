@@ -3,8 +3,8 @@ export declare namespace mainEditor {
         const undo: () => void;
         const saveState: () => void;
     }
-    const append: (insertedString: string) => void;
-    const appendDelimiter: () => void;
+    const appendTextAndCursor: (insertedString: string) => void;
+    const appendDelimiterAndCursor: () => void;
     const save: () => void;
 }
 export declare namespace Menu {

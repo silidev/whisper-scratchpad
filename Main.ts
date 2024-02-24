@@ -55,15 +55,15 @@ export namespace mainEditor {
     };
   }
 
-  export const append = (insertedString: string) => {
-    TextAreas.appendTextAndPutCursorAfter(mainEditorTextarea, insertedString)
+  export const appendTextAndCursor = (insertedString: string) => {
+    TextAreas.appendTextAndCursor(mainEditorTextarea, insertedString)
     mainEditor.save();
     TextAreas.scrollToEnd(mainEditorTextarea);
   }
 
-  export const appendDelimiter = () => {
+  export const appendDelimiterAndCursor = () => {
     mainEditorTextareaWrapper.trim()
-    append('\n' + NEW_NOTE_DELIMITER)
+    appendTextAndCursor('\n' + NEW_NOTE_DELIMITER)
     mainEditorTextarea.focus()
   };
 
@@ -437,7 +437,7 @@ export namespace UiFunctions {
             if (event.target===null || event.target.result===null)
               return
             audioBlob = new Blob([event.target.result], {type: file.type});
-            mainEditor.appendDelimiter()
+            mainEditor.appendDelimiterAndCursor()
             transcribeAudioBlob()
           };
           reader.readAsArrayBuffer(file);
@@ -620,7 +620,7 @@ export namespace UiFunctions {
     HtmlUtils.addClickListener("addReplaceRuleButton", addReplaceRule)
     HtmlUtils.addClickListener("addWordReplaceRuleButton", addWordReplaceRule)
     HtmlUtils.addClickListener("insertNewNoteDelimiterButton",
-        mainEditor.appendDelimiter)
+        mainEditor.appendDelimiterAndCursor)
 
 // cancelRecording
     Menu.wireMenuItem("cancelRecording", Buttons.Media.cancelRecording)
@@ -636,6 +636,7 @@ export namespace UiFunctions {
 
 // aboutButton
       HtmlUtils.addClickListener(("pasteButton"), () => {
+        mainEditor.appendDelimiterAndCursor()
         clipboard.readText().then(text => {
           TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, text)
         }).catch(Log.error)
@@ -730,7 +731,7 @@ export namespace UiFunctions {
       const APPEND = true
       if (APPEND) {
         const ruleBeforeSelection = "\n" + ruleStrPart1;
-        TextAreas.appendTextAndPutCursorAfter(replaceRulesTextArea,
+        TextAreas.appendTextAndCursor(replaceRulesTextArea,
             ruleBeforeSelection + ruleStrPart2)
         const SELECT_REPLACEMENT = true;
         if (SELECT_REPLACEMENT) {

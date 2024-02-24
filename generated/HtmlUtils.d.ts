@@ -40,7 +40,7 @@ export declare namespace HtmlUtils {
             setCursorAtEnd(): this;
             trim(): this;
         }
-        const appendTextAndPutCursorAfter: (textArea: HTMLTextAreaElement, text: string) => void;
+        const appendTextAndCursor: (textArea: HTMLTextAreaElement, text: string) => void;
         const append: (textArea: HTMLTextAreaElement, text: string) => void;
         const selectedText: (textArea: HTMLTextAreaElement) => string;
         /**

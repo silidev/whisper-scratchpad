@@ -45,14 +45,14 @@ export var mainEditor;
             undoBuffer = mainEditorTextarea.value;
         };
     })(Undo = mainEditor.Undo || (mainEditor.Undo = {}));
-    mainEditor.append = (insertedString) => {
-        TextAreas.appendTextAndPutCursorAfter(mainEditorTextarea, insertedString);
+    mainEditor.appendTextAndCursor = (insertedString) => {
+        TextAreas.appendTextAndCursor(mainEditorTextarea, insertedString);
         mainEditor.save();
         TextAreas.scrollToEnd(mainEditorTextarea);
     };
-    mainEditor.appendDelimiter = () => {
+    mainEditor.appendDelimiterAndCursor = () => {
         mainEditorTextareaWrapper.trim();
-        mainEditor.append('\n' + NEW_NOTE_DELIMITER);
+        mainEditor.appendTextAndCursor('\n' + NEW_NOTE_DELIMITER);
         mainEditorTextarea.focus();
     };
     mainEditor.save = () => {
@@ -385,7 +385,7 @@ export var UiFunctions;
                         if (event.target === null || event.target.result === null)
                             return;
                         audioBlob = new Blob([event.target.result], { type: file.type });
-                        mainEditor.appendDelimiter();
+                        mainEditor.appendDelimiterAndCursor();
                         Media.transcribeAudioBlob();
                     };
                     reader.readAsArrayBuffer(file);
@@ -536,7 +536,7 @@ export var UiFunctions;
             HtmlUtils.addClickListener("ctrlYButton", ctrlYRedo);
             HtmlUtils.addClickListener("addReplaceRuleButton", addReplaceRule);
             HtmlUtils.addClickListener("addWordReplaceRuleButton", Buttons.addWordReplaceRule);
-            HtmlUtils.addClickListener("insertNewNoteDelimiterButton", mainEditor.appendDelimiter);
+            HtmlUtils.addClickListener("insertNewNoteDelimiterButton", mainEditor.appendDelimiterAndCursor);
             // cancelRecording
             Menu.wireMenuItem("cancelRecording", Buttons.Media.cancelRecording);
             // cutAllButton
@@ -546,6 +546,7 @@ export var UiFunctions;
             }).catch(Log.error));
             // aboutButton
             HtmlUtils.addClickListener(("pasteButton"), () => {
+                mainEditor.appendDelimiterAndCursor();
                 clipboard.readText().then(text => {
                     TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, text);
                 }).catch(Log.error);
@@ -626,7 +627,7 @@ export var UiFunctions;
             const APPEND = true;
             if (APPEND) {
                 const ruleBeforeSelection = "\n" + ruleStrPart1;
-                TextAreas.appendTextAndPutCursorAfter(replaceRulesTextArea, ruleBeforeSelection + ruleStrPart2);
+                TextAreas.appendTextAndCursor(replaceRulesTextArea, ruleBeforeSelection + ruleStrPart2);
                 const SELECT_REPLACEMENT = true;
                 if (SELECT_REPLACEMENT) {
                     replaceRulesTextArea.selectionStart = lengthBefore + ruleBeforeSelection.length;

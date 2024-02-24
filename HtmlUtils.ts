@@ -66,7 +66,7 @@ export namespace HtmlUtils {
       }
 
       public appendTextAndPutCursorAfter(text: string) {
-        TextAreas.appendTextAndPutCursorAfter(this.textArea, text)
+        TextAreas.appendTextAndCursor(this.textArea, text)
         return this
       }
 
@@ -126,7 +126,7 @@ export namespace HtmlUtils {
       }
     }
 
-    export const appendTextAndPutCursorAfter =
+    export const appendTextAndCursor =
         (textArea: HTMLTextAreaElement, text: string) => {
       append(textArea, text)
       setCursor(textArea, textArea.value.length)

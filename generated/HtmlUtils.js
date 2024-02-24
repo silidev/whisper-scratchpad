@@ -53,7 +53,7 @@ export var HtmlUtils;
                 this.textArea = textArea;
             }
             appendTextAndPutCursorAfter(text) {
-                TextAreas.appendTextAndPutCursorAfter(this.textArea, text);
+                TextAreas.appendTextAndCursor(this.textArea, text);
                 return this;
             }
             append(text) {
@@ -101,7 +101,7 @@ export var HtmlUtils;
             }
         }
         TextAreas.TextAreaWrapper = TextAreaWrapper;
-        TextAreas.appendTextAndPutCursorAfter = (textArea, text) => {
+        TextAreas.appendTextAndCursor = (textArea, text) => {
             TextAreas.append(textArea, text);
             TextAreas.setCursor(textArea, textArea.value.length);
         };
