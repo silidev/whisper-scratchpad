@@ -21,8 +21,11 @@ const LARGE_STORAGE_PROVIDER = VERIFY_LARGE_STORAGE
     ? HtmlUtils.BrowserStorage.LocalStorageVerified
     : HtmlUtils.BrowserStorage.LocalStorage;
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
-const RUN_TESTS = HtmlUtils.isMsWindows() && new Date().toISOString()
-    .slice(0, 10) === "2024-02-23";
+const RUN_TESTS = (() => {
+    const d = new Date().toISOString().slice(0, 10);
+    return HtmlUtils.isMsWindows()
+        && (d === "2024-02-24" || d === "2024-02-25");
+})();
 if (RUN_TESTS)
     console.log("RUN_TESTS is true. This is only for " +
         "testing. Set it to false in production.");
@@ -106,43 +109,74 @@ export var UiFunctions;
         var addKeyboardShortcuts = Misc.addKeyboardShortcuts;
         var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
         Buttons.runTests = () => {
-            PunctuationNearCursor.runTests();
+            NonWordChars.runTests();
         };
-        /** From the current cursor position go back to the last word beginning.
-         * Then got to the next comma, semicolon, period, colon, or newline and
-         * remove it. Put the cursor at the end of the word. */
-        let PunctuationNearCursor;
-        (function (PunctuationNearCursor) {
-            var assertEquals = HelgeUtils.Tests.assertEquals;
-            const doit = (text, cursorPosition) => {
-                const wordStart = text.slice(0, cursorPosition).search(/\S+$/);
-                const endOfWord = text.slice(cursorPosition).search(/\s/);
-                const nextWord = text.slice(cursorPosition).search(/\s/);
-                // const punctuationEnd = text.slice(cursorPosition).search(/[^\w]/g)
-                const newText = text.slice(0, cursorPosition + nextWord) + text.slice(cursorPosition + nextWord + 1);
-                return { wordStart, newText };
+        let NonWordChars;
+        (function (NonWordChars) {
+            var assert = HelgeUtils.Tests.assert;
+            /** The inputStr until and including the word under the cursor
+      
+              In educational style to make it as easy as possible to understand.
+      
+              In the examples | is the cursor position. It is NOT part of the text.
+      
+              In this context a word character includes international characters.
+      
+              IF the cursor is on a non-word character: Go to the left until
+              a word character is found.
+      
+              E.g. from "This is a test..|.bra." to
+              "This is a test|...bra."
+      
+              Now delete the stretch of non-word characters to the right.
+              For the example this yields: "This is a test|bra."
+      
+              Now uppercase the first letter of the word to the right.
+              For the example this yields: "This is a test|Bra."
+      
+              Now insert a space before the word and put the cursor before the space.
+              For the example this yields: "This is a test| Bra."
+             */
+            NonWordChars.replaceWithSpace = (s, c) => {
+                // Step 1: Move cursor to the left until a word character is found
+                while (c > 0 && !s[c - 1].match(/\w/)) {
+                    c--;
+                }
+                // Step 2: Delete the stretch of non-word characters to the right
+                let rightPart = s.slice(c).replace(/^\W+/, '');
+                // Step 3: Uppercase the first letter of the word to the right
+                rightPart = rightPart.charAt(0).toUpperCase() + rightPart.slice(1);
+                // Step 4: Insert a space before the word and adjust the cursor position
+                const leftPart = s.slice(0, c);
+                // The cursor position is simulated by returning the string with a '|' to indicate the cursor position
+                return [`${leftPart} ${rightPart}`, leftPart.length];
             };
-            PunctuationNearCursor.runTests = () => {
-                const text = "This is a test  .   Bra.";
-                const cursorPosition = 13;
-                const { wordStart, newText } = doit(text, cursorPosition);
-                assertEquals(newText, "This is a test Bra.");
-                assertEquals(wordStart, 10);
+            // Delete:
+            // export const replaceWithSpace = (s: string, c: number) =>
+            // {
+            //   /* IF the cursor is on a non-word character: Go to the left until
+            //    a word character is found.*/
+            //   while (c > 0 && !s.charAt(c-1).match(/\w/))
+            //     c--
+            //   return [s, c]
+            // }
+            NonWordChars.runTests = () => {
+                const equals = (a, b) => a[0] == b[0] && a[1] == b[1];
+                assert(equals(NonWordChars.replaceWithSpace("t.bra.", 1), ["t Bra.", 1]));
+                assert(equals(NonWordChars.replaceWithSpace("t.bra.", 4), ["t Bra.", 1]));
             };
-            PunctuationNearCursor.kill = () => {
-                const text = mainEditorTextarea.value;
-                const cursorPosition = mainEditorTextarea.selectionStart;
-                const { wordStart, newText } = doit(text, cursorPosition);
+            NonWordChars.replaceWithSpaceInMainEditor = () => {
+                const [newText, cursor] = NonWordChars.replaceWithSpace(mainEditorTextarea.value, mainEditorTextarea.selectionStart);
                 mainEditorTextarea.value = newText;
-                mainEditorTextarea.selectionStart = wordStart;
-                mainEditorTextarea.selectionEnd = wordStart;
+                mainEditorTextarea.selectionStart = cursor;
+                mainEditorTextarea.selectionEnd = cursor;
                 mainEditor.save();
             };
-            PunctuationNearCursor.addButtonEventListener = () => {
-                buttonWithId("removePunctuationButton").addEventListener('click', PunctuationNearCursor.kill);
+            NonWordChars.addButtonEventListener = () => {
+                buttonWithId("removePunctuationButton").addEventListener('click', NonWordChars.replaceWithSpaceInMainEditor);
             };
-        })(PunctuationNearCursor = Buttons.PunctuationNearCursor || (Buttons.PunctuationNearCursor = {}));
-        PunctuationNearCursor.addButtonEventListener();
+        })(NonWordChars = Buttons.NonWordChars || (Buttons.NonWordChars = {}));
+        NonWordChars.addButtonEventListener();
         let Media;
         (function (Media) {
             var DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;

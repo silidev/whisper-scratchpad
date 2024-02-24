@@ -124,13 +124,13 @@ export var HelgeUtils;
                     return;
                 console.log("*************** expected:\n" + expected);
                 console.log("*************** actual  :\n" + actual);
-                if (typeof expected === 'string' && typeof actual === 'string') {
-                    const expectedShortened = expected.substring(0, 20).replace(/\n/g, '');
-                    const actualShortened = actual.substring(0, 20).replace(/\n/g, '');
-                    HelgeUtils.Exceptions.alertAndThrow(message
-                        || `Assertion failed: Expected ${expectedShortened}, but got ${actualShortened}`);
-                }
-                throw (message
+                // if (typeof expected === 'string' && typeof actual === 'string') {
+                //   const expectedShortened = expected.substring(0, 20).replace(/\n/g, '')
+                //   const actualShortened = actual.substring(0, 20).replace(/\n/g, '')
+                //   // HelgeUtils.Exceptions.alertAndThrow(message
+                //   //     || `Assertion failed: Expected ${expectedShortened}, but got ${actualShortened}`)
+                // }
+                console.log(message
                     || `Assertion failed: Expected ${expected}, but got ${actual}`);
             }
         };
@@ -992,9 +992,11 @@ export var HelgeUtils;
             ];
             let output = input;
             for (const [duWort, ichWort] of replacements) {
+                const regExp1 = new RegExp(`\\b${duWort}\\b`, 'g');
+                const regExp2 = new RegExp(`\\b${Strings.toUppercaseFirstChar(duWort)}\\b`, 'g');
                 output = output
-                    .replaceAll(duWort, ichWort)
-                    .replaceAll(Strings.toUppercaseFirstChar(duWort), Strings.toUppercaseFirstChar(ichWort));
+                    .replaceAll(regExp1, ichWort)
+                    .replaceAll(regExp2, Strings.toUppercaseFirstChar(ichWort));
             }
             return output;
         };

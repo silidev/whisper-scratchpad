@@ -15,12 +15,33 @@ export declare namespace UiFunctions {
     const runTests: () => void;
     namespace Buttons {
         const runTests: () => void;
-        /** From the current cursor position go back to the last word beginning.
-         * Then got to the next comma, semicolon, period, colon, or newline and
-         * remove it. Put the cursor at the end of the word. */
-        namespace PunctuationNearCursor {
+        namespace NonWordChars {
+            /** The inputStr until and including the word under the cursor
+      
+              In educational style to make it as easy as possible to understand.
+      
+              In the examples | is the cursor position. It is NOT part of the text.
+      
+              In this context a word character includes international characters.
+      
+              IF the cursor is on a non-word character: Go to the left until
+              a word character is found.
+      
+              E.g. from "This is a test..|.bra." to
+              "This is a test|...bra."
+      
+              Now delete the stretch of non-word characters to the right.
+              For the example this yields: "This is a test|bra."
+      
+              Now uppercase the first letter of the word to the right.
+              For the example this yields: "This is a test|Bra."
+      
+              Now insert a space before the word and put the cursor before the space.
+              For the example this yields: "This is a test| Bra."
+             */
+            const replaceWithSpace: (s: string, c: number) => [string, number];
             const runTests: () => void;
-            const kill: () => void;
+            const replaceWithSpaceInMainEditor: () => void;
             const addButtonEventListener: () => void;
         }
         namespace Media {
