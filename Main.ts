@@ -523,7 +523,18 @@ export namespace UiFunctions {
 
     } // End of media buttons
 
-    const clipboard = navigator.clipboard;
+    namespace clipboard {
+      export const read = (f1: (text: string) => void) => {
+        navigator.clipboard.readText().then(text => {
+          f1(text);
+        }).catch(Log.error)
+      };
+
+      export const readText = () => navigator.clipboard.readText();
+
+      export const writeText = (text: string) => navigator.clipboard.writeText(text);
+    }
+
     export const addEventListeners = () => {
 
       addKeyboardShortcuts()
@@ -637,9 +648,10 @@ export namespace UiFunctions {
 // aboutButton
       HtmlUtils.addClickListener(("pasteButton"), () => {
         mainEditor.appendDelimiterAndCursor()
-        clipboard.readText().then(text => {
+
+        clipboard.read((text: string) => {
           TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, text)
-        }).catch(Log.error)
+        });
       })
 
 // cutNoteButton

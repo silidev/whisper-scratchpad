@@ -1001,5 +1001,23 @@ export var HelgeUtils;
             return output;
         };
     })(Misc = HelgeUtils.Misc || (HelgeUtils.Misc = {})); //end of namespace Misc
+    /** @deprecated Inline this and replace the error handler with your own
+     * error reporting. */
+    let clipboard;
+    (function (clipboard) {
+        /** @deprecated Inline this and replace the error handler with your own
+         * error reporting. */
+        clipboard.read = (f) => {
+            navigator.clipboard.readText().then(text => {
+                f(text);
+            }).catch(err => {
+                console.error('Failed to read clipboard contents: ', err);
+                throw err;
+            });
+        };
+        /** @deprecated Rather use read() */
+        clipboard.readText = () => navigator.clipboard.readText();
+        clipboard.writeText = (text) => navigator.clipboard.writeText(text);
+    })(clipboard = HelgeUtils.clipboard || (HelgeUtils.clipboard = {}));
 })(HelgeUtils || (HelgeUtils = {}));
 //# sourceMappingURL=HelgeUtils.js.map

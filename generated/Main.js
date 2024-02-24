@@ -461,7 +461,16 @@ export var UiFunctions;
             wireUploadButton();
             StateIndicator.update();
         })(Media = Buttons.Media || (Buttons.Media = {})); // End of media buttons
-        const clipboard = navigator.clipboard;
+        let clipboard;
+        (function (clipboard) {
+            clipboard.read = (f1) => {
+                navigator.clipboard.readText().then(text => {
+                    f1(text);
+                }).catch(Log.error);
+            };
+            clipboard.readText = () => navigator.clipboard.readText();
+            clipboard.writeText = (text) => navigator.clipboard.writeText(text);
+        })(clipboard || (clipboard = {}));
         Buttons.addEventListeners = () => {
             addKeyboardShortcuts();
             Menu.wireMenuItem("undoActionButton", mainEditor.Undo.undo);
@@ -547,9 +556,9 @@ export var UiFunctions;
             // aboutButton
             HtmlUtils.addClickListener(("pasteButton"), () => {
                 mainEditor.appendDelimiterAndCursor();
-                clipboard.readText().then(text => {
+                clipboard.read((text) => {
                     TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, text);
-                }).catch(Log.error);
+                });
             });
             // cutNoteButton
             buttonWithId("cutNoteButton").addEventListener('click', createCutFunction(mainEditorTextarea));

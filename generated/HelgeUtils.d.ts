@@ -177,4 +177,14 @@ export declare namespace HelgeUtils {
          */
         const du2ich: (input: string) => string;
     }
+    /** @deprecated Inline this and replace the error handler with your own
+     * error reporting. */
+    namespace clipboard {
+        /** @deprecated Inline this and replace the error handler with your own
+         * error reporting. */
+        const read: (f: (text: string) => void) => void;
+        /** @deprecated Rather use read() */
+        const readText: () => Promise<string>;
+        const writeText: (text: string) => Promise<void>;
+    }
 }
