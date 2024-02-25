@@ -48,20 +48,18 @@
         </span>
 
       </div>
-      <!-- ############# updateButton ############# -->
+      <!-- ############# New Menu Line ############# -->
       <div class='item' style="padding-left: 0">
-        <button id="updateButton"
-                onclick="window.location.reload();
+
+
+      <!-- ############# updateButton ############# -->
+        <button id="updateButton" onclick="window.location.reload();
             // Do NOT reference anything from other scripts here, because this must work even if the other scripts are broken.
-            ">
-          Update
-          <br>w/o save
+            ">Update<br>w/o save
         </button>
 
         <!--############## Anki-Export Button ##############-->
-        <div class='item'>
-          <button id="ankiClozeCsv">Anki-<br>Export</button>
-        </div>
+        <button id="ankiClozeCsv">Anki-<br>Export</button>
 
         <!--############# Auto-Replace Checkbox ############# -->
         <span class="buttonLikeBox">
@@ -73,10 +71,11 @@
           </label>
         </span>
 
+        <!--############## undoActionButton ##############-->
         <button id="ctrlYButton">Ctrl-Y<br>Redo</button>
 
       </div>
-
+     <!-- ############# New Menu Line ############# -->
       <div class='item' style="padding-left: 0">
 
         <!--############## ignorePromptCheckbox ##############-->
@@ -84,8 +83,7 @@
           <input type="checkbox" id="ignorePromptCheckbox"
                 class="forceMainColor">
           <label style="margin-left: 8px;" for="ignorePromptCheckbox">
-            Ignore
-            <br>Prompt
+            Ignore<br>Prompt
           </label>
         </span>
 
@@ -93,8 +91,7 @@
         <span class="buttonLikeBox">
           <input type="checkbox" id="translateCheckbox" class="forceMainColor">
           <label style="margin-left: 8px;" for="translateCheckbox">
-            Trans-
-           <br>late
+            Trans-<br>late
           </label>
         </span>
 
@@ -174,7 +171,8 @@
       <div class='item' id="copyBackupMenuItem"><a>Copy backup to clipboard</a></div>
       <div class='item' id="cropHighlightsMenuItem"><a>Crop highlights (==
         ...==), DELETE all else!</a></div>
-      <div class='item' id="downloadCsv"><a>Download notes as CSV</a></div>
+      <div class='item'
+           id="downloadCsv"><a>Download notes as plain CSV </a></div>
       <div class='item' id="downloadLinkMenuItem"><a id="downloadLink">Download audio</a></div>
       <div class='item'>Version:&nbsp;<span id="versionSpan">Rochen</span></div>
     </wc-menu-wrapper></div>
