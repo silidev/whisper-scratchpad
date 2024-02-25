@@ -495,8 +495,11 @@ export namespace UiFunctions {
           mediaRecorder.resume()
           StateIndicator.update()
         } else {
-          if (insertDelimiter)
+          if (insertDelimiter) {
             mainEditor.appendDelimiterAndCursor()
+          } else {
+            mainEditor.appendTextAndCursor(" ")
+          }
           startRecording()
         }
       }
