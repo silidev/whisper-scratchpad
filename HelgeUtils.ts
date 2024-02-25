@@ -1117,6 +1117,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
       }
     }
 
+    // noinspection JSUnusedLocalSymbols
     const test = () => {
       // passing false into the constructor makes it so
       // the queue does not start till we tell it to

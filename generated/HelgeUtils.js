@@ -1066,6 +1066,7 @@ export var HelgeUtils;
             }
         }
         Semaphore.Queue = Queue;
+        // noinspection JSUnusedLocalSymbols
         const test = () => {
             // passing false into the constructor makes it so
             // the queue does not start till we tell it to
