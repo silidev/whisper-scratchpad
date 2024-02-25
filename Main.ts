@@ -487,7 +487,7 @@ export namespace UiFunctions {
       }
 
       // ############## pauseRecordButton ##############
-      const pauseRecordButton = () => {
+      const pauseRecordButton = (insertDelimiter: boolean) => {
         if (mediaRecorder?.state === 'recording') {
           mediaRecorder.pause()
           StateIndicator.update()
@@ -495,6 +495,8 @@ export namespace UiFunctions {
           mediaRecorder.resume()
           StateIndicator.update()
         } else {
+          if (insertDelimiter)
+            mainEditor.appendDelimiterAndCursor()
           startRecording()
         }
       }
@@ -506,16 +508,18 @@ export namespace UiFunctions {
           stop_transcribe_startNewRecording_and_pause()
           return
         }
-        pauseRecordButton()
+        pauseRecordButton(false)
       }
 
 // ############## transcribeButton ##############
       buttonWithId("transcribeButton").addEventListener('click', transcribeButton)
-      buttonWithId("pauseRecordButton").addEventListener('click', pauseRecordButton)
-
+// ############## pauseRecordButtons ##############
+      buttonWithId("pauseRecordButton").addEventListener('click',
+          () => pauseRecordButton(true))
+      buttonWithId("pauseRecordButtonWithoutDelimiter").addEventListener('click',
+          () => pauseRecordButton(false))
 // ############## transcribeAudioBlob ##############
       Menu.wireMenuItem("transcribeAgainButton", transcribeAudioBlob)
-
 // ############## Misc ##############
       wireUploadButton();
 
