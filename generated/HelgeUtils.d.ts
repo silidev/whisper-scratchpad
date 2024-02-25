@@ -187,4 +187,18 @@ export declare namespace HelgeUtils {
         const readText: () => Promise<string>;
         const writeText: (text: string) => Promise<void>;
     }
+    /**
+     * Source: https://stackoverflow.com/questions/17528749/semaphore-like-queue-in-javascript
+     */
+    namespace Semaphore {
+        class Queue {
+            private running;
+            private autorun;
+            private queue;
+            constructor(autorun?: boolean, queue?: never[]);
+            add(cb: (arg0: any) => any): this;
+            dequeue(value: any): any;
+            get next(): (value: any) => any;
+        }
+    }
 }
