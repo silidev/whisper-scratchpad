@@ -33,6 +33,7 @@
       <!-- https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper -->
       <div id="editorMenuHeading" class='heading centerContent'
            style="min-width:var(--buttonHeight)">☰</div>
+
       <div class='item buttonMenuItem'>
         <button id="cutAllButton">Cut<br>all</button>
         <button id="du2ichMenuItem">du2ich</button>
@@ -47,6 +48,7 @@
         </span>
 
       </div>
+      <!-- ############# updateButton ############# -->
       <div class='item' style="padding-left: 0">
         <button id="updateButton"
                 onclick="window.location.reload();
@@ -55,16 +57,13 @@
           Update
           <br>w/o save
         </button>
-        <button id="ctrlYButton">Ctrl-Y<br>Redo</button>
 
-        <span class="buttonLikeBox">
-          <input type="checkbox" id="translateCheckbox" class="forceMainColor">
-          <label style="margin-left: 8px;" for="translateCheckbox">
-            Trans-
-           <br>late
-          </label>
-        </span>
+        <!--############## Anki-Export Button ##############-->
+        <div class='item'>
+          <button id="ankiClozeCsv">Anki-<br>Export</button>
+        </div>
 
+        <!--############# Auto-Replace Checkbox ############# -->
         <span class="buttonLikeBox">
           <input type="checkbox" id="autoReplaceCheckbox" class="forceMainColor"
                  checked="checked">
@@ -74,9 +73,40 @@
           </label>
         </span>
 
+        <button id="ctrlYButton">Ctrl-Y<br>Redo</button>
+
       </div>
 
       <div class='item' style="padding-left: 0">
+
+        <!--############## ignorePromptCheckbox ##############-->
+        <span class="buttonLikeBox">
+          <input type="checkbox" id="ignorePromptCheckbox"
+                class="forceMainColor">
+          <label style="margin-left: 8px;" for="ignorePromptCheckbox">
+            Ignore
+            <br>Prompt
+          </label>
+        </span>
+
+        <!-- ############ Translate Checkbox ############# -->
+        <span class="buttonLikeBox">
+          <input type="checkbox" id="translateCheckbox" class="forceMainColor">
+          <label style="margin-left: 8px;" for="translateCheckbox">
+            Trans-
+           <br>late
+          </label>
+        </span>
+
+        <!--############## undoActionButton ##############-->
+        <button id="undoActionButton">Undo<br>Action</button>
+
+        <!--############## Upload File ##############-->
+        <label for="fileToUploadSelector" id="uploadButton" class="buttonLikeBox">
+          Upload<br>File
+        </label>
+        <input type="file" id="fileToUploadSelector" style="display: none" />
+
         <!-- ########### infoButton ############# -->
         <button>  <info-button>
           <div style="position: fixed;
@@ -102,25 +132,7 @@
             </ul>
           </div>
         </info-button></button>
-        <button id="undoActionButton">Undo<br>Action</button>
 
-        <span class="buttonLikeBox">
-          <input type="checkbox" id="ignorePromptCheckbox"
-                class="forceMainColor">
-          <label style="margin-left: 8px;" for="ignorePromptCheckbox">
-            Ignore
-            <br>Prompt
-          </label>
-        </span>
-
-        <label for="fileToUploadSelector" id="uploadButton" class="buttonLikeBox">
-          Upload<br>File
-        </label>
-        <input type="file" id="fileToUploadSelector" style="display: none" />
-      </div>
-
-      <div class='item'>
-        <button id="ankiClozeCsv">Anki-<br>Cloze-CSV</button>
       </div>
 
       <div class='item'>
