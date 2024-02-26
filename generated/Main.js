@@ -235,11 +235,15 @@ export var UiFunctions;
                     setHtmlOfButtonStop('◼<br>Stop');
                     setHtmlOfButtonPauseRecord(blinkFast('🔴 Recording') + '<br>|| Pause');
                     setPageBackgroundColor("var(--backgroundColor)");
+                    buttonWithId("pauseRecordButton").style.animation = "none";
                 };
                 StateIndicator.setPaused = () => {
                     setHtmlOfButtonStop('◼<br>Stop');
-                    setHtmlOfButtonPauseRecord(blinkSlow('|| Paused') + '<br>⬤▶ Cont. Rec');
+                    setHtmlOfButtonPauseRecord(blinkSlow('|| Paused')); // +'<br>⬤▶ Cont. Rec'
                     setPageBackgroundColor("var(--pausedBackgroundColor)");
+                    // animation: blink 1s linear infinite;
+                    buttonWithId("pauseRecordButton").style.animation =
+                        "blink .5s linear infinite";
                 };
                 StateIndicator.setStopped = () => {
                     setHtmlOfButtonStop('◼<br>Stop');
@@ -247,6 +251,7 @@ export var UiFunctions;
                         ? blinkFast('✎ Scribing') + '<br>⬤ Record'
                         : '<br>⬤ Record');
                     setPageBackgroundColor("var(--backgroundColor)");
+                    buttonWithId("pauseRecordButton").style.animation = "none";
                 };
                 const setHtmlOfButtonStop = (html) => {
                     buttonWithId("stopButton").innerHTML = html;
