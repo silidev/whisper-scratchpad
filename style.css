@@ -6,7 +6,7 @@
  /*--mainColor: #00b2ff; !*blue*!*/
  --buttonHeight: 55px;
  --menuItemHeight: 44px;
- --fontSize: 18px;
+ --editorFontSize: 20px; /* 18px is too small to edit on my phone */
  --buttonFontSize: 14px;
 }
 
@@ -81,7 +81,7 @@ button {
 
 input, textarea {
  font-family: 'Arial', sans-serif;
- font-size: var(--fontSize);
+ font-size: var(--editorFontSize);
 }
 
 select, option, input:focus, textarea:focus {
