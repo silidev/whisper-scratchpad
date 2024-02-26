@@ -1,7 +1,7 @@
 :root {
- --mainColor: #f72e00;   /*amber*/
+ --mainColor: #ff886d; /*amber*/
+ /*--mainColor: #f72e00;   !*amber*!*/
  /*--mainColor: #ff0000; !*red*!*/
- /*--mainColor: #ff886d; !*amber*!*/
  /*--mainColor: #0f0;    !*green*!*/
  /*--mainColor: #00b2ff; !*blue*!*/
  --buttonHeight: 55px;
@@ -22,7 +22,7 @@ body,html {
  width: 100%;
  height: 100%;
  font-family: 'Arial', sans-serif;
- background-color: black;
+ background-color: #000033;
  color: var(--mainColor);
  max-width: 20cm;
  overscroll-behavior: none;
