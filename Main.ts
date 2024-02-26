@@ -116,6 +116,12 @@ export namespace Menu {
   export const close = () => WcMenu.close("editorMenuHeading")
 }
 
+const setPageBackgroundColor = (backgroundColor: string) => {
+  document.body.style.backgroundColor = backgroundColor
+  // Set background color of the page border to red
+  document.body.style.borderColor = backgroundColor
+};
+
 export namespace UiFunctions {
   import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
 
@@ -270,10 +276,12 @@ export namespace UiFunctions {
         const setRecording = () => {
           setHtmlOfButtonStop('◼<br>Stop')
           setHtmlOfButtonPauseRecord(blinkFast('🔴 Recording') + '<br>|| Pause')
+          setPageBackgroundColor("var(--backgroundColor)");
         }
         export const setPaused = () => {
           setHtmlOfButtonStop('◼<br>Stop')
           setHtmlOfButtonPauseRecord(blinkSlow('|| Paused') +'<br>⬤▶ Cont. Rec')
+          setPageBackgroundColor("red");
         }
         export const setStopped = () => {
           setHtmlOfButtonStop('◼<br>Stop')
@@ -283,6 +291,7 @@ export namespace UiFunctions {
         }
         const setHtmlOfButtonStop = (html: string) => {
           buttonWithId("stopButton").innerHTML = html
+          setPageBackgroundColor("var(--backgroundColor)");
         }
         const setHtmlOfButtonPauseRecord = (html: string) => {
           buttonWithId("pauseRecordButton").innerHTML = html

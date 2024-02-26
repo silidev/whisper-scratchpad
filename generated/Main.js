@@ -97,6 +97,11 @@ export var Menu;
     Menu.wireMenuItem = WcMenu.addItem("editorMenuHeading");
     Menu.close = () => WcMenu.close("editorMenuHeading");
 })(Menu || (Menu = {}));
+const setPageBackgroundColor = (backgroundColor) => {
+    document.body.style.backgroundColor = backgroundColor;
+    // Set background color of the page border to red
+    document.body.style.borderColor = backgroundColor;
+};
 export var UiFunctions;
 (function (UiFunctions) {
     var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
@@ -229,10 +234,12 @@ export var UiFunctions;
                 const setRecording = () => {
                     setHtmlOfButtonStop('◼<br>Stop');
                     setHtmlOfButtonPauseRecord(blinkFast('🔴 Recording') + '<br>|| Pause');
+                    setPageBackgroundColor("var(--backgroundColor)");
                 };
                 StateIndicator.setPaused = () => {
                     setHtmlOfButtonStop('◼<br>Stop');
                     setHtmlOfButtonPauseRecord(blinkSlow('|| Paused') + '<br>⬤▶ Cont. Rec');
+                    setPageBackgroundColor("red");
                 };
                 StateIndicator.setStopped = () => {
                     setHtmlOfButtonStop('◼<br>Stop');
@@ -242,6 +249,7 @@ export var UiFunctions;
                 };
                 const setHtmlOfButtonStop = (html) => {
                     buttonWithId("stopButton").innerHTML = html;
+                    setPageBackgroundColor("var(--backgroundColor)");
                 };
                 const setHtmlOfButtonPauseRecord = (html) => {
                     buttonWithId("pauseRecordButton").innerHTML = html;

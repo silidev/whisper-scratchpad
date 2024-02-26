@@ -5,6 +5,7 @@
  /*--mainColor: #ff0000; !*red*!*/
  /*--mainColor: #0f0;    !*green*!*/
  /*--mainColor: #00b2ff; !*blue*!*/
+ --backgroundColor: #472c00;
  --buttonHeight: 55px;
  --menuItemHeight: 44px;
  --editorFontSize: 20px; /* 18px is too small to edit on my phone */
@@ -23,7 +24,7 @@ body,html {
  width: 100%;
  height: 100%;
  font-family: 'Arial', sans-serif;
- background-color: #472c00;
+ background-color: var(--backgroundColor);
  color: var(--mainColor);
  max-width: 20cm;
  overscroll-behavior: none;
@@ -70,7 +71,7 @@ button, input, textarea {
  border-radius: 0;
  cursor: pointer;
  color: var(--mainColor);
- background-color: #0000;
+ background-color: var(--backgroundColor);
 }
 
 button {
@@ -161,7 +162,7 @@ textarea {
 }
 
 .item, .heading {
- background-color: #0000;
+ background-color: var(--backgroundColor);
  min-height: var(--menuItemHeight);
  align-items: center;
  justify-content: left;
@@ -192,11 +193,11 @@ textarea {
 }
 
 .heading {
- background-color: #0000;
+ background-color: var(--backgroundColor);
 }
 
 select, option {
- background-color: #0000;
+ background-color: var(--backgroundColor);
  color: var(--mainColor);
 }
 
