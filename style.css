@@ -1,5 +1,6 @@
 :root {
- --mainColor: #ff886d; /*amber*/
+ --mainColor: #ffffff;
+ /*--mainColor: #ff886d; !*salmon*!*/
  /*--mainColor: #f72e00;   !*amber*!*/
  /*--mainColor: #ff0000; !*red*!*/
  /*--mainColor: #0f0;    !*green*!*/
@@ -22,7 +23,7 @@ body,html {
  width: 100%;
  height: 100%;
  font-family: 'Arial', sans-serif;
- background-color: #000033;
+ background-color: #472c00;
  color: var(--mainColor);
  max-width: 20cm;
  overscroll-behavior: none;
@@ -69,7 +70,7 @@ button, input, textarea {
  border-radius: 0;
  cursor: pointer;
  color: var(--mainColor);
- background-color: black;
+ background-color: #0000;
 }
 
 button {
@@ -121,7 +122,7 @@ input::placeholder, textarea::placeholder {
 /* Forces the main color on things, e.g. emojis.
 This used to be called greenFilter.*/
 .forceMainColor {
- filter: grayscale(100%) sepia(1) hue-rotate(355deg) brightness(1) saturate(10);
+ /*red: filter: grayscale(100%) sepia(1) hue-rotate(355deg) brightness(1) saturate(10);*/
  /*blue: filter: grayscale(100%) sepia(1) hue-rotate(150deg) brightness(0.5) saturate(10);*/
  /*green: filter: grayscale(100%) sepia(1) hue-rotate(90deg) brightness(0.5) saturate(10);*/
 }
@@ -160,7 +161,7 @@ textarea {
 }
 
 .item, .heading {
- background-color: black;
+ background-color: #0000;
  min-height: var(--menuItemHeight);
  align-items: center;
  justify-content: left;
@@ -191,11 +192,11 @@ textarea {
 }
 
 .heading {
- background-color: black;
+ background-color: #0000;
 }
 
 select, option {
- background-color: black;
+ background-color: #0000;
  color: var(--mainColor);
 }
 
