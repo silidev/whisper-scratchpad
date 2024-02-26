@@ -6,6 +6,7 @@
  /*--mainColor: #0f0;    !*green*!*/
  /*--mainColor: #00b2ff; !*blue*!*/
  --backgroundColor: #472c00;
+ --pausedBackgroundColor: #660000;
  --buttonHeight: 55px;
  --menuItemHeight: 44px;
  --editorFontSize: 20px; /* 18px is too small to edit on my phone */
@@ -134,6 +135,7 @@ textarea {
  box-sizing: border-box;
  margin: 0;
  height: 10cm;
+ background-color: #0000;
 }
 
 @keyframes blink {

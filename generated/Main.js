@@ -99,8 +99,8 @@ export var Menu;
 })(Menu || (Menu = {}));
 const setPageBackgroundColor = (backgroundColor) => {
     document.body.style.backgroundColor = backgroundColor;
-    // Set background color of the page border to red
-    document.body.style.borderColor = backgroundColor;
+    // set color of the margins of the page
+    document.documentElement.style.backgroundColor = backgroundColor;
 };
 export var UiFunctions;
 (function (UiFunctions) {
@@ -239,13 +239,14 @@ export var UiFunctions;
                 StateIndicator.setPaused = () => {
                     setHtmlOfButtonStop('◼<br>Stop');
                     setHtmlOfButtonPauseRecord(blinkSlow('|| Paused') + '<br>⬤▶ Cont. Rec');
-                    setPageBackgroundColor("red");
+                    setPageBackgroundColor("var(--pausedBackgroundColor)");
                 };
                 StateIndicator.setStopped = () => {
                     setHtmlOfButtonStop('◼<br>Stop');
                     setHtmlOfButtonPauseRecord(sending
                         ? blinkFast('✎ Scribing') + '<br>⬤ Record'
                         : '<br>⬤ Record');
+                    setPageBackgroundColor("var(--backgroundColor)");
                 };
                 const setHtmlOfButtonStop = (html) => {
                     buttonWithId("stopButton").innerHTML = html;
