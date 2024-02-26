@@ -1,3 +1,5 @@
+export declare const OPEN_CLOZE_STR = "{{c1::";
+export declare const CLOSE_CLOZE_STR = "}},,";
 export declare namespace mainEditor {
     namespace Undo {
         const undo: () => void;

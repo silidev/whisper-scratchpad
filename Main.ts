@@ -12,20 +12,24 @@ import TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
 import Cookies = HtmlUtils.BrowserStorage.Cookies;
 import {ctrlYRedo, ctrlZUndo} from "./DontInspect.js"
 import {HelgeUtils} from "./HelgeUtils.js"
-import {
-  INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERIFY_LARGE_STORAGE, VERSION, WHERE_TO_INSERT_AT, WHISPER_TEMPERATURE
+import {INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER,
+  VERIFY_LARGE_STORAGE, VERSION, WHERE_TO_INSERT_AT, WHISPER_TEMPERATURE
 } from "./Config.js"
 import {createCutFunction} from "./CutButton.js"
 import {HtmlUtils} from "./HtmlUtils.js"
 import {CurrentNote} from "./CurrentNote.js";
 
-// @ts-ignore
-import {download, generateCsv, mkConfig} from "../node_modules/export-to-csv/output/index.js";
+import {download, generateCsv, mkConfig}
+  // @ts-ignore
+  from "../node_modules/export-to-csv/output/index.js";
 
 const LARGE_STORAGE_PROVIDER =
     VERIFY_LARGE_STORAGE
         ? HtmlUtils.BrowserStorage.LocalStorageVerified
         : HtmlUtils.BrowserStorage.LocalStorage;
+
+export const OPEN_CLOZE_STR = "{{c1::";
+export const CLOSE_CLOZE_STR = "}},,";
 
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = (() => {
@@ -92,7 +96,7 @@ namespace Misc {
   }
 
   export const addKeyboardShortcuts = () => {
-    const cutFromMainEditor = createCutFunction(mainEditorTextarea, "{{c1::", "}}")
+    const cutFromMainEditor = createCutFunction(mainEditorTextarea, OPEN_CLOZE_STR, CLOSE_CLOZE_STR)
 
     document.addEventListener('keyup', (event) => {
       // console.log(event.key,event.shiftKey,event.ctrlKey,event.altKey)
@@ -666,7 +670,7 @@ export namespace UiFunctions {
           createCutFunction(mainEditorTextarea))
 // cutAnkiButton
       buttonWithId("cutAnkiButton").addEventListener('click',
-          createCutFunction(mainEditorTextarea, "{{c1::", "}}"))
+          createCutFunction(mainEditorTextarea, OPEN_CLOZE_STR, CLOSE_CLOZE_STR))
 
 // copyButtons
       /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
@@ -714,7 +718,7 @@ export namespace UiFunctions {
       };
 
       const ankiClozeCsv = () => {
-        return downloadCsv("{{c1::", "}}");
+        return downloadCsv(OPEN_CLOZE_STR, CLOSE_CLOZE_STR);
       };
       Menu.wireMenuItem("ankiClozeCsv", ankiClozeCsv);
       Menu.wireMenuItem("downloadCsv", downloadCsv);

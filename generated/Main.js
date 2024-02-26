@@ -15,11 +15,14 @@ import { INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERIFY_LARGE_STORAGE, VE
 import { createCutFunction } from "./CutButton.js";
 import { HtmlUtils } from "./HtmlUtils.js";
 import { CurrentNote } from "./CurrentNote.js";
+import { download, generateCsv, mkConfig } 
 // @ts-ignore
-import { download, generateCsv, mkConfig } from "../node_modules/export-to-csv/output/index.js";
+from "../node_modules/export-to-csv/output/index.js";
 const LARGE_STORAGE_PROVIDER = VERIFY_LARGE_STORAGE
     ? HtmlUtils.BrowserStorage.LocalStorageVerified
     : HtmlUtils.BrowserStorage.LocalStorage;
+export const OPEN_CLOZE_STR = "{{c1::";
+export const CLOSE_CLOZE_STR = "}},,";
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = (() => {
     const d = new Date().toISOString().slice(0, 10);
@@ -77,7 +80,7 @@ var Misc;
         mainEditorTextarea.selectionEnd = selectionEnd;
     };
     Misc.addKeyboardShortcuts = () => {
-        const cutFromMainEditor = createCutFunction(mainEditorTextarea, "{{c1::", "}}");
+        const cutFromMainEditor = createCutFunction(mainEditorTextarea, OPEN_CLOZE_STR, CLOSE_CLOZE_STR);
         document.addEventListener('keyup', (event) => {
             // console.log(event.key,event.shiftKey,event.ctrlKey,event.altKey)
             if (event.key === 'X' && event.shiftKey && event.ctrlKey) {
@@ -571,7 +574,7 @@ export var UiFunctions;
             // cutNoteButton
             buttonWithId("cutNoteButton").addEventListener('click', createCutFunction(mainEditorTextarea));
             // cutAnkiButton
-            buttonWithId("cutAnkiButton").addEventListener('click', createCutFunction(mainEditorTextarea, "{{c1::", "}}"));
+            buttonWithId("cutAnkiButton").addEventListener('click', createCutFunction(mainEditorTextarea, OPEN_CLOZE_STR, CLOSE_CLOZE_STR));
             // copyButtons
             /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
             const addEventListenerForCopyButton = (buttonId, inputElementId) => {
@@ -612,7 +615,7 @@ export var UiFunctions;
                 return download(csvConfig)(csv);
             };
             const ankiClozeCsv = () => {
-                return downloadCsv("{{c1::", "}}");
+                return downloadCsv(OPEN_CLOZE_STR, CLOSE_CLOZE_STR);
             };
             Menu.wireMenuItem("ankiClozeCsv", ankiClozeCsv);
             Menu.wireMenuItem("downloadCsv", downloadCsv);
