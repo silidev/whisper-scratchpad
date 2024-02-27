@@ -468,6 +468,7 @@ export namespace UiFunctions {
 
 // ############## stopButton ##############
       const stopRecording = () => {
+        if (!mediaRecorder) return
         mediaRecorder.onstop = StopCallbackCreator.transcribingCallback()
         mediaRecorder.stop()
       }
