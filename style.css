@@ -5,7 +5,8 @@
  /*--mainColor: #ff0000; !*red*!*/
  /*--mainColor: #0f0;    !*green*!*/
  /*--mainColor: #00b2ff; !*blue*!*/
- --backgroundColor: #472c00;
+ /*--backgroundColor: #472c00; brown*/
+ --backgroundColor: #333333;
  --pausedBackgroundColor: #660000;
  --buttonHeight: 55px;
  --menuItemHeight: 44px;
@@ -186,16 +187,13 @@ textarea {
  min-width:var(--buttonHeight)
 }
 
-.heading {
- height: var(--buttonHeight);
-}
-
 .item:hover {
  cursor: default;
 }
 
 .heading {
  background-color: var(--backgroundColor);
+ height: var(--buttonHeight);
 }
 
 select, option {
@@ -207,4 +205,33 @@ select, option {
  display: flex;
  justify-content: center;
  align-items: center;
+}
+
+button:hover, button:active {
+ box-shadow: none;
+}
+
+button, .buttonLikeBox {
+ border-radius: 2px;
+ box-shadow: 0 -2px 0 rgba(0,0,0,0.2) inset !important;
+ -moz-box-shadow: 0 -2px 0 rgba(0,0,0,0.2) inset;
+ display: inline-block;
+ -webkit-box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset;
+ -webkit-transition: background-color 300ms ease-out;
+ -moz-transition: background-color 300ms ease-out;
+ transition: background-color 300ms ease-out;
+ padding-top: 0.8125em;
+ padding-bottom: 0.75em;
+ -webkit-appearance: none;
+ border-style: solid;
+ border-width: 0;
+ cursor: pointer;
+ line-height: normal;
+ position: relative;
+ text-decoration: none;
+ text-align: center;
+ background-color: #adc708;
+ border-color: #829606;
+ color: white;
+ margin: 2px 2px;
 }
