@@ -142,9 +142,10 @@ export namespace UiFunctions {
     }
 
     buttonWithId('wordRightButton').addEventListener('click', function() {
-      const editor = elementWithId('mainEditorTextarea');
+      const editor = textAreaWithId('mainEditorTextarea');
       const text = editor.value;
       const cursorPosition = editor.selectionStart+1;
+      if (cursorPosition >= text.length) return;
 
       // Find the end of the next word
       const nextSpace = text.indexOf(' ', cursorPosition);
@@ -160,6 +161,30 @@ export namespace UiFunctions {
       // Set the cursor position to the end of the next word
       editor.selectionStart = endOfNextWord;
       editor.selectionEnd = endOfNextWord;
+
+      editor.focus();
+    });
+
+    buttonWithId('wordLeftButton').addEventListener('click', function() {
+      const editor = textAreaWithId('mainEditorTextarea');
+      const text = editor.value;
+      const cursorPosition = editor.selectionStart-2;
+      if (cursorPosition < 0) return;
+
+      // Find the start of the previous word
+      const previousSpace = text.lastIndexOf(' ', cursorPosition);
+      let startOfPreviousWord;
+      if (previousSpace === -1) {
+        // If there is no previous space, the start of the previous word is the start of the text
+        startOfPreviousWord = 0;
+      } else {
+        // If there is a previous space, the start of the previous word is the position after the space
+        startOfPreviousWord = previousSpace + 1;
+      }
+
+      // Set the cursor position to the start of the previous word
+      editor.selectionStart = startOfPreviousWord;
+      editor.selectionEnd = startOfPreviousWord;
 
       editor.focus();
     });
