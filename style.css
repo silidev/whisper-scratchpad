@@ -8,7 +8,7 @@
  /*--backgroundColor: #472c00; brown*/
  --backgroundColor: #333333;
  --pausedBackgroundColor: #660000;
- --buttonColor: #9eb508;
+ --buttonColor: #9eb508; /* olive */
  --textareaColor: #adc70811;
  --buttonHeight: 55px;
  --menuItemHeight: 44px;
@@ -131,7 +131,8 @@ This used to be called greenFilter.*/
 .forceMainColor {
  /*red: filter: grayscale(100%) sepia(1) hue-rotate(355deg) brightness(1) saturate(10);*/
  /*blue: filter: grayscale(100%) sepia(1) hue-rotate(150deg) brightness(0.5) saturate(10);*/
- /*green: filter: grayscale(100%) sepia(1) hue-rotate(90deg) brightness(0.5) saturate(10);*/
+/*filter: grayscale(100%) sepia(1) hue-rotate(90deg) brightness(0.5) saturate(10); !*green*!*/
+ filter: grayscale(100%) sepia(0) ; /* white/gray for #9eb508; olive background */
 }
 
 .textarea {
@@ -190,6 +191,8 @@ This used to be called greenFilter.*/
  margin: 0;
  min-width:var(--buttonHeight);
  background-color: var(--buttonColor);
+ justify-content: center;
+ text-align: center;
 }
 
 .buttonColors {
