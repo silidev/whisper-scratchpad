@@ -183,7 +183,6 @@ This used to be called greenFilter.*/
 }
 
 .buttonLikeBox {
- display: flex;
  align-items: center;
  border: 1px solid var(--mainColor);
  height: var(--buttonHeight);
