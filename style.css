@@ -9,6 +9,7 @@
  --backgroundColor: #333333;
  --pausedBackgroundColor: #660000;
  --buttonColor: #9eb508;
+ --textareaColor: #adc70811;
  --buttonHeight: 55px;
  --menuItemHeight: 44px;
  --editorFontSize: 20px; /* 18px is too small to edit on my phone */
@@ -88,7 +89,7 @@ button {
 input, textarea {
  font-family: 'Arial', sans-serif;
  font-size: var(--editorFontSize);
- background-color: #adc70811;
+ background-color: var(--textareaColor);
 }
 
 select, option, input:focus, textarea:focus {
@@ -171,8 +172,9 @@ This used to be called greenFilter.*/
  min-height: var(--menuItemHeight);
  align-items: center;
  justify-content: left;
- border: 1px solid var(--mainColor);
- font-size: var(--buttonFontSize)
+ border: 1px solid var(--textareaColor);
+ font-size: var(--buttonFontSize);
+ user-select: none;
 }
 
 .buttonMenuItem {
