@@ -17,10 +17,11 @@
   <script defer src='lib/wc-menu-wrapper.min.js'></script>
 </head>
 <body>
-<textarea id="mainEditorTextarea" class="all" wrap="soft" placeholder=""
+<textarea id="mainEditorTextarea" class="all textarea" wrap="soft"
+          placeholder=""
           style="margin-bottom: -3px">
 </textarea>
-<textarea id="logTextArea" wrap="soft" placeholder="" style="display: none; height: 6cm">
+<textarea id="logTextArea textarea" wrap="soft" placeholder="" style="display: none; height: 6cm">
 </textarea>
 
 <!--############## Buttons ##############-->
@@ -256,7 +257,7 @@
 <!--      </textarea>-->
 <!--  </div>-->
   <div class="textareaContainer">
-      <textarea id="replaceRulesTextArea" wrap="soft"
+      <textarea id="replaceRulesTextArea" wrap="soft" class="all textarea"
                 placeholder="Optional. &quot;SEARCH&quot;-&gt;&quot;REPLACE&quot;"
       style="height: 200px">
       </textarea>
@@ -290,7 +291,7 @@
         <button class="buttonLikeBox all" id="ctrlZButtonOfPrompt">⎌<br>Ctrl-z</button>
       </span>
   <div class="textareaContainer">
-    <textarea id="transcriptionPromptEditor" wrap="soft"
+    <textarea id="transcriptionPromptEditor" wrap="soft" class="all textarea"
               placeholder="Optional prompt especially for hinting unusual names if they are not recognized by default." style="height: 250px"></textarea>
   </div>
 </div>
@@ -299,13 +300,14 @@
 <!--############## API Selector ##############-->
   <br><h2>API</h2>
   <br>
-  <select id="apiSelector" style="font-size: 22px">
+  <select id="apiSelector" style="font-size: 22px" class="all buttonColors">
     <option value="OpenAI">OpenAI</option>
     <option value="Gladia">Gladia.io</option>
   </select>
 
   <br><h2>API Key</h2>
-  <br><input type="text" id="apiKeyInputField" placeholder="API key for selected service">
+  <br><input type="text" id="apiKeyInputField" class="all"
+             placeholder="API key for selected service">
   <button class="buttonLikeBox all" id="saveAPIKeyButton">
     <span class="forceMainColor">💾</span>
     Save API Key
