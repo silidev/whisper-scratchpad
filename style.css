@@ -8,6 +8,7 @@
  /*--backgroundColor: #472c00; brown*/
  --backgroundColor: #333333;
  --pausedBackgroundColor: #660000;
+ --buttonColor: #9eb508;
  --buttonHeight: 55px;
  --menuItemHeight: 44px;
  --editorFontSize: 20px; /* 18px is too small to edit on my phone */
@@ -81,7 +82,7 @@ button {
  margin: 0;
  height: var(--buttonHeight);
  min-width:var(--buttonHeight);
- background-color: #adc708;
+ background-color: var(--buttonColor);
 }
 
 input, textarea {
@@ -186,11 +187,11 @@ This used to be called greenFilter.*/
  padding: 0 10px;
  margin: 0;
  min-width:var(--buttonHeight);
- background-color: #adc708;
+ background-color: var(--buttonColor);
 }
 
 .buttonColors {
- background-color: #adc708;
+ background-color: var(--buttonColor);
 }
 
 .item:hover {
