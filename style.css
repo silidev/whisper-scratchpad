@@ -55,9 +55,9 @@ a {
  justify-content: flex-end;
 }
 
-.spinnerGroup {
- display: flex;
-}
+/*.spinnerGroup {*/
+/* display: flex;*/
+/*}*/
 
 div {
  border-collapse: collapse;
@@ -157,11 +157,8 @@ This used to be called greenFilter.*/
 }
 
 @media only screen and (max-width: 600px) {
- .textareaContainer {
-  width: 90%;
- }
  body, html {
-  margin: 0;
+  margin: -1px;
  }
  .textareaContainer {
   width: 100%
