@@ -141,32 +141,11 @@ export namespace UiFunctions {
       NonWordChars.runTests()
     }
 
-    buttonWithId('wordRightButton').addEventListener('click', function() {
+    // ############## wordLeftButton ##############
+    buttonWithId('wordLeftButton').addEventListener('mousedown', event => {
+      event.preventDefault(); // Prevent the textarea from losing focus
       const editor = textAreaWithId('mainEditorTextarea');
-      const text = editor.value;
-      const cursorPosition = editor.selectionStart+1;
-      if (cursorPosition >= text.length) return;
-
-      // Find the end of the next word
-      const nextSpace = text.indexOf(' ', cursorPosition);
-      let endOfNextWord;
-      if (nextSpace === -1) {
-        // If there is no next space, the end of the next word is the end of the text
-        endOfNextWord = text.length;
-      } else {
-        // If there is a next space, the end of the next word is the position before the space
-        endOfNextWord = nextSpace;
-      }
-
-      // Set the cursor position to the end of the next word
-      editor.selectionStart = endOfNextWord;
-      editor.selectionEnd = endOfNextWord;
-
       editor.focus();
-    });
-
-    buttonWithId('wordLeftButton').addEventListener('click', function() {
-      const editor = textAreaWithId('mainEditorTextarea');
       const text = editor.value;
       const cursorPosition = editor.selectionStart-2;
       if (cursorPosition < 0) return;
@@ -185,6 +164,33 @@ export namespace UiFunctions {
       // Set the cursor position to the start of the previous word
       editor.selectionStart = startOfPreviousWord;
       editor.selectionEnd = startOfPreviousWord;
+
+      editor.focus();
+    });
+
+    // ############## wordRightButton ##############
+    buttonWithId('wordRightButton').addEventListener('mousedown', function(event) {
+      event.preventDefault(); // Prevent the textarea from losing focus
+      const editor = textAreaWithId('mainEditorTextarea');
+      editor.focus();
+      const text = editor.value;
+      const cursorPosition = editor.selectionStart+1;
+      if (cursorPosition >= text.length) return;
+
+      // Find the end of the next word
+      const nextSpace = text.indexOf(' ', cursorPosition);
+      let endOfNextWord;
+      if (nextSpace === -1) {
+        // If there is no next space, the end of the next word is the end of the text
+        endOfNextWord = text.length;
+      } else {
+        // If there is a next space, the end of the next word is the position before the space
+        endOfNextWord = nextSpace;
+      }
+
+      // Set the cursor position to the end of the next word
+      editor.selectionStart = endOfNextWord;
+      editor.selectionEnd = endOfNextWord;
 
       editor.focus();
     });

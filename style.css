@@ -141,6 +141,7 @@ This used to be called greenFilter.*/
  margin: -1px;
  resize: vertical;
  width: 100%;
+ outline: none;
 }
 
 @keyframes blink {
