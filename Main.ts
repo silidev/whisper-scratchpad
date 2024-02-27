@@ -144,10 +144,9 @@ export namespace UiFunctions {
     // ############## wordLeftButton ##############
     buttonWithId('wordLeftButton').addEventListener('mousedown', event => {
       event.preventDefault(); // Prevent the textarea from losing focus
-      const editor = textAreaWithId('mainEditorTextarea');
-      editor.focus();
-      const text = editor.value;
-      const cursorPosition = editor.selectionStart-2;
+      const textarea = textAreaWithId('mainEditorTextarea');
+      const text = textarea.value;
+      const cursorPosition = textarea.selectionStart-2;
       if (cursorPosition < 0) return;
 
       // Find the start of the previous word
@@ -162,19 +161,16 @@ export namespace UiFunctions {
       }
 
       // Set the cursor position to the start of the previous word
-      editor.selectionStart = startOfPreviousWord;
-      editor.selectionEnd = startOfPreviousWord;
-
-      editor.focus();
+      textarea.selectionStart = startOfPreviousWord;
+      textarea.selectionEnd = startOfPreviousWord;
     });
 
     // ############## wordRightButton ##############
     buttonWithId('wordRightButton').addEventListener('mousedown', function(event) {
       event.preventDefault(); // Prevent the textarea from losing focus
-      const editor = textAreaWithId('mainEditorTextarea');
-      editor.focus();
-      const text = editor.value;
-      const cursorPosition = editor.selectionStart+1;
+      const textarea = textAreaWithId('mainEditorTextarea');
+      const text = textarea.value;
+      const cursorPosition = textarea.selectionStart+1;
       if (cursorPosition >= text.length) return;
 
       // Find the end of the next word
@@ -189,10 +185,8 @@ export namespace UiFunctions {
       }
 
       // Set the cursor position to the end of the next word
-      editor.selectionStart = endOfNextWord;
-      editor.selectionEnd = endOfNextWord;
-
-      editor.focus();
+      textarea.selectionStart = endOfNextWord;
+      textarea.selectionEnd = endOfNextWord;
     });
 
     export namespace NonWordChars {

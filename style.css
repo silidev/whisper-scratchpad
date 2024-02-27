@@ -2,7 +2,7 @@
  --backgroundColor: #333333;
  --buttonColor: #9eb508; /* olive */
  --buttonFontSize: 14px;
- --buttonHeight: 55px;
+ --buttonHeight: 50px;
  --editorFontSize: 20px; /* 18px is too small to edit on my phone */
  --mainColor: #ffffff;
  --menuItemHeight: 44px;
@@ -163,6 +163,9 @@ This used to be called greenFilter.*/
  }
  .textareaContainer {
   width: 100%
+ }
+ #mainEditorTextarea {
+  height: 3cm;
  }
 }
 
