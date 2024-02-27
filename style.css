@@ -223,7 +223,6 @@ button:hover, button:active {
  border-style: solid;
  border-width: 0;
  box-shadow: 0 -2px 0 rgba(0,0,0,0.2) inset !important;
- display: inline-block;
  margin: 2px 2px;
  padding-bottom: 0.75em;
  padding-top: 0.8125em;
