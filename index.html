@@ -17,8 +17,8 @@
   <script defer src='lib/wc-menu-wrapper.min.js'></script>
 </head>
 <body>
-<textarea id="mainEditorTextarea" wrap="soft" placeholder=""
-          style="margin-bottom: -5px">
+<textarea id="mainEditorTextarea" class="all" wrap="soft" placeholder=""
+          style="margin-bottom: -3px">
 </textarea>
 <textarea id="logTextArea" wrap="soft" placeholder="" style="display: none; height: 6cm">
 </textarea>
@@ -31,16 +31,16 @@
   <div id="mainEditorMenu" style="z-index: 99999">
     <wc-menu-wrapper>
       <!-- https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper -->
-      <div id="editorMenuHeading" class='heading centerContent buttonLikeBox'
+      <div id="editorMenuHeading" class='heading centerContent buttonLikeBox all'
            style="min-width:var(--buttonHeight)">☰</div>
 
       <div class='item buttonMenuItem'>
-        <button id="cutAllButton">Cut<br>all</button>
-        <button id="du2ichMenuItem">du2ich</button>
-        <button id="cancelRecording">x<br>Cancel</button>
-        <button id="toggleLogButton">Toggle<br>Log</button>
+        <button class="buttonLikeBox all" id="cutAllButton">Cut<br>all</button>
+        <button class="buttonLikeBox all" id="du2ichMenuItem">du2ich</button>
+        <button class="buttonLikeBox all" id="cancelRecording">x<br>Cancel</button>
+        <button class="buttonLikeBox all" id="toggleLogButton">Toggle<br>Log</button>
 
-        <span class="buttonLikeBox">
+        <span class="buttonLikeBox all">
           <input type="checkbox" id="logReplaceRulesCheckbox" class="forceMainColor">
           <label style="margin-left: 8px;" for="logReplaceRulesCheckbox">
             Log
@@ -53,16 +53,16 @@
 
 
       <!-- ############# updateButton ############# -->
-        <button id="updateButton" onclick="window.location.reload();
+        <button class="buttonLikeBox all" id="updateButton" onclick="window.location.reload();
             // Do NOT reference anything from other scripts here, because this must work even if the other scripts are broken.
             ">Update<br>w/o save
         </button>
 
         <!--############## Anki-Export Button ##############-->
-        <button id="ankiClozeCsv">Anki-<br>Export</button>
+        <button class="buttonLikeBox all" id="ankiClozeCsv">Anki-<br>Export</button>
 
         <!--############# Auto-Replace Checkbox ############# -->
-        <span class="buttonLikeBox">
+        <span class="buttonLikeBox all">
           <input type="checkbox" id="autoReplaceCheckbox" class="forceMainColor"
                  checked="checked">
           <label style="margin-left: 8px;" for="autoReplaceCheckbox">
@@ -72,14 +72,14 @@
         </span>
 
         <!--############## undoActionButton ##############-->
-        <button id="ctrlYButton">Ctrl-Y<br>Redo</button>
+        <button class="buttonLikeBox all" id="ctrlYButton">Ctrl-Y<br>Redo</button>
 
       </div>
      <!-- ############# New Menu Line ############# -->
       <div class='item' style="padding-left: 0">
 
         <!--############## ignorePromptCheckbox ##############-->
-        <span class="buttonLikeBox">
+        <span class="buttonLikeBox all">
           <input type="checkbox" id="ignorePromptCheckbox"
                 class="forceMainColor">
           <label style="margin-left: 8px;" for="ignorePromptCheckbox">
@@ -88,7 +88,7 @@
         </span>
 
         <!-- ############ Translate Checkbox ############# -->
-        <span class="buttonLikeBox">
+        <span class="buttonLikeBox all">
           <input type="checkbox" id="translateCheckbox" class="forceMainColor">
           <label style="margin-left: 8px;" for="translateCheckbox">
             Trans-<br>late
@@ -96,16 +96,16 @@
         </span>
 
         <!--############## undoActionButton ##############-->
-        <button id="undoActionButton">Undo<br>Action</button>
+        <button class="buttonLikeBox all" id="undoActionButton">Undo<br>Action</button>
 
         <!--############## Upload File ##############-->
-        <label for="fileToUploadSelector" id="uploadButton" class="buttonLikeBox">
+        <label for="fileToUploadSelector" id="uploadButton" class="buttonLikeBox all">
           Upload<br>File
         </label>
         <input type="file" id="fileToUploadSelector" style="display: none" />
 
         <!-- ########### infoButton ############# -->
-        <button>  <info-button>
+        <button class="buttonLikeBox all">  <info-button>
           <div style="position: fixed;
         left: 0; background-color: var(--backgroundColor); border: 1px solid
         green; padding: 5px;
@@ -182,41 +182,41 @@
   <!-- ########### mainEditorButtons ############# -->
 
   <!-- ########### row1EditorButtons ############# -->
-  <button id="cutNoteButton">✂ Cut<br>Note</button> <!--Copy icon was ⎘-->
-  <button id="pasteButton"><span class="forceMainColor">📋</span><br>Paste</button>
+  <button class="buttonLikeBox all" id="cutNoteButton">✂ Cut<br>Note</button> <!--Copy icon was ⎘-->
+  <button class="buttonLikeBox all" id="pasteButton"><span class="forceMainColor">📋</span><br>Paste</button>
   <span class="spinnerGroup">
-      <button id="stopButton" style="width: 90px; line-height: 20px">
+      <button class="buttonLikeBox all" id="stopButton" style="width: 90px; line-height: 20px">
 <!--        This would be better, but no time now: -->
         <!--        <span id="stopButtonRecording" class="stopButtonText blinkingFast">🔴Stop   </span>-->
         <!--        <span id="stopButtonStopped"   class="stopButtonText"         >◼ Stopped</span>-->
       </button>
     </span>
-  <button id="pauseRecordButton" style="width: 120px; line-height: 20px"></button>
+  <button class="buttonLikeBox all" id="pauseRecordButton" style="width: 120px; line-height: 20px"></button>
 </div>
 
 <!-- This division is important to keep the stopButton on the right side, good reachable for the thumb.   -->
 
 <!-- ########### row2EditorButtons ############# -->
 <div id="row2EditorButtons" class="flexRightAndWrapContent">
-  <button id="cutAnkiButton">{{c1::<br>Cut</button>
-  <button id="replaceButton1">♻<br>Repl</button>
-  <button id="addWordReplaceRuleButton"><span style="font-size: 16px">\b
+  <button class="buttonLikeBox all" id="cutAnkiButton">{{c1::<br>Cut</button>
+  <button class="buttonLikeBox all" id="replaceButton1">♻<br>Repl</button>
+  <button class="buttonLikeBox all" id="addWordReplaceRuleButton"><span style="font-size: 16px">\b
     -></span></button>
-  <button id="addReplaceRuleButton"><span style="font-size: 16px">""->""</span></button>
-  <button id="ctrlZButtonOfReplaceRules">⎌<br>Ctrl-z</button>
+  <button class="buttonLikeBox all" id="addReplaceRuleButton"><span style="font-size: 16px">""->""</span></button>
+  <button class="buttonLikeBox all" id="ctrlZButtonOfReplaceRules">⎌<br>Ctrl-z</button>
 
   <!--Not used any more, remove eventually -->
-  <button id="insertNewNoteDelimiterButton" style="display: none">)))---(((</button>
+  <button class="buttonLikeBox all" id="insertNewNoteDelimiterButton" style="display: none">)))---(((</button>
 
-  <button id="pauseRecordButtonWithoutDelimiter">Cont.<br>Rec</button>
+  <button class="buttonLikeBox all" id="pauseRecordButtonWithoutDelimiter">Cont.<br>Rec</button>
 
-  <button id="transcribeButton" style="display: none">✎ <br>T-scribe</button>
+  <button class="buttonLikeBox all" id="transcribeButton" style="display: none">✎ <br>T-scribe</button>
 </div>
 
 <!-- ########### row3EditorButtons ############# -->
 <div id="row3EditorButtons" class="flexRightAndWrapContent">
-  <button id="fixClipboardButton">Fix<br>clip</button>
-  <button id="removePunctuationButton">Kill<br>,.</button>
+  <button class="buttonLikeBox all" id="fixClipboardButton">Fix<br>clip</button>
+  <button class="buttonLikeBox all" id="removePunctuationButton">Kill<br>,.</button>
 </div>
 
 <!--############## replaceRules ##############-->
@@ -263,7 +263,7 @@
   </div>
   <span id="replaceRulesButtons">
     <span class="flexRightAndWrapContent">
-      <button id="testFailIndicatorOfReplaceRules" style="display: none">❌FAIL❌</button>
+      <button class="buttonLikeBox all" id="testFailIndicatorOfReplaceRules" style="display: none">❌FAIL❌</button>
       <select id="replaceRulesSelector" style="width: 15mm; display: none">
         <option value="normal">normal</option>
         <option value="du2ich">du2ich</option>
@@ -271,9 +271,9 @@
         <option value="tmp">tmp</option>
       </select>
       <!-- ############## Replace-rules buttons ###############-->
-      <button id="backslashButton" style="width: 60px">\b</button>
-      <button id="replaceButton2">♻<br>Replace</button>
-      <button id="copyReplaceRulesButton">⎘<br>Copy</button>
+      <button class="buttonLikeBox all" id="backslashButton" style="width: 60px">\b</button>
+      <button class="buttonLikeBox all" id="replaceButton2">♻<br>Replace</button>
+      <button class="buttonLikeBox all" id="copyReplaceRulesButton">⎘<br>Copy</button>
     </span>
   </span>
 </div>
@@ -286,8 +286,8 @@
     Since Whisper wasn't trained using instruction-following techniques, Whisper operates more like a base GPT model. The content of the editor is appended to the prompt. It's important to keep in mind that Whisper only considers the first 244 tokens of the prompt. <a target="_blank" href="https://platform.openai.com/docs/guides/speech-to-text/prompting">More info</a>
   </info-button>
   <span id="buttonsTPrompt" class="flexRightAndWrapContent">
-        <button id="copyPromptButton">⎘<br>Copy</button>
-        <button id="ctrlZButtonOfPrompt">⎌<br>Ctrl-z</button>
+        <button class="buttonLikeBox all" id="copyPromptButton">⎘<br>Copy</button>
+        <button class="buttonLikeBox all" id="ctrlZButtonOfPrompt">⎌<br>Ctrl-z</button>
       </span>
   <div class="textareaContainer">
     <textarea id="transcriptionPromptEditor" wrap="soft"
@@ -306,7 +306,7 @@
 
   <br><h2>API Key</h2>
   <br><input type="text" id="apiKeyInputField" placeholder="API key for selected service">
-  <button id="saveAPIKeyButton">
+  <button class="buttonLikeBox all" id="saveAPIKeyButton">
     <span class="forceMainColor">💾</span>
     Save API Key
   </button>
