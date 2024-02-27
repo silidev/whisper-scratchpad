@@ -1,37 +1,37 @@
 :root {
+ --backgroundColor: #333333;
+ --buttonColor: #9eb508; /* olive */
+ --buttonFontSize: 14px;
+ --buttonHeight: 55px;
+ --editorFontSize: 20px; /* 18px is too small to edit on my phone */
  --mainColor: #ffffff;
- /*--mainColor: #ff886d; !*salmon*!*/
+ --menuItemHeight: 44px;
+ --pausedBackgroundColor: #660000;
+ --textareaColor: #adc70811;
+ /*--backgroundColor: #472c00; brown*/
+ /*--mainColor: #00b2ff; !*blue*!*/
+ /*--mainColor: #0f0;    !*green*!*/
  /*--mainColor: #f72e00;   !*amber*!*/
  /*--mainColor: #ff0000; !*red*!*/
- /*--mainColor: #0f0;    !*green*!*/
- /*--mainColor: #00b2ff; !*blue*!*/
- /*--backgroundColor: #472c00; brown*/
- --backgroundColor: #333333;
- --pausedBackgroundColor: #660000;
- --buttonColor: #9eb508; /* olive */
- --textareaColor: #adc70811;
- --buttonHeight: 55px;
- --menuItemHeight: 44px;
- --editorFontSize: 20px; /* 18px is too small to edit on my phone */
- --buttonFontSize: 14px;
+ /*--mainColor: #ff886d; !*salmon*!*/
 }
 
 * {
+ box-sizing: border-box;
  margin: 0;
  padding: 0;
- box-sizing: border-box;
 }
 
 body,html {
- margin: auto;
- padding: 0;
- width: 100%;
- height: 100%;
- font-family: 'Arial', sans-serif;
  background-color: var(--backgroundColor);
  color: var(--mainColor);
+ font-family: 'Arial', sans-serif;
+ height: 100%;
+ margin: auto;
  max-width: 20cm;
  overscroll-behavior: none;
+ padding: 0;
+ width: 100%;
 }
 
 div {
@@ -41,8 +41,8 @@ div {
 
 h1, h2, h3, h4, h5, h6 {
  display: inline-block; /* Allows headings to have dimensions but remain inline */
- margin-top: .1cm;
  margin-bottom: 0;
+ margin-top: .1cm;
 }
 
 a {
@@ -68,33 +68,33 @@ label {
 }
 
 button, input, textarea {
- border-collapse: collapse;
- padding: 2px;
- border: 1px solid var(--mainColor);
- margin: 0;
- border-radius: 0;
- cursor: pointer;
- color: var(--mainColor);
  background-color: var(--backgroundColor);
+ border-collapse: collapse;
+ border-radius: 0;
+ border: 1px solid var(--mainColor);
+ color: var(--mainColor);
+ cursor: pointer;
+ margin: 0;
+ padding: 2px;
 }
 
 button {
- padding: 0 10px;
- margin: 0;
- height: var(--buttonHeight);
- min-width:var(--buttonHeight);
  background-color: var(--buttonColor);
+ height: var(--buttonHeight);
+ margin: 0;
+ min-width:var(--buttonHeight);
+ padding: 0 10px;
 }
 
 input, textarea {
+ background-color: var(--textareaColor);
  font-family: 'Arial', sans-serif;
  font-size: var(--editorFontSize);
- background-color: var(--textareaColor);
 }
 
 select, option, input:focus, textarea:focus {
- color: var(--mainColor);
  border: 1px solid var(--mainColor);
+ color: var(--mainColor);
  outline: none;
 }
 
@@ -112,19 +112,19 @@ input::placeholder, textarea::placeholder {
 /* transform: scale(1.05);*/
 /*}*/
 
-.spinner {
- border: 2px solid var(--mainColor);
- width: 15px;
- height: 15px;
- border-radius: 50%;
- border-left-color: #09f;
- animation: spin 1s ease infinite;
-}
+/*.spinner {*/
+/* animation: spin 1s ease infinite;*/
+/* border-left-color: #09f;*/
+/* border-radius: 50%;*/
+/* border: 2px solid var(--mainColor);*/
+/* height: 15px;*/
+/* width: 15px;*/
+/*}*/
 
-@keyframes spin {
- 0% { transform: rotate(0deg); }
- 100% { transform: rotate(360deg); }
-}
+/*@keyframes spin {*/
+/* 0% { transform: rotate(0deg); }*/
+/* 100% { transform: rotate(360deg); }*/
+/*}*/
 
 /* Forces the main color on things, e.g. emojis.
 This used to be called greenFilter.*/
@@ -136,11 +136,11 @@ This used to be called greenFilter.*/
 }
 
 .textarea {
- width: 100%;
- resize: vertical;
  box-sizing: border-box;
- margin: 0;
  height: 10cm;
+ margin: 0;
+ resize: vertical;
+ width: 100%;
 }
 
 @keyframes blink {
@@ -169,12 +169,12 @@ This used to be called greenFilter.*/
 }
 
 .item, .heading {
- background-color: var(--backgroundColor);
- min-height: var(--menuItemHeight);
  align-items: center;
- justify-content: left;
+ background-color: var(--backgroundColor);
  border: 1px solid var(--textareaColor);
  font-size: var(--buttonFontSize);
+ justify-content: left;
+ min-height: var(--menuItemHeight);
  user-select: none;
 }
 
@@ -184,13 +184,13 @@ This used to be called greenFilter.*/
 
 .buttonLikeBox {
  align-items: center;
+ background-color: var(--buttonColor);
  border: 1px solid var(--mainColor);
  height: var(--buttonHeight);
- padding: 0 10px;
+ justify-content: center;
  margin: 0;
  min-width:var(--buttonHeight);
- background-color: var(--buttonColor);
- justify-content: center;
+ padding: 0 10px;
  text-align: center;
 }
 
@@ -212,9 +212,9 @@ select, option {
 }
 
 .centerContent {
+ align-items: center;
  display: flex;
  justify-content: center;
- align-items: center;
 }
 
 button:hover, button:active {
