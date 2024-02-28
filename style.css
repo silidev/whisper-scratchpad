@@ -51,8 +51,8 @@ a {
 
 .flexClass {
  display: flex;
- flex-direction: row;
- /*justify-content: flex-end;*/
+ /*flex-direction: row;*/
+ justify-content: flex-end;
 }
 
 .fullWidthRow > * {
@@ -169,6 +169,13 @@ This used to be called greenFilter.*/
  }
  #mainEditorTextarea {
   height: 8cm;
+ }
+}
+
+@media only screen and (min-width: 600px) {
+ .buttonLikeBox {
+  max-width: 100px;
+  width: 100px;
  }
 }
 
