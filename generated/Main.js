@@ -120,7 +120,7 @@ export var UiFunctions;
             NonWordChars.runTests();
         };
         // ############## wordLeftButton ##############
-        buttonWithId('wordLeftButton').addEventListener('mousedown', event => {
+        buttonWithId('wordLeftButton').addEventListener('pointerdown', event => {
             event.preventDefault(); // Prevent the textarea from losing focus
             const textarea = textAreaWithId('mainEditorTextarea');
             const text = textarea.value;
@@ -143,7 +143,7 @@ export var UiFunctions;
             textarea.selectionEnd = startOfPreviousWord;
         });
         // ############## wordRightButton ##############
-        buttonWithId('wordRightButton').addEventListener('mousedown', function (event) {
+        buttonWithId('wordRightButton').addEventListener('pointerdown', function (event) {
             event.preventDefault(); // Prevent the textarea from losing focus
             const textarea = textAreaWithId('mainEditorTextarea');
             const text = textarea.value;
