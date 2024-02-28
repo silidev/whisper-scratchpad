@@ -767,17 +767,17 @@ export namespace UiFunctions {
       })
 
 // ############## downloadCsvs ##############
-      /** IF a note already contains the postfix, prefix and postfix are
+      /** IF a note contains the stopWord, prefix and postfix are
        * NOT applied. */
-      const downloadCsv = (prefix = "", postfix = "") => {
+      const downloadCsv = (prefix = "", postfix = "", stopWord = "") => {
         // Uses https://github.com/alexcaza/export-to-csv
         const csvConfig = mkConfig({
-          columnHeaders: ["t1"], showColumnHeaders: false, useTextFile: true
+          columnHeaders: ["column1"], showColumnHeaders: false, useTextFile: true
         });
         const textArray = mainEditorTextareaWrapper.value().split(NEW_NOTE_DELIMITER)
         const csvData = textArray.map((text: string) => {
-          if (text.includes(postfix))
-            return {t1: text}
+          if (stopWord!=="" && text.includes(stopWord))
+            return {column1: text}
           return {column1: prefix + text + postfix}
         })
         const csv = generateCsv(csvConfig)(csvData);
@@ -785,7 +785,7 @@ export namespace UiFunctions {
       };
 
       const ankiClozeCsv = () => {
-        return downloadCsv(OPEN_CLOZE_STR, CLOSE_CLOZE_STR);
+        return downloadCsv(OPEN_CLOZE_STR, CLOSE_CLOZE_STR,"{{");
       };
       Menu.wireItem("ankiClozeCsv", ankiClozeCsv);
       Menu.wireItem("downloadCsv", downloadCsv);
