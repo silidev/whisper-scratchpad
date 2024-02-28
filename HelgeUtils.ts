@@ -284,15 +284,21 @@ export namespace HelgeUtils {
 
     export type ApiName = "OpenAI" | "Gladia"
 
+    /** Transcribes the given audio blob using the given API key and prompt.
+     *
+     * @param audioBlob
+     * @param apiKey
+     * @param prompt Ignored if translateToEnglish==true
+     * @param language
+     * @param translateToEnglish
+     */
     const withOpenAi = async (audioBlob: Blob, apiKey: string, prompt: string,
                               language: string = "", translateToEnglish = false) => {
       const formData = new FormData()
       formData.append('file', audioBlob)
       formData.append('model', 'whisper-1'); // Using the largest model
-      formData.append('prompt', prompt)
-      /* Language. Anything in a different language will be translated to the target language. */
-      formData.append('language', language)
-
+      if (!translateToEnglish)
+        formData.append('prompt', prompt)
       /*  */
       formData.append('language', language) // e.g. "en". The language of the input audio. Supplying the input language in ISO-639-1 format will improve accuracy and latency.
 
