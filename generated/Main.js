@@ -663,16 +663,19 @@ export var UiFunctions;
                 Cookies.set('languageSelector', languageSelector.value);
             });
             // ############## downloadCsvs ##############
+            /** IF a note already contains the postfix, prefix and postfix are
+             * NOT applied. */
             const downloadCsv = (prefix = "", postfix = "") => {
                 // Uses https://github.com/alexcaza/export-to-csv
                 const csvConfig = mkConfig({
                     columnHeaders: ["t1"], showColumnHeaders: false, useTextFile: true
                 });
                 const textArray = mainEditorTextareaWrapper.value().split(NEW_NOTE_DELIMITER);
-                // Build a new array with elements like this: { text: textArray[i] }
-                const csvData = textArray.map((text) => ({
-                    t1: prefix + text + postfix
-                }));
+                const csvData = textArray.map((text) => {
+                    if (text.includes(postfix))
+                        return { t1: text };
+                    return { column1: prefix + text + postfix };
+                });
                 const csv = generateCsv(csvConfig)(csvData);
                 return download(csvConfig)(csv);
             };
