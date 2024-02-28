@@ -49,10 +49,14 @@ a {
  color: var(--mainColor);
 }
 
-.flexRightAndWrapContent {
+.flexClass {
  display: flex;
- flex-wrap: wrap;
- justify-content: flex-end;
+ flex-direction: row;
+ /*justify-content: flex-end;*/
+}
+
+.fullWidthRow > * {
+ flex: 1;
 }
 
 /*.spinnerGroup {*/

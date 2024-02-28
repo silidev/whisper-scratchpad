@@ -26,14 +26,14 @@
 
 <!--############## Buttons ##############-->
 
-<div id="mainEditorButtons" class="flexRightAndWrapContent">
+<div id="row1EditorButtons" class="flexClass fullWidthRow">
   <!-- ########### mainEditorMenu ############# -->
 
   <div id="mainEditorMenu" style="z-index: 99999">
     <wc-menu-wrapper>
       <!-- https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper -->
       <div id="editorMenuHeading" class='heading centerContent buttonLikeBox all'
-           style="min-width:var(--buttonHeight)">☰</div>
+           style="min-width:var(--buttonHeight); width:96%">☰</div>
 
       <div class='item buttonMenuItem'>
         <button class="buttonLikeBox all" id="cutAllButton">Cut<br>all</button>
@@ -177,10 +177,11 @@
            id="downloadCsv"><a>Download notes as plain CSV </a></div>
       <div class='item' id="downloadLinkMenuItem"><a id="downloadLink">Download audio</a></div>
       <div class='item'>Version:&nbsp;<span id="versionSpan">Rochen</span></div>
-    </wc-menu-wrapper></div>
+    </wc-menu-wrapper>
+  </div>
 
 
-  <!-- ########### mainEditorButtons ############# -->
+  <!-- ########### row1EditorButtons ############# -->
 
   <!-- ########### row1EditorButtons ############# -->
   <button class="buttonLikeBox all" id="cutNoteButton">✂ Cut<br>Note</button> <!--Copy icon was ⎘-->
@@ -188,21 +189,19 @@
     <span class="forceMainColor">📋</span>
     <br>Paste
   </button>
-  <span class="spinnerGroup">
-      <button class="buttonLikeBox all" id="stopButton" style="line-height: 20px">
-        <!--del soon: width: 90px; -->
+  <button class="buttonLikeBox all" id="stopButton" style="line-height: 20px">
+    <!--del soon: width: 90px; -->
 <!--        This would be better, but no time now: -->
-        <!--        <span id="stopButtonRecording" class="stopButtonText blinkingFast">🔴Stop   </span>-->
-        <!--        <span id="stopButtonStopped"   class="stopButtonText"         >◼ Stopped</span>-->
-      </button>
-    </span>
+    <!--        <span id="stopButtonRecording" class="stopButtonText blinkingFast">🔴Stop   </span>-->
+    <!--        <span id="stopButtonStopped"   class="stopButtonText"         >◼ Stopped</span>-->
+  </button>
   <button class="buttonLikeBox all" id="pauseRecordButton" style="width: 120px; line-height: 20px"></button>
 </div>
 
 <!-- This division is important to keep the stopButton on the right side, good reachable for the thumb.   -->
 
 <!-- ########### row2EditorButtons ############# -->
-<div id="row2EditorButtons" class="flexRightAndWrapContent">
+<div id="row2EditorButtons" class="flexClass fullWidthRow">
   <button class="buttonLikeBox all" id="cutAnkiButton">{{c1::<br>Cut</button>
   <button class="buttonLikeBox all" id="replaceButton1">♻<br>Repl</button>
   <button class="buttonLikeBox all" id="addWordReplaceRuleButton"><span style="font-size: 16px">\b
@@ -219,7 +218,7 @@
 </div>
 
 <!-- ########### row3EditorButtons ############# -->
-<div id="row3EditorButtons" class="flexRightAndWrapContent">
+<div id="row3EditorButtons" class="flexClass">
   <button id="wordLeftButton" class="buttonLikeBox all"><<</button>
   <button id="wordRightButton" class="buttonLikeBox all"
           onclick="return false;">>></button>
@@ -270,7 +269,7 @@
       </textarea>
   </div>
   <span id="replaceRulesButtons">
-    <span class="flexRightAndWrapContent">
+    <span class="flexClass">
       <button class="buttonLikeBox all" id="testFailIndicatorOfReplaceRules" style="display: none">❌FAIL❌</button>
       <select id="replaceRulesSelector" style="width: 15mm; display: none">
         <option value="normal">normal</option>
@@ -294,7 +293,7 @@
     Ignored for translations.
     Since Whisper wasn't trained using instruction-following techniques, Whisper operates more like a base GPT model. The content of the editor is appended to the prompt. It's important to keep in mind that Whisper only considers the first 244 tokens of the prompt. <a target="_blank" href="https://platform.openai.com/docs/guides/speech-to-text/prompting">More info</a>
   </info-button>
-  <span id="buttonsTPrompt" class="flexRightAndWrapContent">
+  <span id="buttonsTPrompt" class="flexClass">
         <button class="buttonLikeBox all" id="copyPromptButton">⎘<br>Copy</button>
         <button class="buttonLikeBox all" id="ctrlZButtonOfPrompt">⎌<br>Ctrl-z</button>
       </span>
