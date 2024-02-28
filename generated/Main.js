@@ -94,7 +94,7 @@ var Misc;
 export var Menu;
 (function (Menu) {
     var WcMenu = HtmlUtils.Menus.WcMenu;
-    Menu.wireMenuItem = WcMenu.addItem("editorMenuHeading");
+    Menu.wireItem = WcMenu.addItem("editorMenuHeading");
     Menu.close = () => WcMenu.close("editorMenuHeading");
 })(Menu || (Menu = {}));
 const setPageBackgroundColor = (backgroundColor) => {
@@ -529,7 +529,7 @@ export var UiFunctions;
             buttonWithId("pauseRecordButton").addEventListener('click', () => pauseRecordButton(true));
             buttonWithId("pauseRecordButtonWithoutDelimiter").addEventListener('click', () => pauseRecordButton(false));
             // ############## transcribeAudioBlob ##############
-            Menu.wireMenuItem("transcribeAgainButton", Media.transcribeAudioBlob);
+            Menu.wireItem("transcribeAgainButton", Media.transcribeAudioBlob);
             // ############## Misc ##############
             wireUploadButton();
             StateIndicator.update();
@@ -546,24 +546,24 @@ export var UiFunctions;
         })(clipboard || (clipboard = {}));
         Buttons.addEventListeners = () => {
             addKeyboardShortcuts();
-            Menu.wireMenuItem("undoActionButton", mainEditor.Undo.undo);
+            Menu.wireItem("undoActionButton", mainEditor.Undo.undo);
             // ############## Toggle Log Button ##############
-            Menu.wireMenuItem("toggleLogButton", Log.toggleLog(textAreaWithId));
+            Menu.wireItem("toggleLogButton", Log.toggleLog(textAreaWithId));
             // ############## Crop Highlights Menu Item ##############
             const cropHighlights = () => {
                 mainEditor.Undo.saveState();
                 mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ');
                 mainEditor.save();
             };
-            Menu.wireMenuItem("cropHighlightsMenuItem", cropHighlights);
+            Menu.wireItem("cropHighlightsMenuItem", cropHighlights);
             // ############## Copy Backup to clipboard Menu Item ##############
             const copyBackupToClipboard = () => {
                 clipboard.writeText("## Replace Rules\n" + replaceRulesTextArea.value + "\n"
                     + "## Prompt\n" + transcriptionPromptEditor.value).then().catch(Log.error);
             };
-            Menu.wireMenuItem("copyBackupMenuItem", copyBackupToClipboard);
+            Menu.wireItem("copyBackupMenuItem", copyBackupToClipboard);
             // ############## Focus the main editor textarea Menu Item ##############
-            Menu.wireMenuItem("focusMainEditorMenuItem", mainEditorTextarea.focus);
+            Menu.wireItem("focusMainEditorMenuItem", mainEditorTextarea.focus);
             // ############## du2Ich Menu Item ##############
             const du2ichMenuItem = () => {
                 mainEditor.Undo.saveState();
@@ -581,7 +581,7 @@ export var UiFunctions;
                 }
                 mainEditor.save();
             };
-            Menu.wireMenuItem("du2ichMenuItem", du2ichMenuItem);
+            Menu.wireItem("du2ichMenuItem", du2ichMenuItem);
             // ############## saveAPIKeyButton ##############
             const saveAPIKeyButton = () => {
                 setApiKeyCookie(apiKeyInput.value);
@@ -620,9 +620,9 @@ export var UiFunctions;
             HtmlUtils.addClickListener("addWordReplaceRuleButton", Buttons.addWordReplaceRule);
             HtmlUtils.addClickListener("insertNewNoteDelimiterButton", mainEditor.appendDelimiterAndCursor);
             // cancelRecording
-            Menu.wireMenuItem("cancelRecording", Buttons.Media.cancelRecording);
+            Menu.wireItem("cancelRecording", Buttons.Media.cancelRecording);
             // cutAllButton
-            Menu.wireMenuItem(("cutAllButton"), () => clipboard.writeText(mainEditorTextarea.value).then(() => {
+            Menu.wireItem(("cutAllButton"), () => clipboard.writeText(mainEditorTextarea.value).then(() => {
                 mainEditorTextarea.value = '';
                 mainEditor.save();
             }).catch(Log.error));
@@ -682,8 +682,8 @@ export var UiFunctions;
             const ankiClozeCsv = () => {
                 return downloadCsv(OPEN_CLOZE_STR, CLOSE_CLOZE_STR);
             };
-            Menu.wireMenuItem("ankiClozeCsv", ankiClozeCsv);
-            Menu.wireMenuItem("downloadCsv", downloadCsv);
+            Menu.wireItem("ankiClozeCsv", ankiClozeCsv);
+            Menu.wireItem("downloadCsv", downloadCsv);
         };
         const insertTextIntoMainEditor = (insertedString) => {
             TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, insertedString);

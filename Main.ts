@@ -112,7 +112,7 @@ namespace Misc {
 export namespace Menu {
   import WcMenu = HtmlUtils.Menus.WcMenu;
 
-  export const wireMenuItem = WcMenu.addItem("editorMenuHeading")
+  export const wireItem = WcMenu.addItem("editorMenuHeading")
   export const close = () => WcMenu.close("editorMenuHeading")
 }
 
@@ -590,7 +590,7 @@ export namespace UiFunctions {
       buttonWithId("pauseRecordButtonWithoutDelimiter").addEventListener('click',
           () => pauseRecordButton(false))
 // ############## transcribeAudioBlob ##############
-      Menu.wireMenuItem("transcribeAgainButton", transcribeAudioBlob)
+      Menu.wireItem("transcribeAgainButton", transcribeAudioBlob)
 // ############## Misc ##############
       wireUploadButton();
 
@@ -614,10 +614,10 @@ export namespace UiFunctions {
 
       addKeyboardShortcuts()
 
-      Menu.wireMenuItem("undoActionButton", mainEditor.Undo.undo)
+      Menu.wireItem("undoActionButton", mainEditor.Undo.undo)
 
 // ############## Toggle Log Button ##############
-      Menu.wireMenuItem("toggleLogButton", Log.toggleLog(textAreaWithId))
+      Menu.wireItem("toggleLogButton", Log.toggleLog(textAreaWithId))
 
 // ############## Crop Highlights Menu Item ##############
       const cropHighlights = () => {
@@ -625,7 +625,7 @@ export namespace UiFunctions {
         mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ')
         mainEditor.save();
       }
-      Menu.wireMenuItem("cropHighlightsMenuItem", cropHighlights)
+      Menu.wireItem("cropHighlightsMenuItem", cropHighlights)
 
 // ############## Copy Backup to clipboard Menu Item ##############
       const copyBackupToClipboard = () => {
@@ -635,10 +635,10 @@ export namespace UiFunctions {
         ).then().catch(Log.error)
       }
 
-      Menu.wireMenuItem("copyBackupMenuItem", copyBackupToClipboard)
+      Menu.wireItem("copyBackupMenuItem", copyBackupToClipboard)
 
 // ############## Focus the main editor textarea Menu Item ##############
-      Menu.wireMenuItem("focusMainEditorMenuItem", mainEditorTextarea.focus)
+      Menu.wireItem("focusMainEditorMenuItem", mainEditorTextarea.focus)
 
 // ############## du2Ich Menu Item ##############
       const du2ichMenuItem = () => {
@@ -662,7 +662,7 @@ export namespace UiFunctions {
         }
         mainEditor.save();
       }
-      Menu.wireMenuItem("du2ichMenuItem", du2ichMenuItem)
+      Menu.wireItem("du2ichMenuItem", du2ichMenuItem)
 
 // ############## saveAPIKeyButton ##############
       const saveAPIKeyButton = () => {
@@ -709,10 +709,10 @@ export namespace UiFunctions {
         mainEditor.appendDelimiterAndCursor)
 
 // cancelRecording
-    Menu.wireMenuItem("cancelRecording", Buttons.Media.cancelRecording)
+    Menu.wireItem("cancelRecording", Buttons.Media.cancelRecording)
 
 // cutAllButton
-    Menu.wireMenuItem(("cutAllButton"), () =>
+    Menu.wireItem(("cutAllButton"), () =>
         clipboard.writeText(mainEditorTextarea.value).then(
           () => {
             mainEditorTextarea.value = ''
@@ -787,9 +787,8 @@ export namespace UiFunctions {
       const ankiClozeCsv = () => {
         return downloadCsv(OPEN_CLOZE_STR, CLOSE_CLOZE_STR);
       };
-      Menu.wireMenuItem("ankiClozeCsv", ankiClozeCsv);
-      Menu.wireMenuItem("downloadCsv", downloadCsv);
-
+      Menu.wireItem("ankiClozeCsv", ankiClozeCsv);
+      Menu.wireItem("downloadCsv", downloadCsv);
     }
 
     const insertTextIntoMainEditor = (insertedString: string) => {

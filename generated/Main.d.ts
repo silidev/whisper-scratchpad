@@ -10,7 +10,7 @@ export declare namespace mainEditor {
     const save: () => void;
 }
 export declare namespace Menu {
-    const wireMenuItem: (id: string, menuFunction: () => void) => void;
+    const wireItem: (id: string, menuFunction: () => void) => void;
     const close: () => void;
 }
 export declare namespace UiFunctions {
