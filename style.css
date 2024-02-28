@@ -138,7 +138,6 @@ This used to be called greenFilter.*/
 .textarea {
  box-sizing: border-box;
  height: 10cm;
- margin: -1px;
  resize: vertical;
  width: 100%;
  outline: none;
@@ -165,7 +164,7 @@ This used to be called greenFilter.*/
   width: 100%
  }
  #mainEditorTextarea {
-  height: 6cm;
+  height: 8cm;
  }
 }
 
