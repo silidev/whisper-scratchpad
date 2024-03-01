@@ -374,7 +374,7 @@ export var UiFunctions;
                         TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, aSpaceIfNeeded() + removeLastDotIfNotAtEnd(transcriptionText));
                     }
                     else {
-                        mainEditorTextareaWrapper.trim().appendTextAndPutCursorAfter(transcriptionText.trim());
+                        mainEditorTextareaWrapper.appendTextAndPutCursorAfter(transcriptionText.trim());
                     }
                     if (inputElementWithId("autoReplaceCheckbox").checked) {
                         applyReplaceRulesToMainEditor();
