@@ -402,10 +402,13 @@ export var HelgeUtils;
             let count = 0;
             let log = '';
             function applyRule(rawTarget, regexFlags, replacementString, replacementFlags) {
-                const target = possiblyWordBoundaryMarker + rawTarget + possiblyWordBoundaryMarker;
+                const target = possiblyWordBoundaryMarker + rawTarget
+                    + possiblyWordBoundaryMarker;
                 // console.log("\n" + target + "\n↓↓↓↓↓\n"+ replacement)
                 let regex = regexFlags.length == 0 ?
-                    new RegExp(target, 'gm') // Noted that gm flags are basically necessary for this plugin to be useful, you seldom want to replace only 1 occurrence or operate on a note only contains 1 line.
+                    new RegExp(target, 'gm') // Noted that gm flags are basically
+                    // necessary for this plugin to be useful, you seldom want to
+                    // replace only 1 occurrence or operate on a note only contains 1 line.
                     : new RegExp(target, regexFlags);
                 if (logReplacements && subject.search(regex) !== -1) {
                     log += `${count} ${rule}\n`;
@@ -1090,6 +1093,7 @@ export var HelgeUtils;
                 q.next();
             }, 2000);
         };
+        HelgeUtils.suppressUnusedWarning(test);
     })(Semaphore = HelgeUtils.Semaphore || (HelgeUtils.Semaphore = {}));
 })(HelgeUtils || (HelgeUtils = {}));
 //# sourceMappingURL=HelgeUtils.js.map

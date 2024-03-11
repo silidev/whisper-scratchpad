@@ -427,11 +427,15 @@ Please note that certain strong accents can possibly cause this mode to transcri
       let count = 0
       let log = ''
 
-      function applyRule(rawTarget: string, regexFlags: string, replacementString: string, replacementFlags: string) {
-        const target = possiblyWordBoundaryMarker + rawTarget + possiblyWordBoundaryMarker
+      function applyRule(rawTarget: string, regexFlags: string,
+                         replacementString: string, replacementFlags: string) {
+        const target = possiblyWordBoundaryMarker + rawTarget
+            + possiblyWordBoundaryMarker
         // console.log("\n" + target + "\n↓↓↓↓↓\n"+ replacement)
         let regex = regexFlags.length == 0 ?
-            new RegExp(target, 'gm') // Noted that gm flags are basically necessary for this plugin to be useful, you seldom want to replace only 1 occurrence or operate on a note only contains 1 line.
+            new RegExp(target, 'gm') // Noted that gm flags are basically
+            // necessary for this plugin to be useful, you seldom want to
+            // replace only 1 occurrence or operate on a note only contains 1 line.
             : new RegExp(target, regexFlags)
         if (logReplacements && subject.search(regex) !== -1) {
           log += `${count} ${rule}\n`
@@ -1078,7 +1082,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
   export namespace Semaphore {
     export class Queue {
       private running: any;
-      private autorun: boolean;
+      private readonly autorun: boolean;
       private queue: any[];
 
       constructor(autorun = true, queue = []) {
@@ -1141,6 +1145,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
         q.next();
       }, 2000);
     }
+    suppressUnusedWarning(test)
   }
 
 }

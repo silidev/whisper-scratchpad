@@ -193,7 +193,7 @@ export declare namespace HelgeUtils {
     namespace Semaphore {
         class Queue {
             private running;
-            private autorun;
+            private readonly autorun;
             private queue;
             constructor(autorun?: boolean, queue?: never[]);
             add(cb: (arg0: any) => any): this;
