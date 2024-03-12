@@ -791,6 +791,7 @@ export namespace UiFunctions {
       };
 
       const ankiClozeCsv = () => {
+        alert(`Have you searched for "du"?`);
         return downloadCsv(OPEN_CLOZE_STR, CLOSE_CLOZE_STR,"{{");
       };
       Menu.wireItem("ankiClozeCsv", ankiClozeCsv);

@@ -6,6 +6,13 @@
  * */
 import {HelgeUtils} from "./HelgeUtils.js"
 
+declare global {
+  interface Window {
+    getCaretCoordinates: (element: HTMLElement, position: number) => {
+      top: number, left: number }
+  }
+}
+
 const MAX_COOKIE_SIZE = 4096
 
 export namespace HtmlUtils {
@@ -61,9 +68,6 @@ export namespace HtmlUtils {
     import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId
     import trimExceptASingleNewlineAtTheEnd = HelgeUtils.Strings.trimExceptASingleNewlineAtTheEnd
     // npm import textarea-caret:
-    import {getCaretCoordinates}
-      // @ts-ignore
-      from "../node_modules/textarea-caret/index.js";
 
     export class TextAreaWrapper {
       constructor(private textArea: HTMLTextAreaElement) {
@@ -197,8 +201,7 @@ export namespace HtmlUtils {
 
     /**
      * Find the next occurrence of a string in a text area and select it. */
-    export const findAndSelect = (textArea: HTMLTextAreaElement,
-                                  target: string) => {
+    export const findAndSelect = (textArea: HTMLTextAreaElement, target: string) => {
       const cursor = textArea.value.toLowerCase()
           .indexOf(target.toLowerCase(),textArea.selectionEnd)
       if (cursor >= 0) {
@@ -208,10 +211,17 @@ export namespace HtmlUtils {
         setCursor(textArea, 0)
       }
       textArea.focus()
-      // scroll to selectionStart
-      // @ts-ignore
-      textArea.scrollTop = getCaretCoordinates(textArea,
-          textArea.selectionEnd).top
+
+      // Scroll to selectionStart:
+      {
+        /** Needs
+         * <script type="module" src="node_modules/textarea-caret/index.js">
+         *   </script>*/
+        const getCaretCoordinates = window.getCaretCoordinates
+        if (typeof getCaretCoordinates !== 'undefined') {
+          textArea.scrollTop = getCaretCoordinates(textArea, textArea.selectionEnd).top
+        }
+      }
     }
   }
 

@@ -1,3 +1,11 @@
+declare global {
+    interface Window {
+        getCaretCoordinates: (element: HTMLElement, position: number) => {
+            top: number;
+            left: number;
+        };
+    }
+}
 export declare namespace HtmlUtils {
     /**
      * .blinkingFast {

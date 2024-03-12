@@ -47,6 +47,7 @@ export var HtmlUtils;
     (function (TextAreas) {
         var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
         var trimExceptASingleNewlineAtTheEnd = HelgeUtils.Strings.trimExceptASingleNewlineAtTheEnd;
+        // npm import textarea-caret:
         class TextAreaWrapper {
             textArea;
             constructor(textArea) {
@@ -170,9 +171,16 @@ export var HtmlUtils;
                 TextAreas.setCursor(textArea, 0);
             }
             textArea.focus();
-            // scroll to selectionStart
-            // @ts-ignore
-            textArea.scrollTop = getCaretCoordinates(textArea, textArea.selectionEnd).top;
+            // Scroll to selectionStart:
+            {
+                /** Needs
+                 * <script type="module" src="node_modules/textarea-caret/index.js">
+                 *   </script>*/
+                const getCaretCoordinates = window.getCaretCoordinates;
+                if (typeof getCaretCoordinates !== 'undefined') {
+                    textArea.scrollTop = getCaretCoordinates(textArea, textArea.selectionEnd).top;
+                }
+            }
         };
     })(TextAreas = HtmlUtils.TextAreas || (HtmlUtils.TextAreas = {}));
     let Media;
