@@ -68,6 +68,23 @@ export declare namespace HelgeUtils {
         const assertEquals: (actual: any, expected: any, message?: string | null) => void;
     }
     namespace Strings {
+        /** Returns the index of the first occurrence of the given regex in the string.
+         *
+         * @param input
+         * @param regex
+         * @param startpos
+         */
+        const regexIndexOf: (input: string, regex: RegExp, startpos: number) => number;
+        /**
+         * @deprecated Use regexIndexOf instead.
+         * @see regexIndexOf
+         */
+        const indexOfWithRegex: (input: string, regex: RegExp, startpos: number) => number;
+        const regexLastIndexOf: (input: string, regex: RegExp, startpos: number) => number;
+        /**
+         * @deprecated Use regexLastIndexOf instead.
+         */
+        const lastIndexOfWithRegex: (input: string, regex: RegExp, startpos: number) => number;
         /**
          * Trim whitespace but leave a single newline at the end if there is
          * any whitespace that includes a newline.

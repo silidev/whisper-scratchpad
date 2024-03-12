@@ -47,6 +47,7 @@ export var HtmlUtils;
     (function (TextAreas) {
         var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
         var trimExceptASingleNewlineAtTheEnd = HelgeUtils.Strings.trimExceptASingleNewlineAtTheEnd;
+        var Strings = HelgeUtils.Strings;
         // npm import textarea-caret:
         class TextAreaWrapper {
             textArea;
@@ -167,8 +168,8 @@ export var HtmlUtils;
          * "^3.1.0" is included in the HTML file.
          * */
         TextAreas.findAndSelect = (textArea, target) => {
-            const cursor = textArea.value.toLowerCase()
-                .indexOf(target.toLowerCase(), textArea.selectionEnd);
+            const regex = new RegExp(`\\b${target.toLowerCase()}\\b`);
+            const cursor = Strings.regexIndexOf(textArea.value.toLowerCase(), regex, textArea.selectionEnd);
             if (cursor >= 0) {
                 textArea.setSelectionRange(cursor, cursor + target.length);
             }

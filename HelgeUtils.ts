@@ -147,6 +147,47 @@ export namespace HelgeUtils {
 
   export namespace Strings {
     import assertEquals = HelgeUtils.Tests.assertEquals
+
+    /** Returns the index of the first occurrence of the given regex in the string.
+     *
+     * @param input
+     * @param regex
+     * @param startpos
+     */
+    export const regexIndexOf = (input: string, regex: RegExp, startpos: number) => {
+      const indexOf = input.substring(startpos || 0).search(regex);
+      return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
+    };
+
+    /**
+     * @deprecated Use regexIndexOf instead.
+     * @see regexIndexOf
+     */
+    export const indexOfWithRegex = regexIndexOf
+
+    export const regexLastIndexOf = (input: string, regex: RegExp, startpos: number) => {
+      regex = (regex.global) ? regex : new RegExp(regex.source, "g" + (regex.ignoreCase ? "i" : "") + (regex.multiline ? "m" : ""));
+      if(typeof (startpos) == "undefined") {
+        startpos = input.length;
+      } else if(startpos < 0) {
+        startpos = 0;
+      }
+      const stringToWorkWith = input.substring(0, startpos + 1);
+      let lastIndexOf = -1;
+      let nextStop = 0;
+      let result;
+      while((result = regex.exec(stringToWorkWith)) != null) {
+        lastIndexOf = result.index;
+        regex.lastIndex = ++nextStop;
+      }
+      return lastIndexOf;
+    };
+
+    /**
+     * @deprecated Use regexLastIndexOf instead.
+     */
+    export const lastIndexOfWithRegex = regexLastIndexOf
+
     /**
      * Trim whitespace but leave a single newline at the end if there is
      * any whitespace that includes a newline.

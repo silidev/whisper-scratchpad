@@ -67,6 +67,7 @@ export namespace HtmlUtils {
 
     import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId
     import trimExceptASingleNewlineAtTheEnd = HelgeUtils.Strings.trimExceptASingleNewlineAtTheEnd
+    import Strings = HelgeUtils.Strings;
     // npm import textarea-caret:
 
     export class TextAreaWrapper {
@@ -207,9 +208,12 @@ export namespace HtmlUtils {
      *   </script>
      * "^3.1.0" is included in the HTML file.
      * */
-    export const findAndSelect = (textArea: HTMLTextAreaElement, target: string) => {
-      const cursor = textArea.value.toLowerCase()
-          .indexOf(target.toLowerCase(),textArea.selectionEnd)
+    export const findAndSelect = (textArea: HTMLTextAreaElement,
+                                  target: string) => {
+      const regex = new RegExp(`\\b${target.toLowerCase()}\\b`);
+      const cursor = Strings.regexIndexOf(textArea.value.toLowerCase(),
+          regex,
+          textArea.selectionEnd);
       if (cursor >= 0) {
         textArea.setSelectionRange(cursor, cursor + target.length)
       } else {
