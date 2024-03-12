@@ -68,7 +68,13 @@ export declare namespace HtmlUtils {
         const insertTextAndPutCursorAfter: (textarea: HTMLTextAreaElement, addedText: string) => void;
         const scrollToEnd: (logTextArea: HTMLTextAreaElement) => void;
         /**
-         * Find the next occurrence of a string in a text area and select it. */
+         * Find the next occurrence of a string in a text area and select it.
+         *
+         * It can also scroll the found occurrence into view, IF
+         * <script type="module" src="node_modules/textarea-caret/index.js">
+         *   </script>
+         * "^3.1.0" is included in the HTML file.
+         * */
         const findAndSelect: (textArea: HTMLTextAreaElement, target: string) => void;
     }
     namespace Media {

@@ -159,7 +159,13 @@ export var HtmlUtils;
             logTextArea.scrollTop = logTextArea.scrollHeight;
         };
         /**
-         * Find the next occurrence of a string in a text area and select it. */
+         * Find the next occurrence of a string in a text area and select it.
+         *
+         * It can also scroll the found occurrence into view, IF
+         * <script type="module" src="node_modules/textarea-caret/index.js">
+         *   </script>
+         * "^3.1.0" is included in the HTML file.
+         * */
         TextAreas.findAndSelect = (textArea, target) => {
             const cursor = textArea.value.toLowerCase()
                 .indexOf(target.toLowerCase(), textArea.selectionEnd);
