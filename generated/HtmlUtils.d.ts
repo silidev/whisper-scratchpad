@@ -27,6 +27,7 @@ export declare namespace HtmlUtils {
         class TextAreaWrapper {
             private textArea;
             constructor(textArea: HTMLTextAreaElement);
+            findAndSelect(search: string): this;
             appendTextAndPutCursorAfter(text: string): this;
             append(text: string): this;
             selectedText(): string;
@@ -58,6 +59,9 @@ export declare namespace HtmlUtils {
          * selected it will be overwritten. */
         const insertTextAndPutCursorAfter: (textarea: HTMLTextAreaElement, addedText: string) => void;
         const scrollToEnd: (logTextArea: HTMLTextAreaElement) => void;
+        /**
+         * Find the next occurrence of a string in a text area and select it. */
+        const findAndSelect: (textArea: HTMLTextAreaElement, target: string) => void;
     }
     namespace Media {
         const releaseMicrophone: (stream: MediaStream) => void;

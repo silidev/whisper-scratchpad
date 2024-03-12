@@ -52,6 +52,10 @@ export var HtmlUtils;
             constructor(textArea) {
                 this.textArea = textArea;
             }
+            findAndSelect(search) {
+                TextAreas.findAndSelect(this.textArea, search);
+                return this;
+            }
             appendTextAndPutCursorAfter(text) {
                 TextAreas.appendTextAndCursor(this.textArea, text);
                 return this;
@@ -152,6 +156,23 @@ export var HtmlUtils;
         };
         TextAreas.scrollToEnd = (logTextArea) => {
             logTextArea.scrollTop = logTextArea.scrollHeight;
+        };
+        /**
+         * Find the next occurrence of a string in a text area and select it. */
+        TextAreas.findAndSelect = (textArea, target) => {
+            const cursor = textArea.value.toLowerCase()
+                .indexOf(target.toLowerCase(), textArea.selectionEnd);
+            if (cursor >= 0) {
+                textArea.setSelectionRange(cursor, cursor + target.length);
+            }
+            else {
+                // not found, start from the beginning
+                TextAreas.setCursor(textArea, 0);
+            }
+            textArea.focus();
+            // scroll to selectionStart
+            // @ts-ignore
+            textArea.scrollTop = getCaretCoordinates(textArea, textArea.selectionEnd).top;
         };
     })(TextAreas = HtmlUtils.TextAreas || (HtmlUtils.TextAreas = {}));
     let Media;

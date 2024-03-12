@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "diff": "^5.1.0",
-    "export-to-csv": "^1.2.2"
+    "export-to-csv": "^1.2.2",
+    "textarea-caret": "^3.1.0"
   }
 }

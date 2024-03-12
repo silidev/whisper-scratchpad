@@ -119,6 +119,11 @@ export var UiFunctions;
         Buttons.runTests = () => {
             NonWordChars.runTests();
         };
+        // ############## findDuButton ##############
+        buttonWithId('findDuButton').addEventListener('pointerdown', event => {
+            event.preventDefault(); // Prevent the textarea from losing focus
+            mainEditorTextareaWrapper.findAndSelect("du");
+        });
         // ############## wordLeftButton ##############
         buttonWithId('wordLeftButton').addEventListener('pointerdown', event => {
             event.preventDefault(); // Prevent the textarea from losing focus

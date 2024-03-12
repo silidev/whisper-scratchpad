@@ -60,9 +60,18 @@ export namespace HtmlUtils {
 
     import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId
     import trimExceptASingleNewlineAtTheEnd = HelgeUtils.Strings.trimExceptASingleNewlineAtTheEnd
+    // npm import textarea-caret:
+    import {getCaretCoordinates}
+      // @ts-ignore
+      from "../node_modules/textarea-caret/index.js";
 
     export class TextAreaWrapper {
       constructor(private textArea: HTMLTextAreaElement) {
+      }
+
+      public findAndSelect(search: string) {
+        TextAreas.findAndSelect(this.textArea, search)
+        return this
       }
 
       public appendTextAndPutCursorAfter(text: string) {
@@ -95,8 +104,7 @@ export namespace HtmlUtils {
         return TextAreas.getCursor(this.textArea)
       }
 
-      public setAutoSave(cookieName: string, handleError: (msg: string) => void,
-                         storage: BrowserStorage.BsProvider) {
+      public setAutoSave(cookieName: string, handleError: (msg: string) => void, storage: BrowserStorage.BsProvider) {
         TextAreas.setAutoSave(cookieName, this.textArea.id, handleError, storage)
         return this
       }
@@ -126,8 +134,7 @@ export namespace HtmlUtils {
       }
     }
 
-    export const appendTextAndCursor =
-        (textArea: HTMLTextAreaElement, text: string) => {
+    export const appendTextAndCursor = (textArea: HTMLTextAreaElement, text: string) => {
       append(textArea, text)
       setCursor(textArea, textArea.value.length)
     }
@@ -149,14 +156,11 @@ export namespace HtmlUtils {
      * @param handleError - A function to call when an error occurs.
      * @param storage
      */
-    export const setAutoSave = (storageKey: string, id: string,
-                                handleError: (msg: string) => void,
-                                storage: BrowserStorage.BsProvider) => {
+    export const setAutoSave = (storageKey: string, id: string, handleError: (msg: string) => void, storage: BrowserStorage.BsProvider) => {
       textAreaWithId(id).addEventListener('input', () => {
         const text = textAreaWithId(id).value
         try {
-          storage.set(storageKey,
-              text)
+          storage.set(storageKey, text)
         } catch (e) {
           handleError(`${storageKey}: Text area content exceeds 4095 characters. Content will not be saved.`)
         }
@@ -174,12 +178,9 @@ export namespace HtmlUtils {
     /**
      * Inserts text at the cursor position in a text area. If something is
      * selected it will be overwritten. */
-    export const insertTextAndPutCursorAfter = (
-        textarea: HTMLTextAreaElement,
-        addedText: string) => {
+    export const insertTextAndPutCursorAfter = (textarea: HTMLTextAreaElement, addedText: string) => {
 
-      if (!addedText)
-        return
+      if (!addedText) return
 
       const textBeforeSelection = textarea.value.substring(0, textarea.selectionStart)
       const textAfterSelection = textarea.value.substring(textarea.selectionEnd)
@@ -192,6 +193,25 @@ export namespace HtmlUtils {
 
     export const scrollToEnd = (logTextArea: HTMLTextAreaElement) => {
       logTextArea.scrollTop = logTextArea.scrollHeight
+    }
+
+    /**
+     * Find the next occurrence of a string in a text area and select it. */
+    export const findAndSelect = (textArea: HTMLTextAreaElement,
+                                  target: string) => {
+      const cursor = textArea.value.toLowerCase()
+          .indexOf(target.toLowerCase(),textArea.selectionEnd)
+      if (cursor >= 0) {
+        textArea.setSelectionRange(cursor, cursor + target.length)
+      } else {
+        // not found, start from the beginning
+        setCursor(textArea, 0)
+      }
+      textArea.focus()
+      // scroll to selectionStart
+      // @ts-ignore
+      textArea.scrollTop = getCaretCoordinates(textArea,
+          textArea.selectionEnd).top
     }
   }
 
