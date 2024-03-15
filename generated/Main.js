@@ -869,14 +869,14 @@ export const registerServiceWorker = () => {
         }).catch(Log.error);
     }
 };
-const runTests = () => {
+const mayRunTests = () => {
     if (!RUN_TESTS)
         return;
     HelgeUtils.runTests();
     UiFunctions.runTests();
 };
 const init = () => {
-    runTests();
+    mayRunTests();
     UiFunctions.Buttons.addEventListeners();
     registerServiceWorker();
     loadFormData();
