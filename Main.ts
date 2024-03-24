@@ -512,6 +512,10 @@ export namespace UiFunctions {
               return
             audioBlob = new Blob([event.target.result], {type: file.type});
             mainEditor.appendDelimiterAndCursor()
+            /* The transcription of an uploaded file is tested and works fine.
+            Sometimes the OpenAI API will yield an error saying unsupported
+            file type even though the file type is listed as supported. That
+            is only the API's fault, not this code's. */
             transcribeAudioBlob()
           };
           reader.readAsArrayBuffer(file);
