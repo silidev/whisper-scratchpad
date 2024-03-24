@@ -443,12 +443,13 @@ export namespace UiFunctions {
           }
           mainEditorTextareaWrapper.trim().focus()
           mainEditor.save();
-          sending = false
-          StateIndicator.update()
         } catch (error) {
           if (error instanceof HelgeUtils.Transcription.TranscriptionError) {
             Log.error(JSON.stringify(error.payload, null, 2))
           } else throw error
+        } finally {
+          sending = false
+          StateIndicator.update()
         }
       }
 

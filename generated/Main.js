@@ -386,8 +386,6 @@ export var UiFunctions;
                     }
                     mainEditorTextareaWrapper.trim().focus();
                     mainEditor.save();
-                    sending = false;
-                    StateIndicator.update();
                 }
                 catch (error) {
                     if (error instanceof HelgeUtils.Transcription.TranscriptionError) {
@@ -395,6 +393,10 @@ export var UiFunctions;
                     }
                     else
                         throw error;
+                }
+                finally {
+                    sending = false;
+                    StateIndicator.update();
                 }
             };
             let StopCallbackCreator;
