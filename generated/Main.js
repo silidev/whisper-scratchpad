@@ -690,11 +690,15 @@ export var UiFunctions;
                 const csv = generateCsv(csvConfig)(csvData);
                 return download(csvConfig)(csv);
             };
-            const ankiClozeCsv = () => {
-                alert(`Have you searched for "du"?`);
+            const exportAnkiClozeCsv = () => {
+                window.open("obsidian://advanced-uri?vault=o1&heading=CL&uid=wscr2Anki", '_blank');
+                alert(`Copy: 
+- Von Desktop und Phone gleichzeitig!
+- search for du
+- Summaries`);
                 return downloadCsv(OPEN_CLOZE_STR, CLOSE_CLOZE_STR, "{{");
             };
-            Menu.wireItem("ankiClozeCsv", ankiClozeCsv);
+            Menu.wireItem("exportAnkiClozeCsv", exportAnkiClozeCsv);
             Menu.wireItem("downloadCsv", downloadCsv);
         };
         const insertTextIntoMainEditor = (insertedString) => {

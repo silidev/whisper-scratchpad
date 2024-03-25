@@ -796,7 +796,11 @@ export namespace UiFunctions {
       };
 
       const exportAnkiClozeCsv = () => {
-        alert(`Have you searched for "du"?`);
+        window.open("obsidian://advanced-uri?vault=o1&heading=CL&uid=wscr2Anki", '_blank')
+        alert(`Copy: 
+- Von Desktop und Phone gleichzeitig!
+- search for du
+- Summaries`);
         return downloadCsv(OPEN_CLOZE_STR, CLOSE_CLOZE_STR,"{{");
       };
       Menu.wireItem("exportAnkiClozeCsv", exportAnkiClozeCsv);
