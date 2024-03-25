@@ -1,6 +1,6 @@
 import { UiFunctions } from "./Main.js";
 import WhereToPutTranscription = UiFunctions.Buttons.Media.WhereToPutTranscription;
-export declare const VERSION = "Blur 1.0.0";
+export declare const VERSION = "Blue Banana";
 export declare const WHISPER_TEMPERATURE = "0";
 export declare const INSERT_EDITOR_INTO_PROMPT = true;
 export declare const NEW_NOTE_DELIMITER = ")))---(((\n";

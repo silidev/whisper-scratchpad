@@ -241,7 +241,8 @@ export var UiFunctions;
             var du2ich = HelgeUtils.Misc.du2ich;
             const fixClipboard = () => {
                 clipboard.readText().then(text => {
-                    clipboard.writeText(du2ich(ReplaceByRules.withUiLog(replaceRulesTextArea.value, text))).then().catch(Log.error);
+                    clipboard.writeText(du2ich(ReplaceByRules.withUiLog(replaceRulesTextArea.value, text))
+                        .replaceAll("&#x27;", "'")).then().catch(Log.error);
                 }).catch(Log.error);
             };
             FixClipboard.addButtonEventListener = () => {

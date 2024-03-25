@@ -284,6 +284,7 @@ export namespace UiFunctions {
               du2ich(
                   ReplaceByRules.withUiLog(
                       replaceRulesTextArea.value, text))
+                  .replaceAll("&#x27;","'")
           ).then().catch(Log.error)
         }).catch(Log.error)
       }
