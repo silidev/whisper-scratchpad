@@ -795,11 +795,11 @@ export namespace UiFunctions {
         return download(csvConfig)(csv);
       };
 
-      const ankiClozeCsv = () => {
+      const exportAnkiClozeCsv = () => {
         alert(`Have you searched for "du"?`);
         return downloadCsv(OPEN_CLOZE_STR, CLOSE_CLOZE_STR,"{{");
       };
-      Menu.wireItem("ankiClozeCsv", ankiClozeCsv);
+      Menu.wireItem("exportAnkiClozeCsv", exportAnkiClozeCsv);
       Menu.wireItem("downloadCsv", downloadCsv);
     }
 
