@@ -437,9 +437,7 @@ export var HelgeUtils;
         ReplaceByRules.replaceByRules = (subject, allRules, wholeWords = false, logReplacements = false, preserveCase = false) => {
             const possiblyWordBoundaryMarker = wholeWords ? '\\b' : '';
             let appliedRuleNumber = 0;
-            let log = "";
-            // + 'input string before replacements == \n' + subject +
-            // "\n)))---(((\n"
+            let log = 'input string before replacements == \n' + subject + "\n)))---(((\n";
             function applyRule(rawTarget, regexFlags, replacementString, replacementFlags) {
                 const target = possiblyWordBoundaryMarker + rawTarget
                     + possiblyWordBoundaryMarker;

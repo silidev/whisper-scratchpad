@@ -466,9 +466,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
         , logReplacements = false, preserveCase = false) => {
       const possiblyWordBoundaryMarker = wholeWords ? '\\b' : ''
       let appliedRuleNumber = 0
-      let log = ""
-          // + 'input string before replacements == \n' + subject +
-          // "\n)))---(((\n"
+      let log = 'input string before replacements == \n' + subject + "\n)))---(((\n"
 
       function applyRule(rawTarget: string, regexFlags: string,
                          replacementString: string, replacementFlags: string) {
