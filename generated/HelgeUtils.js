@@ -437,7 +437,8 @@ export var HelgeUtils;
         ReplaceByRules.replaceByRules = (subject, allRules, wholeWords = false, logReplacements = false, preserveCase = false) => {
             const possiblyWordBoundaryMarker = wholeWords ? '\\b' : '';
             let count = 0;
-            let log = '';
+            let log = "The n-numbers are how often the replacement was done.\n";
+            // 'input string before replacements == \n' + subject + "\n)))---(((\n"
             function applyRule(rawTarget, regexFlags, replacementString, replacementFlags) {
                 const target = possiblyWordBoundaryMarker + rawTarget
                     + possiblyWordBoundaryMarker;
@@ -448,7 +449,7 @@ export var HelgeUtils;
                     // replace only 1 occurrence or operate on a note only contains 1 line.
                     : new RegExp(target, regexFlags);
                 if (logReplacements && subject.search(regex) !== -1) {
-                    log += `${count} ${rule}\n`;
+                    log += `n=${count}: ${rule};\n`;
                 }
                 if (replacementFlags == 'x')
                     subject = subject.replace(regex, '');

@@ -466,7 +466,8 @@ Please note that certain strong accents can possibly cause this mode to transcri
         , logReplacements = false, preserveCase = false) => {
       const possiblyWordBoundaryMarker = wholeWords ? '\\b' : ''
       let count = 0
-      let log = ''
+      let log = "The n-numbers are how often the replacement was done.\n"
+          // 'input string before replacements == \n' + subject + "\n)))---(((\n"
 
       function applyRule(rawTarget: string, regexFlags: string,
                          replacementString: string, replacementFlags: string) {
@@ -479,7 +480,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
             // replace only 1 occurrence or operate on a note only contains 1 line.
             : new RegExp(target, regexFlags)
         if (logReplacements && subject.search(regex) !== -1) {
-          log += `${count} ${rule}\n`
+          log += `n=${count}: ${rule};\n`
         }
         if (replacementFlags == 'x')
           subject = subject.replace(regex, '')
