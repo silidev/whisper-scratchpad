@@ -436,9 +436,10 @@ export var HelgeUtils;
          */
         ReplaceByRules.replaceByRules = (subject, allRules, wholeWords = false, logReplacements = false, preserveCase = false) => {
             const possiblyWordBoundaryMarker = wholeWords ? '\\b' : '';
-            let count = 0;
-            let log = "The n-numbers are how often the replacement was done.\n";
-            // 'input string before replacements == \n' + subject + "\n)))---(((\n"
+            let appliedRuleNumber = 0;
+            let log = "";
+            // + 'input string before replacements == \n' + subject +
+            // "\n)))---(((\n"
             function applyRule(rawTarget, regexFlags, replacementString, replacementFlags) {
                 const target = possiblyWordBoundaryMarker + rawTarget
                     + possiblyWordBoundaryMarker;
@@ -449,13 +450,18 @@ export var HelgeUtils;
                     // replace only 1 occurrence or operate on a note only contains 1 line.
                     : new RegExp(target, regexFlags);
                 if (logReplacements && subject.search(regex) !== -1) {
-                    log += `n=${count}: ${rule};\n`;
+                    const countRegexMatches = (input, pattern) => {
+                        const matches = input.match(pattern);
+                        return matches ? matches.length : 0;
+                    };
+                    const n = countRegexMatches(subject, regex);
+                    log += `(${appliedRuleNumber}) n=${n}: ${rule};\n`;
+                    appliedRuleNumber++;
                 }
                 if (replacementFlags == 'x')
                     subject = subject.replace(regex, '');
                 else
                     subject = subject.replace(regex, replacementString);
-                count++;
             }
             let rule;
             const ruleParser = /^"(.+?)"([a-z]*?)(?:\r\n|\r|\n)?->(?:\r\n|\r|\n)?"(.*?)"([a-z]*?)(?:\r\n|\r|\n)?$/gmus;

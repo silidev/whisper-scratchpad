@@ -465,9 +465,10 @@ Please note that certain strong accents can possibly cause this mode to transcri
     export const replaceByRules = (subject: string, allRules: string, wholeWords = false
         , logReplacements = false, preserveCase = false) => {
       const possiblyWordBoundaryMarker = wholeWords ? '\\b' : ''
-      let count = 0
-      let log = "The n-numbers are how often the replacement was done.\n"
-          // 'input string before replacements == \n' + subject + "\n)))---(((\n"
+      let appliedRuleNumber = 0
+      let log = ""
+          // + 'input string before replacements == \n' + subject +
+          // "\n)))---(((\n"
 
       function applyRule(rawTarget: string, regexFlags: string,
                          replacementString: string, replacementFlags: string) {
@@ -480,13 +481,18 @@ Please note that certain strong accents can possibly cause this mode to transcri
             // replace only 1 occurrence or operate on a note only contains 1 line.
             : new RegExp(target, regexFlags)
         if (logReplacements && subject.search(regex) !== -1) {
-          log += `n=${count}: ${rule};\n`
+          const countRegexMatches = (input: string, pattern: RegExp): number => {
+            const matches = input.match(pattern)
+            return matches ? matches.length : 0
+          }
+          const n = countRegexMatches(subject, regex)
+          log += `(${appliedRuleNumber}) n=${n}: ${rule};\n`
+          appliedRuleNumber++
         }
         if (replacementFlags == 'x')
           subject = subject.replace(regex, '')
         else
           subject = subject.replace(regex, replacementString)
-        count++
       }
 
       let rule: RegExpExecArray | null
