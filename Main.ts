@@ -99,7 +99,7 @@ export namespace mainEditor {
 
 namespace Misc {
 
-  export const applyReplaceRulesToMainEditor = () => {
+  export const applyReplaceRulesToCurrentNote = () => {
     mainEditor.Undo.saveState();
     const selectionStart = mainEditorTextarea.selectionStart
     const selectionEnd = mainEditorTextarea.selectionEnd
@@ -319,7 +319,7 @@ export namespace UiFunctions {
     export namespace Media {
 
       import DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
-      import applyReplaceRulesToMainEditor = Misc.applyReplaceRulesToMainEditor;
+      import applyReplaceRulesToCurrentNote = Misc.applyReplaceRulesToCurrentNote;
       import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
       import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
       let mediaRecorder: MediaRecorder
@@ -460,7 +460,9 @@ export namespace UiFunctions {
             mainEditorTextareaWrapper.appendTextAndPutCursorAfter(transcriptionText.trim())
           }
           if (inputElementWithId("autoReplaceCheckbox").checked) {
-            applyReplaceRulesToMainEditor()
+            applyReplaceRulesToCurrentNote() //TODOh: Stu: TODOhStu:
+            // Simplify this: Apply the rules before inserting the text into
+            // the editor.
           }
           mainEditorTextareaWrapper.trim().focus()
           mainEditor.save();
@@ -694,7 +696,7 @@ export namespace UiFunctions {
       })
 
       const replaceButton = () => {
-        Misc.applyReplaceRulesToMainEditor()
+        Misc.applyReplaceRulesToCurrentNote()
         mainEditorTextarea.focus()
         // window.scrollBy(0,-100000)
       }

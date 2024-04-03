@@ -83,7 +83,7 @@ export var mainEditor;
 })(mainEditor || (mainEditor = {}));
 var Misc;
 (function (Misc) {
-    Misc.applyReplaceRulesToMainEditor = () => {
+    Misc.applyReplaceRulesToCurrentNote = () => {
         mainEditor.Undo.saveState();
         const selectionStart = mainEditorTextarea.selectionStart;
         const selectionEnd = mainEditorTextarea.selectionEnd;
@@ -268,7 +268,7 @@ export var UiFunctions;
         let Media;
         (function (Media) {
             var DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
-            var applyReplaceRulesToMainEditor = Misc.applyReplaceRulesToMainEditor;
+            var applyReplaceRulesToCurrentNote = Misc.applyReplaceRulesToCurrentNote;
             var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
             var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
             let mediaRecorder;
@@ -398,7 +398,9 @@ export var UiFunctions;
                         mainEditorTextareaWrapper.appendTextAndPutCursorAfter(transcriptionText.trim());
                     }
                     if (inputElementWithId("autoReplaceCheckbox").checked) {
-                        applyReplaceRulesToMainEditor();
+                        applyReplaceRulesToCurrentNote(); //TODOh: Stu: TODOhStu:
+                        // Simplify this: Apply the rules before inserting the text into
+                        // the editor.
                     }
                     mainEditorTextareaWrapper.trim().focus();
                     mainEditor.save();
@@ -609,7 +611,7 @@ export var UiFunctions;
                 saveAPIKeyButton();
             });
             const replaceButton = () => {
-                Misc.applyReplaceRulesToMainEditor();
+                Misc.applyReplaceRulesToCurrentNote();
                 mainEditorTextarea.focus();
                 // window.scrollBy(0,-100000)
             };
