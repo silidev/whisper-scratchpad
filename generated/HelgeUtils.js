@@ -455,7 +455,9 @@ export var HelgeUtils;
                         return matches ? matches.length : 0;
                     };
                     const n = countRegexMatches(subject, regex);
-                    log += `(${appliedRuleNumber}) n=${n}: ${rule};\n`;
+                    const ruleStr = `"${rawTarget}"${regexFlags}`
+                        + `->"${replacementString}"${replacementFlags}`;
+                    log += `(${appliedRuleNumber}) n=${n}: "${ruleStr}";\n`;
                     appliedRuleNumber++;
                 }
                 if (replacementFlags == 'x')
