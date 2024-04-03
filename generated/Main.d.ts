@@ -8,6 +8,7 @@ export declare namespace mainEditor {
     const appendTextAndCursor: (insertedString: string) => void;
     const appendDelimiterAndCursor: () => void;
     const save: () => void;
+    const insertNote: (changedText: string) => void;
 }
 export declare namespace Menu {
     const wireItem: (id: string, menuFunction: () => void) => void;

@@ -80,6 +80,21 @@ export namespace mainEditor {
     // Delete old cookie
     // Cookies.set("editorText", ""); // This used to be stored in a cookie.
   };
+
+  export const insertNote = (changedText: string) => {
+    const cursorIsAtTheEndOfTheTextarea =
+        mainEditorTextarea.value.length == mainEditorTextarea.selectionStart;
+
+    if (cursorIsAtTheEndOfTheTextarea) {
+      mainEditorTextareaWrapper
+          .insertTextAndPutCursorAfter(NEW_NOTE_DELIMITER + changedText)
+    } else {
+      mainEditorTextareaWrapper
+          .insertTextAndPutCursorAfter(changedText + NEW_NOTE_DELIMITER)
+    }
+    mainEditor.save();
+  }
+
 }
 
 namespace Misc {
@@ -89,7 +104,12 @@ namespace Misc {
     const selectionStart = mainEditorTextarea.selectionStart
     const selectionEnd = mainEditorTextarea.selectionEnd
 
-    mainEditorTextarea.value = ReplaceByRules.withUiLog(replaceRulesTextArea.value, mainEditorTextarea.value)
+    const currentNote = new CurrentNote(mainEditorTextarea)
+    const changedText = ReplaceByRules.withUiLog(
+        replaceRulesTextArea.value, currentNote.text())
+    currentNote.delete()
+
+    mainEditor.insertNote(changedText)
 
     mainEditorTextarea.selectionStart = selectionStart
     mainEditorTextarea.selectionEnd = selectionEnd
@@ -660,19 +680,7 @@ export namespace UiFunctions {
         const changedText = HelgeUtils.Misc.du2ich(currentNote.text());
         currentNote.delete()
 
-        { // Insert the changed text
-          const cursorIsAtTheEndOfTheTextarea =
-              mainEditorTextarea.value.length == mainEditorTextarea.selectionStart;
-
-          if (cursorIsAtTheEndOfTheTextarea) {
-            mainEditorTextareaWrapper.insertTextAndPutCursorAfter(
-                NEW_NOTE_DELIMITER + changedText)
-          } else {
-            mainEditorTextareaWrapper.insertTextAndPutCursorAfter(
-                changedText + NEW_NOTE_DELIMITER)
-          }
-        }
-        mainEditor.save();
+        mainEditor.insertNote(changedText)
       }
       Menu.wireItem("du2ichMenuItem", du2ichMenuItem)
 
