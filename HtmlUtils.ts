@@ -100,8 +100,8 @@ export namespace HtmlUtils {
         return this
       }
 
-      public insertTextAndPutCursorAfter(addedText: string) {
-        TextAreas.insertTextAndPutCursorAfter(this.textArea, addedText)
+      public insertAndPutCursorAfter(addedText: string) {
+        TextAreas.insertAndPutCursorAfter(this.textArea, addedText)
         return this
       }
 
@@ -183,7 +183,7 @@ export namespace HtmlUtils {
     /**
      * Inserts text at the cursor position in a text area. If something is
      * selected it will be overwritten. */
-    export const insertTextAndPutCursorAfter = (textarea: HTMLTextAreaElement, addedText: string) => {
+    export const insertAndPutCursorAfter = (textarea: HTMLTextAreaElement, addedText: string) => {
 
       if (!addedText) return
 

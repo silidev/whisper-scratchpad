@@ -87,10 +87,10 @@ export namespace mainEditor {
 
     if (cursorIsAtTheEndOfTheTextarea) {
       mainEditorTextareaWrapper
-          .insertTextAndPutCursorAfter(NEW_NOTE_DELIMITER + changedText)
+          .insertAndPutCursorAfter(NEW_NOTE_DELIMITER + changedText)
     } else {
       mainEditorTextareaWrapper
-          .insertTextAndPutCursorAfter(changedText + NEW_NOTE_DELIMITER)
+          .insertAndPutCursorAfter(changedText + NEW_NOTE_DELIMITER)
     }
     mainEditor.save();
   }
@@ -99,7 +99,7 @@ export namespace mainEditor {
 
 namespace Misc {
 
-  export const applyReplaceRulesToCurrentNote = () => {
+  export const replaceInCurrentNote = () => {
     mainEditor.Undo.saveState();
     const selectionStart = mainEditorTextarea.selectionStart
     const selectionEnd = mainEditorTextarea.selectionEnd
@@ -319,7 +319,7 @@ export namespace UiFunctions {
     export namespace Media {
 
       import DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
-      import applyReplaceRulesToCurrentNote = Misc.applyReplaceRulesToCurrentNote;
+      import replaceInCurrentNote = Misc.replaceInCurrentNote;
       import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
       import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
       let mediaRecorder: MediaRecorder
@@ -447,20 +447,20 @@ export namespace UiFunctions {
           StateIndicator.update()
           const apiName = getApiSelectedInUi()
           if (!apiName) {
-            TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea,
+            TextAreas.insertAndPutCursorAfter(mainEditorTextarea,
                 "You must select an API below.")
             return
           }
           const transcriptionText = await getTranscriptionText()
 
           if (whereToPutTranscription=="insertAtCursor") {
-            TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea,
+            TextAreas.insertAndPutCursorAfter(mainEditorTextarea,
                 aSpaceIfNeeded() + removeLastDotIfNotAtEnd(transcriptionText))
           } else {
             mainEditorTextareaWrapper.appendTextAndPutCursorAfter(transcriptionText.trim())
           }
           if (inputElementWithId("autoReplaceCheckbox").checked) {
-            applyReplaceRulesToCurrentNote() //TODOh: Stu: TODOhStu:
+            replaceInCurrentNote() //TODOh: Stu: TODOhStu:
             // Simplify this: Apply the rules before inserting the text into
             // the editor.
           }
@@ -696,7 +696,7 @@ export namespace UiFunctions {
       })
 
       const replaceButton = () => {
-        Misc.applyReplaceRulesToCurrentNote()
+        Misc.replaceInCurrentNote()
         mainEditorTextarea.focus()
         // window.scrollBy(0,-100000)
       }
@@ -711,7 +711,7 @@ export namespace UiFunctions {
 
 // ############## backslashButton ##############
       HtmlUtils.addClickListener(("backslashButton"), () => {
-        TextAreas.insertTextAndPutCursorAfter(replaceRulesTextArea,"\\b")
+        TextAreas.insertAndPutCursorAfter(replaceRulesTextArea,"\\b")
       })
 
 // ############## Undo #############
@@ -747,7 +747,7 @@ export namespace UiFunctions {
         mainEditor.appendDelimiterAndCursor()
 
         clipboard.read((text: string) => {
-          TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, text)
+          TextAreas.insertAndPutCursorAfter(mainEditorTextarea, text)
         });
       })
 
@@ -819,7 +819,7 @@ export namespace UiFunctions {
     }
 
     const insertTextIntoMainEditor = (insertedString: string) => {
-      TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, insertedString)
+      TextAreas.insertAndPutCursorAfter(mainEditorTextarea, insertedString)
       mainEditor.save();
     }
     suppressUnusedWarning(insertTextIntoMainEditor)
@@ -859,7 +859,7 @@ export namespace UiFunctions {
         }
         TextAreas.scrollToEnd(replaceRulesTextArea)
       } else {
-        TextAreas.insertTextAndPutCursorAfter(replaceRulesTextArea, ruleString+"\n")
+        TextAreas.insertAndPutCursorAfter(replaceRulesTextArea, ruleString+"\n")
         replaceRulesTextArea.selectionStart = 0
         replaceRulesTextArea.selectionEnd = ruleString.length
       }

@@ -72,18 +72,18 @@ export var mainEditor;
         const cursorIsAtTheEndOfTheTextarea = mainEditorTextarea.value.length == mainEditorTextarea.selectionStart;
         if (cursorIsAtTheEndOfTheTextarea) {
             mainEditorTextareaWrapper
-                .insertTextAndPutCursorAfter(NEW_NOTE_DELIMITER + changedText);
+                .insertAndPutCursorAfter(NEW_NOTE_DELIMITER + changedText);
         }
         else {
             mainEditorTextareaWrapper
-                .insertTextAndPutCursorAfter(changedText + NEW_NOTE_DELIMITER);
+                .insertAndPutCursorAfter(changedText + NEW_NOTE_DELIMITER);
         }
         mainEditor.save();
     };
 })(mainEditor || (mainEditor = {}));
 var Misc;
 (function (Misc) {
-    Misc.applyReplaceRulesToCurrentNote = () => {
+    Misc.replaceInCurrentNote = () => {
         mainEditor.Undo.saveState();
         const selectionStart = mainEditorTextarea.selectionStart;
         const selectionEnd = mainEditorTextarea.selectionEnd;
@@ -268,7 +268,7 @@ export var UiFunctions;
         let Media;
         (function (Media) {
             var DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
-            var applyReplaceRulesToCurrentNote = Misc.applyReplaceRulesToCurrentNote;
+            var replaceInCurrentNote = Misc.replaceInCurrentNote;
             var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
             var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
             let mediaRecorder;
@@ -387,18 +387,18 @@ export var UiFunctions;
                     StateIndicator.update();
                     const apiName = getApiSelectedInUi();
                     if (!apiName) {
-                        TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, "You must select an API below.");
+                        TextAreas.insertAndPutCursorAfter(mainEditorTextarea, "You must select an API below.");
                         return;
                     }
                     const transcriptionText = await getTranscriptionText();
                     if (whereToPutTranscription == "insertAtCursor") {
-                        TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, aSpaceIfNeeded() + removeLastDotIfNotAtEnd(transcriptionText));
+                        TextAreas.insertAndPutCursorAfter(mainEditorTextarea, aSpaceIfNeeded() + removeLastDotIfNotAtEnd(transcriptionText));
                     }
                     else {
                         mainEditorTextareaWrapper.appendTextAndPutCursorAfter(transcriptionText.trim());
                     }
                     if (inputElementWithId("autoReplaceCheckbox").checked) {
-                        applyReplaceRulesToCurrentNote(); //TODOh: Stu: TODOhStu:
+                        replaceInCurrentNote(); //TODOh: Stu: TODOhStu:
                         // Simplify this: Apply the rules before inserting the text into
                         // the editor.
                     }
@@ -611,7 +611,7 @@ export var UiFunctions;
                 saveAPIKeyButton();
             });
             const replaceButton = () => {
-                Misc.applyReplaceRulesToCurrentNote();
+                Misc.replaceInCurrentNote();
                 mainEditorTextarea.focus();
                 // window.scrollBy(0,-100000)
             };
@@ -624,7 +624,7 @@ export var UiFunctions;
             });
             // ############## backslashButton ##############
             HtmlUtils.addClickListener(("backslashButton"), () => {
-                TextAreas.insertTextAndPutCursorAfter(replaceRulesTextArea, "\\b");
+                TextAreas.insertAndPutCursorAfter(replaceRulesTextArea, "\\b");
             });
             // ############## Undo #############
             const addUndoClickListener = (ctrlZButtonId, textArea) => {
@@ -650,7 +650,7 @@ export var UiFunctions;
             HtmlUtils.addClickListener(("pasteButton"), () => {
                 mainEditor.appendDelimiterAndCursor();
                 clipboard.read((text) => {
-                    TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, text);
+                    TextAreas.insertAndPutCursorAfter(mainEditorTextarea, text);
                 });
             });
             // cutNoteButton
@@ -711,7 +711,7 @@ export var UiFunctions;
             Menu.wireItem("downloadCsv", downloadCsv);
         };
         const insertTextIntoMainEditor = (insertedString) => {
-            TextAreas.insertTextAndPutCursorAfter(mainEditorTextarea, insertedString);
+            TextAreas.insertAndPutCursorAfter(mainEditorTextarea, insertedString);
             mainEditor.save();
         };
         suppressUnusedWarning(insertTextIntoMainEditor);
@@ -750,7 +750,7 @@ export var UiFunctions;
                 TextAreas.scrollToEnd(replaceRulesTextArea);
             }
             else {
-                TextAreas.insertTextAndPutCursorAfter(replaceRulesTextArea, ruleString + "\n");
+                TextAreas.insertAndPutCursorAfter(replaceRulesTextArea, ruleString + "\n");
                 replaceRulesTextArea.selectionStart = 0;
                 replaceRulesTextArea.selectionEnd = ruleString.length;
             }

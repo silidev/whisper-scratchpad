@@ -40,7 +40,7 @@ export declare namespace HtmlUtils {
             append(text: string): this;
             selectedText(): string;
             setCursor(position: number): this;
-            insertTextAndPutCursorAfter(addedText: string): this;
+            insertAndPutCursorAfter(addedText: string): this;
             getCursor(): number;
             setAutoSave(cookieName: string, handleError: (msg: string) => void, storage: BrowserStorage.BsProvider): this;
             value(): string;
@@ -65,7 +65,7 @@ export declare namespace HtmlUtils {
         /**
          * Inserts text at the cursor position in a text area. If something is
          * selected it will be overwritten. */
-        const insertTextAndPutCursorAfter: (textarea: HTMLTextAreaElement, addedText: string) => void;
+        const insertAndPutCursorAfter: (textarea: HTMLTextAreaElement, addedText: string) => void;
         const scrollToEnd: (logTextArea: HTMLTextAreaElement) => void;
         /**
          * Find the next occurrence of a string in a text area and select it.

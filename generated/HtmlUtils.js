@@ -75,8 +75,8 @@ export var HtmlUtils;
                 TextAreas.setCursor(this.textArea, position);
                 return this;
             }
-            insertTextAndPutCursorAfter(addedText) {
-                TextAreas.insertTextAndPutCursorAfter(this.textArea, addedText);
+            insertAndPutCursorAfter(addedText) {
+                TextAreas.insertAndPutCursorAfter(this.textArea, addedText);
                 return this;
             }
             getCursor() {
@@ -146,7 +146,7 @@ export var HtmlUtils;
         /**
          * Inserts text at the cursor position in a text area. If something is
          * selected it will be overwritten. */
-        TextAreas.insertTextAndPutCursorAfter = (textarea, addedText) => {
+        TextAreas.insertAndPutCursorAfter = (textarea, addedText) => {
             if (!addedText)
                 return;
             const textBeforeSelection = textarea.value.substring(0, textarea.selectionStart);
