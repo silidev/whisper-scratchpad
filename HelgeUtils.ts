@@ -488,7 +488,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
           const n = countRegexMatches(subject, regex)
           const ruleStr = `"${rawTarget}"${regexFlags}`
               +`->"${replacementString}"${replacementFlags}`
-          log += `(${appliedRuleNumber}) n=${n}: "${ruleStr}";\n`
+          log += `(${appliedRuleNumber}) n=${n}: ${ruleStr};\n`
           appliedRuleNumber++
         }
         if (replacementFlags == 'x')
