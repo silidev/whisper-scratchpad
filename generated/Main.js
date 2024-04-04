@@ -54,7 +54,10 @@ export var mainEditor;
     };
     mainEditor.appendDelimiterAndCursor = () => {
         mainEditorTextareaWrapper.trim();
-        mainEditor.appendTextAndCursor('\n' + NEW_NOTE_DELIMITER);
+        mainEditor.appendTextAndCursor(" - "
+            + HelgeUtils.DatesAndTimes.Timestamps.yymmddDashed()
+            + '\n'
+            + NEW_NOTE_DELIMITER);
         mainEditorTextarea.focus();
     };
     mainEditor.save = () => {

@@ -1139,5 +1139,27 @@ export var HelgeUtils;
         };
         HelgeUtils.suppressUnusedWarning(test);
     })(Semaphore = HelgeUtils.Semaphore || (HelgeUtils.Semaphore = {}));
+    HelgeUtils.DatesAndTimes = class {
+        static date2yyyymmddDashedYearDigits(date, twoDigitYear) {
+            const pad = (n) => n < 10 ? '0' + n : n;
+            return (twoDigitYear ? date.getFullYear().toString().slice(-2) : date.getFullYear())
+                + '-'
+                + pad(date.getMonth() + 1) + '-'
+                + pad(date.getDate());
+        }
+        /** Return a string representation of a date in the format YYYY-MM-DD.
+         * Example: date2yyyymmddDashed(new Date(2022, 0, 1)) returns "2022-01-01". */
+        static date2yyyymmddDashed(date) {
+            return HelgeUtils.DatesAndTimes.date2yyyymmddDashedYearDigits(date, false);
+        }
+        static date2yymmddDashed(date) {
+            return HelgeUtils.DatesAndTimes.date2yyyymmddDashedYearDigits(date, true);
+        }
+        static Timestamps = class {
+            static yymmddDashed() {
+                return HelgeUtils.DatesAndTimes.date2yymmddDashed(new Date());
+            }
+        };
+    };
 })(HelgeUtils || (HelgeUtils = {}));
 //# sourceMappingURL=HelgeUtils.js.map

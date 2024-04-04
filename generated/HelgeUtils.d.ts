@@ -218,4 +218,16 @@ export declare namespace HelgeUtils {
             get next(): (value: any) => any;
         }
     }
+    const DatesAndTimes: {
+        new (): {};
+        date2yyyymmddDashedYearDigits(date: Date, twoDigitYear: boolean): string;
+        /** Return a string representation of a date in the format YYYY-MM-DD.
+         * Example: date2yyyymmddDashed(new Date(2022, 0, 1)) returns "2022-01-01". */
+        date2yyyymmddDashed(date: Date): string;
+        date2yymmddDashed(date: Date): string;
+        Timestamps: {
+            new (): {};
+            yymmddDashed(): string;
+        };
+    };
 }
