@@ -166,64 +166,72 @@ export namespace UiFunctions {
       mainEditorTextareaWrapper.findAndSelect("du")
     });
 
-    // ############## mainEditorWordLeftButton ##############
-    const createSelectWordLeftFunction = (textarea: HTMLTextAreaElement) => {
-      return (event: Event) => {
-        event.preventDefault(); // Prevent the textarea from losing focus
-        const text = textarea.value;
-        const cursorPosition = textarea.selectionStart - 2;
-        if (cursorPosition < 0) return;
+    namespace WordJumps {
+      const createSelectWordLeftFunction = (textarea: HTMLTextAreaElement) => {
+        return (event: Event) => {
+          event.preventDefault(); // Prevent the textarea from losing focus
+          const text = textarea.value;
+          const cursorPosition = textarea.selectionStart - 2;
+          if (cursorPosition < 0) return;
 
-        // Find the start of the previous word
-        const previousSpace = text.lastIndexOf(' ', cursorPosition);
-        let startOfPreviousWord;
-        if (previousSpace === -1) {
-          // If there is no previous space, the start of the previous word is the start of the text
-          startOfPreviousWord = 0;
-        } else {
-          // If there is a previous space, the start of the previous word is the position after the space
-          startOfPreviousWord = previousSpace + 1;
+          // Find the start of the previous word
+          const previousSpace = text.lastIndexOf(' ', cursorPosition);
+          let startOfPreviousWord;
+          if (previousSpace === -1) {
+            // If there is no previous space, the start of the previous word is the start of the text
+            startOfPreviousWord = 0;
+          } else {
+            // If there is a previous space, the start of the previous word is the position after the space
+            startOfPreviousWord = previousSpace + 1;
+          }
+
+          textarea.selectionStart = startOfPreviousWord;
         }
-
-        textarea.selectionStart = startOfPreviousWord;
       }
+
+      const createWordLeftFunction = (textarea: HTMLTextAreaElement) => {
+        return (event: Event) => {
+          createSelectWordLeftFunction(textarea)(event)
+          textarea.selectionEnd = textarea.selectionStart;
+        }
+      }
+
+      const createSelectWordRightFunction = (textarea: HTMLTextAreaElement) => {
+        return (event: Event) => {
+          event.preventDefault(); // Prevent the textarea from losing focus
+          const text = textarea.value;
+          const cursorPosition = textarea.selectionStart + 1;
+          if (cursorPosition >= text.length) return;
+
+          // Find the end of the next word
+          const nextSpace = text.indexOf(' ', cursorPosition);
+          let endOfNextWord;
+          if (nextSpace === -1) {
+            // If there is no next space, the end of the next word is the end of the text
+            endOfNextWord = text.length;
+          } else {
+            // If there is a next space, the end of the next word is the position before the space
+            endOfNextWord = nextSpace;
+          }
+
+          // Set the cursor position to the end of the next word
+          textarea.selectionStart = endOfNextWord;
+          // textarea.selectionEnd is NOT set on purpose here!
+        }
+      }
+
+      const wireButtons = (editorIdPrefix: string, textArea: HTMLTextAreaElement) => {
+        buttonWithId(editorIdPrefix+'SelectWordLeftButton')
+            .addEventListener('pointerdown', createSelectWordLeftFunction(textArea));
+        buttonWithId(editorIdPrefix+'WordLeftButton')
+            .addEventListener('pointerdown', createWordLeftFunction(textArea));
+        buttonWithId(editorIdPrefix+'WordRightButton')
+            .addEventListener('pointerdown', createSelectWordRightFunction(textArea));
+      }
+
+      wireButtons("mainEditor",textAreaWithId('mainEditorTextarea'));
+      wireButtons("rr",textAreaWithId('replaceRulesTextArea'));
     }
-
-    const createWordLeftFunction = (textarea: HTMLTextAreaElement) => {
-      return (event: Event) => {
-        createSelectWordLeftFunction(textarea)(event)
-        textarea.selectionEnd = textarea.selectionStart;
-      }
-    }
-
-    buttonWithId('mainEditorSelectWordLeftButton').addEventListener('pointerdown', 
-        createSelectWordLeftFunction(textAreaWithId('mainEditorTextarea')));
-    buttonWithId('mainEditorWordLeftButton').addEventListener('pointerdown',
-        createWordLeftFunction(textAreaWithId('mainEditorTextarea')));
-
-    // ############## wordRightButton ##############
-    buttonWithId('wordRightButton').addEventListener('pointerdown', function(event) {
-      event.preventDefault(); // Prevent the textarea from losing focus
-      const textarea = textAreaWithId('mainEditorTextarea');
-      const text = textarea.value;
-      const cursorPosition = textarea.selectionStart+1;
-      if (cursorPosition >= text.length) return;
-
-      // Find the end of the next word
-      const nextSpace = text.indexOf(' ', cursorPosition);
-      let endOfNextWord;
-      if (nextSpace === -1) {
-        // If there is no next space, the end of the next word is the end of the text
-        endOfNextWord = text.length;
-      } else {
-        // If there is a next space, the end of the next word is the position before the space
-        endOfNextWord = nextSpace;
-      }
-
-      // Set the cursor position to the end of the next word
-      textarea.selectionStart = endOfNextWord;
-      // textarea.selectionEnd = endOfNextWord;
-    });
 
     export namespace NonWordChars {
 
