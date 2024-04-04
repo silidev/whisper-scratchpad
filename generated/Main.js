@@ -143,8 +143,8 @@ export var UiFunctions;
         });
         let WordJumps;
         (function (WordJumps) {
-            const wordDelimiterRegexMainEditor = /[ \n\-]/;
-            const wordDelimiterRegexReplaceRules = /[" \n\-]/;
+            const wordDelimiterRegexMainEditor = /[ \n]/;
+            const wordDelimiterRegexReplaceRules = /[" \n]/;
             const createSelectWordLeftFunction = (textarea) => {
                 return (event) => {
                     event.preventDefault(); // Prevent the textarea from losing focus
