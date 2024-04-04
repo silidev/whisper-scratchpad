@@ -187,7 +187,7 @@ export var UiFunctions;
                     }
                     // Set the cursor position to the end of the next word
                     textarea.selectionStart = endOfNextWord;
-                    // textarea.selectionEnd is NOT set on purpose here! 
+                    // textarea.selectionEnd is NOT set on purpose here!
                 };
             };
             const wireButtons = (editorIdPrefix, textArea) => {
