@@ -12,16 +12,15 @@ import TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
 import Cookies = HtmlUtils.BrowserStorage.Cookies;
 import {ctrlYRedo, ctrlZUndo} from "./DontInspect.js"
 import {HelgeUtils} from "./HelgeUtils.js"
-import {INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER,
-  VERIFY_LARGE_STORAGE, VERSION, WHERE_TO_INSERT_AT, WHISPER_TEMPERATURE
+import {
+  INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERIFY_LARGE_STORAGE, VERSION, WHERE_TO_INSERT_AT, WHISPER_TEMPERATURE
 } from "./Config.js"
 import {createCutFunction} from "./CutButton.js"
 import {HtmlUtils} from "./HtmlUtils.js"
 import {CurrentNote} from "./CurrentNote.js";
 
-import {download, generateCsv, mkConfig}
-  // @ts-ignore
-  from "../node_modules/export-to-csv/output/index.js";
+//@ts-ignore
+import {download, generateCsv, mkConfig} from "../node_modules/export-to-csv/output/index.js";
 
 const LARGE_STORAGE_PROVIDER =
     VERIFY_LARGE_STORAGE
@@ -167,36 +166,40 @@ export namespace UiFunctions {
       mainEditorTextareaWrapper.findAndSelect("du")
     });
 
-    // ############## wordLeftButton ##############
-    const selectWordLeft = (event: Event) => {
-      event.preventDefault(); // Prevent the textarea from losing focus
-      const textarea = textAreaWithId('mainEditorTextarea');
-      const text = textarea.value;
-      const cursorPosition = textarea.selectionStart-2;
-      if (cursorPosition < 0) return;
+    // ############## mainEditorWordLeftButton ##############
+    const createSelectWordLeftFunction = (textarea: HTMLTextAreaElement) => {
+      return (event: Event) => {
+        event.preventDefault(); // Prevent the textarea from losing focus
+        const text = textarea.value;
+        const cursorPosition = textarea.selectionStart - 2;
+        if (cursorPosition < 0) return;
 
-      // Find the start of the previous word
-      const previousSpace = text.lastIndexOf(' ', cursorPosition);
-      let startOfPreviousWord;
-      if (previousSpace === -1) {
-        // If there is no previous space, the start of the previous word is the start of the text
-        startOfPreviousWord = 0;
-      } else {
-        // If there is a previous space, the start of the previous word is the position after the space
-        startOfPreviousWord = previousSpace + 1;
+        // Find the start of the previous word
+        const previousSpace = text.lastIndexOf(' ', cursorPosition);
+        let startOfPreviousWord;
+        if (previousSpace === -1) {
+          // If there is no previous space, the start of the previous word is the start of the text
+          startOfPreviousWord = 0;
+        } else {
+          // If there is a previous space, the start of the previous word is the position after the space
+          startOfPreviousWord = previousSpace + 1;
+        }
+
+        textarea.selectionStart = startOfPreviousWord;
       }
-
-      // Set the cursor position to the start of the previous word
-      textarea.selectionStart = startOfPreviousWord;
     }
 
-    const wordLeft = (event: Event) => {
-      selectWordLeft(event);
-      mainEditorTextarea.selectionEnd = mainEditorTextarea.selectionStart;
+    const createWordLeftFunction = (textarea: HTMLTextAreaElement) => {
+      return (event: Event) => {
+        createSelectWordLeftFunction(textarea)(event)
+        textarea.selectionEnd = textarea.selectionStart;
+      }
     }
 
-    buttonWithId('selectWordLeftButton').addEventListener('pointerdown', selectWordLeft);
-    buttonWithId('wordLeftButton').addEventListener('pointerdown', wordLeft);
+    buttonWithId('mainEditorSelectWordLeftButton').addEventListener('pointerdown', 
+        createSelectWordLeftFunction(textAreaWithId('mainEditorTextarea')));
+    buttonWithId('mainEditorWordLeftButton').addEventListener('pointerdown',
+        createWordLeftFunction(textAreaWithId('mainEditorTextarea')));
 
     // ############## wordRightButton ##############
     buttonWithId('wordRightButton').addEventListener('pointerdown', function(event) {
