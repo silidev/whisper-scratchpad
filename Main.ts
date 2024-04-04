@@ -167,6 +167,9 @@ export namespace UiFunctions {
     });
 
     namespace WordJumps {
+      const wordDelimiterRegexMainEditor = /[ \-]/;
+      const wordDelimiterRegexReplaceRules = /[ \-"]/;
+
       const createSelectWordLeftFunction = (textarea: HTMLTextAreaElement) => {
         return (event: Event) => {
           event.preventDefault(); // Prevent the textarea from losing focus
@@ -175,7 +178,8 @@ export namespace UiFunctions {
           if (cursorPosition < 0) return;
 
           // Find the start of the previous word
-          const previousSpace = text.lastIndexOf(' ', cursorPosition);
+          const previousSpace = HelgeUtils.Strings.regexLastIndexOf(text,
+              wordDelimiterRegexMainEditor, cursorPosition);
           let startOfPreviousWord;
           if (previousSpace === -1) {
             // If there is no previous space, the start of the previous word is the start of the text
@@ -204,7 +208,8 @@ export namespace UiFunctions {
           if (cursorPosition >= text.length) return;
 
           // Find the end of the next word
-          const nextSpace = text.indexOf(' ', cursorPosition);
+          const nextSpace = HelgeUtils.Strings.regexIndexOf(text,
+              wordDelimiterRegexReplaceRules, cursorPosition);
           let endOfNextWord;
           if (nextSpace === -1) {
             // If there is no next space, the end of the next word is the end of the text
