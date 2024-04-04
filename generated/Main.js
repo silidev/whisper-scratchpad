@@ -140,7 +140,7 @@ export var UiFunctions;
             mainEditorTextareaWrapper.findAndSelect("du");
         });
         // ############## wordLeftButton ##############
-        buttonWithId('wordLeftButton').addEventListener('pointerdown', event => {
+        const selectWordLeft = (event) => {
             event.preventDefault(); // Prevent the textarea from losing focus
             const textarea = textAreaWithId('mainEditorTextarea');
             const text = textarea.value;
@@ -160,8 +160,13 @@ export var UiFunctions;
             }
             // Set the cursor position to the start of the previous word
             textarea.selectionStart = startOfPreviousWord;
-            textarea.selectionEnd = startOfPreviousWord;
-        });
+        };
+        const wordLeft = (event) => {
+            selectWordLeft(event);
+            mainEditorTextarea.selectionEnd = mainEditorTextarea.selectionStart;
+        };
+        buttonWithId('selectWordLeftButton').addEventListener('pointerdown', selectWordLeft);
+        buttonWithId('wordLeftButton').addEventListener('pointerdown', wordLeft);
         // ############## wordRightButton ##############
         buttonWithId('wordRightButton').addEventListener('pointerdown', function (event) {
             event.preventDefault(); // Prevent the textarea from losing focus
@@ -183,7 +188,7 @@ export var UiFunctions;
             }
             // Set the cursor position to the end of the next word
             textarea.selectionStart = endOfNextWord;
-            textarea.selectionEnd = endOfNextWord;
+            // textarea.selectionEnd = endOfNextWord;
         });
         let NonWordChars;
         (function (NonWordChars) {

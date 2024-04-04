@@ -168,7 +168,7 @@ export namespace UiFunctions {
     });
 
     // ############## wordLeftButton ##############
-    buttonWithId('wordLeftButton').addEventListener('pointerdown', event => {
+    const selectWordLeft = (event: Event) => {
       event.preventDefault(); // Prevent the textarea from losing focus
       const textarea = textAreaWithId('mainEditorTextarea');
       const text = textarea.value;
@@ -188,8 +188,15 @@ export namespace UiFunctions {
 
       // Set the cursor position to the start of the previous word
       textarea.selectionStart = startOfPreviousWord;
-      textarea.selectionEnd = startOfPreviousWord;
-    });
+    }
+
+    const wordLeft = (event: Event) => {
+      selectWordLeft(event);
+      mainEditorTextarea.selectionEnd = mainEditorTextarea.selectionStart;
+    }
+
+    buttonWithId('selectWordLeftButton').addEventListener('pointerdown', selectWordLeft);
+    buttonWithId('wordLeftButton').addEventListener('pointerdown', wordLeft);
 
     // ############## wordRightButton ##############
     buttonWithId('wordRightButton').addEventListener('pointerdown', function(event) {
@@ -212,7 +219,7 @@ export namespace UiFunctions {
 
       // Set the cursor position to the end of the next word
       textarea.selectionStart = endOfNextWord;
-      textarea.selectionEnd = endOfNextWord;
+      // textarea.selectionEnd = endOfNextWord;
     });
 
     export namespace NonWordChars {
