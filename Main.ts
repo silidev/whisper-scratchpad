@@ -167,8 +167,8 @@ export namespace UiFunctions {
     });
 
     namespace WordJumps {
-      const wordDelimiterRegexMainEditor = /[ \-]/;
-      const wordDelimiterRegexReplaceRules = /[ \-"]/;
+      const wordDelimiterRegexMainEditor =    /[ \n\-]/;
+      const wordDelimiterRegexReplaceRules = /[" \n\-]/;
 
       const createSelectWordLeftFunction = (textarea: HTMLTextAreaElement) => {
         return (event: Event) => {
