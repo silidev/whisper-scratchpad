@@ -205,6 +205,10 @@ This used to be called greenFilter.*/
  text-align: center;
 }
 
+.buttonInMenu {
+ background-color: lightblue;
+}
+
 .buttonColors {
  background-color: var(--buttonColor);
 }

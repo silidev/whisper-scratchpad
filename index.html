@@ -37,12 +37,12 @@
            style="min-width:var(--buttonHeight); width:96%">☰</div>
 
       <div class='item buttonMenuItem'>
-        <button class="buttonLikeBox all" id="cutAllButton">Cut<br>all</button>
-        <button class="buttonLikeBox all" id="du2ichMenuItem">du2ich</button>
-        <button class="buttonLikeBox all" id="cancelRecording">x<br>Cancel</button>
-        <button class="buttonLikeBox all" id="toggleLogButton">Toggle<br>Log</button>
+        <button class="buttonLikeBox all buttonInMenu" id="cutAllButton">Cut<br>all</button>
+        <button class="buttonLikeBox all buttonInMenu" id="du2ichMenuItem">du2ich</button>
+        <button class="buttonLikeBox all buttonInMenu" id="cancelRecording">x<br>Cancel</button>
+        <button class="buttonLikeBox all buttonInMenu" id="toggleLogButton">Toggle<br>Log</button>
 
-        <span class="buttonLikeBox all">
+        <span class="buttonLikeBox all buttonInMenu">
           <input type="checkbox" id="logReplaceRulesCheckbox" class="forceMainColor">
           <label style="margin-left: 8px;" for="logReplaceRulesCheckbox">
             Log
@@ -55,16 +55,16 @@
 
 
       <!-- ############# updateButton ############# -->
-        <button class="buttonLikeBox all" id="updateButton" onclick="window.location.reload();
+        <button class="buttonLikeBox all buttonInMenu" id="updateButton" onclick="window.location.reload();
             // Do NOT reference anything from other scripts here, because this must work even if the other scripts are broken.
             ">Update<br>w/o save
         </button>
 
         <!--############## Anki-Export Button ##############-->
-        <button class="buttonLikeBox all" id="exportAnkiClozeCsv">Anki-<br>Export</button>
+        <button class="buttonLikeBox all buttonInMenu" id="exportAnkiClozeCsv">Anki-<br>Export</button>
 
         <!--############# Auto-Replace Checkbox ############# -->
-        <span class="buttonLikeBox all">
+        <span class="buttonLikeBox all buttonInMenu">
           <input type="checkbox" id="autoReplaceCheckbox" class="forceMainColor"
                  checked="checked">
           <label style="margin-left: 8px;" for="autoReplaceCheckbox">
@@ -74,14 +74,14 @@
         </span>
 
         <!--############## undoActionButton ##############-->
-        <button class="buttonLikeBox all" id="ctrlYButton">Ctrl-Y<br>Redo</button>
+        <button class="buttonLikeBox all buttonInMenu" id="ctrlYButton">Ctrl-Y<br>Redo</button>
 
       </div>
      <!-- ############# New Menu Line ############# -->
       <div class='item' style="padding-left: 0">
 
         <!--############## ignorePromptCheckbox ##############-->
-        <span class="buttonLikeBox all">
+        <span class="buttonLikeBox all buttonInMenu">
           <input type="checkbox" id="ignorePromptCheckbox"
                 class="forceMainColor">
           <label style="margin-left: 8px;" for="ignorePromptCheckbox">
@@ -90,7 +90,7 @@
         </span>
 
         <!-- ############ Translate Checkbox ############# -->
-        <span class="buttonLikeBox all">
+        <span class="buttonLikeBox all buttonInMenu">
           <input type="checkbox" id="translateCheckbox" class="forceMainColor">
           <label style="margin-left: 8px;" for="translateCheckbox">
             Trans-<br>late
@@ -98,16 +98,16 @@
         </span>
 
         <!--############## undoActionButton ##############-->
-        <button class="buttonLikeBox all" id="undoActionButton">Undo<br>Action</button>
+        <button class="buttonLikeBox all buttonInMenu" id="undoActionButton">Undo<br>Action</button>
 
         <!--############## Upload File ##############-->
-        <label for="fileToUploadSelector" id="uploadButton" class="buttonLikeBox all">
+        <label for="fileToUploadSelector" id="uploadButton" class="buttonLikeBox all buttonInMenu">
           Upload<br>File
         </label>
         <input type="file" id="fileToUploadSelector" style="display: none" />
 
         <!-- ########### infoButton ############# -->
-        <button class="buttonLikeBox all">  <info-button>
+        <button class="buttonLikeBox all buttonInMenu">  <info-button>
           <div style="position: fixed;
         left: 0; background-color: var(--backgroundColor); border: 1px solid
         green; padding: 5px;
