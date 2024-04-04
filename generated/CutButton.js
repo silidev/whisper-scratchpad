@@ -23,6 +23,7 @@ export const createCutFunction = (mainEditorTextarea, prefix = "", postfix = "")
             mainEditor.save();
             mainEditorTextarea.focus();
         }).catch(Log.error);
+        alert("The current note was cut out.");
     };
 };
 //# sourceMappingURL=CutButton.js.map

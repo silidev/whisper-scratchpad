@@ -734,6 +734,9 @@ export namespace UiFunctions {
 
 // ############## backslashButton ##############
       HtmlUtils.addClickListener(("backslashButton"), () => {
+        alert("Inserting \b into replaceRulesEditor.") /* This alert is
+        important because sometimes you hit this button by accident and this
+        can break the replace rules! */
         TextAreas.insertAndPutCursorAfter(replaceRulesTextArea,"\\b")
       })
 
