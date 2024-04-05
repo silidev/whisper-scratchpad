@@ -1196,14 +1196,36 @@ Please note that certain strong accents can possibly cause this mode to transcri
     suppressUnusedWarning(test)
   }
 
-  export const DatesAndTimes = class {
+  class TTT {
+    private static pad = (n: number) => n < 10 ? '0' + n : n
 
-    public static date2yyyymmddDashedYearDigits(date: Date, twoDigitYear: boolean) {
-      const pad = (n: number) => n < 10 ? '0' + n : n;
+    private static year(date: Date, twoDigitYear: boolean) {
       return (twoDigitYear ? date.getFullYear().toString().slice(-2) : date.getFullYear())
+    }
+
+    private static date2yyyymmddDashedYearDigits(date: Date, twoDigitYear: boolean) {
+      return this.year(date,twoDigitYear)
           + '-'
-          + pad(date.getMonth() + 1) + '-'
-          + pad(date.getDate())
+          + this.twoDigitMonth(date)
+          + '-'
+          + this.twoDigitDay(date)
+    }
+
+    private static twoDigitDay(date: Date) {
+      return this.pad(date.getDate());
+    }
+
+    private static twoDigitMonth(date: Date) {
+      return this.pad(date.getMonth() + 1);
+    }
+
+    public static date2ddmmyyPointed(date: Date, twoDigitYear: boolean) {
+      return ""
+          + this.twoDigitDay(date)
+          + '.'
+          + this.twoDigitMonth(date)
+          + '.'
+          + this.year(date,twoDigitYear)
     }
 
     /** Return a string representation of a date in the format YYYY-MM-DD.
@@ -1217,9 +1239,14 @@ Please note that certain strong accents can possibly cause this mode to transcri
 
     public static Timestamps = class {
       public static yymmddDashed() {
-        return DatesAndTimes.date2yymmddDashed(new Date());
+        return DatesAndTimes.date2yymmddDashed(new Date())
+      }
+
+      public static ddmmyyPointed() {
+        return DatesAndTimes.date2ddmmyyPointed(new Date(),true)
       }
     }
   }
 
+  export const DatesAndTimes = TTT;
 }

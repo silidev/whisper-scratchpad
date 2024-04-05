@@ -55,7 +55,7 @@ export var mainEditor;
     mainEditor.appendDelimiterAndCursor = () => {
         mainEditorTextareaWrapper.trim();
         mainEditor.appendTextAndCursor(" - "
-            + HelgeUtils.DatesAndTimes.Timestamps.yymmddDashed()
+            + HelgeUtils.DatesAndTimes.Timestamps.ddmmyyPointed()
             + '\n'
             + NEW_NOTE_DELIMITER);
         mainEditorTextarea.focus();

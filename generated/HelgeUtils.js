@@ -1139,13 +1139,31 @@ export var HelgeUtils;
         };
         HelgeUtils.suppressUnusedWarning(test);
     })(Semaphore = HelgeUtils.Semaphore || (HelgeUtils.Semaphore = {}));
-    HelgeUtils.DatesAndTimes = class {
+    class TTT {
+        static pad = (n) => n < 10 ? '0' + n : n;
+        static year(date, twoDigitYear) {
+            return (twoDigitYear ? date.getFullYear().toString().slice(-2) : date.getFullYear());
+        }
         static date2yyyymmddDashedYearDigits(date, twoDigitYear) {
-            const pad = (n) => n < 10 ? '0' + n : n;
-            return (twoDigitYear ? date.getFullYear().toString().slice(-2) : date.getFullYear())
+            return this.year(date, twoDigitYear)
                 + '-'
-                + pad(date.getMonth() + 1) + '-'
-                + pad(date.getDate());
+                + this.twoDigitMonth(date)
+                + '-'
+                + this.twoDigitDay(date);
+        }
+        static twoDigitDay(date) {
+            return this.pad(date.getDate());
+        }
+        static twoDigitMonth(date) {
+            return this.pad(date.getMonth() + 1);
+        }
+        static date2ddmmyyPointed(date, twoDigitYear) {
+            return ""
+                + this.twoDigitDay(date)
+                + '.'
+                + this.twoDigitMonth(date)
+                + '.'
+                + this.year(date, twoDigitYear);
         }
         /** Return a string representation of a date in the format YYYY-MM-DD.
          * Example: date2yyyymmddDashed(new Date(2022, 0, 1)) returns "2022-01-01". */
@@ -1159,7 +1177,11 @@ export var HelgeUtils;
             static yymmddDashed() {
                 return HelgeUtils.DatesAndTimes.date2yymmddDashed(new Date());
             }
+            static ddmmyyPointed() {
+                return HelgeUtils.DatesAndTimes.date2ddmmyyPointed(new Date(), true);
+            }
         };
-    };
+    }
+    HelgeUtils.DatesAndTimes = TTT;
 })(HelgeUtils || (HelgeUtils = {}));
 //# sourceMappingURL=HelgeUtils.js.map

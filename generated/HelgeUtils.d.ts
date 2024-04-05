@@ -5,7 +5,7 @@
  *
  * Copyright by Helge Tobias Kosuch 2024 */
 export declare namespace HelgeUtils {
-    namespace Exceptions {
+    export namespace Exceptions {
         /**
          * Reporting of exceptions in callbacks is sometimes very bad.
          * Therefore, exceptions should always be caught and then passed
@@ -60,14 +60,14 @@ export declare namespace HelgeUtils {
          * @param msg {String} */
         const alertAndThrow: (...msg: any) => never;
     }
-    const suppressUnusedWarning: (...args: any[]) => void;
-    namespace Tests {
+    export const suppressUnusedWarning: (...args: any[]) => void;
+    export namespace Tests {
         /** Inline this function! */
         const runTestsOnlyToday: () => void;
         const assert: (condition: boolean, ...output: any[]) => void;
         const assertEquals: (actual: any, expected: any, message?: string | null) => void;
     }
-    namespace Strings {
+    export namespace Strings {
         /** Returns the index of the first occurrence of the given regex in the string.
          *
          * @param input
@@ -114,8 +114,8 @@ export declare namespace HelgeUtils {
         }
         function runTests(): void;
     }
-    const runTests: () => void;
-    namespace Transcription {
+    export const runTests: () => void;
+    export namespace Transcription {
         class TranscriptionError extends Error {
             payload: {};
             constructor(payload: {});
@@ -123,7 +123,7 @@ export declare namespace HelgeUtils {
         type ApiName = "OpenAI" | "Gladia";
         const transcribe: (api: ApiName, audioBlob: Blob, apiKey: string, prompt?: string, language?: string, translateToEnglish?: boolean) => Promise<string>;
     }
-    namespace ReplaceByRules {
+    export namespace ReplaceByRules {
         class ReplaceRules {
             private rules;
             constructor(rules: string);
@@ -174,9 +174,9 @@ export declare namespace HelgeUtils {
          */
         const replaceByRulesAsString: (subject: string, allRules: string) => string;
     }
-    const memoize: <T, R>(func: (...args: T[]) => R) => (...args: T[]) => R;
-    const extractHighlights: (input: string) => string[];
-    namespace Misc {
+    export const memoize: <T, R>(func: (...args: T[]) => R) => (...args: T[]) => R;
+    export const extractHighlights: (input: string) => string[];
+    export namespace Misc {
         /** nullFilter
          *
          * Throws an exception if the input is null.
@@ -196,7 +196,7 @@ export declare namespace HelgeUtils {
     }
     /** @deprecated Inline this and replace the error handler with your own
      * error reporting. */
-    namespace clipboard {
+    export namespace clipboard {
         /** @deprecated Inline this and replace the error handler with your own
          * error reporting. */
         const read: (f: (text: string) => void) => void;
@@ -207,7 +207,7 @@ export declare namespace HelgeUtils {
     /**
      * Source: https://stackoverflow.com/questions/17528749/semaphore-like-queue-in-javascript
      */
-    namespace Semaphore {
+    export namespace Semaphore {
         class Queue {
             private running;
             private readonly autorun;
@@ -218,16 +218,23 @@ export declare namespace HelgeUtils {
             get next(): (value: any) => any;
         }
     }
-    const DatesAndTimes: {
-        new (): {};
-        date2yyyymmddDashedYearDigits(date: Date, twoDigitYear: boolean): string;
+    class TTT {
+        private static pad;
+        private static year;
+        private static date2yyyymmddDashedYearDigits;
+        private static twoDigitDay;
+        private static twoDigitMonth;
+        static date2ddmmyyPointed(date: Date, twoDigitYear: boolean): string;
         /** Return a string representation of a date in the format YYYY-MM-DD.
          * Example: date2yyyymmddDashed(new Date(2022, 0, 1)) returns "2022-01-01". */
-        date2yyyymmddDashed(date: Date): string;
-        date2yymmddDashed(date: Date): string;
-        Timestamps: {
+        static date2yyyymmddDashed(date: Date): string;
+        static date2yymmddDashed(date: Date): string;
+        static Timestamps: {
             new (): {};
             yymmddDashed(): string;
+            ddmmyyPointed(): string;
         };
-    };
+    }
+    export const DatesAndTimes: typeof TTT;
+    export {};
 }

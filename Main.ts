@@ -67,7 +67,7 @@ export namespace mainEditor {
   export const appendDelimiterAndCursor = () => {
     mainEditorTextareaWrapper.trim()
     appendTextAndCursor(" - "
-        + HelgeUtils.DatesAndTimes.Timestamps.yymmddDashed()
+        + HelgeUtils.DatesAndTimes.Timestamps.ddmmyyPointed()
         +'\n'
         + NEW_NOTE_DELIMITER)
     mainEditorTextarea.focus()
