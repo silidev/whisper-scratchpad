@@ -218,13 +218,16 @@ export declare namespace HelgeUtils {
             get next(): (value: any) => any;
         }
     }
-    class TTT {
+    class DatesAndTimesInternal {
         private static pad;
         private static year;
         private static date2yyyymmddDashedYearDigits;
+        private static day;
+        private static month;
         private static twoDigitDay;
         private static twoDigitMonth;
         static date2ddmmyyPointed(date: Date, twoDigitYear: boolean): string;
+        static date2dmyyPointed(date: Date, twoDigitYear: boolean): string;
         /** Return a string representation of a date in the format YYYY-MM-DD.
          * Example: date2yyyymmddDashed(new Date(2022, 0, 1)) returns "2022-01-01". */
         static date2yyyymmddDashed(date: Date): string;
@@ -235,6 +238,6 @@ export declare namespace HelgeUtils {
             ddmmyyPointed(): string;
         };
     }
-    export const DatesAndTimes: typeof TTT;
+    export const DatesAndTimes: typeof DatesAndTimesInternal;
     export {};
 }

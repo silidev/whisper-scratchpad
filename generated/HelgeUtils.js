@@ -466,8 +466,8 @@ export var HelgeUtils;
             let rule;
             const ruleParser = /^"(.+?)"([a-z]*?)(?:\r\n|\r|\n)?->(?:\r\n|\r|\n)?"(.*?)"([a-z]*?)(?:\r\n|\r|\n)?$/gmus;
             while (rule = ruleParser.exec(allRules) /* This works fine in a Chrome
-             but at least sometimes returns falsely null inside Anki and
-              AnkiDroid. */) {
+               but at least sometimes returns falsely null inside Anki and
+                AnkiDroid. */) {
                 const [, target, regexFlags, replacementString, replacementFlags] = rule;
                 applyRule(target, regexFlags, replacementString, replacementFlags);
                 if (preserveCase) {
@@ -1139,7 +1139,7 @@ export var HelgeUtils;
         };
         HelgeUtils.suppressUnusedWarning(test);
     })(Semaphore = HelgeUtils.Semaphore || (HelgeUtils.Semaphore = {}));
-    class TTT {
+    class DatesAndTimesInternal {
         static pad = (n) => n < 10 ? '0' + n : n;
         static year(date, twoDigitYear) {
             return (twoDigitYear ? date.getFullYear().toString().slice(-2) : date.getFullYear());
@@ -1151,17 +1151,31 @@ export var HelgeUtils;
                 + '-'
                 + this.twoDigitDay(date);
         }
+        static day(date) {
+            return date.getDate();
+        }
+        static month(date) {
+            return date.getMonth() + 1;
+        }
         static twoDigitDay(date) {
-            return this.pad(date.getDate());
+            return this.pad(this.day(date));
         }
         static twoDigitMonth(date) {
-            return this.pad(date.getMonth() + 1);
+            return this.pad(this.month(date));
         }
         static date2ddmmyyPointed(date, twoDigitYear) {
             return ""
                 + this.twoDigitDay(date)
                 + '.'
                 + this.twoDigitMonth(date)
+                + '.'
+                + this.year(date, twoDigitYear);
+        }
+        static date2dmyyPointed(date, twoDigitYear) {
+            return ""
+                + this.day(date)
+                + '.'
+                + this.month(date)
                 + '.'
                 + this.year(date, twoDigitYear);
         }
@@ -1178,10 +1192,10 @@ export var HelgeUtils;
                 return HelgeUtils.DatesAndTimes.date2yymmddDashed(new Date());
             }
             static ddmmyyPointed() {
-                return HelgeUtils.DatesAndTimes.date2ddmmyyPointed(new Date(), true);
+                return HelgeUtils.DatesAndTimes.date2dmyyPointed(new Date(), true);
             }
         };
     }
-    HelgeUtils.DatesAndTimes = TTT;
+    HelgeUtils.DatesAndTimes = DatesAndTimesInternal;
 })(HelgeUtils || (HelgeUtils = {}));
 //# sourceMappingURL=HelgeUtils.js.map
