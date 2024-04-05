@@ -5,7 +5,7 @@ export declare namespace mainEditor {
         const undo: () => void;
         const saveState: () => void;
     }
-    const appendTextAndCursor: (insertedString: string) => void;
+    const appendStringAndCursor: (insertedString: string) => void;
     const appendDelimiterAndCursor: () => void;
     const save: () => void;
     const insertNote: (changedText: string) => void;

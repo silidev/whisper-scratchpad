@@ -58,7 +58,7 @@ export namespace mainEditor {
     };
   }
 
-  export const appendTextAndCursor = (insertedString: string) => {
+  export const appendStringAndCursor = (insertedString: string) => {
     TextAreas.appendTextAndCursor(mainEditorTextarea, insertedString)
     mainEditor.save();
     TextAreas.scrollToEnd(mainEditorTextarea);
@@ -66,7 +66,7 @@ export namespace mainEditor {
 
   export const appendDelimiterAndCursor = () => {
     mainEditorTextareaWrapper.trim()
-    appendTextAndCursor(" - "
+    appendStringAndCursor(" - "
         + HelgeUtils.DatesAndTimes.Timestamps.ddmmyyPointed()
         +'\n'
         + NEW_NOTE_DELIMITER)
@@ -626,7 +626,7 @@ export namespace UiFunctions {
           if (insertDelimiter) {
             mainEditor.appendDelimiterAndCursor()
           } else {
-            mainEditor.appendTextAndCursor(" ")
+            mainEditor.appendStringAndCursor(" ")
           }
           startRecording()
         }

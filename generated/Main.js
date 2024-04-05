@@ -47,14 +47,14 @@ export var mainEditor;
             undoBuffer = mainEditorTextarea.value;
         };
     })(Undo = mainEditor.Undo || (mainEditor.Undo = {}));
-    mainEditor.appendTextAndCursor = (insertedString) => {
+    mainEditor.appendStringAndCursor = (insertedString) => {
         TextAreas.appendTextAndCursor(mainEditorTextarea, insertedString);
         mainEditor.save();
         TextAreas.scrollToEnd(mainEditorTextarea);
     };
     mainEditor.appendDelimiterAndCursor = () => {
         mainEditorTextareaWrapper.trim();
-        mainEditor.appendTextAndCursor(" - "
+        mainEditor.appendStringAndCursor(" - "
             + HelgeUtils.DatesAndTimes.Timestamps.ddmmyyPointed()
             + '\n'
             + NEW_NOTE_DELIMITER);
@@ -559,7 +559,7 @@ export var UiFunctions;
                         mainEditor.appendDelimiterAndCursor();
                     }
                     else {
-                        mainEditor.appendTextAndCursor(" ");
+                        mainEditor.appendStringAndCursor(" ");
                     }
                     startRecording();
                 }
