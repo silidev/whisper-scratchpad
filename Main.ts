@@ -756,7 +756,9 @@ export namespace UiFunctions {
     HtmlUtils.addClickListener("ctrlYButton", ctrlYRedo)
     HtmlUtils.addClickListener("addReplaceRuleButton", addReplaceRule)
     HtmlUtils.addClickListener("addWordReplaceRuleButton", addWordReplaceRule)
-    HtmlUtils.addClickListener("insertNewNoteDelimiterButton",
+    HtmlUtils.addClickListener("insertNewNoteDelimiterButton1",
+        mainEditor.appendDelimiterAndCursor)
+    HtmlUtils.addClickListener("insertNewNoteDelimiterButton2",
         mainEditor.appendDelimiterAndCursor)
 
 // cancelRecording

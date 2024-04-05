@@ -662,7 +662,8 @@ export var UiFunctions;
             HtmlUtils.addClickListener("ctrlYButton", ctrlYRedo);
             HtmlUtils.addClickListener("addReplaceRuleButton", addReplaceRule);
             HtmlUtils.addClickListener("addWordReplaceRuleButton", Buttons.addWordReplaceRule);
-            HtmlUtils.addClickListener("insertNewNoteDelimiterButton", mainEditor.appendDelimiterAndCursor);
+            HtmlUtils.addClickListener("insertNewNoteDelimiterButton1", mainEditor.appendDelimiterAndCursor);
+            HtmlUtils.addClickListener("insertNewNoteDelimiterButton2", mainEditor.appendDelimiterAndCursor);
             // cancelRecording
             Menu.wireItem("cancelRecording", Buttons.Media.cancelRecording);
             // cutAllButton
