@@ -144,7 +144,9 @@ export var UiFunctions;
         let WordJumps;
         (function (WordJumps) {
             const wordDelimiterRegexMainEditor = /[ \n]/;
+            const notWordDelimiterRegexMainEditor = /[^ \n]/;
             const wordDelimiterRegexReplaceRules = /[" \n]/;
+            const notWordDelimiterRegexReplaceRules = /[^" \n]/;
             const createSelectWordLeftFunction = (textarea) => {
                 return (event) => {
                     event.preventDefault(); // Prevent the textarea from losing focus
@@ -153,15 +155,15 @@ export var UiFunctions;
                     if (cursorPosition < 0)
                         return;
                     // Find the start of the previous word
-                    const previousSpace = HelgeUtils.Strings.regexLastIndexOf(text, wordDelimiterRegexMainEditor, cursorPosition);
+                    const delimiterSpace = HelgeUtils.Strings.regexLastIndexOf(text, wordDelimiterRegexMainEditor, cursorPosition);
                     let startOfPreviousWord;
-                    if (previousSpace === -1) {
+                    if (delimiterSpace === -1) {
                         // If there is no previous space, the start of the previous word is the start of the text
                         startOfPreviousWord = 0;
                     }
                     else {
                         // If there is a previous space, the start of the previous word is the position after the space
-                        startOfPreviousWord = previousSpace + 1;
+                        startOfPreviousWord = delimiterSpace + 1;
                     }
                     textarea.selectionStart = startOfPreviousWord;
                 };

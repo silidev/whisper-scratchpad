@@ -171,7 +171,9 @@ export namespace UiFunctions {
 
     namespace WordJumps {
       const wordDelimiterRegexMainEditor =    /[ \n]/;
+      const notWordDelimiterRegexMainEditor = /[^ \n]/;
       const wordDelimiterRegexReplaceRules = /[" \n]/;
+      const notWordDelimiterRegexReplaceRules = /[^" \n]/;
 
       const createSelectWordLeftFunction = (textarea: HTMLTextAreaElement) => {
         return (event: Event) => {
@@ -181,15 +183,15 @@ export namespace UiFunctions {
           if (cursorPosition < 0) return;
 
           // Find the start of the previous word
-          const previousSpace = HelgeUtils.Strings.regexLastIndexOf(text,
+          const delimiterSpace = HelgeUtils.Strings.regexLastIndexOf(text,
               wordDelimiterRegexMainEditor, cursorPosition);
           let startOfPreviousWord;
-          if (previousSpace === -1) {
+          if (delimiterSpace === -1) {
             // If there is no previous space, the start of the previous word is the start of the text
             startOfPreviousWord = 0;
           } else {
             // If there is a previous space, the start of the previous word is the position after the space
-            startOfPreviousWord = previousSpace + 1;
+            startOfPreviousWord = delimiterSpace + 1;
           }
 
           textarea.selectionStart = startOfPreviousWord;
