@@ -163,111 +163,101 @@ export namespace UiFunctions {
       NonWordChars.runTests()
     }
 
-    // ############## findDuButton ##############
-    buttonWithId('findDuButton').addEventListener('pointerdown', event => {
-      event.preventDefault(); // Prevent the textarea from losing focus
-      mainEditorTextareaWrapper.findAndSelect("du")
-    });
+    namespace Cursor {
+      // ############## findDuButton ##############
+      buttonWithId('findDuButton').addEventListener('pointerdown', event => {
+        event.preventDefault(); // Prevent the textarea from losing focus
+        mainEditorTextareaWrapper.findAndSelect("du")
+      });
 
-    namespace WordJumps {
-      /** wConfig = word jump config */
-      class WConfig {
-        public constructor(
-            /** word delimiter regex */
-            public regex: RegExp,
-            public negativeRegex: RegExp,
-            public textarea: HTMLTextAreaElement
-        ) {}
-      }
-
-      const mainEditorWConfig = new WConfig(
-           /[ \-().,?!\n]/,
-          /[^ \-().,?!\n]/,
-          textAreaWithId('mainEditorTextarea'));
-
-      const replaceRulesWConfig = new WConfig(
-           /[" \-().,?!\n]/,
-          /[^" \-().,?!\n]/,
-          textAreaWithId('replaceRulesTextArea'))
-
-      const createSelectWordLeftFunction = (wConfig: WConfig) => {
-        const textarea = wConfig.textarea
-        return (event: Event) => {
-          event.preventDefault(); // Prevent the textarea from losing focus
-          const text = textarea.value;
-          const cursorPosition = textarea.selectionStart - 2;
-          if (cursorPosition < 0) return;
-
-          // Find the start of the previous word
-          const prevNonDelimiter = HelgeUtils.Strings.regexLastIndexOf(text,
-              wConfig.negativeRegex, cursorPosition);
-          const prevDelimiter = HelgeUtils.Strings.regexLastIndexOf(text,
-              wConfig.regex, prevNonDelimiter);
-          let startOfPreviousWord;
-          if (prevDelimiter === -1) {
-            // If there is no previous space, the start of the previous word is
-            // the start of the text
-            startOfPreviousWord = 0;
-          } else {
-            // If there is a previous space, the start of the previous word is
-            // the position after the space
-            startOfPreviousWord = prevDelimiter + 1;
+      namespace WordJumps {
+        /** wConfig = word jump config */
+        class WConfig {
+          public constructor(/** word delimiter regex */
+                             public regex: RegExp, public negativeRegex: RegExp, public textarea: HTMLTextAreaElement) {
           }
-          textarea.selectionStart = startOfPreviousWord;
         }
-      }
 
-      const createWordLeftFunction = (wConfig: WConfig) => {
-        const textarea = wConfig.textarea
-        return (event: Event) => {
-          createSelectWordLeftFunction(wConfig)(event)
-          textarea.selectionEnd = textarea.selectionStart;
-        }
-      }
+        const mainEditorWConfig = new WConfig(/[ \-().,?!\n]/, /[^ \-().,?!\n]/, textAreaWithId('mainEditorTextarea'));
 
-      const createSelectWordRightFunction = (wConfig: WConfig) => {
-        const textarea = wConfig.textarea
-        return (event: Event) => {
-          event.preventDefault(); // Prevent the textarea from losing focus
-          const text = textarea.value;
-          const cursorPosition = textarea.selectionStart + 1;
-          if (cursorPosition >= text.length) return;
+        const replaceRulesWConfig = new WConfig(/[" \-().,?!\n]/, /[^" \-().,?!\n]/, textAreaWithId('replaceRulesTextArea'))
 
-          // Find the end of the next word
-          const a = HelgeUtils.Strings.regexIndexOf(text,
-              wConfig.negativeRegex, cursorPosition);
-          const b = HelgeUtils.Strings.regexIndexOf(text,
-              wConfig.regex, a);
-          let endOfNextWord;
-          if (b === -1) {
-            // If there is no next space, the end of the next word is the end
-            // of the text
-            endOfNextWord = text.length;
-          } else {
-            // If there is a next space, the end of the next word is the
-            // position before the space
-            endOfNextWord = b;
+        const createSelectWordLeftFunction = (wConfig: WConfig) => {
+          const textarea = wConfig.textarea
+          return (event: Event) => {
+            event.preventDefault(); // Prevent the textarea from losing focus
+            const text = textarea.value;
+            const cursorPosition = textarea.selectionStart - 2;
+            if (cursorPosition < 0) return;
+
+            // Find the start of the previous word
+            const prevNonDelimiter = HelgeUtils.Strings.regexLastIndexOf(text, wConfig.negativeRegex, cursorPosition);
+            const prevDelimiter = HelgeUtils.Strings.regexLastIndexOf(text, wConfig.regex, prevNonDelimiter);
+            let startOfPreviousWord;
+            if (prevDelimiter === -1) {
+              // If there is no previous space, the start of the previous word is
+              // the start of the text
+              startOfPreviousWord = 0;
+            } else {
+              // If there is a previous space, the start of the previous word is
+              // the position after the space
+              startOfPreviousWord = prevDelimiter + 1;
+            }
+            textarea.selectionStart = startOfPreviousWord;
           }
-
-          // Set the cursor position to the end of the next word
-          textarea.selectionStart = endOfNextWord;
-          // textarea.selectionEnd is NOT set on purpose here!
         }
-      }
 
-      const wireButtons = (editorIdPrefix: string, wConfig: WConfig) => {
-        buttonWithId(editorIdPrefix+'SelectWordLeftButton')
-            .addEventListener('pointerdown', createSelectWordLeftFunction(wConfig));
-        buttonWithId(editorIdPrefix+'WordLeftButton')
-            .addEventListener('pointerdown', createWordLeftFunction(wConfig));
-        buttonWithId(editorIdPrefix+'WordRightButton')
-            .addEventListener('pointerdown', createSelectWordRightFunction(wConfig));
-      }
+        const createWordLeftFunction = (wConfig: WConfig) => {
+          const textarea = wConfig.textarea
+          return (event: Event) => {
+            createSelectWordLeftFunction(wConfig)(event)
+            textarea.selectionEnd = textarea.selectionStart;
+          }
+        }
 
-      wireButtons("mainEditor",mainEditorWConfig);
-      wireButtons("rr",replaceRulesWConfig);
+        const createSelectWordRightFunction = (wConfig: WConfig) => {
+          const textarea = wConfig.textarea
+          return (event: Event) => {
+            event.preventDefault(); // Prevent the textarea from losing focus
+            const text = textarea.value;
+            const cursorPosition = textarea.selectionStart + 1;
+            if (cursorPosition >= text.length) return;
+
+            // Find the end of the next word
+            const a = HelgeUtils.Strings.regexIndexOf(text, wConfig.negativeRegex, cursorPosition);
+            const b = HelgeUtils.Strings.regexIndexOf(text, wConfig.regex, a);
+            let endOfNextWord;
+            if (b === -1) {
+              // If there is no next space, the end of the next word is the end
+              // of the text
+              endOfNextWord = text.length;
+            } else {
+              // If there is a next space, the end of the next word is the
+              // position before the space
+              endOfNextWord = b;
+            }
+
+            // Set the cursor position to the end of the next word
+            textarea.selectionStart = endOfNextWord;
+            // textarea.selectionEnd is NOT set on purpose here!
+          }
+        }
+
+        const wireButtons = (editorIdPrefix: string, wConfig: WConfig) => {
+          buttonWithId(editorIdPrefix + 'SelectWordLeftButton')
+              .addEventListener('pointerdown', createSelectWordLeftFunction(wConfig));
+          buttonWithId(editorIdPrefix + 'WordLeftButton')
+              .addEventListener('pointerdown', createWordLeftFunction(wConfig));
+          buttonWithId(editorIdPrefix + 'WordRightButton')
+              .addEventListener('pointerdown', createSelectWordRightFunction(wConfig));
+        }
+
+        wireButtons("mainEditor", mainEditorWConfig);
+        wireButtons("rr", replaceRulesWConfig);
+      }
     }
 
+    /** This is WIP, not working. */
     export namespace NonWordChars {
 
       import assert = HelgeUtils.Tests.assert;
