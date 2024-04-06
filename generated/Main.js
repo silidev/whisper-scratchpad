@@ -54,9 +54,17 @@ export var mainEditor;
     };
     mainEditor.appendDelimiterAndCursor = () => {
         mainEditorTextareaWrapper.trim();
-        mainEditor.appendStringAndCursor(" - "
-            + HelgeUtils.DatesAndTimes.Timestamps.ddmmyyPointed()
-            + '\n'
+        /* delete later:
+            const removeDate = (input: string) => {
+              const pattern = / - \d\d?\.\d\d?\.\d\d\n?$/;
+              return input.replace(pattern, '');
+            }
+            mainEditorTextarea.value = removeDate(mainEditorTextarea.value)
+        */
+        const dateAlreadyPresent = / - \d\d?\.\d\d?\.\d\d\n?$/.test(mainEditorTextarea.value);
+        mainEditor.appendStringAndCursor((dateAlreadyPresent ?
+            ""
+            : " - " + HelgeUtils.DatesAndTimes.Timestamps.ddmmyyPointed() + '\n')
             + NEW_NOTE_DELIMITER);
         mainEditorTextarea.focus();
     };
