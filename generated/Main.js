@@ -147,7 +147,23 @@ export var UiFunctions;
             const notWordDelimiterRegexMainEditor = /[^ \n]/;
             const wordDelimiterRegexReplaceRules = /[" \n]/;
             const notWordDelimiterRegexReplaceRules = /[^" \n]/;
-            const createSelectWordLeftFunction = (textarea) => {
+            /** wConfig = word jump config */
+            class WConfig {
+                regex;
+                negativeRegex;
+                textarea;
+                constructor(
+                /** word delimiter regex */
+                regex, negativeRegex, textarea) {
+                    this.regex = regex;
+                    this.negativeRegex = negativeRegex;
+                    this.textarea = textarea;
+                }
+            }
+            const mainEditorWConfig = new WConfig(/[ \n]/, /[^ \n]/, textAreaWithId('mainEditorTextarea'));
+            const replaceRulesWConfig = new WConfig(/[" \n]/, /[^" \n]/, textAreaWithId('replaceRulesTextArea'));
+            const createSelectWordLeftFunction = (wConfig) => {
+                const textarea = wConfig.textarea;
                 return (event) => {
                     event.preventDefault(); // Prevent the textarea from losing focus
                     const text = textarea.value;
@@ -155,7 +171,7 @@ export var UiFunctions;
                     if (cursorPosition < 0)
                         return;
                     // Find the start of the previous word
-                    const delimiterSpace = HelgeUtils.Strings.regexLastIndexOf(text, wordDelimiterRegexMainEditor, cursorPosition);
+                    const delimiterSpace = HelgeUtils.Strings.regexLastIndexOf(text, wConfig.regex, cursorPosition);
                     let startOfPreviousWord;
                     if (delimiterSpace === -1) {
                         // If there is no previous space, the start of the previous word is the start of the text
@@ -168,13 +184,15 @@ export var UiFunctions;
                     textarea.selectionStart = startOfPreviousWord;
                 };
             };
-            const createWordLeftFunction = (textarea) => {
+            const createWordLeftFunction = (wConfig) => {
+                const textarea = wConfig.textarea;
                 return (event) => {
-                    createSelectWordLeftFunction(textarea)(event);
+                    createSelectWordLeftFunction(wConfig)(event);
                     textarea.selectionEnd = textarea.selectionStart;
                 };
             };
-            const createSelectWordRightFunction = (textarea) => {
+            const createSelectWordRightFunction = (wConfig) => {
+                const textarea = wConfig.textarea;
                 return (event) => {
                     event.preventDefault(); // Prevent the textarea from losing focus
                     const text = textarea.value;
@@ -182,7 +200,7 @@ export var UiFunctions;
                     if (cursorPosition >= text.length)
                         return;
                     // Find the end of the next word
-                    const nextSpace = HelgeUtils.Strings.regexIndexOf(text, wordDelimiterRegexReplaceRules, cursorPosition);
+                    const nextSpace = HelgeUtils.Strings.regexIndexOf(text, wConfig.regex, cursorPosition);
                     let endOfNextWord;
                     if (nextSpace === -1) {
                         // If there is no next space, the end of the next word is the end of the text
@@ -197,16 +215,16 @@ export var UiFunctions;
                     // textarea.selectionEnd is NOT set on purpose here!
                 };
             };
-            const wireButtons = (editorIdPrefix, textArea) => {
+            const wireButtons = (editorIdPrefix, wConfig) => {
                 buttonWithId(editorIdPrefix + 'SelectWordLeftButton')
-                    .addEventListener('pointerdown', createSelectWordLeftFunction(textArea));
+                    .addEventListener('pointerdown', createSelectWordLeftFunction(wConfig));
                 buttonWithId(editorIdPrefix + 'WordLeftButton')
-                    .addEventListener('pointerdown', createWordLeftFunction(textArea));
+                    .addEventListener('pointerdown', createWordLeftFunction(wConfig));
                 buttonWithId(editorIdPrefix + 'WordRightButton')
-                    .addEventListener('pointerdown', createSelectWordRightFunction(textArea));
+                    .addEventListener('pointerdown', createSelectWordRightFunction(wConfig));
             };
-            wireButtons("mainEditor", textAreaWithId('mainEditorTextarea'));
-            wireButtons("rr", textAreaWithId('replaceRulesTextArea'));
+            wireButtons("mainEditor", mainEditorWConfig);
+            wireButtons("rr", replaceRulesWConfig);
         })(WordJumps || (WordJumps = {}));
         let NonWordChars;
         (function (NonWordChars) {

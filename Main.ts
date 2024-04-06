@@ -175,7 +175,23 @@ export namespace UiFunctions {
       const wordDelimiterRegexReplaceRules = /[" \n]/;
       const notWordDelimiterRegexReplaceRules = /[^" \n]/;
 
-      const createSelectWordLeftFunction = (textarea: HTMLTextAreaElement) => {
+      /** wConfig = word jump config */
+      class WConfig {
+        public constructor(
+            /** word delimiter regex */
+            public regex: RegExp,
+            public negativeRegex: RegExp,
+            public textarea: HTMLTextAreaElement
+        ) {}
+      }
+
+      const mainEditorWConfig = new WConfig(/[ \n]/,/[^ \n]/,
+          textAreaWithId('mainEditorTextarea'));
+      const replaceRulesWConfig = new WConfig(/[" \n]/,/[^" \n]/,
+          textAreaWithId('replaceRulesTextArea'))
+
+      const createSelectWordLeftFunction = (wConfig: WConfig) => {
+        const textarea = wConfig.textarea
         return (event: Event) => {
           event.preventDefault(); // Prevent the textarea from losing focus
           const text = textarea.value;
@@ -184,7 +200,7 @@ export namespace UiFunctions {
 
           // Find the start of the previous word
           const delimiterSpace = HelgeUtils.Strings.regexLastIndexOf(text,
-              wordDelimiterRegexMainEditor, cursorPosition);
+              wConfig.regex, cursorPosition);
           let startOfPreviousWord;
           if (delimiterSpace === -1) {
             // If there is no previous space, the start of the previous word is the start of the text
@@ -198,14 +214,16 @@ export namespace UiFunctions {
         }
       }
 
-      const createWordLeftFunction = (textarea: HTMLTextAreaElement) => {
+      const createWordLeftFunction = (wConfig: WConfig) => {
+        const textarea = wConfig.textarea
         return (event: Event) => {
-          createSelectWordLeftFunction(textarea)(event)
+          createSelectWordLeftFunction(wConfig)(event)
           textarea.selectionEnd = textarea.selectionStart;
         }
       }
 
-      const createSelectWordRightFunction = (textarea: HTMLTextAreaElement) => {
+      const createSelectWordRightFunction = (wConfig: WConfig) => {
+        const textarea = wConfig.textarea
         return (event: Event) => {
           event.preventDefault(); // Prevent the textarea from losing focus
           const text = textarea.value;
@@ -214,7 +232,7 @@ export namespace UiFunctions {
 
           // Find the end of the next word
           const nextSpace = HelgeUtils.Strings.regexIndexOf(text,
-              wordDelimiterRegexReplaceRules, cursorPosition);
+              wConfig.regex, cursorPosition);
           let endOfNextWord;
           if (nextSpace === -1) {
             // If there is no next space, the end of the next word is the end of the text
@@ -230,17 +248,17 @@ export namespace UiFunctions {
         }
       }
 
-      const wireButtons = (editorIdPrefix: string, textArea: HTMLTextAreaElement) => {
+      const wireButtons = (editorIdPrefix: string, wConfig: WConfig) => {
         buttonWithId(editorIdPrefix+'SelectWordLeftButton')
-            .addEventListener('pointerdown', createSelectWordLeftFunction(textArea));
+            .addEventListener('pointerdown', createSelectWordLeftFunction(wConfig));
         buttonWithId(editorIdPrefix+'WordLeftButton')
-            .addEventListener('pointerdown', createWordLeftFunction(textArea));
+            .addEventListener('pointerdown', createWordLeftFunction(wConfig));
         buttonWithId(editorIdPrefix+'WordRightButton')
-            .addEventListener('pointerdown', createSelectWordRightFunction(textArea));
+            .addEventListener('pointerdown', createSelectWordRightFunction(wConfig));
       }
 
-      wireButtons("mainEditor",textAreaWithId('mainEditorTextarea'));
-      wireButtons("rr",textAreaWithId('replaceRulesTextArea'));
+      wireButtons("mainEditor",mainEditorWConfig);
+      wireButtons("rr",replaceRulesWConfig);
     }
 
     export namespace NonWordChars {
