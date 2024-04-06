@@ -143,10 +143,6 @@ export var UiFunctions;
         });
         let WordJumps;
         (function (WordJumps) {
-            const wordDelimiterRegexMainEditor = /[ \n]/;
-            const notWordDelimiterRegexMainEditor = /[^ \n]/;
-            const wordDelimiterRegexReplaceRules = /[" \n]/;
-            const notWordDelimiterRegexReplaceRules = /[^" \n]/;
             /** wConfig = word jump config */
             class WConfig {
                 regex;
@@ -160,8 +156,8 @@ export var UiFunctions;
                     this.textarea = textarea;
                 }
             }
-            const mainEditorWConfig = new WConfig(/[ \n]/, /[^ \n]/, textAreaWithId('mainEditorTextarea'));
-            const replaceRulesWConfig = new WConfig(/[" \n]/, /[^" \n]/, textAreaWithId('replaceRulesTextArea'));
+            const mainEditorWConfig = new WConfig(/[ \-\(\)\n]/, /[^ \-\(\)\n]/, textAreaWithId('mainEditorTextarea'));
+            const replaceRulesWConfig = new WConfig(/[" \-\(\)\n]/, /[^" \-\(\)\n]/, textAreaWithId('replaceRulesTextArea'));
             const createSelectWordLeftFunction = (wConfig) => {
                 const textarea = wConfig.textarea;
                 return (event) => {
@@ -171,15 +167,16 @@ export var UiFunctions;
                     if (cursorPosition < 0)
                         return;
                     // Find the start of the previous word
-                    const delimiterSpace = HelgeUtils.Strings.regexLastIndexOf(text, wConfig.regex, cursorPosition);
+                    const prevNonDelimiter = HelgeUtils.Strings.regexLastIndexOf(text, wConfig.negativeRegex, cursorPosition);
+                    const prevDelimiter = HelgeUtils.Strings.regexLastIndexOf(text, wConfig.regex, prevNonDelimiter);
                     let startOfPreviousWord;
-                    if (delimiterSpace === -1) {
+                    if (prevDelimiter === -1) {
                         // If there is no previous space, the start of the previous word is the start of the text
                         startOfPreviousWord = 0;
                     }
                     else {
                         // If there is a previous space, the start of the previous word is the position after the space
-                        startOfPreviousWord = delimiterSpace + 1;
+                        startOfPreviousWord = prevDelimiter + 1;
                     }
                     textarea.selectionStart = startOfPreviousWord;
                 };
@@ -200,15 +197,16 @@ export var UiFunctions;
                     if (cursorPosition >= text.length)
                         return;
                     // Find the end of the next word
-                    const nextSpace = HelgeUtils.Strings.regexIndexOf(text, wConfig.regex, cursorPosition);
+                    const a = HelgeUtils.Strings.regexIndexOf(text, wConfig.negativeRegex, cursorPosition);
+                    const b = HelgeUtils.Strings.regexIndexOf(text, wConfig.regex, a);
                     let endOfNextWord;
-                    if (nextSpace === -1) {
+                    if (b === -1) {
                         // If there is no next space, the end of the next word is the end of the text
                         endOfNextWord = text.length;
                     }
                     else {
                         // If there is a next space, the end of the next word is the position before the space
-                        endOfNextWord = nextSpace;
+                        endOfNextWord = b;
                     }
                     // Set the cursor position to the end of the next word
                     textarea.selectionStart = endOfNextWord;
