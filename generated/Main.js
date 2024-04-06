@@ -156,8 +156,8 @@ export var UiFunctions;
                     this.textarea = textarea;
                 }
             }
-            const mainEditorWConfig = new WConfig(/[ \-\(\)\n]/, /[^ \-\(\)\n]/, textAreaWithId('mainEditorTextarea'));
-            const replaceRulesWConfig = new WConfig(/[" \-\(\)\n]/, /[^" \-\(\)\n]/, textAreaWithId('replaceRulesTextArea'));
+            const mainEditorWConfig = new WConfig(/[ \-().,?!\n]/, /[^ \-().,?!\n]/, textAreaWithId('mainEditorTextarea'));
+            const replaceRulesWConfig = new WConfig(/[" \-().,?!\n]/, /[^" \-().,?!\n]/, textAreaWithId('replaceRulesTextArea'));
             const createSelectWordLeftFunction = (wConfig) => {
                 const textarea = wConfig.textarea;
                 return (event) => {
@@ -171,11 +171,13 @@ export var UiFunctions;
                     const prevDelimiter = HelgeUtils.Strings.regexLastIndexOf(text, wConfig.regex, prevNonDelimiter);
                     let startOfPreviousWord;
                     if (prevDelimiter === -1) {
-                        // If there is no previous space, the start of the previous word is the start of the text
+                        // If there is no previous space, the start of the previous word is
+                        // the start of the text
                         startOfPreviousWord = 0;
                     }
                     else {
-                        // If there is a previous space, the start of the previous word is the position after the space
+                        // If there is a previous space, the start of the previous word is
+                        // the position after the space
                         startOfPreviousWord = prevDelimiter + 1;
                     }
                     textarea.selectionStart = startOfPreviousWord;
@@ -201,11 +203,13 @@ export var UiFunctions;
                     const b = HelgeUtils.Strings.regexIndexOf(text, wConfig.regex, a);
                     let endOfNextWord;
                     if (b === -1) {
-                        // If there is no next space, the end of the next word is the end of the text
+                        // If there is no next space, the end of the next word is the end
+                        // of the text
                         endOfNextWord = text.length;
                     }
                     else {
-                        // If there is a next space, the end of the next word is the position before the space
+                        // If there is a next space, the end of the next word is the
+                        // position before the space
                         endOfNextWord = b;
                     }
                     // Set the cursor position to the end of the next word
