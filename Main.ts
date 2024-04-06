@@ -208,9 +208,13 @@ export namespace UiFunctions {
           }
         }
 
-        const mainEditorWConfig = new WConfig(/[ \-().,?!\n]/, /[^ \-().,?!\n]/, textAreaWithId('mainEditorTextarea'));
+        const regex = /[" \-(),?!\n]/;
+        const negativeRegex = /[^" \-(),?!\n]/;
+        const mainEditorWConfig = new WConfig(regex,negativeRegex,
+            textAreaWithId('mainEditorTextarea'));
 
-        const replaceRulesWConfig = new WConfig(/[" \-().,?!\n]/, /[^" \-().,?!\n]/, textAreaWithId('replaceRulesTextArea'))
+        const replaceRulesWConfig = new WConfig(regex,negativeRegex,
+            textAreaWithId('replaceRulesTextArea'))
 
         const createSelectWordLeftFunction = (wConfig: WConfig) => {
           const textarea = wConfig.textarea

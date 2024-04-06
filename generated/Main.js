@@ -186,8 +186,10 @@ export var UiFunctions;
                         this.textarea = textarea;
                     }
                 }
-                const mainEditorWConfig = new WConfig(/[ \-().,?!\n]/, /[^ \-().,?!\n]/, textAreaWithId('mainEditorTextarea'));
-                const replaceRulesWConfig = new WConfig(/[" \-().,?!\n]/, /[^" \-().,?!\n]/, textAreaWithId('replaceRulesTextArea'));
+                const regex = /[" \-(),?!\n]/;
+                const negativeRegex = /[^" \-(),?!\n]/;
+                const mainEditorWConfig = new WConfig(regex, negativeRegex, textAreaWithId('mainEditorTextarea'));
+                const replaceRulesWConfig = new WConfig(regex, negativeRegex, textAreaWithId('replaceRulesTextArea'));
                 const createSelectWordLeftFunction = (wConfig) => {
                     const textarea = wConfig.textarea;
                     return (event) => {
