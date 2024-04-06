@@ -104,7 +104,7 @@ namespace Misc {
   export const replaceInCurrentNote = () => {
     mainEditor.Undo.saveState();
     const selectionStart = mainEditorTextarea.selectionStart
-    const selectionEnd = mainEditorTextarea.selectionEnd
+    // const selectionEnd = mainEditorTextarea.selectionEnd
 
     const currentNote = new CurrentNote(mainEditorTextarea)
     const changedText = ReplaceByRules.withUiLog(
@@ -114,7 +114,7 @@ namespace Misc {
     mainEditor.insertNote(changedText)
 
     mainEditorTextarea.selectionStart = selectionStart
-    mainEditorTextarea.selectionEnd = selectionEnd
+    mainEditorTextarea.selectionEnd = selectionStart
   }
 
   export const addKeyboardShortcuts = () => {

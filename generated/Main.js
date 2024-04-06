@@ -88,13 +88,13 @@ var Misc;
     Misc.replaceInCurrentNote = () => {
         mainEditor.Undo.saveState();
         const selectionStart = mainEditorTextarea.selectionStart;
-        const selectionEnd = mainEditorTextarea.selectionEnd;
+        // const selectionEnd = mainEditorTextarea.selectionEnd
         const currentNote = new CurrentNote(mainEditorTextarea);
         const changedText = ReplaceByRules.withUiLog(replaceRulesTextArea.value, currentNote.text());
         currentNote.delete();
         mainEditor.insertNote(changedText);
         mainEditorTextarea.selectionStart = selectionStart;
-        mainEditorTextarea.selectionEnd = selectionEnd;
+        mainEditorTextarea.selectionEnd = selectionStart;
     };
     Misc.addKeyboardShortcuts = () => {
         const cutFromMainEditor = createCutFunction(mainEditorTextarea, OPEN_CLOZE_STR, CLOSE_CLOZE_STR);
