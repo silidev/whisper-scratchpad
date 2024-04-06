@@ -143,6 +143,28 @@ export var UiFunctions;
                 event.preventDefault(); // Prevent the textarea from losing focus
                 mainEditorTextareaWrapper.findAndSelect("du");
             });
+            {
+                const textarea = textAreaWithId('mainEditorTextarea');
+                const wireCursorButton = (isLeft) => {
+                    buttonWithId('mainEditor' + (isLeft ? "Left" : "Right") + 'Button')
+                        .addEventListener('pointerdown', (event) => {
+                        event.preventDefault(); // Prevent the textarea from losing focus
+                        const noSelection = (textarea.selectionStart === textarea.selectionEnd);
+                        if (isLeft) {
+                            textarea.selectionStart = textarea.selectionStart - 1;
+                            if (noSelection)
+                                textarea.selectionEnd = textarea.selectionStart;
+                        }
+                        else {
+                            textarea.selectionStart = textarea.selectionStart + 1;
+                            if (noSelection)
+                                textarea.selectionEnd = textarea.selectionStart;
+                        }
+                    });
+                };
+                wireCursorButton(true);
+                wireCursorButton(false);
+            }
             let WordJumps;
             (function (WordJumps) {
                 /** wConfig = word jump config */

@@ -170,6 +170,25 @@ export namespace UiFunctions {
         mainEditorTextareaWrapper.findAndSelect("du")
       });
 
+      {
+        const textarea = textAreaWithId('mainEditorTextarea')
+        const wireCursorButton = (isLeft: boolean) => {
+          buttonWithId('mainEditor'+(isLeft?"Left":"Right")+'Button')
+              .addEventListener('pointerdown', (event: Event) => {
+                event.preventDefault(); // Prevent the textarea from losing focus
+                const noSelection = (textarea.selectionStart === textarea.selectionEnd)
+                if (isLeft) {
+                  textarea.selectionStart = textarea.selectionStart - 1
+                  if (noSelection) textarea.selectionEnd = textarea.selectionStart
+                } else {
+                  textarea.selectionStart = textarea.selectionStart + 1
+                  if (noSelection) textarea.selectionEnd = textarea.selectionStart
+                }
+              });
+        }
+        wireCursorButton(true);
+        wireCursorButton(false);
+      }
       namespace WordJumps {
         /** wConfig = word jump config */
         class WConfig {
