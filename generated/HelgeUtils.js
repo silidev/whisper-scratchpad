@@ -1,4 +1,6 @@
 // noinspection JSUnusedGlobalSymbols
+//@ts-ignore
+// import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js";
 /**
  * HelgeUtils.ts
  * @description A collection of general utility functions not connected to a
@@ -308,6 +310,27 @@ export var HelgeUtils;
             }
         }
         Transcription.TranscriptionError = TranscriptionError;
+        /* delete later:
+            const withDeepgram = async (audioBlob: Blob, apiKey: string, prompt: string) => {
+              const deepgram = new Deepgram(apiKey)
+              const response = await deepgram.transcription.preRecorded(audioBlob, {
+                punctuation: true,
+              })
+              return response.results
+            }*/
+        const withDeepgram = async (audioBlob, apiKey, prompt) => {
+            const response = await fetch("https://api.deepgram.com/v1/listen", {
+                method: 'POST',
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Token ${apiKey}`,
+                    "Content-Type": "audio/wav",
+                },
+                body: audioBlob
+            });
+            const result = await response.json();
+            return result;
+        };
         /** Transcribes the given audio blob using the given API key and prompt.
          *
          * @param audioBlob
@@ -372,7 +395,8 @@ export var HelgeUtils;
                 return "";
             const output = api === "OpenAI" ?
                 await withOpenAi(audioBlob, apiKey, prompt, language, translateToEnglish)
-                : await withGladia(audioBlob, apiKey, prompt);
+                : api === "Deepgram" ? await withDeepgram(audioBlob, apiKey, prompt)
+                    : await withGladia(audioBlob, apiKey, prompt);
             if (typeof output === "string")
                 return output;
             throw new TranscriptionError(output);

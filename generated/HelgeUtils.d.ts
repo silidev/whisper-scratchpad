@@ -120,7 +120,7 @@ export declare namespace HelgeUtils {
             payload: {};
             constructor(payload: {});
         }
-        type ApiName = "OpenAI" | "Gladia";
+        type ApiName = "OpenAI" | "Gladia" | "Deepgram";
         const transcribe: (api: ApiName, audioBlob: Blob, apiKey: string, prompt?: string, language?: string, translateToEnglish?: boolean) => Promise<string>;
     }
     export namespace ReplaceByRules {
