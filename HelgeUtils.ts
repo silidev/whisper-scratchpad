@@ -328,19 +328,17 @@ export namespace HelgeUtils {
 
     export type ApiName = "OpenAI" | "Gladia" | "Deepgram"
 
-
-/* delete later:
-    const withDeepgram = async (audioBlob: Blob, apiKey: string, prompt: string) => {
-      const deepgram = new Deepgram(apiKey)
-      const response = await deepgram.transcription.preRecorded(audioBlob, {
-        punctuation: true,
-      })
-      return response.results
-    }*/
-
-    const withDeepgram = async (audioBlob: Blob, apiKey: string, prompt: string) => {
+    const withDeepgram = async (audioBlob: Blob, apiKey: string) => {
       const response = await fetch(
-          "https://api.deepgram.com/v1/listen"
+          /* Docs: https://developers.deepgram.com/reference/listen-file */
+          "https://api.deepgram.com/v1/listen?" +
+          "&detect_language=de" +
+          "&detect_language=en" +
+          // "&dictation=true" + // Will convert comma to , etc
+          "&model=nova-2" +
+          // "&model=whisper-large" +
+          "&numerals=true" +
+          "&punctuate=true"
           , {
             method: 'POST',
             headers: {
@@ -351,6 +349,7 @@ export namespace HelgeUtils {
             body: audioBlob
           })
       const result = await response.json()
+      // noinspection JSUnresolvedReference
       const maybeTranscription = result?.results?.channels[0]?.alternatives[0]?.transcript
       if (typeof maybeTranscription === "string") return maybeTranscription
       return result
@@ -435,8 +434,8 @@ Please note that certain strong accents can possibly cause this mode to transcri
       const output =
         api === "OpenAI" ?
           await withOpenAi(audioBlob, apiKey, prompt, language, translateToEnglish)
-          : api === "Deepgram" ? await withDeepgram(audioBlob, apiKey, prompt)
-          :  await withGladia(audioBlob, apiKey, prompt)
+          : api === "Deepgram" ? await withDeepgram(audioBlob, apiKey)
+          :  await withGladia(audioBlob, apiKey)
       if (typeof output === "string") return output
       throw new TranscriptionError(output)
     }
