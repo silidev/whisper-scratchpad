@@ -351,6 +351,8 @@ export namespace HelgeUtils {
             body: audioBlob
           })
       const result = await response.json()
+      const maybeTranscription = result?.results?.channels[0]?.alternatives[0]?.transcript
+      if (typeof maybeTranscription === "string") return maybeTranscription
       return result
     }
 
