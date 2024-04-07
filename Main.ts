@@ -212,7 +212,6 @@ export namespace UiFunctions {
         const negativeRegex = /[^" \-(),?!\n]/;
         const mainEditorWConfig = new WConfig(regex,negativeRegex,
             textAreaWithId('mainEditorTextarea'));
-
         const replaceRulesWConfig = new WConfig(regex,negativeRegex,
             textAreaWithId('replaceRulesTextArea'))
 
