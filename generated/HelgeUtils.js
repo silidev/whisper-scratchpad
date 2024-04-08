@@ -407,7 +407,8 @@ export var HelgeUtils;
             const output = api === "OpenAI" ?
                 await withOpenAi(audioBlob, apiKey, prompt, language, translateToEnglish)
                 : api === "Deepgram-whisper" ?
-                    await withDeepgram(audioBlob, apiKey, "whisper")
+                    await withDeepgram(audioBlob, apiKey, "whisper") /*"whisper-large"
+                     fails although the docs say that should work.*/
                     : api === "Deepgram-nova-2" ?
                         await withDeepgram(audioBlob, apiKey, "nova-2")
                         : await withGladia(audioBlob, apiKey);

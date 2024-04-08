@@ -441,7 +441,8 @@ Please note that certain strong accents can possibly cause this mode to transcri
         api === "OpenAI" ?
           await withOpenAi(audioBlob, apiKey, prompt, language, translateToEnglish)
           : api === "Deepgram-whisper" ?
-              await withDeepgram(audioBlob, apiKey, "whisper")
+              await withDeepgram(audioBlob, apiKey, "whisper") /*"whisper-large"
+               fails although the docs say that should work.*/
           : api === "Deepgram-nova-2" ?
               await withDeepgram(audioBlob, apiKey, "nova-2")
 
