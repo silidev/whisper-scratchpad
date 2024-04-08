@@ -314,7 +314,8 @@ export var HelgeUtils;
          *
          * @param audioBlob
          * @param apiKey
-         * @param model I use nova-2 and whisper-large
+         * @param model I use nova-2 and "whisper". "whisper-large" fails although
+         * the docs say that should work.
          */
         const withDeepgram = async (audioBlob, apiKey, model) => {
             const response = await fetch(
@@ -405,8 +406,10 @@ export var HelgeUtils;
                 return "";
             const output = api === "OpenAI" ?
                 await withOpenAi(audioBlob, apiKey, prompt, language, translateToEnglish)
-                : api === "Deepgram-whisper" ? await withDeepgram(audioBlob, apiKey, "whisper-large")
-                    : api === "Deepgram-nova-2" ? await withDeepgram(audioBlob, apiKey, "nova-2")
+                : api === "Deepgram-whisper" ?
+                    await withDeepgram(audioBlob, apiKey, "whisper")
+                    : api === "Deepgram-nova-2" ?
+                        await withDeepgram(audioBlob, apiKey, "nova-2")
                         : await withGladia(audioBlob, apiKey);
             if (typeof output === "string")
                 return output;
