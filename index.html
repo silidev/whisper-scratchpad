@@ -153,7 +153,9 @@
         </info-button>
         :&nbsp;
         <select id="languageSelector"
-                style="min-height: var(--menuItemHeight); border: none">
+                class="all buttonColors buttonInMenu"
+                style="font-size: 22px; min-height: var(--menuItemHeight);
+                border: none">
           <option value="">Automatic</option>
           <option value="en">English</option>
           <option value="de">German</option>
@@ -168,6 +170,18 @@
 <!--          <option value="ru">Russian</option>-->
 <!--          <option value="zh">Chinese</option>-->
         </select>
+      </div>
+      <div class='item'>
+        <div style="width:100%">
+          <!--############## API Selector ##############-->
+          <br>API
+          <select id="apiSelector" style="font-size: 22px" class="all buttonColors buttonInMenu">
+            <option value="OpenAI">OpenAI</option>
+            <option value="Gladia">Gladia.io</option>
+            <option value="Deepgram-whisper">Deepgram-whisper</option>
+            <option value="Deepgram-nova-2">Deepgram-nova-2</option>
+          </select>
+        </div>
       </div>
       <div class='item'>
         <!--############## Replaces Rules Selector ##############-->
@@ -307,7 +321,6 @@
   </span>
 </div>
 
-
 <!--############## transcriptionPromptEditor ##############-->
 <div id="transcriptionPromptDiv">
   <h4>Transcription (only!) Prompt:</h4>
@@ -326,15 +339,7 @@
 </div>
 
 <div style="width:100%">
-<!--############## API Selector ##############-->
-  <br><h2>API</h2>
-  <br>
-  <select id="apiSelector" style="font-size: 22px" class="all buttonColors">
-    <option value="OpenAI">OpenAI</option>
-    <option value="Gladia">Gladia.io</option>
-    <option value="Deepgram">Deepgram</option>
-  </select>
-
+<!--############## API Key ##############-->
   <br><h2>API Key</h2>
   <br><input type="text" id="apiKeyInputField" class="all"
              placeholder="API key for selected service">

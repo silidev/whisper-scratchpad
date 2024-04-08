@@ -310,15 +310,20 @@ export var HelgeUtils;
             }
         }
         Transcription.TranscriptionError = TranscriptionError;
-        const withDeepgram = async (audioBlob, apiKey) => {
+        /**
+         *
+         * @param audioBlob
+         * @param apiKey
+         * @param model I use nova-2 and whisper-large
+         */
+        const withDeepgram = async (audioBlob, apiKey, model) => {
             const response = await fetch(
             /* Docs: https://developers.deepgram.com/reference/listen-file */
             "https://api.deepgram.com/v1/listen?" +
                 "&detect_language=de" +
                 "&detect_language=en" +
                 // "&dictation=true" + // Will convert comma to , etc
-                "&model=nova-2" +
-                // "&model=whisper-large" +
+                "&model=" + model +
                 "&numerals=true" +
                 "&punctuate=true", {
                 method: 'POST',
@@ -400,8 +405,9 @@ export var HelgeUtils;
                 return "";
             const output = api === "OpenAI" ?
                 await withOpenAi(audioBlob, apiKey, prompt, language, translateToEnglish)
-                : api === "Deepgram" ? await withDeepgram(audioBlob, apiKey)
-                    : await withGladia(audioBlob, apiKey);
+                : api === "Deepgram-whisper" ? await withDeepgram(audioBlob, apiKey, "whisper-large")
+                    : api === "Deepgram-nova-2" ? await withDeepgram(audioBlob, apiKey, "nova-2")
+                        : await withGladia(audioBlob, apiKey);
             if (typeof output === "string")
                 return output;
             throw new TranscriptionError(output);

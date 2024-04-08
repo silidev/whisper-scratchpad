@@ -326,17 +326,22 @@ export namespace HelgeUtils {
       }
     }
 
-    export type ApiName = "OpenAI" | "Gladia" | "Deepgram"
+    export type ApiName = "OpenAI" | "Gladia" | "Deepgram-nova-2" | "Deepgram-whisper"
 
-    const withDeepgram = async (audioBlob: Blob, apiKey: string) => {
+    /**
+     *
+     * @param audioBlob
+     * @param apiKey
+     * @param model I use nova-2 and whisper-large
+     */
+    const withDeepgram = async (audioBlob: Blob, apiKey: string, model: string) => {
       const response = await fetch(
           /* Docs: https://developers.deepgram.com/reference/listen-file */
           "https://api.deepgram.com/v1/listen?" +
           "&detect_language=de" +
           "&detect_language=en" +
           // "&dictation=true" + // Will convert comma to , etc
-          "&model=nova-2" +
-          // "&model=whisper-large" +
+          "&model="+model +
           "&numerals=true" +
           "&punctuate=true"
           , {
@@ -434,7 +439,8 @@ Please note that certain strong accents can possibly cause this mode to transcri
       const output =
         api === "OpenAI" ?
           await withOpenAi(audioBlob, apiKey, prompt, language, translateToEnglish)
-          : api === "Deepgram" ? await withDeepgram(audioBlob, apiKey)
+          : api === "Deepgram-whisper" ? await withDeepgram(audioBlob, apiKey, "whisper-large")
+          : api === "Deepgram-nova-2" ? await withDeepgram(audioBlob, apiKey, "nova-2")
           :  await withGladia(audioBlob, apiKey)
       if (typeof output === "string") return output
       throw new TranscriptionError(output)
