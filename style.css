@@ -22,6 +22,27 @@
  padding: 0;
 }
 
+select, option, input:focus, textarea:focus {
+ border: 1px solid var(--mainColor);
+ color: var(--mainColor);
+ outline: none;
+}
+
+select, option {
+ background-color: var(--backgroundColor);
+ color: var(--mainColor);
+}
+
+input::selection, textarea::selection {
+ background-color: var(--mainColor);
+ color: black;
+}
+
+input::placeholder, textarea::placeholder {
+ color: var(--mainColor);
+ filter: brightness(70%);
+}
+
 body,html {
  background-color: var(--backgroundColor);
  color: var(--mainColor);
@@ -94,22 +115,6 @@ input, textarea {
  background-color: var(--textareaColor);
  font-family: 'Arial', sans-serif;
  font-size: var(--editorFontSize);
-}
-
-select, option, input:focus, textarea:focus {
- border: 1px solid var(--mainColor);
- color: var(--mainColor);
- outline: none;
-}
-
-input::selection, textarea::selection {
- background-color: var(--mainColor);
- color: black;
-}
-
-input::placeholder, textarea::placeholder {
- color: var(--mainColor);
- filter: brightness(70%);
 }
 
 /*button:hover, button:focus {*/
@@ -227,11 +232,6 @@ This used to be called greenFilter.*/
 
 .heading {
  height: var(--buttonHeight);
-}
-
-select, option {
- background-color: var(--backgroundColor);
- color: var(--mainColor);
 }
 
 .centerContent {
