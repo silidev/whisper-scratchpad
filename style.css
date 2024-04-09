@@ -57,6 +57,7 @@ body,html {
  overscroll-behavior: none;
  padding: 0;
  width: 100%;
+ overflow: hidden;
 }
 
 div {
@@ -178,7 +179,7 @@ This used to be called greenFilter.*/
   width: 100% /* changed 2024-04-09*/
  }
  #mainEditorTextarea {
-  height: 7cm;
+  height: 8cm;
  }
  .hideOnPhone {
   display: none;

@@ -38,7 +38,9 @@ height: 6cm; width: 100%">
            style="min-width:var(--buttonHeight); width:96%">☰</div>
 
       <div class='item buttonMenuItem'>
-        <button class="buttonLikeBox all buttonInMenu" id="cutAllButton">Cut<br>all</button>
+        <button class="buttonLikeBox all buttonMenuItem" id="cutAnkiButton">
+          {{c1::<br>Cut
+        </button>
         <button class="buttonLikeBox all buttonInMenu" id="du2ichMenuItem">du2ich</button>
         <button class="buttonLikeBox all buttonInMenu" id="viewLogButton">
           View<br>Log
@@ -146,6 +148,7 @@ height: 6cm; width: 100%">
       </div>
       <!-- ############# New Menu Line ############# -->
       <div class='item' style="padding-left: 0">
+        <button class="buttonLikeBox all buttonInMenu" id="cutAllButton">Cut<br>all</button>
         <button id="fixClipboardButton"
                 class="buttonLikeBox all buttonInMenu">Fix<br>clip</button>
         <button id="removePunctuationButton"
@@ -236,7 +239,7 @@ height: 6cm; width: 100%">
 
 <!-- ########### row2EditorButtons ############# -->
 <div id="row2EditorButtons" class="flexClass fullWidthRow">
-  <button class="buttonLikeBox all" id="cutAnkiButton">{{c1::<br>Cut</button>
+  <button id="cancelRecording" class="buttonLikeBox all">Cancel<br>Rec</button>
   <button class="buttonLikeBox all" id="replaceButton1">♻<br>Repl</button>
   <button class="buttonLikeBox all" id="addWordReplaceRuleButton"><span style="font-size: 16px">\b
     -></span></button>
@@ -252,7 +255,7 @@ height: 6cm; width: 100%">
 
 <!-- ########### row3EditorButtons ############# -->
 <div id="row3EditorButtons" class="flexClass">
-  <button id="cancelRecording" class="buttonLikeBox all">Cancel<br>Rec</button>
+  <button class="buttonLikeBox all" id="toggleBottomUiButton">...</button>
   <button id="findDuButton" class="buttonLikeBox all">du</button>
   <button id="mainEditorSelectWordLeftButton" class="buttonLikeBox all">&lt;&lt;x</button>
   <button id="mainEditorWordLeftButton" class="buttonLikeBox all"><<</button>
@@ -263,7 +266,6 @@ height: 6cm; width: 100%">
 </div>
 
 <!--############## replaceRules ##############-->
-<button class="buttonLikeBox all" id="toggleBottomUiButton">...</button>
 
 <div id="bottomUi" class="hidden">
 <div>
