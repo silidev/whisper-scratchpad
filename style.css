@@ -106,6 +106,7 @@ button, input, textarea {
  cursor: pointer;
  margin: 0;
  padding: 2px;
+ overflow: hidden;
 }
 
 button {
@@ -153,7 +154,7 @@ This used to be called greenFilter.*/
  box-sizing: border-box;
  height: 10cm;
  resize: vertical;
- width: 100%; /* changed 2024-04-09*/
+ width: 100%;
  outline: none;
 }
 
@@ -176,7 +177,7 @@ This used to be called greenFilter.*/
   margin: 0;
  }
  .textareaContainer {
-  width: 100% /* changed 2024-04-09*/
+  width: 100%
  }
  #mainEditorTextarea {
   height: 8cm;
