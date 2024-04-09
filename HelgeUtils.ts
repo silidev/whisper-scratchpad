@@ -330,21 +330,24 @@ export namespace HelgeUtils {
 
     /**
      *
-     * @param audioBlob
-     * @param apiKey
-     * @param model I use nova-2 and "whisper". "whisper-large" fails although
-     * the docs say that should work.
-     */
-    const withDeepgram = async (audioBlob: Blob, apiKey: string, model: string) => {
+     * Docs: https://developers.deepgram.com/reference/listen-file
+     **/
+    const withDeepgram = async (audioBlob: Blob, apiKey: string,
+                                useWhisper = false) => {
       const response = await fetch(
           /* Docs: https://developers.deepgram.com/reference/listen-file */
           "https://api.deepgram.com/v1/listen?" +
-          "&detect_language=de" +
-          "&detect_language=en" +
-          // "&dictation=true" + // Will convert comma to , etc
-          "&model="+model +
-          "&numerals=true" +
-          "&punctuate=true"
+          (useWhisper?
+            "model=whisper-large" +
+            "&language=de"
+          :
+            "&detect_language=de" +
+            "&detect_language=en" +
+            // "&dictation=true" + // Will convert comma to , etc
+            "&model=nova-2"+
+            "&numerals=true" +
+            "&punctuate=true"
+          )
           , {
             method: 'POST',
             headers: {
@@ -441,10 +444,10 @@ Please note that certain strong accents can possibly cause this mode to transcri
         api === "OpenAI" ?
           await withOpenAi(audioBlob, apiKey, prompt, language, translateToEnglish)
           : api === "Deepgram-whisper" ?
-              await withDeepgram(audioBlob, apiKey, "whisper") /*"whisper-large"
+              await withDeepgram(audioBlob, apiKey, true) /*"whisper-large"
                fails although the docs say that should work.*/
           : api === "Deepgram-nova-2" ?
-              await withDeepgram(audioBlob, apiKey, "nova-2")
+              await withDeepgram(audioBlob, apiKey)
 
           :  await withGladia(audioBlob, apiKey)
       if (typeof output === "string") return output
