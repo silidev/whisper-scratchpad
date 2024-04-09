@@ -364,7 +364,6 @@ export namespace HelgeUtils {
       return result
     }
 
-
     /** Transcribes the given audio blob using the given API key and prompt.
      *
      * @param audioBlob
