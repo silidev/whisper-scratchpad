@@ -313,6 +313,8 @@ export var HelgeUtils;
         /**
          *
          * Docs: https://developers.deepgram.com/reference/listen-file
+         *
+         * @param useWhisper If false, nova-2 is used currently.
          **/
         const withDeepgram = async (audioBlob, apiKey, useWhisper = false) => {
             const response = await fetch(
@@ -408,8 +410,7 @@ export var HelgeUtils;
             const output = api === "OpenAI" ?
                 await withOpenAi(audioBlob, apiKey, prompt, language, translateToEnglish)
                 : api === "Deepgram-whisper" ?
-                    await withDeepgram(audioBlob, apiKey, true) /*"whisper-large"
-                     fails although the docs say that should work.*/
+                    await withDeepgram(audioBlob, apiKey, true)
                     : api === "Deepgram-nova-2" ?
                         await withDeepgram(audioBlob, apiKey)
                         : await withGladia(audioBlob, apiKey);
