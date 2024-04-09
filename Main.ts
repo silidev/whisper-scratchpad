@@ -174,7 +174,7 @@ export namespace UiFunctions {
       NonWordChars.runTests()
     }
 
-    buttonWithId('toggleBottomUiButton').addEventListener('click', event => {
+    buttonWithId('toggleBottomUiButton').addEventListener('click', () => {
       elementWithId("bottomUi").classList.toggle('hidden')
     });
 
@@ -911,6 +911,8 @@ export namespace UiFunctions {
 
     // addReplaceRuleButton
     const addReplaceRule = (requireWordBoundaryAtStart = false) => {
+      elementWithId("bottomUi").classList.remove('hidden')
+
       const inputStr = TextAreas.selectedText(mainEditorTextarea)
       /* The following builds a rule like this:
        * "REGEX"gm->"REPLACEMENT" */
