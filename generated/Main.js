@@ -654,7 +654,7 @@ export var UiFunctions;
             addKeyboardShortcuts();
             Menu.wireItem("undoActionButton", mainEditor.Undo.undo);
             // ############## Toggle Log Button ##############
-            Menu.wireItem("toggleLogButton", Log.toggleLog(textAreaWithId));
+            Menu.wireItem("viewLogButton", Log.toggleLog(textAreaWithId));
             // ############## Crop Highlights Menu Item ##############
             const cropHighlights = () => {
                 mainEditor.Undo.saveState();
