@@ -146,6 +146,8 @@ export var UiFunctions;
         };
         buttonWithId('toggleBottomUiButton').addEventListener('click', () => {
             elementWithId("bottomUi").classList.toggle('hidden');
+            const isHidden = elementWithId("bottomUi").classList.contains('hidden');
+            document.body.style.overflow = isHidden ? "hidden" : "auto";
         });
         let Cursor;
         (function (Cursor) {
