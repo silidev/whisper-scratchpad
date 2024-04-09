@@ -169,6 +169,7 @@ This used to be called greenFilter.*/
  animation: blink 4s linear infinite;
 }
 
+/* Phones only aka small screens */
 @media only screen and (max-width: 600px) {
  body, html {
   margin: 0;
@@ -179,10 +180,6 @@ This used to be called greenFilter.*/
  #mainEditorTextarea {
   height: 8cm;
  }
-}
-
-/* Phones only aka small screens */
-@media (max-width: 600px) {
  .hideOnPhone {
   display: none;
  }
