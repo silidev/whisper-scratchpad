@@ -144,6 +144,9 @@ export var UiFunctions;
         Buttons.runTests = () => {
             NonWordChars.runTests();
         };
+        buttonWithId('toggleBottomUiButton').addEventListener('click', event => {
+            elementWithId("bottomUi").classList.toggle('hidden');
+        });
         let Cursor;
         (function (Cursor) {
             // ############## findDuButton ##############

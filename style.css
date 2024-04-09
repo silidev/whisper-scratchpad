@@ -22,6 +22,10 @@
  padding: 0;
 }
 
+.hidden {
+ display: none
+}
+
 select, option, input:focus, textarea:focus {
  border: 1px solid var(--mainColor);
  color: var(--mainColor);

@@ -174,6 +174,10 @@ export namespace UiFunctions {
       NonWordChars.runTests()
     }
 
+    buttonWithId('toggleBottomUiButton').addEventListener('click', event => {
+      elementWithId("bottomUi").classList.toggle('hidden')
+    });
+
     namespace Cursor {
       // ############## findDuButton ##############
       buttonWithId('findDuButton').addEventListener('pointerdown', event => {
