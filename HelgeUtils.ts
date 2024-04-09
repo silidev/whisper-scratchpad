@@ -332,6 +332,8 @@ export namespace HelgeUtils {
      *
      * Docs: https://developers.deepgram.com/reference/listen-file
      *
+     * @param audioBlob
+     * @param apiKey
      * @param useWhisper If false, nova-2 is used currently.
      **/
     const withDeepgram = async (audioBlob: Blob, apiKey: string,
