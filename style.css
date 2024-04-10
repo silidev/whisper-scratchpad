@@ -106,7 +106,6 @@ button, input, textarea {
  cursor: pointer;
  margin: 0;
  padding: 2px;
- overflow: hidden;
 }
 
 button {
@@ -115,6 +114,7 @@ button {
  margin: 0;
  min-width:var(--buttonHeight);
  padding: 0 10px;
+ overflow: hidden;
 }
 
 input, textarea {
