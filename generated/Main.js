@@ -180,12 +180,14 @@ export var UiFunctions;
             }
             let WordJumps;
             (function (WordJumps) {
-                /** wConfig = word jump config */
+                /** WConfig = word jump config */
                 class WConfig {
                     regex;
                     negativeRegex;
                     textarea;
-                    constructor(/** word delimiter regex */ regex, negativeRegex, textarea) {
+                    constructor(
+                    /** word delimiter regex */
+                    regex, negativeRegex, textarea) {
                         this.regex = regex;
                         this.negativeRegex = negativeRegex;
                         this.textarea = textarea;

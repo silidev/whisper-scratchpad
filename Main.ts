@@ -208,10 +208,13 @@ export namespace UiFunctions {
         wireCursorButton(false);
       }
       namespace WordJumps {
-        /** wConfig = word jump config */
+        /** WConfig = word jump config */
         class WConfig {
-          public constructor(/** word delimiter regex */
-                             public regex: RegExp, public negativeRegex: RegExp, public textarea: HTMLTextAreaElement) {
+          public constructor(
+             /** word delimiter regex */
+             public regex: RegExp,
+             public negativeRegex: RegExp,
+             public textarea: HTMLTextAreaElement) {
           }
         }
 
