@@ -144,6 +144,11 @@ export var UiFunctions;
         Buttons.runTests = () => {
             NonWordChars.runTests();
         };
+        buttonWithId('editorMenuHeading').addEventListener('click', () => {
+            const menuIsHidden = elementWithId("editorMenuHeading")
+                .nextElementSibling?.classList.contains('hidden');
+            document.body.style.overflow = menuIsHidden ? "hidden" : "auto";
+        });
         buttonWithId('toggleBottomUiButton').addEventListener('click', () => {
             elementWithId("bottomUi").classList.toggle('hidden');
             const isHidden = elementWithId("bottomUi").classList.contains('hidden');

@@ -174,6 +174,12 @@ export namespace UiFunctions {
       NonWordChars.runTests()
     }
 
+    buttonWithId('editorMenuHeading').addEventListener('click', () => {
+      const menuIsHidden = elementWithId("editorMenuHeading")
+          .nextElementSibling?.classList.contains('hidden')
+      document.body.style.overflow = menuIsHidden ? "hidden" : "auto"
+    });
+
     buttonWithId('toggleBottomUiButton').addEventListener('click', () => {
       elementWithId("bottomUi").classList.toggle('hidden')
 
