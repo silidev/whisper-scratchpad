@@ -57,6 +57,9 @@ body,html {
  overscroll-behavior: none;
  padding: 0;
  width: 100%;
+}
+
+body {
  overflow: hidden;
 }
 
