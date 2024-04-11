@@ -663,6 +663,7 @@ export namespace UiFunctions {
 // ############## cancelRecording ##############
       export const cancelRecording = () => {
         if (!mediaRecorder) return
+        mainEditor.Undo.undo()
         mediaRecorder.onstop = StopCallbackCreator.createCancelingCallback()
         mediaRecorder.stop()
       }
@@ -690,6 +691,7 @@ export namespace UiFunctions {
           StateIndicator.update()
         } else {
           if (insertDelimiter) {
+            mainEditor.Undo.saveState()
             mainEditor.appendDelimiterAndCursor()
           } else {
             mainEditor.appendStringAndCursor(" ")
@@ -714,7 +716,13 @@ export namespace UiFunctions {
       buttonWithId("pauseRecordButton").addEventListener('click',
           () => pauseRecordButton(true))
       buttonWithId("pauseRecordButtonWithoutDelimiter").addEventListener('click',
-          () => pauseRecordButton(false))
+          () => {
+            if (mediaRecorder?.state === 'recording') {
+              mainEditor.Undo.undo()
+            } else {
+              pauseRecordButton(false)
+            }
+      })
 // ############## transcribeAudioBlob ##############
       Menu.wireItem("transcribeAgainButton", transcribeAudioBlob)
 // ############## Misc ##############

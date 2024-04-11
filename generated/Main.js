@@ -597,6 +597,7 @@ export var UiFunctions;
             Media.cancelRecording = () => {
                 if (!mediaRecorder)
                     return;
+                mainEditor.Undo.undo();
                 mediaRecorder.onstop = StopCallbackCreator.createCancelingCallback();
                 mediaRecorder.stop();
             };
@@ -624,6 +625,7 @@ export var UiFunctions;
                 }
                 else {
                     if (insertDelimiter) {
+                        mainEditor.Undo.saveState();
                         mainEditor.appendDelimiterAndCursor();
                     }
                     else {
@@ -645,7 +647,14 @@ export var UiFunctions;
             buttonWithId("transcribeButton").addEventListener('click', transcribeButton);
             // ############## pauseRecordButtons ##############
             buttonWithId("pauseRecordButton").addEventListener('click', () => pauseRecordButton(true));
-            buttonWithId("pauseRecordButtonWithoutDelimiter").addEventListener('click', () => pauseRecordButton(false));
+            buttonWithId("pauseRecordButtonWithoutDelimiter").addEventListener('click', () => {
+                if (mediaRecorder?.state === 'recording') {
+                    mainEditor.Undo.undo();
+                }
+                else {
+                    pauseRecordButton(false);
+                }
+            });
             // ############## transcribeAudioBlob ##############
             Menu.wireItem("transcribeAgainButton", Media.transcribeAudioBlob);
             // ############## Misc ##############
