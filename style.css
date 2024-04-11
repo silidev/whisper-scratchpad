@@ -117,9 +117,9 @@ button {
  margin: 0;
  min-width:var(--buttonHeight);
  padding: 0 10px;
- overflow: hidden;
- touch-action: none; /* Intention: How do ignore tap and hold on buttons? e.g.
-  no scrolling of the page should be possible if the tap starts on a button*/
+ /*overflow: hidden;*/
+ /*touch-action: none; !* Intention: How do ignore tap and hold on buttons? e.g.*/
+ /* no scrolling of the page should be possible if the tap starts on a button*!*/
 }
 
 input, textarea {
