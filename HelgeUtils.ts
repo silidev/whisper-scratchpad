@@ -330,6 +330,43 @@ export namespace HelgeUtils {
 
     /**
      *
+     * Docs: https://docs.speechmatics.com/features
+     *
+     * @param audioBlob
+     * @param apiKey
+     **/
+    const withSpeechmatics = async (audioBlob: Blob, apiKey: string) => {
+
+      const formData = new FormData()
+      formData.append('data_file', audioBlob)
+      formData.append('config', JSON.stringify({
+        type: 'transcription',
+        transcription_config: { //TODO
+          operating_point: 'enhanced',
+          language: 'en' //TODO
+        }
+      }))
+
+      const response = await fetch(
+          /* Docs: https://docs.speechmatics.com/introduction/batch-guide */
+          "https://asr.api.speechmatics.com/v2/jobs/?"
+          , {
+            method: 'POST',
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${apiKey}`,
+            },
+            body: formData
+          })
+      const result = await response.json()
+      // noinspection JSUnresolvedReference
+      const maybeTranscription = undefined
+      if (typeof maybeTranscription === "string") return maybeTranscription
+      return result
+    }
+
+    /**
+     *
      * Docs: https://developers.deepgram.com/reference/listen-file
      *
      * @param audioBlob
@@ -450,6 +487,9 @@ Please note that certain strong accents can possibly cause this mode to transcri
               await withDeepgram(audioBlob, apiKey, true)
           : api === "Deepgram-nova-2" ?
               await withDeepgram(audioBlob, apiKey)
+      // @ts-ignore
+          : api === "Speechmatics" ?
+              await withSpeechmatics(audioBlob, apiKey)
 
           :  await withGladia(audioBlob, apiKey)
       if (typeof output === "string") return output

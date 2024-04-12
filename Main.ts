@@ -596,7 +596,11 @@ export namespace UiFunctions {
       const getOnStreamReady = (beginPaused: boolean) => {
         return (streamParam: MediaStream) => {
           stream = streamParam
-          mediaRecorder = new MediaRecorder(stream)
+          /* https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/MediaRecorder */
+          mediaRecorder = new MediaRecorder(stream
+              // Only for Speechmatics, doesnt work for OpenAI:
+              , { mimeType: 'audio/webm; codecs=pcm' }
+          )
           audioChunks = []
           mediaRecorder.start()
           isRecording = true
@@ -610,7 +614,9 @@ export namespace UiFunctions {
       }
 
       const startRecording = (beginPaused: boolean = false) => {
-        navigator.mediaDevices.getUserMedia({audio: true})
+        navigator.mediaDevices
+            /* https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia */
+            .getUserMedia({audio: true})
             .then(getOnStreamReady(beginPaused)).catch(Log.error)
       }
 
