@@ -778,14 +778,14 @@ export namespace UiFunctions {
       Menu.wireItem("cropHighlightsMenuItem", cropHighlights)
 
 // ############## Copy Backup to clipboard Menu Item ##############
-      const copyBackupToClipboard = () => {
+      const backupToClipboard = () => {
         clipboard.writeText(
             "## Replace Rules\n" + replaceRulesTextArea.value + "\n"
             + "## Prompt\n" + transcriptionPromptEditor.value
         ).then().catch(Log.error)
       }
 
-      Menu.wireItem("copyBackupMenuItem", copyBackupToClipboard)
+      Menu.wireItem("backupToClipboard", backupToClipboard)
 
 // ############## Focus the main editor textarea Menu Item ##############
       Menu.wireItem("focusMainEditorMenuItem", mainEditorTextarea.focus)
