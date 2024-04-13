@@ -534,9 +534,9 @@ export var UiFunctions;
             const getOnStreamReady = (beginPaused) => {
                 return (streamParam) => {
                     stream = streamParam;
-                    const audioContext = new AudioContext({
-                    // sampleRate: 44100,
-                    });
+                    // const audioContext = new AudioContext({
+                    //   // sampleRate: 44100,
+                    // })
                     // const source = audioContext.createMediaStreamSource(stream)
                     // MediaRecorder options
                     const options = {
