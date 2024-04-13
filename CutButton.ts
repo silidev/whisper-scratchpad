@@ -25,8 +25,8 @@ export const createCutFunction =
         }
       }
       mainEditor.save();
+      alert("The current note was cut out.")
       mainEditorTextarea.focus()
     }).catch(Log.error)
-    alert("The current note was cut out.")
   }
 }
