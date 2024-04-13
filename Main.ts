@@ -780,7 +780,8 @@ export namespace UiFunctions {
 // ############## Copy Backup to clipboard Menu Item ##############
       const backupToClipboard = () => {
         clipboard.writeText(
-            "## Replace Rules\n" + replaceRulesTextArea.value + "\n"
+            "## Main Editor\n" + mainEditorTextarea.value + "\n"
+            + "## Replace Rules\n" + replaceRulesTextArea.value + "\n"
             + "## Prompt\n" + transcriptionPromptEditor.value
         ).then().catch(Log.error)
       }

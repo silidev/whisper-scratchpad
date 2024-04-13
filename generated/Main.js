@@ -697,7 +697,8 @@ export var UiFunctions;
             Menu.wireItem("cropHighlightsMenuItem", cropHighlights);
             // ############## Copy Backup to clipboard Menu Item ##############
             const backupToClipboard = () => {
-                clipboard.writeText("## Replace Rules\n" + replaceRulesTextArea.value + "\n"
+                clipboard.writeText("## Main Editor\n" + mainEditorTextarea.value + "\n"
+                    + "## Replace Rules\n" + replaceRulesTextArea.value + "\n"
                     + "## Prompt\n" + transcriptionPromptEditor.value).then().catch(Log.error);
             };
             Menu.wireItem("backupToClipboard", backupToClipboard);
