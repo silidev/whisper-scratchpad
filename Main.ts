@@ -601,7 +601,7 @@ export namespace UiFunctions {
             // sampleRate: 44100,
           })
 
-          const source = audioContext.createMediaStreamSource(stream)
+          // const source = audioContext.createMediaStreamSource(stream)
 
           // MediaRecorder options
           const options = {

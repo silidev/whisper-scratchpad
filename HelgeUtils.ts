@@ -360,9 +360,6 @@ export namespace HelgeUtils {
             body: formData
           })
       const result = await response.json()
-      // noinspection JSUnresolvedReference
-      const maybeTranscription = undefined
-      if (typeof maybeTranscription === "string") return maybeTranscription
       return result
     }
 

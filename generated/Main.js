@@ -537,7 +537,7 @@ export var UiFunctions;
                     const audioContext = new AudioContext({
                     // sampleRate: 44100,
                     });
-                    const source = audioContext.createMediaStreamSource(stream);
+                    // const source = audioContext.createMediaStreamSource(stream)
                     // MediaRecorder options
                     const options = {
                     // mimeType: 'audio/webm; codecs=pcm',
