@@ -695,13 +695,31 @@ export var UiFunctions;
                 mainEditor.save();
             };
             Menu.wireItem("cropHighlightsMenuItem", cropHighlights);
-            // ############## Copy Backup to clipboard Menu Item ##############
-            const backupToClipboard = () => {
-                clipboard.writeText("## Main Editor\n" + mainEditorTextarea.value + "\n"
-                    + "## Replace Rules\n" + replaceRulesTextArea.value + "\n"
-                    + "## Prompt\n" + transcriptionPromptEditor.value).then().catch(Log.error);
+            const wireBackupMenuItems = () => {
+                const backupString = () => "## Main Editor\n" + mainEditorTextarea.value + "\n" + "## Replace Rules\n" + replaceRulesTextArea.value + "\n" + "## Prompt\n" + transcriptionPromptEditor.value;
+                // ############## Copy Backup to clipboard Menu Item ##############
+                const backupToClipboard = () => {
+                    clipboard.writeText(backupString()).then().catch(Log.error);
+                };
+                Menu.wireItem("backupToClipboard", backupToClipboard);
+                const offerToDownload = (str, filename) => {
+                    const blob = new Blob([str], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                };
+                // ############## backupDownload ##############
+                const backupDownload = () => {
+                    offerToDownload(backupString(), "whisper-scratchpad-backup.txt");
+                };
+                Menu.wireItem("backupDownload", backupDownload);
             };
-            Menu.wireItem("backupToClipboard", backupToClipboard);
+            wireBackupMenuItems();
             // ############## Focus the main editor textarea Menu Item ##############
             Menu.wireItem("focusMainEditorMenuItem", mainEditorTextarea.focus);
             // ############## du2Ich Menu Item ##############
