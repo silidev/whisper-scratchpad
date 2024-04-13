@@ -340,10 +340,11 @@ export namespace HelgeUtils {
       const formData = new FormData()
       formData.append('data_file', audioBlob)
       formData.append('config', JSON.stringify({
+        // docs: https://docs.speechmatics.com/jobsapi#tag/JobConfig
         type: 'transcription',
         transcription_config: { //TODO
           operating_point: 'enhanced',
-          language: 'en' //TODO
+          language: 'de' //TODO
         }
       }))
 

@@ -534,10 +534,17 @@ export var UiFunctions;
             const getOnStreamReady = (beginPaused) => {
                 return (streamParam) => {
                     stream = streamParam;
+                    const audioContext = new AudioContext({
+                    // sampleRate: 44100,
+                    });
+                    const source = audioContext.createMediaStreamSource(stream);
+                    // MediaRecorder options
+                    const options = {
+                    // mimeType: 'audio/webm; codecs=pcm',
+                    // audioBitsPerSecond: 32 * 44100 // 32 bits per sample * sample rate
+                    };
                     /* https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/MediaRecorder */
-                    mediaRecorder = new MediaRecorder(stream
-                    // Only for Speechmatics, doesnt work for OpenAI:
-                    , { mimeType: 'audio/webm; codecs=pcm' });
+                    mediaRecorder = new MediaRecorder(stream, options);
                     audioChunks = [];
                     mediaRecorder.start();
                     isRecording = true;
