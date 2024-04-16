@@ -299,6 +299,36 @@ export var HelgeUtils;
     HelgeUtils.runTests = () => {
         Strings.runTests();
     };
+    let TTS;
+    (function (TTS) {
+        /**
+         * https://platform.openai.com/docs/api-reference/audio/createSpeech
+         */
+        TTS.withOpenAi = async (input, apiKey) => {
+            const formData = new FormData();
+            formData.append("model", "tts-1"); // One of the available TTS models: tts-1 or tts-1-hd
+            formData.append('input', input);
+            formData.append('voice', "alloy"); //  Supported voices are alloy, echo, fable, onyx, nova, and shimmer. Previews of the voices are available in the Text to speech guide: https://platform.openai.com/docs/guides/text-to-speech/voice-options
+            formData.append('speed', ".5"); // from 0.25 to 4.0
+            const response = await fetch("https://api.openai.com/v1/audio/speech", {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: formData
+            });
+            if (!response.ok) {
+                throw new Error(`Failed to fetch audio file: ${response.statusText}`);
+            }
+            const audioBlob = await response.blob();
+            const audioContext = new AudioContext();
+            const audioSource = await audioContext.decodeAudioData(await audioBlob.arrayBuffer());
+            const playSound = audioContext.createBufferSource();
+            playSound.buffer = audioSource;
+            playSound.connect(audioContext.destination);
+            playSound.start();
+        };
+    })(TTS = HelgeUtils.TTS || (HelgeUtils.TTS = {}));
     let Transcription;
     (function (Transcription) {
         class TranscriptionError extends Error {

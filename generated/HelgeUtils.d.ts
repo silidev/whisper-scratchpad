@@ -115,6 +115,12 @@ export declare namespace HelgeUtils {
         function runTests(): void;
     }
     export const runTests: () => void;
+    export namespace TTS {
+        /**
+         * https://platform.openai.com/docs/api-reference/audio/createSpeech
+         */
+        const withOpenAi: (input: string, apiKey: string) => Promise<void>;
+    }
     export namespace Transcription {
         class TranscriptionError extends Error {
             payload: {};
