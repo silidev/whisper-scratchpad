@@ -117,6 +117,8 @@ export declare namespace HelgeUtils {
     export const runTests: () => void;
     export namespace TTS {
         /**
+         * Always fails with error code 400 :(
+         *
          * https://platform.openai.com/docs/api-reference/audio/createSpeech
          */
         const withOpenAi: (input: string, apiKey: string) => Promise<void>;

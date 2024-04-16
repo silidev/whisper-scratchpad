@@ -302,6 +302,8 @@ export var HelgeUtils;
     let TTS;
     (function (TTS) {
         /**
+         * Always fails with error code 400 :(
+         *
          * https://platform.openai.com/docs/api-reference/audio/createSpeech
          */
         TTS.withOpenAi = async (input, apiKey) => {
@@ -309,16 +311,17 @@ export var HelgeUtils;
             formData.append("model", "tts-1"); // One of the available TTS models: tts-1 or tts-1-hd
             formData.append('input', input);
             formData.append('voice', "alloy"); //  Supported voices are alloy, echo, fable, onyx, nova, and shimmer. Previews of the voices are available in the Text to speech guide: https://platform.openai.com/docs/guides/text-to-speech/voice-options
-            formData.append('speed', ".5"); // from 0.25 to 4.0
+            // formData.append('speed', ".5") // from 0.25 to 4.0
             const response = await fetch("https://api.openai.com/v1/audio/speech", {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${apiKey}`
+                    'Authorization': `Bearer ${apiKey}`,
+                    "Content-Type": "application/json"
                 },
                 body: formData
             });
             if (!response.ok) {
-                throw new Error(`Failed to fetch audio file: ${response.statusText}`);
+                throw new Error(`Failed to fetch audio file: ${response.status}`);
             }
             const audioBlob = await response.blob();
             const audioContext = new AudioContext();

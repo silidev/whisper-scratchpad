@@ -53,14 +53,12 @@ export var mainEditor;
         TextAreas.scrollToEnd(mainEditorTextarea);
     };
     mainEditor.appendDelimiterAndCursor = () => {
+        // noinspection PointlessBooleanExpressionJS
+        if (false) {
+            // noinspection UnreachableCodeJS
+            HelgeUtils.TTS.withOpenAi("Ein Test und dann geht hier auch noch mehr.", HtmlUtils.BrowserStorage.Cookies.get('OpenAIApiKey') ?? "");
+        }
         mainEditorTextareaWrapper.trim();
-        /* delete later:
-            const removeDate = (input: string) => {
-              const pattern = / - \d\d?\.\d\d?\.\d\d\n?$/;
-              return input.replace(pattern, '');
-            }
-            mainEditorTextarea.value = removeDate(mainEditorTextarea.value)
-        */
         const dateAlreadyPresent = / - \d\d?\.\d\d?\.\d\d\n?$/.test(mainEditorTextarea.value);
         mainEditor.appendStringAndCursor((dateAlreadyPresent ?
             ""
