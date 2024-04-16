@@ -48,6 +48,9 @@ export declare namespace HtmlUtils {
             focus(): this;
             setCursorAtEnd(): this;
             trim(): this;
+            /**
+             * @deprecated */
+            goToEnd(): this;
         }
         const appendTextAndCursor: (textArea: HTMLTextAreaElement, text: string) => void;
         const append: (textArea: HTMLTextAreaElement, text: string) => void;

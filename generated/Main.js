@@ -82,6 +82,8 @@ export var mainEditor;
         const cursorIsAtTheEndOfTheTextarea = mainEditorTextarea.value.length == mainEditorTextarea.selectionStart;
         if (cursorIsAtTheEndOfTheTextarea) {
             mainEditorTextareaWrapper
+                .insertAndPutCursorAfter("\n")
+                .trim()
                 .insertAndPutCursorAfter(NEW_NOTE_DELIMITER + changedText);
         }
         else {
@@ -691,8 +693,10 @@ export var UiFunctions;
             // ############## Crop Highlights Menu Item ##############
             const cropHighlights = () => {
                 mainEditor.Undo.saveState();
-                mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ');
-                mainEditor.save();
+                const currentNote = new CurrentNote(mainEditorTextarea);
+                const extractedHighlights = HelgeUtils.extractHighlights(currentNote.text()).join(' ');
+                mainEditorTextareaWrapper.setCursorAtEnd();
+                mainEditor.insertNote(extractedHighlights);
             };
             Menu.wireItem("cropHighlightsMenuItem", cropHighlights);
             const wireBackupMenuItems = () => {

@@ -105,6 +105,11 @@ export var HtmlUtils;
                 this.textArea.value = trimExceptASingleNewlineAtTheEnd(this.textArea.value);
                 return this;
             }
+            /**
+             * @deprecated */
+            goToEnd() {
+                return this.setCursorAtEnd();
+            }
         }
         TextAreas.TextAreaWrapper = TextAreaWrapper;
         TextAreas.appendTextAndCursor = (textArea, text) => {

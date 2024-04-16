@@ -137,6 +137,12 @@ export namespace HtmlUtils {
         this.textArea.value = trimExceptASingleNewlineAtTheEnd(this.textArea.value)
         return this
       }
+
+      /**
+       * @deprecated */
+      public goToEnd() {
+        return this.setCursorAtEnd()
+      }
     }
 
     export const appendTextAndCursor = (textArea: HTMLTextAreaElement, text: string) => {

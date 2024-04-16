@@ -100,6 +100,8 @@ export namespace mainEditor {
 
     if (cursorIsAtTheEndOfTheTextarea) {
       mainEditorTextareaWrapper
+          .insertAndPutCursorAfter("\n")
+          .trim()
           .insertAndPutCursorAfter(NEW_NOTE_DELIMITER + changedText)
     } else {
       mainEditorTextareaWrapper
@@ -107,7 +109,6 @@ export namespace mainEditor {
     }
     mainEditor.save();
   }
-
 }
 
 namespace Misc {
@@ -772,8 +773,11 @@ export namespace UiFunctions {
 // ############## Crop Highlights Menu Item ##############
       const cropHighlights = () => {
         mainEditor.Undo.saveState()
-        mainEditorTextarea.value = HelgeUtils.extractHighlights(mainEditorTextarea.value).join(' ')
-        mainEditor.save();
+        const currentNote = new CurrentNote(mainEditorTextarea)
+        const extractedHighlights = HelgeUtils.extractHighlights(
+            currentNote.text()).join(' ')
+        mainEditorTextareaWrapper.setCursorAtEnd()
+        mainEditor.insertNote(extractedHighlights)
       }
       Menu.wireItem("cropHighlightsMenuItem", cropHighlights)
 
