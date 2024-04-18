@@ -181,12 +181,17 @@ export namespace UiFunctions {
       document.body.style.overflow = menuIsHidden ? "hidden" : "auto"
     });
 
-    buttonWithId('toggleBottomUiButton').addEventListener('click', () => {
-      elementWithId("bottomUi").classList.toggle('hidden')
+    export namespace BottomUi {
+      const buttomUi = elementWithId("bottomUi");
 
-      const isHidden = elementWithId("bottomUi").classList.contains('hidden')
-      document.body.style.overflow = isHidden ? "hidden" : "auto"
-    });
+      export const toggleBottomUi = () => {
+        buttomUi.classList.toggle('hidden')
+        const isHidden = buttomUi.classList.contains('hidden')
+        document.body.style.overflow = isHidden ? "hidden" : "auto"
+      };
+
+      buttonWithId('toggleBottomUiButton').addEventListener('click', toggleBottomUi);
+    }
 
     namespace Cursor {
       // ############## findDuButton ##############
@@ -847,6 +852,7 @@ export namespace UiFunctions {
         replaceButton()
       })
       HtmlUtils.addClickListener(("replaceButton2"), () => {
+        UiFunctions.Buttons.BottomUi.toggleBottomUi()
         replaceButton()
       })
 

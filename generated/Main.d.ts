@@ -18,6 +18,9 @@ export declare namespace UiFunctions {
     const runTests: () => void;
     namespace Buttons {
         const runTests: () => void;
+        namespace BottomUi {
+            const toggleBottomUi: () => void;
+        }
         /** This is WIP, not working. */
         namespace NonWordChars {
             /** The inputStr until and including the word under the cursor

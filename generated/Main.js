@@ -149,11 +149,16 @@ export var UiFunctions;
                 .nextElementSibling?.classList.contains('hidden');
             document.body.style.overflow = menuIsHidden ? "hidden" : "auto";
         });
-        buttonWithId('toggleBottomUiButton').addEventListener('click', () => {
-            elementWithId("bottomUi").classList.toggle('hidden');
-            const isHidden = elementWithId("bottomUi").classList.contains('hidden');
-            document.body.style.overflow = isHidden ? "hidden" : "auto";
-        });
+        let BottomUi;
+        (function (BottomUi) {
+            const buttomUi = elementWithId("bottomUi");
+            BottomUi.toggleBottomUi = () => {
+                buttomUi.classList.toggle('hidden');
+                const isHidden = buttomUi.classList.contains('hidden');
+                document.body.style.overflow = isHidden ? "hidden" : "auto";
+            };
+            buttonWithId('toggleBottomUiButton').addEventListener('click', BottomUi.toggleBottomUi);
+        })(BottomUi = Buttons.BottomUi || (Buttons.BottomUi = {}));
         let Cursor;
         (function (Cursor) {
             // ############## findDuButton ##############
@@ -751,6 +756,7 @@ export var UiFunctions;
                 replaceButton();
             });
             HtmlUtils.addClickListener(("replaceButton2"), () => {
+                UiFunctions.Buttons.BottomUi.toggleBottomUi();
                 replaceButton();
             });
             // ############## backslashButton ##############
