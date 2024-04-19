@@ -694,6 +694,47 @@ export var UiFunctions;
             // ############## Toggle Log Button ##############
             Menu.wireItem("viewLogButton", Log.toggleLog(textAreaWithId));
             // ############## Crop Highlights Menu Item ##############
+            const ttsTestGoogle = () => {
+                const speak = () => {
+                    const apiKey = Cookies.get("apiSelectorGoogle");
+                    if (!apiKey)
+                        alert("No API key set.");
+                    const languageCode = "en-US";
+                    const text = "Hello world";
+                    const url = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`;
+                    const data = {
+                        input: {
+                            text: text
+                        },
+                        voice: {
+                            languageCode: languageCode,
+                            ssmlGender: "NEUTRAL"
+                        },
+                        audioConfig: {
+                            audioEncoding: "MP3"
+                        }
+                    };
+                    fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json; charset=utf-8"
+                        },
+                        body: JSON.stringify(data)
+                    })
+                        .then(response => {
+                        if (!response.ok)
+                            alert("fetch failed: status=" + response.status + response.statusText);
+                        return response.json();
+                    })
+                        .then(data => {
+                        new Audio(data.audioContent).play();
+                    })
+                        .catch(error => console.error("Error:", error));
+                };
+                speak();
+            };
+            Menu.wireItem("ttsTestGoogleMenuItem", ttsTestGoogle);
+            // ############## Crop Highlights Menu Item ##############
             const cropHighlights = () => {
                 mainEditor.Undo.saveState();
                 const currentNote = new CurrentNote(mainEditorTextarea);
