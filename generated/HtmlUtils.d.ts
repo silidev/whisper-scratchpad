@@ -170,4 +170,5 @@ export declare namespace HtmlUtils {
          */
         const addKeyboardBindings: () => void;
     }
+    const alertAutoDismissing: (message: string, duration?: number) => void;
 }

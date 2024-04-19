@@ -481,4 +481,25 @@ export namespace HtmlUtils {
       })
     }
   }
+
+  export const alertAutoDismissing = (message: string, duration = 1000) => {
+    const alertBox = document.createElement("div");
+
+    alertBox.style.cssText = `
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: lightblue;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 100;
+  `
+    alertBox.textContent = message
+    document.body.appendChild(alertBox);
+
+    setTimeout(() => {
+      alertBox.remove();
+    }, duration);
+  };
 } // End of HtmlUtils

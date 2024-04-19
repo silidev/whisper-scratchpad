@@ -411,5 +411,23 @@ export var HtmlUtils;
             });
         };
     })(Keyboard = HtmlUtils.Keyboard || (HtmlUtils.Keyboard = {}));
+    HtmlUtils.alertAutoDismissing = (message, duration = 1000) => {
+        const alertBox = document.createElement("div");
+        alertBox.style.cssText = `
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: lightblue;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 100;
+  `;
+        alertBox.textContent = message;
+        document.body.appendChild(alertBox);
+        setTimeout(() => {
+            alertBox.remove();
+        }, duration);
+    };
 })(HtmlUtils || (HtmlUtils = {})); // End of HtmlUtils
 //# sourceMappingURL=HtmlUtils.js.map

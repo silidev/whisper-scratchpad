@@ -2,6 +2,7 @@ import {HtmlUtils} from "./HtmlUtils.js"
 import {Log, mainEditor} from "./Main.js"
 import {CurrentNote} from "./CurrentNote.js"
 import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
+import alertAutoDismissing = HtmlUtils.alertAutoDismissing;
 
 const clipboard = navigator.clipboard
 
@@ -25,8 +26,8 @@ export const createCutFunction =
               currentNote.select()
             }
           }
-          mainEditor.save();
-          alert("The current note was cut out.")
+          mainEditor.save()
+          alertAutoDismissing("The current note was cut out.")
           mainEditorTextarea.focus()
         }).catch(Log.error)
   }
