@@ -699,25 +699,26 @@ export var UiFunctions;
                     const apiKey = Cookies.get('GoogleApiKey');
                     if (!apiKey)
                         alert("No API key set.");
-                    const languageCode = "en-US";
                     const text = "Hello world";
-                    const url = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`;
+                    const url = `https://texttospeech.googleapis.com/v1/text:synthesize`; //?key=${apiKey}`
                     const data = {
                         input: {
                             text: text
                         },
                         voice: {
-                            languageCode: languageCode,
-                            ssmlGender: "NEUTRAL"
+                            'languageCode': 'en-US',
+                            'name': 'en-US-Studio-O',
                         },
                         audioConfig: {
-                            audioEncoding: "MP3"
+                            audioEncoding: "MP3",
+                            'speakingRate': '1',
                         }
                     };
                     fetch(url, {
                         method: "POST",
                         headers: {
-                            "Content-Type": "application/json; charset=utf-8"
+                            "Content-Type": "application/json; charset=utf-8",
+                            "Authorization": "Bearer " + apiKey
                         },
                         body: JSON.stringify(data)
                     })
@@ -867,16 +868,18 @@ export var UiFunctions;
             // ############## downloadCsvs ##############
             /** IF a note contains the stopWord, prefix and postfix are
              * NOT applied. */
-            const downloadCsv = (prefix = "", postfix = "", stopWord = "") => {
+            const downloadCsv = () => {
                 // Uses https://github.com/alexcaza/export-to-csv
                 const csvConfig = mkConfig({
                     columnHeaders: ["column1"], showColumnHeaders: false, useTextFile: true
                 });
                 const textArray = mainEditorTextareaWrapper.value().split(NEW_NOTE_DELIMITER);
                 const csvData = textArray.map((text) => {
-                    if (stopWord !== "" && text.includes(stopWord))
+                    if (text.includes("}}"))
                         return { column1: text };
-                    return { column1: prefix + text + postfix };
+                    else if (text.includes("{{"))
+                        return { column1: text + "}}" };
+                    return { column1: "{{c1::" + text + "}},," };
                 });
                 const csv = generateCsv(csvConfig)(csvData);
                 return download(csvConfig)(csv);
@@ -887,7 +890,7 @@ export var UiFunctions;
 - Von Desktop und Phone gleichzeitig!
 - search for du
 - Summaries`);
-                return downloadCsv(OPEN_CLOZE_STR, CLOSE_CLOZE_STR, "{{");
+                return downloadCsv();
             };
             Menu.wireItem("exportAnkiClozeCsv", exportAnkiClozeCsv);
             Menu.wireItem("downloadCsv", downloadCsv);
