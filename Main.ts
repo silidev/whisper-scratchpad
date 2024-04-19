@@ -783,7 +783,7 @@ export namespace UiFunctions {
 // ############## Crop Highlights Menu Item ##############
       const ttsTestGoogle = () => {
         const speak = () => {
-          const apiKey = Cookies.get("apiSelectorGoogle")
+          const apiKey = Cookies.get('GoogleApiKey')
           if (!apiKey) alert("No API key set.")
 
           const languageCode = "en-US"
