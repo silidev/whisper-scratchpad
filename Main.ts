@@ -787,7 +787,7 @@ export namespace UiFunctions {
           if (!apiKey) alert("No API key set.")
 
           const text = "Hello world"
-          const url = `https://texttospeech.googleapis.com/v1/text:synthesize`//?key=${apiKey}`
+          const url = 'https://corsproxy.io/?' + encodeURIComponent('https://texttospeech.googleapis.com/v1/text:synthesize');
 
           const data = {
             input: {
