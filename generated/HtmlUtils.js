@@ -421,7 +421,7 @@ export var HtmlUtils;
     background-color: lightblue;
     padding: 10px;
     border-radius: 5px;
-    z-index: 100;
+    z-index: 999999;
   `;
         alertBox.textContent = message;
         document.body.appendChild(alertBox);

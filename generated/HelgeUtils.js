@@ -312,16 +312,21 @@ export var HelgeUtils;
             formData.append('input', input);
             formData.append('voice', "alloy"); //  Supported voices are alloy, echo, fable, onyx, nova, and shimmer. Previews of the voices are available in the Text to speech guide: https://platform.openai.com/docs/guides/text-to-speech/voice-options
             // formData.append('speed', ".5") // from 0.25 to 4.0
-            const response = await fetch("https://api.openai.com/v1/audio/speech", {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`,
-                    "Content-Type": "application/json"
-                },
-                body: formData
+            console.log("apiKey==" + apiKey);
+            const response = await fetch(
+            // "https://corsproxy.io/?" + encodeURIComponent
+            ("https://api.openai.com/v1/audio/speech"), {
+                method: 'GET', // GET only for testing, must be POST later!
+                // headers: {
+                //   'Authorization': `Bearer ${apiKey}`,
+                //   "Content-Type": "application/json"
+                // },
+                // body: formData
             });
             if (!response.ok) {
-                throw new Error(`Failed to fetch audio file: ${response.status}`);
+                const message = `Failed to fetch audio file: ${response.status} ${JSON.stringify(response.body)}`;
+                console.log(message);
+                throw new Error(message);
             }
             const audioBlob = await response.blob();
             const audioContext = new AudioContext();

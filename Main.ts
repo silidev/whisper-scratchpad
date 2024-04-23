@@ -70,12 +70,6 @@ export namespace mainEditor {
   }
 
   export const appendDelimiterAndCursor = () => {
-    // noinspection PointlessBooleanExpressionJS
-    if (false) {
-        // noinspection UnreachableCodeJS
-        HelgeUtils.TTS.withOpenAi("Ein Test und dann geht hier auch noch mehr.",HtmlUtils.BrowserStorage.Cookies.get('OpenAIApiKey')??"")
-      }
-
     mainEditorTextareaWrapper.trim()
 
     const dateAlreadyPresent =
@@ -783,8 +777,8 @@ export namespace UiFunctions {
 // ############## Crop Highlights Menu Item ##############
       const ttsTestGoogle = () => {
         const speak = () => {
-          const apiKey = Cookies.get('GoogleApiKey')
-          if (!apiKey) alert("No API key set.")
+          const secret = Cookies.get('GoogleApiKey')
+          if (!secret) alert("No secret set.")
 
           const text = "Hello world"
           const url = 'https://corsproxy.io/?' + encodeURIComponent('https://texttospeech.googleapis.com/v1/text:synthesize');
@@ -802,21 +796,24 @@ export namespace UiFunctions {
               'speakingRate':'1',
             }
           };
+          console.log("secret=="+secret)
 
           fetch(url, {
             method: "POST",
             headers: {
               "Content-Type": "application/json; charset=utf-8",
-              "Authorization": "Bearer "+ apiKey
+              "Authorization": "Bearer "+ secret,
+              "x-goog-user-project": "fast-web-368218"
             },
             body: JSON.stringify(data)
           })
               .then(response => {
                 if (!response.ok)
-                  alert("fetch failed: status="+response.status+response.statusText)
+                  console.log("fetch failed: status="+response.status+response.statusText)
                 return response.json()
               })
               .then(data => {
+                console.log(JSON.stringify(data))
                 new Audio(data.audioContent).play()
               })
               .catch(error => console.error("Error:", error))
@@ -1246,6 +1243,13 @@ const init = () => {
   loadFormData()
   elementWithId("versionSpan").innerHTML = `${VERSION}, temperature: ${WHISPER_TEMPERATURE}`
   mainEditorTextareaWrapper.setCursorAtEnd().focus()
+
+  // noinspection PointlessBooleanExpressionJS
+  if (true) {
+    // noinspection UnreachableCodeJS
+    HelgeUtils.TTS.withOpenAi("Ein Test und dann geht hier auch noch mehr.",Cookies.get('corsproxyIoOpenAIApiKey')??"")
+  }
+
 }
 
 init()
