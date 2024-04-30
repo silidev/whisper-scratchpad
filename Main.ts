@@ -1010,10 +1010,6 @@ export namespace UiFunctions {
 
       const exportAnkiClozeCsv = () => {
         window.open("obsidian://advanced-uri?vault=o1&heading=CL&uid=wscr2Anki", '_blank')
-        alert(`Copy: 
-- Von Desktop und Phone gleichzeitig!
-- search for du
-- Summaries`);
         return downloadCsv();
       };
       Menu.wireItem("exportAnkiClozeCsv", exportAnkiClozeCsv);
