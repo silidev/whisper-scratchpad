@@ -83,6 +83,30 @@ export namespace HelgeUtils {
      * @deprecated */
     export const unthrow = swallowAll;
 
+
+    /** callAndAlertAboutException(...)
+     *
+     * Used to wrap around UI function which would otherwise just fail silently.
+     *
+     * Often it is good to copy this function to your code
+     * and bake an even better reporting mechanism in.
+     *
+     Use this template to use this:
+     <pre>
+     buttonWhatever: () => callAndAlertAboutException(() => {
+     // your code here
+     })
+     </pre>
+     */
+    export const callAndAlertAboutException = function (f: () => void) {
+      try {
+        f()
+      } catch (error) {
+        unhandledExceptionAlert(error)
+        throw error
+      }
+    }
+
     /**
      * Calls the function and swallows any exceptions. */
     export const callSwallowingExceptions = (f: () => void) => {

@@ -77,6 +77,29 @@ export var HelgeUtils;
         /** Alias for swallowAll
          * @deprecated */
         Exceptions.unthrow = Exceptions.swallowAll;
+        /** callAndAlertAboutException(...)
+         *
+         * Used to wrap around UI function which would otherwise just fail silently.
+         *
+         * Often it is good to copy this function to your code
+         * and bake an even better reporting mechanism in.
+         *
+         Use this template to use this:
+         <pre>
+         buttonWhatever: () => callAndAlertAboutException(() => {
+         // your code here
+         })
+         </pre>
+         */
+        Exceptions.callAndAlertAboutException = function (f) {
+            try {
+                f();
+            }
+            catch (error) {
+                Exceptions.unhandledExceptionAlert(error);
+                throw error;
+            }
+        };
         /**
          * Calls the function and swallows any exceptions. */
         Exceptions.callSwallowingExceptions = (f) => {
@@ -97,7 +120,85 @@ export var HelgeUtils;
             alert(msg);
             throw new Error(...msg);
         };
+        /**
+         *
+         * Example:
+         * <pre>
+         try {
+         } catch (error) {
+         catchSpecificError(RangeError, 'Invalid time value', (error) => {}
+         }
+         </pre>
+         *
+         * @param errorType
+         * @param callback
+         * @param wantedErrorMsg
+         */
+        Exceptions.catchSpecificError = (errorType, callback, wantedErrorMsg = null) => (error) => {
+            if (error instanceof errorType
+                && (wantedErrorMsg === null && error.message === wantedErrorMsg)) {
+                callback(error);
+            }
+            else {
+                throw error;
+            }
+        };
     })(Exceptions = HelgeUtils.Exceptions || (HelgeUtils.Exceptions = {}));
+    /**
+     * Somewhat like eval(...) but a little safer and with better performance.
+     *
+     * In contrast to {@link evalBetter} here you can and must use a return
+     * statement if you want to return a value.
+     *
+     * Docs about the method: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval
+     *
+     * @param functionBodyStr
+     * @param args {object} An object with entities, which you want to give the code
+     *        in the string access to.
+     * */
+    HelgeUtils.executeFunctionBody = (functionBodyStr, args) => Function(`
+          "use strict"
+          return function(args) {
+              ` + functionBodyStr + `
+          }
+        `)()(args);
+    /** Returns true if the parameter is not undefined. */
+    HelgeUtils.isDefined = (x) => {
+        let u;
+        // noinspection JSUnusedAssignment
+        return x !== u;
+    };
+    /**
+     * createImmutableStrictObject({}).doesNotExist will
+     * throw an error, in contrast to {}.whatEver, which
+     * will not.
+     */
+    HelgeUtils.createImmutableStrictObject = (input) => {
+        const handler = {
+            get: function (target, prop) {
+                if (prop in target) {
+                    return target[prop];
+                }
+                else {
+                    throw new Error("Property ${prop} does not" +
+                        " exist on target object.");
+                }
+            },
+            set: function (target, prop, value) {
+                HelgeUtils.suppressUnusedWarning(target, prop, value);
+                throw new Error("This object is immutable." +
+                    " You cannot change ${prop}.");
+            }
+        };
+        return new Proxy(input, handler);
+    };
+    /**
+     * A function that does nothing. I use it to avoid "unused variable" warnings.
+     *
+     * Old name: nop
+     *
+     * @param args
+     */
     HelgeUtils.suppressUnusedWarning = (...args) => {
         const flag = false;
         if (flag) {
@@ -119,24 +220,87 @@ export var HelgeUtils;
             console.log(...output);
             HelgeUtils.Exceptions.alertAndThrow(...output);
         };
+        /**
+         * V2 27.04.2024
+         */
         Tests.assertEquals = (actual, expected, message = null) => {
-            if (actual !== expected) {
+            const expectedJson = JSON.stringify(expected);
+            const actualJson = JSON.stringify(actual);
+            if (actualJson !== expectedJson) {
                 if (actual instanceof Date && expected instanceof Date
                     && actual.getTime() === expected.getTime())
                     return;
-                console.log("*************** expected:\n" + expected);
-                console.log("*************** actual  :\n" + actual);
-                // if (typeof expected === 'string' && typeof actual === 'string') {
-                //   const expectedShortened = expected.substring(0, 20).replace(/\n/g, '')
-                //   const actualShortened = actual.substring(0, 20).replace(/\n/g, '')
-                //   // HelgeUtils.Exceptions.alertAndThrow(message
-                //   //     || `Assertion failed: Expected ${expectedShortened}, but got ${actualShortened}`)
-                // }
-                console.log(message
-                    || `Assertion failed: Expected ${expected}, but got ${actual}`);
+                console.log("*************** expected:\n" + expectedJson);
+                console.log("*************** actual  :\n" + actualJson);
+                if (typeof expected === 'string' && typeof actual === 'string') {
+                    const expectedShortened = expected.substring(0, 20).replace(/\n/g, '');
+                    const actualShortened = actual.substring(0, 20).replace(/\n/g, '');
+                    HelgeUtils.Exceptions.alertAndThrow(message
+                        || `Assertion failed: Expected ${expectedShortened}, but got ${actualShortened}`);
+                }
+                HelgeUtils.Exceptions.alertAndThrow(message
+                    || `Assertion failed: Expected ${expectedJson}, but got ${actualJson}`);
             }
         };
     })(Tests = HelgeUtils.Tests || (HelgeUtils.Tests = {}));
+    HelgeUtils.assert = Tests.assert;
+    HelgeUtils.assertEquals = Tests.assertEquals;
+    HelgeUtils.consoleLogTmp = (...args) => {
+        args.forEach(arg => console.log(arg));
+    };
+    HelgeUtils.consoleLogTheDifference = (actual, expected) => {
+        console.log("*************** actual  :\n" + actual);
+        // @ts-ignore
+        if (1 === 0) {
+            console.log("*************** expected:\n" + expected);
+        }
+        let diffCount = 0;
+        // @ts-ignore
+        if (1 === 0) {
+            for (let i = 0; i < Math.max(expected.length, actual.length); i++) {
+                if (expected[i] !== actual[i]) {
+                    if (diffCount === 0) {
+                        console.log("Difference at index " + i);
+                        console.log(expected.substring(i, i + 80));
+                        console.log(actual.substring(i, i + 80));
+                    }
+                    console.log(expected[i] + "," + actual[i]);
+                    diffCount++;
+                    if (diffCount > 8) {
+                        break;
+                    }
+                }
+            }
+        }
+    };
+    HelgeUtils.testRemoveElements = () => {
+        const tagsToRemove = ['tag1', 'tag2', 'tag3'];
+        // Deep copy of tagsToRemove
+        const testTagsArray = JSON.parse(JSON.stringify(tagsToRemove));
+        //print('testTagsArray: '+testTagsArray.join(' ')+'<br>')
+        testTagsArray.push('NotToBeRemoved');
+        //print('removeElements test: '
+        //  +removeElements(testTagsArray,tagsToRemove)+'<br>')
+        HelgeUtils.assert(HelgeUtils.removeElements(testTagsArray, tagsToRemove).length === 1, "removeElements failed");
+    };
+    /**
+     * removeElements
+     *
+     * @param input is an array of elements
+     * @param toBeRemoved a list of elements which should be removed.
+     *
+     * @return *[] list with the elements removed
+     */
+    HelgeUtils.removeElements = (input, toBeRemoved) => {
+        let output = [];
+        for (let i = 0; i < input.length; i++) {
+            let element = input[i];
+            if (!toBeRemoved.includes(element)) {
+                output.push(element);
+            }
+        }
+        return output;
+    };
     let Strings;
     (function (Strings) {
         var assertEquals = HelgeUtils.Tests.assertEquals;
@@ -291,12 +455,96 @@ export var HelgeUtils;
             };
         } //end of class DelimiterSearch
         Strings.DelimiterSearch = DelimiterSearch;
-        function runTests() {
+        Strings.runTests = function () {
+            Strings.testRemoveEmojis();
+            Strings.Whitespace.runTests();
             DelimiterSearch.runTests();
-        }
-        Strings.runTests = runTests;
-    })(Strings = HelgeUtils.Strings || (HelgeUtils.Strings = {})); //end of namespace Strings
-    HelgeUtils.runTests = () => {
+        };
+        Strings.removeEmojis = (str) => str.replace(/[^a-zA-Z0-9 _\-üöäÜÖÄß]/g, "");
+        Strings.testRemoveEmojis = () => {
+            const runTest = (input, expected) => {
+                HelgeUtils.assertEquals(Strings.removeEmojis(input), expected, "testRemoveEmojis failed");
+            };
+            runTest("a👨‍👩‍👧‍👦b", "ab");
+            runTest("Td🏗️", "Td");
+        };
+        /** Return a string representation of a number, with the leading zero removed.
+         * Example: numToStr(0.5) returns ".5". */
+        Strings.numToStr = (num) => num.toString().replace("0.", ".");
+        Strings.tagsStringToArray = (input) => Strings.Whitespace.replaceWhitespaceStretchesWithASingleSpace(input).trim().split(" ");
+        Strings.Whitespace = class WhitespaceClass {
+            static runTests() {
+                this.testRemoveLeadingWhitespace();
+                this.testReplaceWhitespaceStretchesWithASingleSpace();
+            }
+            /*************
+             * Replace each stretch of whitespace in a string with a single underscore.
+             * Gotchas: This also removes leading and trailing whitespace.
+             * For easier comparing in unit tests. */
+            static replaceWhitespaceStretchesWithASingleUnderscore(inputString) {
+                return inputString.replace(/[ \t]+/gm, '_');
+            }
+            static replaceTabAndSpaceStretchesWithASingleSpace(inputString) {
+                return inputString.replace(/[ \t]+/gm, ' ');
+            }
+            /************* replaceWhitespaceStretchesWithASingleSpace
+             * replace each stretch of whitespace in a string with a single space
+             */
+            static replaceWhitespaceStretchesWithASingleSpace(str) {
+                return str.replace(/\s+/g, " ");
+            }
+            static testReplaceWhitespaceStretchesWithASingleSpace() {
+                let str = "This   is \t\t\n\n\r  a  \t  string   with   multiple   spaces";
+                let replaced = this.replaceWhitespaceStretchesWithASingleSpace(str);
+                if (replaced === "This is a string with multiple spaces") {
+                }
+                else {
+                    throw "testReplaceWhitespaceStretchesWithASingleSpace failed.";
+                }
+            }
+            static standardizeLeadingWhitespace(inputString) {
+                return WhitespaceClass.replaceLeadingWhitespace((" " + inputString).replace(/^/gm, " "), '      ');
+            }
+            static replaceLeadingWhitespace(inputString, replacement) {
+                return inputString.replace(/^\s+/gm, replacement);
+            }
+            static removeLeadingWhitespace(inputString) {
+                return WhitespaceClass.replaceLeadingWhitespace(inputString, '');
+            }
+            static testRemoveLeadingWhitespace() {
+                const input = `
+    This is a test.`;
+                const expected = `This is a test.`;
+                const result = this.removeLeadingWhitespace(input);
+                if (result !== expected) {
+                    console.log('testRemoveLeadingWhitespace failed');
+                    HelgeUtils.consoleLogTheDifference(result, expected);
+                    throw "testRemoveLeadingWhitespace failed";
+                }
+            }
+            static removeAllSpaces(inputString) {
+                return inputString.replace(/\s/g, '');
+            }
+        };
+        Strings.isBlank = (input) => {
+            if (!input) {
+                return true;
+            }
+            return input.trim() === "";
+        };
+        /* As of 2023 this is not built into JS or TS. */
+        Strings.isNotBlank = (input) => input.trim().length !== 0;
+        Strings.removeLineBreaks = (input) => {
+            if (!input) {
+                return input;
+            }
+            return input.replace(/(\r\n|\n|\r)/gm, "");
+        };
+    })(Strings = HelgeUtils.Strings || (HelgeUtils.Strings = {}));
+    /* Returns a random element of the given array */
+    HelgeUtils.randomElementOf = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    HelgeUtils.runTests = function () {
+        HelgeUtils.testRemoveElements();
         Strings.runTests();
     };
     let TTS;
@@ -430,6 +678,8 @@ export var HelgeUtils;
             formData.append('model', 'whisper-1'); // Using the largest model
             if (!translateToEnglish)
                 formData.append('prompt', prompt);
+            /* Language. Anything in a different language will be translated to the target language. */
+            formData.append('language', language);
             /*  */
             formData.append('language', language); // e.g. "en". The language of the input audio. Supplying the input language in ISO-639-1 format will improve accuracy and latency.
             // formData.append('temperature', WHISPER_TEMPERATURE) // temperature number Optional
@@ -650,7 +900,7 @@ export var HelgeUtils;
          * Converts "Du" to "Ich" and "Dein" to "Mein" and so on.
          */
         Misc.du2ich = (input) => {
-            const replacements = [
+            const wordEndReplacements = [
                 ["abstellst", "abstelle"],
                 ["aktivierst", "aktiviere"],
                 ["aktualisierst", "aktualisiere"],
@@ -662,7 +912,6 @@ export var HelgeUtils;
                 ["antwortest", "antworte"],
                 ["arbeitest", "arbeite"],
                 ["assoziierst", "assoziiere"],
-                ["assoziiert", "assoziiere"],
                 ["authentifizierst", "authentifiziere"],
                 ["autorisierst", "autorisiere"],
                 ["basiert", "basiere"],
@@ -731,18 +980,13 @@ export var HelgeUtils;
                 ["deaktivierst", "deaktiviere"],
                 ["deckst", "decke"],
                 ["definierst", "definiere"],
-                ["dein", "mein"],
-                ["deine", "meine"],
-                ["deiner", "meiner"],
                 ["demokratisierst", "demokratisiere"],
                 ["demonstrierst", "demonstriere"],
                 ["denkst", "denke"],
                 ["diagnostizierst", "diagnostiziere"],
-                ["dich", "mich"],
                 ["dienst", "diene"],
                 ["differenzierst", "differenziere"],
                 ["digitalisierst", "digitalisiere"],
-                ["dir", "mir"],
                 ["diskutierst", "diskutiere"],
                 ["diversifizierst", "diversifiziere"],
                 ["doppelst", "dopple"],
@@ -751,8 +995,6 @@ export var HelgeUtils;
                 ["drittelst", "drittele"],
                 ["druckst", "drucke"],
                 ["drückst", "drücke"],
-                ["du", "ich"],
-                ["einst", "ein"],
                 ["empfiehlst", "empfehle"],
                 ["empfängst", "empfange"],
                 ["endest", "ende"],
@@ -801,10 +1043,9 @@ export var HelgeUtils;
                 ["erzielst", "erziele"],
                 ["erzählst", "erzähle"],
                 ["exportierst", "exportiere"],
-                ["fasert", "fasere"],
+                ["faselst", "fasele"],
                 ["feierst", "feiere"],
                 ["findest", "finde"],
-                ["findet", "finde"],
                 ["fliegst", "fliege"],
                 ["folgst", "folge"],
                 ["forderst", "fordere"],
@@ -866,7 +1107,6 @@ export var HelgeUtils;
                 ["interpretierst", "interpretiere"],
                 ["investierst", "investiere"],
                 ["ironisierst", "ironisiere"],
-                ["isst", "esse"],
                 ["jungst", "junge"],
                 ["kannst", "kann"],
                 ["kantest", "kante"],
@@ -1051,7 +1291,6 @@ export var HelgeUtils;
                 ["synchronisierst", "synchronisiere"],
                 ["synthetisierst", "synthetisiere"],
                 ["säufst", "säufe"],
-                ["tagst", "tage"],
                 ["tanzt", "tanze"],
                 ["teilst", "teile"],
                 ["testest", "teste"],
@@ -1062,7 +1301,6 @@ export var HelgeUtils;
                 ["trinkst", "trinke"],
                 ["trittst", "trete"],
                 ["trägst", "trage"],
-                ["tust", "tue"],
                 ["tötest", "töte"],
                 ["umfasst", "umfasse"],
                 ["umgibst", "umgebe"],
@@ -1157,16 +1395,47 @@ export var HelgeUtils;
                 ["überwachst", "überwache"],
                 ["überzeugst", "überzeuge"],
                 ["überziehst", "überziehe"],
-                ["übst", "übe"]
+                ["programmierst", "programmiere"],
+                ["kommst", "komme"],
+                ["ärgerst", "ärgere"],
+                ["gewöhnst", "gewöhne"],
+                // ["raufgehst"    ,""                          ],
+                // ["anpackst"     ,""                          ],
+                // ["einpackst"    ,""                          ],
+                // ["abhakst"      ,""                          ],
+                // ["",""                          ],
+            ];
+            const wholeWordReplacements = [
+                ["tust", "tue"],
+                ["isst", "esse"],
+                ["hättest", "hätte"],
+                ["übst", "übe"],
+                ["du", "ich"],
+                ["dein", "mein"],
+                ["deinem", "meinem"],
+                ["deine", "meine"],
+                ["deiner", "meiner"],
+                ["dich", "mich"],
+                ["dir", "mir"],
             ];
             let output = input;
-            for (const [duWort, ichWort] of replacements) {
-                const regExp1 = new RegExp(`\\b${duWort}\\b`, 'g');
-                const regExp2 = new RegExp(`\\b${Strings.toUppercaseFirstChar(duWort)}\\b`, 'g');
-                output = output
-                    .replaceAll(regExp1, ichWort)
-                    .replaceAll(regExp2, Strings.toUppercaseFirstChar(ichWort));
-            }
+            const replace = (replacements1, wordBoundaryAtStart) => {
+                /* If you remove the \\b word boundary at the beginning in the following, it
+                 would mess up many words, e. g. all words which end with "du" or "dein". */
+                const regex = (target) => {
+                    let maybeStartWordBoundary = "";
+                    if (wordBoundaryAtStart)
+                        maybeStartWordBoundary = "\\b";
+                    return new RegExp(`${maybeStartWordBoundary}${target}\\b`, 'g');
+                };
+                for (const [duWort, ichWort] of replacements1) {
+                    output = output
+                        .replaceAll(regex(duWort), ichWort)
+                        .replaceAll(regex(Strings.toUppercaseFirstChar(duWort)), Strings.toUppercaseFirstChar(ichWort));
+                }
+            };
+            replace(wholeWordReplacements, true);
+            replace(wordEndReplacements, false);
             return output;
         };
     })(Misc = HelgeUtils.Misc || (HelgeUtils.Misc = {})); //end of namespace Misc

@@ -51,6 +51,21 @@ export declare namespace HelgeUtils {
         /** Alias for swallowAll
          * @deprecated */
         const unthrow: <T>(func: (...args: T[]) => void) => (...args: T[]) => void;
+        /** callAndAlertAboutException(...)
+         *
+         * Used to wrap around UI function which would otherwise just fail silently.
+         *
+         * Often it is good to copy this function to your code
+         * and bake an even better reporting mechanism in.
+         *
+         Use this template to use this:
+         <pre>
+         buttonWhatever: () => callAndAlertAboutException(() => {
+         // your code here
+         })
+         </pre>
+         */
+        const callAndAlertAboutException: (f: () => void) => void;
         /**
          * Calls the function and swallows any exceptions. */
         const callSwallowingExceptions: (f: () => void) => void;
@@ -59,14 +74,74 @@ export declare namespace HelgeUtils {
          *
          * @param msg {String} */
         const alertAndThrow: (...msg: any) => never;
+        /**
+         *
+         * Example:
+         * <pre>
+         try {
+         } catch (error) {
+         catchSpecificError(RangeError, 'Invalid time value', (error) => {}
+         }
+         </pre>
+         *
+         * @param errorType
+         * @param callback
+         * @param wantedErrorMsg
+         */
+        const catchSpecificError: (errorType: any, callback: Function, wantedErrorMsg?: string | null) => (error: Error) => void;
     }
+    /**
+     * Somewhat like eval(...) but a little safer and with better performance.
+     *
+     * In contrast to {@link evalBetter} here you can and must use a return
+     * statement if you want to return a value.
+     *
+     * Docs about the method: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval
+     *
+     * @param functionBodyStr
+     * @param args {object} An object with entities, which you want to give the code
+     *        in the string access to.
+     * */
+    export const executeFunctionBody: (functionBodyStr: string, args: object) => any;
+    /** Returns true if the parameter is not undefined. */
+    export const isDefined: (x: any) => boolean;
+    /**
+     * createImmutableStrictObject({}).doesNotExist will
+     * throw an error, in contrast to {}.whatEver, which
+     * will not.
+     */
+    export const createImmutableStrictObject: (input: {}) => any;
+    /**
+     * A function that does nothing. I use it to avoid "unused variable" warnings.
+     *
+     * Old name: nop
+     *
+     * @param args
+     */
     export const suppressUnusedWarning: (...args: any[]) => void;
     export namespace Tests {
         /** Inline this function! */
         const runTestsOnlyToday: () => void;
         const assert: (condition: boolean, ...output: any[]) => void;
+        /**
+         * V2 27.04.2024
+         */
         const assertEquals: (actual: any, expected: any, message?: string | null) => void;
     }
+    export const assert: (condition: boolean, ...output: any[]) => void;
+    export const assertEquals: (actual: any, expected: any, message?: string | null) => void;
+    export const consoleLogTmp: (...args: any[]) => void;
+    export const consoleLogTheDifference: (actual: string, expected: string) => void;
+    export const testRemoveElements: () => void;
+    /**
+     * removeElements
+     *
+     * @param input is an array of elements
+     * @param toBeRemoved a list of elements which should be removed.
+     *
+     * @return *[] list with the elements removed
+     */
+    export const removeElements: (input: any[], toBeRemoved: any) => string[];
     export namespace Strings {
         /** Returns the index of the first occurrence of the given regex in the string.
          *
@@ -112,8 +187,38 @@ export declare namespace HelgeUtils {
             static deleteNote: (input: string, left: number, right: number, delimiter: string) => string;
             private static testDeleteBetweenDelimiters;
         }
-        function runTests(): void;
+        const runTests: () => void;
+        const removeEmojis: (str: string) => string;
+        const testRemoveEmojis: () => void;
+        /** Return a string representation of a number, with the leading zero removed.
+         * Example: numToStr(0.5) returns ".5". */
+        const numToStr: (num: number | string) => string;
+        const tagsStringToArray: (input: string) => string[];
+        const Whitespace: {
+            new (): {};
+            runTests(): void;
+            /*************
+             * Replace each stretch of whitespace in a string with a single underscore.
+             * Gotchas: This also removes leading and trailing whitespace.
+             * For easier comparing in unit tests. */
+            replaceWhitespaceStretchesWithASingleUnderscore(inputString: string): string;
+            replaceTabAndSpaceStretchesWithASingleSpace(inputString: string): string;
+            /************* replaceWhitespaceStretchesWithASingleSpace
+             * replace each stretch of whitespace in a string with a single space
+             */
+            replaceWhitespaceStretchesWithASingleSpace(str: string): string;
+            testReplaceWhitespaceStretchesWithASingleSpace(): void;
+            standardizeLeadingWhitespace(inputString: string): string;
+            replaceLeadingWhitespace(inputString: string, replacement: string): string;
+            removeLeadingWhitespace(inputString: string): string;
+            testRemoveLeadingWhitespace(): void;
+            removeAllSpaces(inputString: string): string;
+        };
+        const isBlank: (input: string) => boolean;
+        const isNotBlank: (input: string) => boolean;
+        const removeLineBreaks: (input: string) => string;
     }
+    export const randomElementOf: <T>(arr: T[]) => T;
     export const runTests: () => void;
     export namespace TTS {
         /**
