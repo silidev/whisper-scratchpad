@@ -431,6 +431,27 @@ export namespace HtmlUtils {
     }
   }
 
+  /** @deprecated Inline this and replace the error handler with your own
+   * error reporting. */
+  export namespace clipboard {
+    /** @deprecated Inline this and replace the error handler with your own
+     * error reporting. */
+    export const read = (f: (text: string) => void) => {
+      navigator.clipboard.readText().then(text => {
+        f(text);
+      }).catch(err => {
+        console.error('Failed to read clipboard contents: ', err);
+        throw err
+      })
+      //end of namespace Misc:
+    }
+
+    /** @deprecated Rather use read() */
+    export const readText = () => navigator.clipboard.readText();
+
+    export const writeText = (text: string) => navigator.clipboard.writeText(text);
+  }
+
   /**
    * @deprecated Use copyToClipboard instead.
    * @param str

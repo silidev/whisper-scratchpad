@@ -1582,27 +1582,6 @@ Please note that certain strong accents can possibly cause this mode to transcri
     }
   } //end of namespace Misc
 
-  /** @deprecated Inline this and replace the error handler with your own
-   * error reporting. */
-  export namespace clipboard {
-    /** @deprecated Inline this and replace the error handler with your own
-     * error reporting. */
-    export const read = (f: (text: string) => void) => {
-      navigator.clipboard.readText().then(text => {
-        f(text);
-      }).catch(err => {
-        console.error('Failed to read clipboard contents: ', err);
-        throw err
-      })
-    //end of namespace Misc:
-    }
-
-    /** @deprecated Rather use read() */
-    export const readText = () => navigator.clipboard.readText();
-
-    export const writeText = (text: string) => navigator.clipboard.writeText(text);
-  }
-
   /**
    * Source: https://stackoverflow.com/questions/17528749/semaphore-like-queue-in-javascript
    */
