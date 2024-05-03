@@ -338,8 +338,41 @@ export declare namespace HelgeUtils {
             get next(): (value: any) => any;
         }
     }
+    export namespace Net {
+        namespace OpenAi {
+            namespace Test {
+                const testApiUp: () => Promise<void>;
+            }
+        }
+    }
+    export namespace Debugging {
+        namespace DevConsoles {
+            namespace Eruda {
+                /**
+                 * Often you should inline this function and load it before other scripts.
+                 * */
+                const load: () => void;
+            }
+        }
+    }
     class DatesAndTimesInternal {
+        static Weekdays: {
+            readonly Sunday: 0;
+            readonly Monday: 1;
+            readonly Tuesday: 2;
+            readonly Wednesday: 3;
+            readonly Thursday: 4;
+            readonly Friday: 5;
+            readonly Saturday: 6;
+        };
         private static pad;
+        static nextWeekdayLocalIsoDate(weekday: number, now?: Date): Date;
+        static isValidISODate(str: string): boolean;
+        static isValidDate(date: Date): boolean;
+        static cutAfterMinutesFromISODate(isoDate: string): string;
+        static cutAfterHourFromISODate(isoDate: string): string;
+        static parseRelaxedIsoDate(input: string): Date | null;
+        static testParseRelaxedIsoDate(): void;
         private static year;
         private static date2yyyymmddDashedYearDigits;
         private static day;
@@ -357,6 +390,14 @@ export declare namespace HelgeUtils {
             yymmddDashed(): string;
             ddmmyyPointed(): string;
         };
+        /**
+         * Converts a Date object to an ISO 8601 formatted string using the local time zone.
+         *
+         * @param {Date} date - The Date object to be converted.
+         * @returns {string} An ISO 8601 formatted date string in the local time zone.
+         */
+        static dateToLocalIsoDate(date: Date): string;
+        static runTests(): void;
     }
     export const DatesAndTimes: typeof DatesAndTimesInternal;
     export {};

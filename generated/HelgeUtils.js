@@ -571,6 +571,7 @@ export var HelgeUtils;
     HelgeUtils.randomElementOf = (arr) => arr[Math.floor(Math.random() * arr.length)];
     HelgeUtils.runTests = function () {
         HelgeUtils.testRemoveElements();
+        HelgeUtils.DatesAndTimes.runTests();
         Strings.runTests();
     };
     let TTS;
@@ -1464,7 +1465,8 @@ export var HelgeUtils;
             replace(wordEndReplacements, false);
             return output;
         };
-    })(Misc = HelgeUtils.Misc || (HelgeUtils.Misc = {})); //end of namespace Misc
+        //end of namespace Misc:
+    })(Misc = HelgeUtils.Misc || (HelgeUtils.Misc = {}));
     /**
      * Source: https://stackoverflow.com/questions/17528749/semaphore-like-queue-in-javascript
      */
@@ -1531,8 +1533,78 @@ export var HelgeUtils;
         };
         HelgeUtils.suppressUnusedWarning(test);
     })(Semaphore = HelgeUtils.Semaphore || (HelgeUtils.Semaphore = {}));
+    let Net;
+    (function (Net) {
+        let OpenAi;
+        (function (OpenAi) {
+            let Test;
+            (function (Test) {
+                Test.testApiUp = async () => {
+                    const url = "https://api.openai.com/v1/audio/speech";
+                    HelgeUtils.assertEquals((await fetch(url))["type"], "invalid_request_error");
+                };
+            })(Test = OpenAi.Test || (OpenAi.Test = {}));
+        })(OpenAi = Net.OpenAi || (Net.OpenAi = {}));
+        //end of namespace Net:
+    })(Net = HelgeUtils.Net || (HelgeUtils.Net = {}));
+    let Debugging;
+    (function (Debugging) {
+        let DevConsoles;
+        (function (DevConsoles) {
+            let Eruda;
+            (function (Eruda) {
+                /**
+                 * Often you should inline this function and load it before other scripts.
+                 * */
+                Eruda.load = () => {
+                    // Import from here instead: HelgeLoadFirst.Debug.DevConsole.Eruda.load()
+                };
+            })(Eruda = DevConsoles.Eruda || (DevConsoles.Eruda = {}));
+        })(DevConsoles = Debugging.DevConsoles || (Debugging.DevConsoles = {}));
+    })(Debugging = HelgeUtils.Debugging || (HelgeUtils.Debugging = {}));
     class DatesAndTimesInternal {
+        static Weekdays = {
+            Sunday: 0,
+            Monday: 1,
+            Tuesday: 2,
+            Wednesday: 3,
+            Thursday: 4,
+            Friday: 5,
+            Saturday: 6
+        };
         static pad = (n) => n < 10 ? '0' + n : n;
+        static nextWeekdayLocalIsoDate(weekday, now = new Date()) {
+            const currentDay = now.getDay();
+            const daysUntilDesiredDay = (weekday - currentDay + 7) % 7 || 7;
+            const desiredDayDate = new Date(now);
+            desiredDayDate.setDate(now.getDate() + daysUntilDesiredDay);
+            return desiredDayDate;
+        }
+        static isValidISODate(str) {
+            const date = new Date(str);
+            return this.isValidDate(date) && date.toISOString() === str;
+        }
+        static isValidDate(date) {
+            return !isNaN(date.getTime());
+        }
+        static cutAfterMinutesFromISODate(isoDate) {
+            return isoDate.slice(0, 16);
+        }
+        static cutAfterHourFromISODate(isoDate) {
+            return isoDate.slice(0, 13);
+        }
+        static parseRelaxedIsoDate(input) {
+            const isoTime = input.replace(',', 'T');
+            const date = new Date(isoTime);
+            return isNaN(date.getTime()) ? null : date;
+        }
+        static testParseRelaxedIsoDate() {
+            const parse = this.parseRelaxedIsoDate;
+            const expected = new Date('2022-01-01T00:00:00.000Z').toISOString();
+            HelgeUtils.assertEquals(parse('2022-01-01').toISOString(), expected);
+            HelgeUtils.assertEquals(parse('2022-01-01').toISOString(), expected);
+            HelgeUtils.assert(parse('not a date') === null);
+        }
         static year(date, twoDigitYear) {
             return (twoDigitYear ? date.getFullYear().toString().slice(-2) : date.getFullYear());
         }
@@ -1587,6 +1659,20 @@ export var HelgeUtils;
                 return HelgeUtils.DatesAndTimes.date2dmyyPointed(new Date(), true);
             }
         };
+        /**
+         * Converts a Date object to an ISO 8601 formatted string using the local time zone.
+         *
+         * @param {Date} date - The Date object to be converted.
+         * @returns {string} An ISO 8601 formatted date string in the local time zone.
+         */
+        static dateToLocalIsoDate(date) {
+            const offset = date.getTimezoneOffset();
+            const localDate = new Date(date.getTime() - offset * 60 * 1000);
+            return localDate.toISOString().slice(0, -1);
+        }
+        static runTests() {
+            this.testParseRelaxedIsoDate();
+        }
     }
     HelgeUtils.DatesAndTimes = DatesAndTimesInternal;
 })(HelgeUtils || (HelgeUtils = {}));

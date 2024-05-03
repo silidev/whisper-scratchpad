@@ -626,6 +626,7 @@ export namespace HelgeUtils {
 
   export const runTests = function (){
     testRemoveElements()
+    DatesAndTimes.runTests()
     Strings.runTests()
   }
 
@@ -1580,7 +1581,8 @@ Please note that certain strong accents can possibly cause this mode to transcri
       replace(wordEndReplacements,false)
       return output
     }
-  } //end of namespace Misc
+    //end of namespace Misc:
+  }
 
   /**
    * Source: https://stackoverflow.com/questions/17528749/semaphore-like-queue-in-javascript
@@ -1654,8 +1656,84 @@ Please note that certain strong accents can possibly cause this mode to transcri
     suppressUnusedWarning(test)
   }
 
+  export namespace Net {
+    export namespace OpenAi {
+      export namespace Test {
+        export const testApiUp = async () => {
+          const url = "https://api.openai.com/v1/audio/speech"
+          assertEquals((await fetch(url))["type"], "invalid_request_error")
+        }
+      }
+    }
+    //end of namespace Net:
+  }
+
+  export namespace Debugging {
+
+    export namespace DevConsoles {
+
+      export namespace Eruda {
+
+        /**
+         * Often you should inline this function and load it before other scripts.
+         * */
+        export const load = () => {
+          // Import from here instead: HelgeLoadFirst.Debug.DevConsole.Eruda.load()
+        }
+      }
+    }
+  }
+
   class DatesAndTimesInternal {
+
+    static Weekdays = {
+      Sunday: 0,
+      Monday: 1,
+      Tuesday: 2,
+      Wednesday: 3,
+      Thursday: 4,
+      Friday: 5,
+      Saturday: 6
+    } as const
+
     private static pad = (n: number) => n < 10 ? '0' + n : n
+    public static nextWeekdayLocalIsoDate(weekday: number, now = new Date()) {
+      const currentDay = now.getDay()
+
+      const daysUntilDesiredDay = (weekday - currentDay + 7) % 7 || 7
+      const desiredDayDate = new Date(now)
+      desiredDayDate.setDate(now.getDate() + daysUntilDesiredDay)
+
+      return desiredDayDate
+    }
+
+    public static isValidISODate (str: string) {
+      const date = new Date(str)
+      return this.isValidDate(date) && date.toISOString() === str
+    }
+
+    public static isValidDate(date: Date) {
+      return !isNaN(date.getTime())
+    }
+    public static cutAfterMinutesFromISODate(isoDate: string) {
+      return isoDate.slice(0, 16)
+    }
+    public static cutAfterHourFromISODate(isoDate: string) {
+      return isoDate.slice(0, 13)
+    }
+    public static parseRelaxedIsoDate(input: string): Date | null {
+      const isoTime = input.replace(',', 'T')
+      const date = new Date(isoTime)
+      return isNaN(date.getTime()) ? null : date
+    }
+    public static testParseRelaxedIsoDate() {
+      const parse = this.parseRelaxedIsoDate
+      const expected = new Date('2022-01-01T00:00:00.000Z').toISOString()
+      HelgeUtils.assertEquals((parse('2022-01-01') as Date).toISOString(), expected)
+      HelgeUtils.assertEquals((parse('2022-01-01') as Date).toISOString(), expected)
+      HelgeUtils.assert(parse('not a date') === null)
+    }
+
 
     private static year(date: Date, twoDigitYear: boolean) {
       return (twoDigitYear ? date.getFullYear().toString().slice(-2) : date.getFullYear())
@@ -1721,6 +1799,22 @@ Please note that certain strong accents can possibly cause this mode to transcri
         return DatesAndTimes.date2dmyyPointed(new Date(),true)
       }
     }
+
+    /**
+     * Converts a Date object to an ISO 8601 formatted string using the local time zone.
+     *
+     * @param {Date} date - The Date object to be converted.
+     * @returns {string} An ISO 8601 formatted date string in the local time zone.
+     */
+    public static dateToLocalIsoDate (date: Date): string {
+      const offset = date.getTimezoneOffset()
+      const localDate = new Date(date.getTime() - offset * 60 * 1000)
+      return localDate.toISOString().slice(0, -1)
+    }
+    public static runTests() {
+      this.testParseRelaxedIsoDate()
+    }
+    // end of DatesAndTimes:
   } 
 
   export const DatesAndTimes = DatesAndTimesInternal;

@@ -1,8 +1,8 @@
-// noinspection JSUnusedGlobalSymbols,SpellCheckingInspection
+// noinspection JSUnusedGlobalSymbols
 
 /** Copyright by Helge Tobias Kosuch 2023
  *
- * Should be named WebUtils... but I am used to HtmlUtils.
+ * Should be named DomUtils... but I am used to HtmlUtils.
  * */
 import {HelgeUtils} from "./HelgeUtils.js"
 
@@ -17,9 +17,10 @@ const MAX_COOKIE_SIZE = 4096
 
 export namespace HtmlUtils {
 
+  const memoize = HelgeUtils.memoize
+
   // ########## Blinking fast and slow ##########
   // https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow
-  import memoize = HelgeUtils.memoize;
   /**
    * .blinkingFast {
    *  animation: blink 1s linear infinite
@@ -47,8 +48,7 @@ export namespace HtmlUtils {
   export const textAreaWithId = elementWithId as (id: string) => HTMLTextAreaElement | null
   export const inputElementWithId = elementWithId as (id: string) => HTMLInputElement | null
 
-  /**
-   * These never return null. Instead, they throw a runtime error. */
+  /** These never return null. Instead, they throw a runtime error. */
   export namespace NeverNull {
     import nullFilter = HelgeUtils.Misc.nullFilter
 
@@ -233,7 +233,7 @@ export namespace HtmlUtils {
         /** Needs
          * <script type="module" src="node_modules/textarea-caret/index.js">
          *   </script>*/
-        const getCaretCoordinates = window.getCaretCoordinates
+        const getCaretCoordinates = window["getCaretCoordinates"]
         if (typeof getCaretCoordinates !== 'undefined') {
           textArea.scrollTop = getCaretCoordinates(textArea, textArea.selectionEnd).top
         }
@@ -371,29 +371,31 @@ export namespace HtmlUtils {
     }
 
     /**
-     * Should be named "ouputError" because it uses alert and console.log, but
+     * Should be named "outputError" because it uses alert and console.log, but
      * I am used to "printError".
      * This outputs aggressively on top of everything to the user. */
-    export const printError = (str: string) => {
-      console.log(str)
-      alert(str)
+    export const printError = (input: any) => {
+      console.log(input)
+      alert(input)
 
       callSwallowingExceptions(() => {
         document.body.insertAdjacentHTML('afterbegin',
             `<div 
-              style="background-color: #000000; color:red;"> 
-            <p style="font-size: 30px;">###### printError</p>
-            <p style="font-size:18px;">${escapeHtml(str)}</p>`
+              style="position: fixed; z-index: 9999; background-color: #000000; color:red;"> 
+            <p style="font-size: 30px;">###### printDebug</p>
+            <p style="font-size:18px;">${escapeHtml(input.toString())}</p>`
             + `########</div>`)
       })
     }
 
     /**
      * This outputs gently. Might not be seen by the user.  */
-    export const printDebug = (str: string) => {
+  export const printDebug = (str: string, parentElement = document.body) => {
+    showToast(str.substring(0, 80))
+
       console.log(str)
       HelgeUtils.Exceptions.callSwallowingExceptions(() => {
-        document.body.insertAdjacentHTML('beforeend',
+      parentElement.insertAdjacentHTML('beforeend',
             `<div 
               style="z-index: 9999; background-color: #00000000; color:red;"> 
             <p style="font-size:18px;">${escapeHtml(str)}</p>`
@@ -503,12 +505,33 @@ export namespace HtmlUtils {
     }
   }
 
-  export const alertAutoDismissing = (message: string, duration = 1000) => {
+  export namespace Styles {
+    export const toggleDisplayNone = (element: HTMLElement, visibleDisplayStyle = "block") => {
+      if (element.style.display === "none") {
+        element.style.display = visibleDisplayStyle
+      } else {
+        element.style.display = "none"
+      }
+    }
+  }
+
+
+  /**
+   * showToast
+   *
+   * Often the project defines a project-specific showToast function.
+   *
+   * Search keywords: "toast message", "toast notification", "toast popup", "alert"
+   *
+   * @param message
+   * @param duration
+   */
+  export const showToast = (message: string, duration = 500) => {
     const alertBox = document.createElement("div");
 
     alertBox.style.cssText = `
     position: fixed;
-    top: 10px;
+    top: 50%;
     left: 50%;
     transform: translateX(-50%);
     background-color: lightblue;
@@ -522,5 +545,22 @@ export namespace HtmlUtils {
     setTimeout(() => {
       alertBox.remove();
     }, duration);
-  };
-} // End of HtmlUtils
+  }
+
+  /**
+   * @deprecated Use showToast instead. */
+  export const alertAutoDismissing = showToast
+
+  export namespace Misc {
+    export const loadScript = (srcUri: string,
+        afterLoad: ((this: GlobalEventHandlers, ev: Event) => any) | null
+        ) =>
+    {
+      const script = document.createElement('script')
+      script.src = srcUri
+      script.async = true
+      script.onload = afterLoad
+      document.head.appendChild(script)
+    }
+  }
+}

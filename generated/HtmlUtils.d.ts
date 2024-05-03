@@ -23,8 +23,7 @@ export declare namespace HtmlUtils {
     const buttonWithId: (id: string) => HTMLButtonElement | null;
     const textAreaWithId: (id: string) => HTMLTextAreaElement | null;
     const inputElementWithId: (id: string) => HTMLInputElement | null;
-    /**
-     * These never return null. Instead, they throw a runtime error. */
+    /** These never return null. Instead, they throw a runtime error. */
     namespace NeverNull {
         const elementWithId: (id: string) => HTMLElement;
         const buttonWithId: (id: string) => HTMLButtonElement;
@@ -124,16 +123,16 @@ export declare namespace HtmlUtils {
             const installGlobalDefault: () => void;
         }
         /**
-         * Should be named "ouputError" because it uses alert and console.log, but
+         * Should be named "outputError" because it uses alert and console.log, but
          * I am used to "printError".
          * This outputs aggressively on top of everything to the user. */
-        const printError: (str: string) => void;
+        const printError: (input: any) => void;
         /**
          * This outputs gently. Might not be seen by the user.  */
-        const printDebug: (str: string) => void;
+        const printDebug: (str: string, parentElement?: HTMLElement) => void;
     }
-    const printDebug: (str: string) => void;
-    const printError: (str: string) => void;
+    const printDebug: (str: string, parentElement?: HTMLElement) => void;
+    const printError: (input: any) => void;
     const escapeHtml: (input: string) => string;
     /**
      # DOMException Read permission denied error
@@ -180,5 +179,24 @@ export declare namespace HtmlUtils {
          */
         const addKeyboardBindings: () => void;
     }
+    namespace Styles {
+        const toggleDisplayNone: (element: HTMLElement, visibleDisplayStyle?: string) => void;
+    }
+    /**
+     * showToast
+     *
+     * Often the project defines a project-specific showToast function.
+     *
+     * Search keywords: "toast message", "toast notification", "toast popup", "alert"
+     *
+     * @param message
+     * @param duration
+     */
+    const showToast: (message: string, duration?: number) => void;
+    /**
+     * @deprecated Use showToast instead. */
     const alertAutoDismissing: (message: string, duration?: number) => void;
+    namespace Misc {
+        const loadScript: (srcUri: string, afterLoad: ((this: GlobalEventHandlers, ev: Event) => any) | null) => void;
+    }
 }

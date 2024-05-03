@@ -1,15 +1,15 @@
-// noinspection JSUnusedGlobalSymbols,SpellCheckingInspection
+// noinspection JSUnusedGlobalSymbols
 /** Copyright by Helge Tobias Kosuch 2023
  *
- * Should be named WebUtils... but I am used to HtmlUtils.
+ * Should be named DomUtils... but I am used to HtmlUtils.
  * */
 import { HelgeUtils } from "./HelgeUtils.js";
 const MAX_COOKIE_SIZE = 4096;
 export var HtmlUtils;
 (function (HtmlUtils) {
+    const memoize = HelgeUtils.memoize;
     // ########## Blinking fast and slow ##########
     // https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow
-    var memoize = HelgeUtils.memoize;
     /**
      * .blinkingFast {
      *  animation: blink 1s linear infinite
@@ -33,8 +33,7 @@ export var HtmlUtils;
     HtmlUtils.buttonWithId = HtmlUtils.elementWithId;
     HtmlUtils.textAreaWithId = HtmlUtils.elementWithId;
     HtmlUtils.inputElementWithId = HtmlUtils.elementWithId;
-    /**
-     * These never return null. Instead, they throw a runtime error. */
+    /** These never return null. Instead, they throw a runtime error. */
     let NeverNull;
     (function (NeverNull) {
         var nullFilter = HelgeUtils.Misc.nullFilter;
@@ -188,7 +187,7 @@ export var HtmlUtils;
                 /** Needs
                  * <script type="module" src="node_modules/textarea-caret/index.js">
                  *   </script>*/
-                const getCaretCoordinates = window.getCaretCoordinates;
+                const getCaretCoordinates = window["getCaretCoordinates"];
                 if (typeof getCaretCoordinates !== 'undefined') {
                     textArea.scrollTop = getCaretCoordinates(textArea, textArea.selectionEnd).top;
                 }
@@ -310,26 +309,27 @@ export var HtmlUtils;
             };
         })(ExceptionHandlers = ErrorHandling.ExceptionHandlers || (ErrorHandling.ExceptionHandlers = {}));
         /**
-         * Should be named "ouputError" because it uses alert and console.log, but
+         * Should be named "outputError" because it uses alert and console.log, but
          * I am used to "printError".
          * This outputs aggressively on top of everything to the user. */
-        ErrorHandling.printError = (str) => {
-            console.log(str);
-            alert(str);
+        ErrorHandling.printError = (input) => {
+            console.log(input);
+            alert(input);
             callSwallowingExceptions(() => {
                 document.body.insertAdjacentHTML('afterbegin', `<div 
-              style="background-color: #000000; color:red;"> 
-            <p style="font-size: 30px;">###### printError</p>
-            <p style="font-size:18px;">${HtmlUtils.escapeHtml(str)}</p>`
+              style="position: fixed; z-index: 9999; background-color: #000000; color:red;"> 
+            <p style="font-size: 30px;">###### printDebug</p>
+            <p style="font-size:18px;">${HtmlUtils.escapeHtml(input.toString())}</p>`
                     + `########</div>`);
             });
         };
         /**
          * This outputs gently. Might not be seen by the user.  */
-        ErrorHandling.printDebug = (str) => {
+        ErrorHandling.printDebug = (str, parentElement = document.body) => {
+            HtmlUtils.showToast(str.substring(0, 80));
             console.log(str);
             HelgeUtils.Exceptions.callSwallowingExceptions(() => {
-                document.body.insertAdjacentHTML('beforeend', `<div 
+                parentElement.insertAdjacentHTML('beforeend', `<div 
               style="z-index: 9999; background-color: #00000000; color:red;"> 
             <p style="font-size:18px;">${HtmlUtils.escapeHtml(str)}</p>`
                     + `</div>`);
@@ -430,11 +430,32 @@ export var HtmlUtils;
             });
         };
     })(Keyboard = HtmlUtils.Keyboard || (HtmlUtils.Keyboard = {}));
-    HtmlUtils.alertAutoDismissing = (message, duration = 1000) => {
+    let Styles;
+    (function (Styles) {
+        Styles.toggleDisplayNone = (element, visibleDisplayStyle = "block") => {
+            if (element.style.display === "none") {
+                element.style.display = visibleDisplayStyle;
+            }
+            else {
+                element.style.display = "none";
+            }
+        };
+    })(Styles = HtmlUtils.Styles || (HtmlUtils.Styles = {}));
+    /**
+     * showToast
+     *
+     * Often the project defines a project-specific showToast function.
+     *
+     * Search keywords: "toast message", "toast notification", "toast popup", "alert"
+     *
+     * @param message
+     * @param duration
+     */
+    HtmlUtils.showToast = (message, duration = 500) => {
         const alertBox = document.createElement("div");
         alertBox.style.cssText = `
     position: fixed;
-    top: 10px;
+    top: 50%;
     left: 50%;
     transform: translateX(-50%);
     background-color: lightblue;
@@ -448,5 +469,18 @@ export var HtmlUtils;
             alertBox.remove();
         }, duration);
     };
-})(HtmlUtils || (HtmlUtils = {})); // End of HtmlUtils
+    /**
+     * @deprecated Use showToast instead. */
+    HtmlUtils.alertAutoDismissing = HtmlUtils.showToast;
+    let Misc;
+    (function (Misc) {
+        Misc.loadScript = (srcUri, afterLoad) => {
+            const script = document.createElement('script');
+            script.src = srcUri;
+            script.async = true;
+            script.onload = afterLoad;
+            document.head.appendChild(script);
+        };
+    })(Misc = HtmlUtils.Misc || (HtmlUtils.Misc = {}));
+})(HtmlUtils || (HtmlUtils = {}));
 //# sourceMappingURL=HtmlUtils.js.map
