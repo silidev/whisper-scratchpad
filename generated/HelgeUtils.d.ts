@@ -33,7 +33,7 @@ export declare namespace HelgeUtils {
          </context>
          </template>
          </pre>*/
-        const unhandledExceptionAlert: (e: Error | string) => string;
+        const unhandledExceptionAlert: (e: any) => string;
         /** swallowAll
          * Wraps the given void function in a try-catch block and swallows any exceptions.
          *
@@ -89,6 +89,14 @@ export declare namespace HelgeUtils {
          * @param wantedErrorMsg
          */
         const catchSpecificError: (errorType: any, callback: Function, wantedErrorMsg?: string | null) => (error: Error) => void;
+        /**
+         * Like "eval(...)" but a little safer and with better performance.
+         *
+         * The codeStr must be known to be from a secure source, because
+         * injection of code through this is easy. This is intentional to
+         * allow important features.
+         * */
+        const evalBetter: (codeStr: string, args: any) => any;
     }
     /**
      * Somewhat like eval(...) but a little safer and with better performance.
@@ -214,6 +222,15 @@ export declare namespace HelgeUtils {
             testRemoveLeadingWhitespace(): void;
             removeAllSpaces(inputString: string): string;
         };
+        /**
+         * In the given template input string, replace all occurrences of ${key}
+         * with the value of the key in the replacements object.
+         * Example:
+         * const input = "Hello ${name}, you are ${age} years old."
+         * const replacements = { name: "John", age: 25 }
+         * const result = formatString(input, replacements)
+         * // result is now "Hello John, you are 25 years old." */
+        const formatString: (input: string, replacements: {}) => string;
         const isBlank: (input: string) => boolean;
         const isNotBlank: (input: string) => boolean;
         const removeLineBreaks: (input: string) => string;

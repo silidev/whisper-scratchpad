@@ -39,7 +39,7 @@ export namespace HelgeUtils {
      </context>
      </template>
      </pre>*/
-    export const unhandledExceptionAlert = (e: Error | string) => {
+    export const unhandledExceptionAlert = (e: any) => {
       let str = "Unhandled EXCEPTION! :" + e
       if (e instanceof Error) {
         str += ", Stack trace:\n"
@@ -153,6 +153,22 @@ export namespace HelgeUtils {
         throw error
       }
     }
+
+    /**
+     * Like "eval(...)" but a little safer and with better performance.
+     *
+     * The codeStr must be known to be from a secure source, because
+     * injection of code through this is easy. This is intentional to
+     * allow important features.
+     * */
+    export const evalBetter = function (codeStr: string, args: any) {
+      if (Strings.isBlank(codeStr)) {
+        alertAndThrow("evalBetter(): codeStr must not be empty")
+      }
+      return executeFunctionBody(" return (" + codeStr + ")", args)
+    }
+
+    // end of Exceptions
   }
 
   /**
@@ -573,6 +589,19 @@ export namespace HelgeUtils {
         return inputString.replace(/\s/g, '')
       }
     }
+
+    /**
+     * In the given template input string, replace all occurrences of ${key}
+     * with the value of the key in the replacements object.
+     * Example:
+     * const input = "Hello ${name}, you are ${age} years old."
+     * const replacements = { name: "John", age: 25 }
+     * const result = formatString(input, replacements)
+     * // result is now "Hello John, you are 25 years old." */
+    export const formatString = (input: string, replacements: {}): string => input.replace(/\${(.*?)}/g, (_, key) => {
+      // @ts-ignore
+      return replacements[key]
+    })
 
     export const isBlank = (input: string) => {
       if (!input) {
