@@ -1478,6 +1478,7 @@ export var HelgeUtils;
                 console.error('Failed to read clipboard contents: ', err);
                 throw err;
             });
+            //end of namespace Misc:
         };
         /** @deprecated Rather use read() */
         clipboard.readText = () => navigator.clipboard.readText();

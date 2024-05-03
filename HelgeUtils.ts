@@ -372,7 +372,7 @@ export namespace HelgeUtils {
       const stringToWorkWith = input.substring(0, startpos + 1);
       let lastIndexOf = -1;
       let nextStop = 0;
-      let result;
+      let result: RegExpExecArray | null;
       while ((result = regex.exec(stringToWorkWith)) != null) {
         lastIndexOf = result.index;
         regex.lastIndex = ++nextStop;
@@ -1594,6 +1594,7 @@ Please note that certain strong accents can possibly cause this mode to transcri
         console.error('Failed to read clipboard contents: ', err);
         throw err
       })
+    //end of namespace Misc:
     }
 
     /** @deprecated Rather use read() */
