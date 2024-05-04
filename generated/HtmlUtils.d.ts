@@ -73,8 +73,8 @@ export declare namespace HtmlUtils {
          * Find the next occurrence of a string in a text area and select it.
          *
          * It can also scroll the found occurrence into view, IF
-         * <script type="module" src="node_modules/textarea-caret/index.js">
-         *   </script>
+         * script type="module" src="node_modules/textarea-caret/index.js">
+         *   /script>
          * "^3.1.0" is included in the HTML file.
          * */
         const findAndSelect: (textArea: HTMLTextAreaElement, target: string) => void;
@@ -123,8 +123,8 @@ export declare namespace HtmlUtils {
             const installGlobalDefault: () => void;
         }
         /**
-         * Should be named "outputError" because it uses alert and console.log, but
-         * I am used to "printError".
+           * Should be named "outputError" because it uses alert and console.log, but
+           * I am used to "printError".
          * This outputs aggressively on top of everything to the user. */
         const printError: (input: any) => void;
         /**

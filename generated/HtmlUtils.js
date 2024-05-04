@@ -167,8 +167,8 @@ export var HtmlUtils;
          * Find the next occurrence of a string in a text area and select it.
          *
          * It can also scroll the found occurrence into view, IF
-         * <script type="module" src="node_modules/textarea-caret/index.js">
-         *   </script>
+         * script type="module" src="node_modules/textarea-caret/index.js">
+         *   /script>
          * "^3.1.0" is included in the HTML file.
          * */
         TextAreas.findAndSelect = (textArea, target) => {
@@ -185,8 +185,8 @@ export var HtmlUtils;
             // Scroll to selectionStart:
             {
                 /** Needs
-                 * <script type="module" src="node_modules/textarea-caret/index.js">
-                 *   </script>*/
+                 * script type="module" src="node_modules/textarea-caret/index.js">
+                 *   /script>*/
                 const getCaretCoordinates = window["getCaretCoordinates"];
                 if (typeof getCaretCoordinates !== 'undefined') {
                     textArea.scrollTop = getCaretCoordinates(textArea, textArea.selectionEnd).top;
@@ -309,8 +309,8 @@ export var HtmlUtils;
             };
         })(ExceptionHandlers = ErrorHandling.ExceptionHandlers || (ErrorHandling.ExceptionHandlers = {}));
         /**
-         * Should be named "outputError" because it uses alert and console.log, but
-         * I am used to "printError".
+           * Should be named "outputError" because it uses alert and console.log, but
+           * I am used to "printError".
          * This outputs aggressively on top of everything to the user. */
         ErrorHandling.printError = (input) => {
             console.log(input);

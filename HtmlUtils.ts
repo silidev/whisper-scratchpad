@@ -145,6 +145,7 @@ export namespace HtmlUtils {
       }
     }
 
+
     export const appendTextAndCursor = (textArea: HTMLTextAreaElement, text: string) => {
       append(textArea, text)
       setCursor(textArea, textArea.value.length)
@@ -191,7 +192,8 @@ export namespace HtmlUtils {
      * selected it will be overwritten. */
     export const insertAndPutCursorAfter = (textarea: HTMLTextAreaElement, addedText: string) => {
 
-      if (!addedText) return
+      if (!addedText)
+        return
 
       const textBeforeSelection = textarea.value.substring(0, textarea.selectionStart)
       const textAfterSelection = textarea.value.substring(textarea.selectionEnd)
@@ -210,8 +212,8 @@ export namespace HtmlUtils {
      * Find the next occurrence of a string in a text area and select it.
      *
      * It can also scroll the found occurrence into view, IF
-     * <script type="module" src="node_modules/textarea-caret/index.js">
-     *   </script>
+     * script type="module" src="node_modules/textarea-caret/index.js">
+     *   /script>
      * "^3.1.0" is included in the HTML file.
      * */
     export const findAndSelect = (textArea: HTMLTextAreaElement,
@@ -231,8 +233,8 @@ export namespace HtmlUtils {
       // Scroll to selectionStart:
       {
         /** Needs
-         * <script type="module" src="node_modules/textarea-caret/index.js">
-         *   </script>*/
+         * script type="module" src="node_modules/textarea-caret/index.js">
+         *   /script>*/
         const getCaretCoordinates = window["getCaretCoordinates"]
         if (typeof getCaretCoordinates !== 'undefined') {
           textArea.scrollTop = getCaretCoordinates(textArea, textArea.selectionEnd).top
@@ -284,31 +286,31 @@ export namespace HtmlUtils {
       }
     }
 
-    export namespace Cookies {
+  export namespace Cookies {
       /**
        * Sets a cookie with the given name and value.
        *
        * @throws Error if the cookie value exceeds 4095 characters.*/
-      export const set = (cookieName: string, cookieValue: string) => {
-        const expirationTime = new Date(Date.now() + 2147483647000).toUTCString()
-        document.cookie = `${cookieName}=${encodeURIComponent(cookieValue)};expires=${expirationTime};path=/`
+    export const set = (cookieName: string, cookieValue: string) => {
+      const expirationTime = new Date(Date.now() + 2147483647000).toUTCString()
+      document.cookie = `${cookieName}=${encodeURIComponent(cookieValue)};expires=${expirationTime};path=/`
         const message = `Cookie "${cookieName}"'s value exceeds maximum characters of ${MAX_COOKIE_SIZE}.`
         if (document.cookie.length > MAX_COOKIE_SIZE) {
           throw new Error(message)
         }
-      }
-
-      export const get = (name: string) => {
-        let cookieArr = document.cookie.split(";")
-        for (let i = 0; i < cookieArr.length; i++) {
-          let cookiePair = cookieArr[i].split("=")
-          if (name === cookiePair[0].trim()) {
-            return decodeURIComponent(cookiePair[1])
-          }
-        }
-        return null
-      }
     }
+
+    export const get = (name: string) => {
+      let cookieArr = document.cookie.split(";")
+      for (let i = 0; i < cookieArr.length; i++) {
+        let cookiePair = cookieArr[i].split("=")
+        if (name === cookiePair[0].trim()) {
+          return decodeURIComponent(cookiePair[1])
+        }
+      }
+      return null
+    }
+  }
   }
   /**
    * Known "problems": If the user clicks on the button multiple times in a row, the checkmark will
@@ -370,38 +372,38 @@ export namespace HtmlUtils {
       }
     }
 
-    /**
+  /**
      * Should be named "outputError" because it uses alert and console.log, but
      * I am used to "printError".
-     * This outputs aggressively on top of everything to the user. */
+   * This outputs aggressively on top of everything to the user. */
     export const printError = (input: any) => {
       console.log(input)
       alert(input)
 
       callSwallowingExceptions(() => {
-        document.body.insertAdjacentHTML('afterbegin',
-            `<div 
+      document.body.insertAdjacentHTML('afterbegin',
+          `<div 
               style="position: fixed; z-index: 9999; background-color: #000000; color:red;"> 
             <p style="font-size: 30px;">###### printDebug</p>
             <p style="font-size:18px;">${escapeHtml(input.toString())}</p>`
-            + `########</div>`)
-      })
-    }
+          + `########</div>`)
+    })
+  }
 
-    /**
-     * This outputs gently. Might not be seen by the user.  */
+  /**
+   * This outputs gently. Might not be seen by the user.  */
   export const printDebug = (str: string, parentElement = document.body) => {
     showToast(str.substring(0, 80))
 
-      console.log(str)
-      HelgeUtils.Exceptions.callSwallowingExceptions(() => {
+    console.log(str)
+    HelgeUtils.Exceptions.callSwallowingExceptions(() => {
       parentElement.insertAdjacentHTML('beforeend',
-            `<div 
+          `<div 
               style="z-index: 9999; background-color: #00000000; color:red;"> 
             <p style="font-size:18px;">${escapeHtml(str)}</p>`
-            + `</div>`)
-      })
-    }
+          + `</div>`)
+    })
+  }
   }
 
   export const printDebug = ErrorHandling.printDebug
@@ -504,6 +506,7 @@ export namespace HtmlUtils {
       })
     }
   }
+
 
   export namespace Styles {
     export const toggleDisplayNone = (element: HTMLElement, visibleDisplayStyle = "block") => {
