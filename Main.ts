@@ -11,7 +11,7 @@ import elementWithId = HtmlUtils.NeverNull.elementWithId;
 import TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
 import Cookies = HtmlUtils.BrowserStorage.Cookies;
 import {ctrlYRedo, ctrlZUndo} from "./DontInspect.js"
-import {HelgeUtils} from "./HelgeUtils.js"
+import {HelgeUtils} from "./HelgeUtils/HelgeUtils.js"
 import {
   INSERT_EDITOR_INTO_PROMPT,
   NEW_NOTE_DELIMITER,
@@ -21,7 +21,7 @@ import {
   WHISPER_TEMPERATURE
 } from "./Config.js"
 import {createCutFunction} from "./CutButton.js"
-import {HtmlUtils} from "./HtmlUtils.js"
+import {HtmlUtils} from "./HelgeUtils/HtmlUtils.js"
 import {CurrentNote} from "./CurrentNote.js";
 
 //@ts-ignore
@@ -194,7 +194,7 @@ export namespace UiFunctions {
 
     namespace Cursor {
       // ############## findDuButton ##############
-      buttonWithId('findDuButton').addEventListener('pointerdown', event => {
+      buttonWithId('findDuButton').addEventListener('pointerdown', (event: { preventDefault: () => void; }) => {
         event.preventDefault(); // Prevent the textarea from losing focus
         mainEditorTextareaWrapper.findAndSelect("du")
       });

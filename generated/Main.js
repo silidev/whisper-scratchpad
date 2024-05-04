@@ -10,10 +10,10 @@ var elementWithId = HtmlUtils.NeverNull.elementWithId;
 var TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
 var Cookies = HtmlUtils.BrowserStorage.Cookies;
 import { ctrlYRedo, ctrlZUndo } from "./DontInspect.js";
-import { HelgeUtils } from "./HelgeUtils.js";
+import { HelgeUtils } from "./HelgeUtils/HelgeUtils.js";
 import { INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERIFY_LARGE_STORAGE, VERSION, WHERE_TO_INSERT_AT, WHISPER_TEMPERATURE } from "./Config.js";
 import { createCutFunction } from "./CutButton.js";
-import { HtmlUtils } from "./HtmlUtils.js";
+import { HtmlUtils } from "./HelgeUtils/HtmlUtils.js";
 import { CurrentNote } from "./CurrentNote.js";
 //@ts-ignore
 import { download, generateCsv, mkConfig } from "../node_modules/export-to-csv/output/index.js";
@@ -157,7 +157,7 @@ export var UiFunctions;
         let Cursor;
         (function (Cursor) {
             // ############## findDuButton ##############
-            buttonWithId('findDuButton').addEventListener('pointerdown', event => {
+            buttonWithId('findDuButton').addEventListener('pointerdown', (event) => {
                 event.preventDefault(); // Prevent the textarea from losing focus
                 mainEditorTextareaWrapper.findAndSelect("du");
             });

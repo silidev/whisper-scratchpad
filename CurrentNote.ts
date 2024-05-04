@@ -1,4 +1,4 @@
-import {HelgeUtils} from "./HelgeUtils.js"
+import {HelgeUtils} from "./HelgeUtils/HelgeUtils.js"
 import {NEW_NOTE_DELIMITER} from "./Config.js"
 import DelimiterSearch = HelgeUtils.Strings.DelimiterSearch
 

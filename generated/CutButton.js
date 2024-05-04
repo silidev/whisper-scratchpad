@@ -1,4 +1,4 @@
-import { HtmlUtils } from "./HtmlUtils.js";
+import { HtmlUtils } from "./HelgeUtils/HtmlUtils.js";
 import { Log, mainEditor } from "./Main.js";
 import { CurrentNote } from "./CurrentNote.js";
 var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
