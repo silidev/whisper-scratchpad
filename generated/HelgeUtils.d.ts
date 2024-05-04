@@ -38,9 +38,9 @@ export declare namespace HelgeUtils {
          * Wraps the given void function in a try-catch block and swallows any exceptions.
          *
          * Example use:
-              const produceError = () => {throw "error"}
-              const noError = swallowAll(produceError);
-              noError(); // Does NOT throw an exception.
+         const produceError = () => {throw "error"}
+         const noError = swallowAll(produceError);
+         noError(); // Does NOT throw an exception.
          *
          * @param func
          */

@@ -1,5 +1,5 @@
 // noinspection JSUnusedGlobalSymbols
-//@ts-ignore
+// @ts-ignore
 // import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js";
 /**
  * HelgeUtils.ts
@@ -56,9 +56,9 @@ export var HelgeUtils;
          * Wraps the given void function in a try-catch block and swallows any exceptions.
          *
          * Example use:
-              const produceError = () => {throw "error"}
-              const noError = swallowAll(produceError);
-              noError(); // Does NOT throw an exception.
+         const produceError = () => {throw "error"}
+         const noError = swallowAll(produceError);
+         noError(); // Does NOT throw an exception.
          *
          * @param func
          */
@@ -831,8 +831,7 @@ export var HelgeUtils;
             let appliedRuleNumber = 0;
             let log = 'input string before replacements == \n' + subject + "\n)))---(((\n";
             function applyRule(rawTarget, regexFlags, replacementString, replacementFlags) {
-                const target = possiblyWordBoundaryMarker + rawTarget
-                    + possiblyWordBoundaryMarker;
+                const target = possiblyWordBoundaryMarker + rawTarget + possiblyWordBoundaryMarker;
                 // console.log("\n" + target + "\n↓↓↓↓↓\n"+ replacement)
                 let regex = regexFlags.length == 0 ?
                     new RegExp(target, 'gm') // Noted that gm flags are basically
@@ -858,8 +857,8 @@ export var HelgeUtils;
             let rule;
             const ruleParser = /^"(.+?)"([a-z]*?)(?:\r\n|\r|\n)?->(?:\r\n|\r|\n)?"(.*?)"([a-z]*?)(?:\r\n|\r|\n)?$/gmus;
             while (rule = ruleParser.exec(allRules) /* This works fine in a Chrome
-               but at least sometimes returns falsely null inside Anki and
-                AnkiDroid. */) {
+             but at least sometimes returns falsely null inside Anki and
+              AnkiDroid. */) {
                 const [, target, regexFlags, replacementString, replacementFlags] = rule;
                 applyRule(target, regexFlags, replacementString, replacementFlags);
                 if (preserveCase) {
