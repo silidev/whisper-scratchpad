@@ -1241,7 +1241,7 @@ const init = () => {
   mainEditorTextareaWrapper.setCursorAtEnd().focus()
 
   // noinspection PointlessBooleanExpressionJS
-  if (true) {
+  if (false) {
     // noinspection UnreachableCodeJS
     HelgeUtils.TTS.withOpenAi("Ein Test und dann geht hier auch noch mehr.",Cookies.get('corsproxyIoOpenAIApiKey')??"")
   }

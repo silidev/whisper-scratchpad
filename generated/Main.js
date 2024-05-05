@@ -1082,7 +1082,7 @@ const init = () => {
     elementWithId("versionSpan").innerHTML = `${VERSION}, temperature: ${WHISPER_TEMPERATURE}`;
     mainEditorTextareaWrapper.setCursorAtEnd().focus();
     // noinspection PointlessBooleanExpressionJS
-    if (true) {
+    if (false) {
         // noinspection UnreachableCodeJS
         HelgeUtils.TTS.withOpenAi("Ein Test und dann geht hier auch noch mehr.", Cookies.get('corsproxyIoOpenAIApiKey') ?? "");
     }
