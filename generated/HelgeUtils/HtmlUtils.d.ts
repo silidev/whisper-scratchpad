@@ -180,7 +180,7 @@ export declare namespace HtmlUtils {
         const addKeyboardBindings: () => void;
     }
     namespace Styles {
-        const toggleDisplayNone: (element: HTMLElement, visibleDisplayStyle: any) => void;
+        const toggleDisplayNone: (element: HTMLElement, visibleDisplayStyle: string) => void;
     }
     /**
      * showToast

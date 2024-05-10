@@ -14,13 +14,15 @@
     "composite": true,
     "baseUrl": ".", // This must be specified if "paths" is.
     "paths": {
-      "../node_modules/*": ["./node_modules/*"]
+//      "../node_modules/*": ["./node_modules/*"]
     }
   },
   "include": [
     "**/*.js",
     "**/*.ts",
-    "node_modules/**/*.ts"
   ],
-//  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules/**",
+    "generated/**",
+  ]
 }
