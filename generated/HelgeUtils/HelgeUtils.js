@@ -1,12 +1,10 @@
-// noinspection JSUnusedGlobalSymbols
-// @ts-ignore
-// import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js";
 /**
- * HelgeUtils.ts
+ * HelgeUtils.ts V1.0
  * @description A collection of general utility functions not connected to a
  * specific project.
  *
  * Copyright by Helge Tobias Kosuch 2024 */
+// import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js";
 export var HelgeUtils;
 (function (HelgeUtils) {
     let Exceptions;
@@ -68,6 +66,7 @@ export var HelgeUtils;
                     func(...args);
                 }
                 catch (e) {
+                    // empty on purpose
                 }
             };
         };
@@ -117,7 +116,7 @@ export var HelgeUtils;
          * @param msg {String} */
         Exceptions.alertAndThrow = (...msg) => {
             console.trace();
-            alert(msg);
+            // alert(msg)
             throw new Error(...msg);
         };
         /**
@@ -134,7 +133,9 @@ export var HelgeUtils;
          * @param callback
          * @param wantedErrorMsg
          */
-        Exceptions.catchSpecificError = (errorType, callback, wantedErrorMsg = null) => (error) => {
+        Exceptions.catchSpecificError = (errorType
+        // eslint-disable-next-line @typescript-eslint/ban-types
+        , callback, wantedErrorMsg = null) => (error) => {
             if (error instanceof errorType
                 && (wantedErrorMsg === null && error.message === wantedErrorMsg)) {
                 callback(error);
@@ -317,7 +318,6 @@ export var HelgeUtils;
     };
     let Strings;
     (function (Strings) {
-        var assertEquals = HelgeUtils.Tests.assertEquals;
         /** Returns the index of the first occurrence of the given regex in the string.
          *
          * @param input
@@ -422,7 +422,7 @@ export var HelgeUtils;
             static testDelimiterSearch = () => {
                 const delimiter = '---\n';
                 const instance = new DelimiterSearch(delimiter);
-                const runTest = (input, index, expected) => assertEquals(input.substring(instance.leftIndex(input, index), instance.rightIndex(input, index)), expected);
+                const runTest = (input, index, expected) => HelgeUtils.assertEquals(input.substring(instance.leftIndex(input, index), instance.rightIndex(input, index)), expected);
                 {
                     const inputStr = "abc" + delimiter;
                     runTest(inputStr, 0, "abc");
@@ -460,7 +460,7 @@ export var HelgeUtils;
                     const delimiterSearch = new Strings.DelimiterSearch(delimiter);
                     const left = delimiterSearch.leftIndex(input, cursorPosition);
                     const right = delimiterSearch.rightIndex(input, cursorPosition);
-                    assertEquals(DelimiterSearch.deleteNote(input, left, right, delimiter), expected);
+                    HelgeUtils.assertEquals(DelimiterSearch.deleteNote(input, left, right, delimiter), expected);
                 };
                 runTest(0, "abc" + delimiter, "");
                 runTest(delimiter.length, delimiter + "abc", "");
@@ -511,6 +511,7 @@ export var HelgeUtils;
                 let str = "This   is \t\t\n\n\r  a  \t  string   with   multiple   spaces";
                 let replaced = this.replaceWhitespaceStretchesWithASingleSpace(str);
                 if (replaced === "This is a string with multiple spaces") {
+                    // blank on purpose
                 }
                 else {
                     throw "testReplaceWhitespaceStretchesWithASingleSpace failed.";
@@ -856,7 +857,7 @@ export var HelgeUtils;
             }
             let rule;
             const ruleParser = /^"(.+?)"([a-z]*?)(?:\r\n|\r|\n)?->(?:\r\n|\r|\n)?"(.*?)"([a-z]*?)(?:\r\n|\r|\n)?$/gmus;
-            while (rule = ruleParser.exec(allRules) /* This works fine in a Chrome
+            while ((rule = ruleParser.exec(allRules)) /* This works fine in a Chrome
              but at least sometimes returns falsely null inside Anki and
               AnkiDroid. */) {
                 const [, target, regexFlags, replacementString, replacementFlags] = rule;
@@ -913,6 +914,7 @@ export var HelgeUtils;
          * const elementWithId = (id: string) =>
          *   nullFilter<HTMLElement>(HtmlUtils.elementWithId, id)
          */
+        // eslint-disable-next-line @typescript-eslint/ban-types
         Misc.nullFilter = (f, ...parameters) => {
             const untypedNullFilter = (input) => {
                 if (input === null)

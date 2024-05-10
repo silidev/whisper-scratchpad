@@ -1,5 +1,5 @@
 /**
- * HelgeUtils.ts
+ * HelgeUtils.ts V1.0
  * @description A collection of general utility functions not connected to a
  * specific project.
  *
@@ -118,7 +118,7 @@ export declare namespace HelgeUtils {
      * throw an error, in contrast to {}.whatEver, which
      * will not.
      */
-    export const createImmutableStrictObject: (input: {}) => any;
+    export const createImmutableStrictObject: (input: object) => any;
     /**
      * A function that does nothing. I use it to avoid "unused variable" warnings.
      *
@@ -230,7 +230,7 @@ export declare namespace HelgeUtils {
          * const replacements = { name: "John", age: 25 }
          * const result = formatString(input, replacements)
          * // result is now "Hello John, you are 25 years old." */
-        const formatString: (input: string, replacements: {}) => string;
+        const formatString: (input: string, replacements: object) => string;
         const isBlank: (input: string) => boolean;
         const isNotBlank: (input: string) => boolean;
         const removeLineBreaks: (input: string) => string;
@@ -247,8 +247,8 @@ export declare namespace HelgeUtils {
     }
     export namespace Transcription {
         class TranscriptionError extends Error {
-            payload: {};
-            constructor(payload: {});
+            payload: object;
+            constructor(payload: object);
         }
         type ApiName = "OpenAI" | "Gladia" | "Deepgram-nova-2" | "Deepgram-whisper";
         const transcribe: (api: ApiName, audioBlob: Blob, apiKey: string, prompt?: string, language?: string, translateToEnglish?: boolean) => Promise<string>;

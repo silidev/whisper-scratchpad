@@ -273,7 +273,7 @@ export var HtmlUtils;
     HtmlUtils.addClickListener = (buttonId, callback) => {
         const element = HtmlUtils.buttonWithId(buttonId);
         if (element === null) {
-            HtmlUtils.printError(`Element with ID ${buttonId} not found.`);
+            HtmlUtils.printError(`Button with ID ${buttonId} not found.`);
             return;
         }
         const initialHTML = element.innerHTML; // Read initial HTML from the button
@@ -314,7 +314,7 @@ export var HtmlUtils;
          * This outputs aggressively on top of everything to the user. */
         ErrorHandling.printError = (input) => {
             console.log(input);
-            alert(input);
+            // alert(input)
             callSwallowingExceptions(() => {
                 document.body.insertAdjacentHTML('afterbegin', `<div 
               style="position: fixed; z-index: 9999; background-color: #000000; color:red;"> 
@@ -432,7 +432,7 @@ export var HtmlUtils;
     })(Keyboard = HtmlUtils.Keyboard || (HtmlUtils.Keyboard = {}));
     let Styles;
     (function (Styles) {
-        Styles.toggleDisplayNone = (element, visibleDisplayStyle = "block") => {
+        Styles.toggleDisplayNone = (element, visibleDisplayStyle) => {
             if (element.style.display === "none") {
                 element.style.display = visibleDisplayStyle;
             }
