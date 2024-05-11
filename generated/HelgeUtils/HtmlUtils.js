@@ -7,6 +7,18 @@ import { HelgeUtils } from "./HelgeUtils.js";
 const MAX_COOKIE_SIZE = 4096;
 export var HtmlUtils;
 (function (HtmlUtils) {
+    var printError = HtmlUtils.ErrorHandling.printError;
+    HtmlUtils.createFragmentFromHtml = (html) => {
+        const fragment = document.createDocumentFragment();
+        {
+            const tempElement = document.createElement('div');
+            tempElement.innerHTML = html;
+            while (tempElement.firstChild) {
+                fragment.appendChild(tempElement.firstChild);
+            }
+        }
+        return fragment;
+    };
     const memoize = HelgeUtils.memoize;
     // ########## Blinking fast and slow ##########
     // https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow
@@ -25,7 +37,7 @@ export var HtmlUtils;
     HtmlUtils.elementWithId = memoize((id) => {
         const element = document.getElementById(id);
         if (element === null) {
-            HtmlUtils.printError(`Element with ID ${id} not found.`);
+            printError(`Element with ID ${id} not found.`);
             return null;
         }
         return element;
@@ -37,13 +49,18 @@ export var HtmlUtils;
     let NeverNull;
     (function (NeverNull) {
         var nullFilter = HelgeUtils.Misc.nullFilter;
+        // eslint-disable-next-line no-shadow
         NeverNull.elementWithId = (id) => nullFilter(HtmlUtils.elementWithId, id);
+        // eslint-disable-next-line no-shadow
         NeverNull.buttonWithId = (id) => nullFilter(HtmlUtils.buttonWithId, id);
+        // eslint-disable-next-line no-shadow
         NeverNull.inputElementWithId = (id) => nullFilter(HtmlUtils.inputElementWithId, id);
+        // eslint-disable-next-line no-shadow
         NeverNull.textAreaWithId = (id) => nullFilter(HtmlUtils.textAreaWithId, id);
     })(NeverNull = HtmlUtils.NeverNull || (HtmlUtils.NeverNull = {}));
     let TextAreas;
     (function (TextAreas) {
+        // eslint-disable-next-line no-shadow
         var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
         var trimExceptASingleNewlineAtTheEnd = HelgeUtils.Strings.trimExceptASingleNewlineAtTheEnd;
         var Strings = HelgeUtils.Strings;
@@ -273,7 +290,7 @@ export var HtmlUtils;
     HtmlUtils.addClickListener = (buttonId, callback) => {
         const element = HtmlUtils.buttonWithId(buttonId);
         if (element === null) {
-            HtmlUtils.printError(`Button with ID ${buttonId} not found.`);
+            printError(`Button with ID ${buttonId} not found.`);
             return;
         }
         const initialHTML = element.innerHTML; // Read initial HTML from the button
@@ -312,6 +329,7 @@ export var HtmlUtils;
            * Should be named "outputError" because it uses alert and console.log, but
            * I am used to "printError".
          * This outputs aggressively on top of everything to the user. */
+        // eslint-disable-next-line no-shadow
         ErrorHandling.printError = (input) => {
             console.log(input);
             // alert(input)
@@ -336,8 +354,6 @@ export var HtmlUtils;
             });
         };
     })(ErrorHandling = HtmlUtils.ErrorHandling || (HtmlUtils.ErrorHandling = {}));
-    HtmlUtils.printDebug = ErrorHandling.printDebug;
-    HtmlUtils.printError = ErrorHandling.printError;
     HtmlUtils.escapeHtml = (input) => {
         const element = document.createElement("div");
         element.innerText = input;
@@ -352,6 +368,7 @@ export var HtmlUtils;
      Browser Support: Ensure that the browser you are using supports the Clipboard API.
      Cross-Origin Restrictions: If your script is running in an iframe, it might be subject to cross-origin restrictions.
      */
+    // eslint-disable-next-line no-shadow
     let Clipboard;
     (function (Clipboard) {
         /** @deprecated */
@@ -400,6 +417,7 @@ export var HtmlUtils;
         /** https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper */
         let WcMenu;
         (function (WcMenu) {
+            // eslint-disable-next-line no-shadow
             var elementWithId = NeverNull.elementWithId;
             WcMenu.close = (menuHeadingId) => {
                 elementWithId(menuHeadingId).dispatchEvent(new CustomEvent('rootMenuClose'));
@@ -414,6 +432,7 @@ export var HtmlUtils;
             };
         })(WcMenu = Menus.WcMenu || (Menus.WcMenu = {}));
     })(Menus = HtmlUtils.Menus || (HtmlUtils.Menus = {}));
+    // eslint-disable-next-line no-shadow
     let Keyboard;
     (function (Keyboard) {
         /**

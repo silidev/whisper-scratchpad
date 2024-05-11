@@ -7,6 +7,7 @@ declare global {
     }
 }
 export declare namespace HtmlUtils {
+    const createFragmentFromHtml: (html: string) => DocumentFragment;
     /**
      * .blinkingFast {
      *  animation: blink 1s linear infinite
@@ -131,8 +132,6 @@ export declare namespace HtmlUtils {
          * This outputs gently. Might not be seen by the user.  */
         const printDebug: (str: string, parentElement?: HTMLElement) => void;
     }
-    const printDebug: (str: string, parentElement?: HTMLElement) => void;
-    const printError: (input: any) => void;
     const escapeHtml: (input: string) => string;
     /**
      # DOMException Read permission denied error

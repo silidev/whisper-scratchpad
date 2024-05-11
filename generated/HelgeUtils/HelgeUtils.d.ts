@@ -136,8 +136,6 @@ export declare namespace HelgeUtils {
          */
         const assertEquals: (actual: any, expected: any, message?: string | null) => void;
     }
-    export const assert: (condition: boolean, ...output: any[]) => void;
-    export const assertEquals: (actual: any, expected: any, message?: string | null) => void;
     export const consoleLogTmp: (...args: any[]) => void;
     export const consoleLogTheDifference: (actual: string, expected: string) => void;
     export const testRemoveElements: () => void;

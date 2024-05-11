@@ -820,7 +820,7 @@ export namespace UiFunctions {
               })
               .then(data => {
                 console.log(JSON.stringify(data))
-                new Audio(data.audioContent).play()
+                new Audio(data.audioContent).play().then().catch(Log.error)
               })
               .catch(error => console.error("Error:", error))
         }

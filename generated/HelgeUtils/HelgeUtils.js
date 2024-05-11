@@ -258,8 +258,6 @@ export var HelgeUtils;
             }
         };
     })(Tests = HelgeUtils.Tests || (HelgeUtils.Tests = {}));
-    HelgeUtils.assert = Tests.assert;
-    HelgeUtils.assertEquals = Tests.assertEquals;
     HelgeUtils.consoleLogTmp = (...args) => {
         args.forEach(arg => console.log(arg));
     };
@@ -296,7 +294,7 @@ export var HelgeUtils;
         testTagsArray.push('NotToBeRemoved');
         //print('removeElements test: '
         //  +removeElements(testTagsArray,tagsToRemove)+'<br>')
-        HelgeUtils.assert(HelgeUtils.removeElements(testTagsArray, tagsToRemove).length === 1, "removeElements failed");
+        assert(HelgeUtils.removeElements(testTagsArray, tagsToRemove).length === 1, "removeElements failed");
     };
     /**
      * removeElements
@@ -422,7 +420,7 @@ export var HelgeUtils;
             static testDelimiterSearch = () => {
                 const delimiter = '---\n';
                 const instance = new DelimiterSearch(delimiter);
-                const runTest = (input, index, expected) => HelgeUtils.assertEquals(input.substring(instance.leftIndex(input, index), instance.rightIndex(input, index)), expected);
+                const runTest = (input, index, expected) => assertEquals(input.substring(instance.leftIndex(input, index), instance.rightIndex(input, index)), expected);
                 {
                     const inputStr = "abc" + delimiter;
                     runTest(inputStr, 0, "abc");
@@ -460,7 +458,7 @@ export var HelgeUtils;
                     const delimiterSearch = new Strings.DelimiterSearch(delimiter);
                     const left = delimiterSearch.leftIndex(input, cursorPosition);
                     const right = delimiterSearch.rightIndex(input, cursorPosition);
-                    HelgeUtils.assertEquals(DelimiterSearch.deleteNote(input, left, right, delimiter), expected);
+                    assertEquals(DelimiterSearch.deleteNote(input, left, right, delimiter), expected);
                 };
                 runTest(0, "abc" + delimiter, "");
                 runTest(delimiter.length, delimiter + "abc", "");
@@ -477,7 +475,7 @@ export var HelgeUtils;
         Strings.removeEmojis = (str) => str.replace(/[^a-zA-Z0-9 _\-üöäÜÖÄß]/g, "");
         Strings.testRemoveEmojis = () => {
             const runTest = (input, expected) => {
-                HelgeUtils.assertEquals(Strings.removeEmojis(input), expected, "testRemoveEmojis failed");
+                assertEquals(Strings.removeEmojis(input), expected, "testRemoveEmojis failed");
             };
             runTest("a👨‍👩‍👧‍👦b", "ab");
             runTest("Td🏗️", "Td");
@@ -1542,7 +1540,7 @@ export var HelgeUtils;
             (function (Test) {
                 Test.testApiUp = async () => {
                     const url = "https://api.openai.com/v1/audio/speech";
-                    HelgeUtils.assertEquals((await fetch(url))["type"], "invalid_request_error");
+                    assertEquals((await fetch(url))["type"], "invalid_request_error");
                 };
             })(Test = OpenAi.Test || (OpenAi.Test = {}));
         })(OpenAi = Net.OpenAi || (Net.OpenAi = {}));
@@ -1602,9 +1600,9 @@ export var HelgeUtils;
         static testParseRelaxedIsoDate() {
             const parse = this.parseRelaxedIsoDate;
             const expected = new Date('2022-01-01T00:00:00.000Z').toISOString();
-            HelgeUtils.assertEquals(parse('2022-01-01').toISOString(), expected);
-            HelgeUtils.assertEquals(parse('2022-01-01').toISOString(), expected);
-            HelgeUtils.assert(parse('not a date') === null);
+            assertEquals(parse('2022-01-01').toISOString(), expected);
+            assertEquals(parse('2022-01-01').toISOString(), expected);
+            assert(parse('not a date') === null);
         }
         static year(date, twoDigitYear) {
             return (twoDigitYear ? date.getFullYear().toString().slice(-2) : date.getFullYear());
