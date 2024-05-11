@@ -66,7 +66,7 @@ export var mainEditor;
             LARGE_STORAGE_PROVIDER.set("editorText", textAreaWithId("mainEditorTextarea").value);
         }
         catch (e) {
-            prompt("Error saving editor text: " + e);
+            alert("Error saving editor text: " + e);
         }
         // Delete old cookie
         // Cookies.set("editorText", ""); // This used to be stored in a cookie.
@@ -130,9 +130,12 @@ export var UiFunctions;
     };
     let Buttons;
     (function (Buttons) {
+        // eslint-disable-next-line no-shadow
         var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
         var inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
+        // eslint-disable-next-line no-shadow
         var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
+        // eslint-disable-next-line no-shadow
         var Cookies = HtmlUtils.BrowserStorage.Cookies;
         var addKeyboardShortcuts = Misc.addKeyboardShortcuts;
         var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;

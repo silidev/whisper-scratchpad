@@ -17,10 +17,20 @@ export default [
       "@typescript-eslint/no-unused-vars": "off",
       "no-undef": "off",
       "no-constant-binary-expression": "off",
-      "no-constant-condition": "off"
+      "no-constant-condition": "off",
+      "no-shadow": ["error"
+        , {
+          "builtinGlobals": true, //true disallows shadowing of global variables such as `Object`, `Array`, etc.
+          "hoist": "all",/*  "all" is the most restrictive. Controls the behavior for function declarations and can
+           be set to `all`,`functions`, or `never`. */
+          "allow": ["resolve", "reject","parent","name","currentTime","close","event",
+            "runTests", "prompt"]
+        }
+      ]
     }
   },
   {
-    ignores: ["lib/*", "dist/*", "node_modules/*", "debugGitted/*"]
+    ignores: ["lib/*", "dist/*", "node_modules/*", "debugGitted/*",
+    "debugGitted/**", "generated/**"]
   }
 ];

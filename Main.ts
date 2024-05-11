@@ -87,7 +87,7 @@ export namespace mainEditor {
     try {
       LARGE_STORAGE_PROVIDER.set("editorText", textAreaWithId("mainEditorTextarea").value);
     } catch (e) {
-      prompt("Error saving editor text: " + e)
+      alert("Error saving editor text: " + e)
     }
     // Delete old cookie
     // Cookies.set("editorText", ""); // This used to be stored in a cookie.
@@ -163,9 +163,12 @@ export namespace UiFunctions {
   }
 
   export namespace Buttons {
+    // eslint-disable-next-line no-shadow
     import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
     import inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
+    // eslint-disable-next-line no-shadow
     import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
+    // eslint-disable-next-line no-shadow
     import Cookies = HtmlUtils.BrowserStorage.Cookies;
     import addKeyboardShortcuts = Misc.addKeyboardShortcuts;
     import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
