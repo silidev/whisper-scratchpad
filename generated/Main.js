@@ -363,7 +363,14 @@ export var UiFunctions;
         (function (Media) {
             var DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
             var replaceInCurrentNote = Misc.replaceInCurrentNote;
-            const transcribeAndHandleResult = async (audioBlob, whereToPutTranscription) => {
+            let mediaRecorder;
+            let audioChunks = [];
+            let audioBlob;
+            let isRecording = false;
+            suppressUnusedWarning(isRecording);
+            let stream;
+            let sending = false;
+            const transcribeAndHandleResult = async (whereToPutTranscription) => {
                 try {
                     const calcMaxEditorPrompt = (textArea) => {
                         const text = textArea.value;
@@ -452,230 +459,221 @@ export var UiFunctions;
                     StateIndicator.update();
                 }
             };
-            {
-                let mediaRecorder;
-                let audioChunks = [];
-                let audioBlob;
-                let isRecording = false;
-                suppressUnusedWarning(isRecording);
-                let stream;
-                let sending = false;
-                export const transcribeAudioBlob = () => {
-                    transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
-                        .then().catch(Log.error);
-                };
-                let StateIndicator;
-                (function (StateIndicator) {
-                    /** Updates the recorder state display. That consists of the text
-                     * and color of the stop button and the pause record button. */
-                    StateIndicator.update = () => {
-                        if (mediaRecorder?.state === 'recording') {
-                            setRecording();
-                        }
-                        else if (mediaRecorder?.state === 'paused') {
-                            StateIndicator.setPaused();
-                        }
-                        else {
-                            StateIndicator.setStopped();
-                        }
-                    };
-                    const setRecording = () => {
-                        setHtmlOfButtonStop('◼<br>Stop');
-                        setHtmlOfButtonPauseRecord(blinkFast('🔴 Recording') + '<br>|| Pause');
-                        setPageBackgroundColor("var(--backgroundColor)");
-                        buttonWithId("pauseRecordButton").style.animation = "none";
-                    };
-                    StateIndicator.setPaused = () => {
-                        setHtmlOfButtonStop('◼<br>Stop');
-                        setHtmlOfButtonPauseRecord(blinkSlow('|| Paused')); // +'<br>⬤▶ Cont. Rec'
-                        setPageBackgroundColor("var(--pausedBackgroundColor)");
-                        // animation: blink 1s linear infinite;
-                        buttonWithId("pauseRecordButton").style.animation =
-                            "blink .5s linear infinite";
-                    };
-                    StateIndicator.setStopped = () => {
-                        setHtmlOfButtonStop('◼<br>Stop');
-                        setHtmlOfButtonPauseRecord(sending
-                            ? blinkFast('✎ Scribing') + '<br>⬤ Record'
-                            : '<br>⬤ Record');
-                        setPageBackgroundColor("var(--backgroundColor)");
-                        buttonWithId("pauseRecordButton").style.animation = "none";
-                    };
-                    const setHtmlOfButtonStop = (html) => {
-                        buttonWithId("stopButton").innerHTML = html;
-                        setPageBackgroundColor("var(--backgroundColor)");
-                    };
-                    const setHtmlOfButtonPauseRecord = (html) => {
-                        buttonWithId("pauseRecordButton").innerHTML = html;
-                    };
-                })(StateIndicator = Media.StateIndicator || (Media.StateIndicator = {}));
-                let StopCallbackCreator;
-                (function (StopCallbackCreator) {
-                    StopCallbackCreator.createCancelingCallback = () => createInternal(true);
-                    StopCallbackCreator.transcribingCallback = () => createInternal(false);
-                    const createInternal = (cancel) => {
-                        return () => {
-                            HtmlUtils.Media.releaseMicrophone(stream);
-                            isRecording = false;
-                            StateIndicator.update();
-                            audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                            if (cancel) {
-                                StateIndicator.setStopped();
-                                return;
-                            }
-                            audioChunks = [];
-                            { // Download button
-                                downloadLink.href = URL.createObjectURL(audioBlob);
-                                downloadLink.download = 'recording.wav';
-                                downloadLink.style.display = 'block';
-                            }
-                            transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
-                                .then().catch(Log.error);
-                        };
-                    };
-                })(StopCallbackCreator = Media.StopCallbackCreator || (Media.StopCallbackCreator = {}));
-                const getOnStreamReady = (beginPaused) => {
-                    return (streamParam) => {
-                        stream = streamParam;
-                        // const audioContext = new AudioContext({
-                        //   // sampleRate: 44100,
-                        // })
-                        // const source = audioContext.createMediaStreamSource(stream)
-                        // MediaRecorder options
-                        const options = {
-                        // mimeType: 'audio/webm; codecs=pcm',
-                        // audioBitsPerSecond: 32 * 44100 // 32 bits per sample * sample rate
-                        };
-                        /* https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/MediaRecorder */
-                        mediaRecorder = new MediaRecorder(stream, options);
-                        audioChunks = [];
-                        mediaRecorder.start();
-                        isRecording = true;
-                        StateIndicator.update();
-                        mediaRecorder.ondataavailable = event => {
-                            audioChunks.push(event.data);
-                        };
-                        if (beginPaused)
-                            mediaRecorder.pause();
-                        StateIndicator.update();
-                    };
-                };
-                const startRecording = (beginPaused = false) => {
-                    navigator.mediaDevices
-                        /* https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia */
-                        .getUserMedia({ audio: true })
-                        .then(getOnStreamReady(beginPaused)).catch(Log.error);
-                };
-                const wireUploadButton = () => {
-                    const transcribeSelectedFile = () => {
-                        const fileInput = inputElementWithId('fileToUploadSelector');
-                        if (!fileInput?.files?.[0])
-                            return;
-                        const file = fileInput.files[0];
-                        const reader = new FileReader();
-                        reader.onload = event => {
-                            if (event.target === null || event.target.result === null)
-                                return;
-                            audioBlob = new Blob([event.target.result], { type: file.type });
-                            mainEditor.appendDelimiterAndCursor();
-                            /* The transcription of an uploaded file is tested and works fine.
-                            Sometimes the OpenAI API will yield an error saying unsupported
-                            file type even though the file type is listed as supported. That
-                            is only the API's fault, not this code's. */
-                            transcribeAudioBlob();
-                        };
-                        reader.readAsArrayBuffer(file);
-                        Menu.close();
-                    };
-                    elementWithId('fileToUploadSelector').addEventListener('change', transcribeSelectedFile);
-                };
-                // ############## stopButton ##############
-                const stopRecording = () => {
-                    if (!mediaRecorder)
-                        return;
-                    mediaRecorder.onstop = StopCallbackCreator.transcribingCallback();
-                    mediaRecorder.stop();
-                };
-                const stopButton = () => {
-                    stopRecording();
-                    /** delete, previous behavior
-                    if (isRecording) {
-                      stopRecording()
-                    } else {
-                      NotVisibleAtThisTime.showSpinner()
-                      startRecording()
-                    }
-                    */
-                };
-                buttonWithId("stopButton").addEventListener('click', stopButton);
-                // ############## cancelRecording ##############
-                export const cancelRecording = () => {
-                    if (!mediaRecorder)
-                        return;
-                    mainEditor.Undo.undo();
-                    mediaRecorder.onstop = StopCallbackCreator.createCancelingCallback();
-                    mediaRecorder.stop();
-                };
-                // ############## stop_transcribe_startNewRecording_and_pause ##############
-                const stop_transcribe_startNewRecording_and_pause = () => {
-                    mediaRecorder.onstop = () => {
-                        audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                        audioChunks = [];
-                        sending = true;
-                        transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
-                            .then().catch(Log.error);
-                        startRecording(true);
-                    };
-                    mediaRecorder.stop();
-                };
-                // ############## pauseRecordButton ##############
-                const pauseRecordButton = (insertDelimiter) => {
+            Media.transcribeAudioBlob = () => {
+                transcribeAndHandleResult(WHERE_TO_INSERT_AT)
+                    .then().catch(Log.error);
+            };
+            let StateIndicator;
+            (function (StateIndicator) {
+                /** Updates the recorder state display. That consists of the text
+                 * and color of the stop button and the pause record button. */
+                StateIndicator.update = () => {
                     if (mediaRecorder?.state === 'recording') {
-                        mediaRecorder.pause();
-                        StateIndicator.update();
+                        setRecording();
                     }
                     else if (mediaRecorder?.state === 'paused') {
-                        mediaRecorder.resume();
+                        StateIndicator.setPaused();
+                    }
+                    else {
+                        StateIndicator.setStopped();
+                    }
+                };
+                const setRecording = () => {
+                    setHtmlOfButtonStop('◼<br>Stop');
+                    setHtmlOfButtonPauseRecord(blinkFast('🔴 Recording') + '<br>|| Pause');
+                    setPageBackgroundColor("var(--backgroundColor)");
+                    buttonWithId("pauseRecordButton").style.animation = "none";
+                };
+                StateIndicator.setPaused = () => {
+                    setHtmlOfButtonStop('◼<br>Stop');
+                    setHtmlOfButtonPauseRecord(blinkSlow('|| Paused')); // +'<br>⬤▶ Cont. Rec'
+                    setPageBackgroundColor("var(--pausedBackgroundColor)");
+                    // animation: blink 1s linear infinite;
+                    buttonWithId("pauseRecordButton").style.animation =
+                        "blink .5s linear infinite";
+                };
+                StateIndicator.setStopped = () => {
+                    setHtmlOfButtonStop('◼<br>Stop');
+                    setHtmlOfButtonPauseRecord(sending
+                        ? blinkFast('✎ Scribing') + '<br>⬤ Record'
+                        : '<br>⬤ Record');
+                    setPageBackgroundColor("var(--backgroundColor)");
+                    buttonWithId("pauseRecordButton").style.animation = "none";
+                };
+                const setHtmlOfButtonStop = (html) => {
+                    buttonWithId("stopButton").innerHTML = html;
+                    setPageBackgroundColor("var(--backgroundColor)");
+                };
+                const setHtmlOfButtonPauseRecord = (html) => {
+                    buttonWithId("pauseRecordButton").innerHTML = html;
+                };
+            })(StateIndicator = Media.StateIndicator || (Media.StateIndicator = {}));
+            let StopCallbackCreator;
+            (function (StopCallbackCreator) {
+                StopCallbackCreator.createCancelingCallback = () => createInternal(true);
+                StopCallbackCreator.transcribingCallback = () => createInternal(false);
+                const createInternal = (cancel) => {
+                    return () => {
+                        HtmlUtils.Media.releaseMicrophone(stream);
+                        isRecording = false;
                         StateIndicator.update();
-                    }
-                    else {
-                        if (insertDelimiter) {
-                            mainEditor.Undo.saveState();
-                            mainEditor.appendDelimiterAndCursor();
+                        audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        if (cancel) {
+                            StateIndicator.setStopped();
+                            return;
                         }
-                        else {
-                            mainEditor.appendStringAndCursor(" ");
+                        audioChunks = [];
+                        { // Download button
+                            downloadLink.href = URL.createObjectURL(audioBlob);
+                            downloadLink.download = 'recording.wav';
+                            downloadLink.style.display = 'block';
                         }
-                        startRecording();
-                    }
+                        transcribeAndHandleResult(WHERE_TO_INSERT_AT)
+                            .then().catch(Log.error);
+                    };
                 };
-                const transcribeButton = () => {
-                    if (mediaRecorder?.state === 'recording'
-                        || (mediaRecorder?.state === 'paused'
-                            && audioChunks.length > 0)) {
-                        stop_transcribe_startNewRecording_and_pause();
+            })(StopCallbackCreator = Media.StopCallbackCreator || (Media.StopCallbackCreator = {}));
+            const getOnStreamReady = (beginPaused) => {
+                return (streamParam) => {
+                    stream = streamParam;
+                    // const audioContext = new AudioContext({
+                    //   // sampleRate: 44100,
+                    // })
+                    // const source = audioContext.createMediaStreamSource(stream)
+                    // MediaRecorder options
+                    const options = {
+                    // mimeType: 'audio/webm; codecs=pcm',
+                    // audioBitsPerSecond: 32 * 44100 // 32 bits per sample * sample rate
+                    };
+                    /* https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/MediaRecorder */
+                    mediaRecorder = new MediaRecorder(stream, options);
+                    audioChunks = [];
+                    mediaRecorder.start();
+                    isRecording = true;
+                    StateIndicator.update();
+                    mediaRecorder.ondataavailable = event => {
+                        audioChunks.push(event.data);
+                    };
+                    if (beginPaused)
+                        mediaRecorder.pause();
+                    StateIndicator.update();
+                };
+            };
+            const startRecording = (beginPaused = false) => {
+                navigator.mediaDevices
+                    /* https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia */
+                    .getUserMedia({ audio: true })
+                    .then(getOnStreamReady(beginPaused)).catch(Log.error);
+            };
+            const wireUploadButton = () => {
+                const transcribeSelectedFile = () => {
+                    const fileInput = inputElementWithId('fileToUploadSelector');
+                    if (!fileInput?.files?.[0])
                         return;
-                    }
-                    pauseRecordButton(false);
+                    const file = fileInput.files[0];
+                    const reader = new FileReader();
+                    reader.onload = event => {
+                        if (event.target === null || event.target.result === null)
+                            return;
+                        audioBlob = new Blob([event.target.result], { type: file.type });
+                        mainEditor.appendDelimiterAndCursor();
+                        /* The transcription of an uploaded file is tested and works fine.
+                        Sometimes the OpenAI API will yield an error saying unsupported
+                        file type even though the file type is listed as supported. That
+                        is only the API's fault, not this code's. */
+                        Media.transcribeAudioBlob();
+                    };
+                    reader.readAsArrayBuffer(file);
+                    Menu.close();
                 };
-                // ############## transcribeButton ##############
-                buttonWithId("transcribeButton").addEventListener('click', transcribeButton);
-                // ############## pauseRecordButtons ##############
-                buttonWithId("pauseRecordButton").addEventListener('click', () => pauseRecordButton(true));
-                buttonWithId("pauseRecordButtonWithoutDelimiter").addEventListener('click', () => {
-                    if (mediaRecorder?.state === 'recording') {
-                        mainEditor.Undo.undo();
+                elementWithId('fileToUploadSelector').addEventListener('change', transcribeSelectedFile);
+            };
+            // ############## stopButton ##############
+            const stopRecording = () => {
+                if (!mediaRecorder)
+                    return;
+                mediaRecorder.onstop = StopCallbackCreator.transcribingCallback();
+                mediaRecorder.stop();
+            };
+            const stopButton = () => {
+                stopRecording();
+                /** delete, previous behavior
+                if (isRecording) {
+                  stopRecording()
+                } else {
+                  NotVisibleAtThisTime.showSpinner()
+                  startRecording()
+                }
+                */
+            };
+            buttonWithId("stopButton").addEventListener('click', stopButton);
+            // ############## cancelRecording ##############
+            Media.cancelRecording = () => {
+                if (!mediaRecorder)
+                    return;
+                mainEditor.Undo.undo();
+                mediaRecorder.onstop = StopCallbackCreator.createCancelingCallback();
+                mediaRecorder.stop();
+            };
+            // ############## stop_transcribe_startNewRecording_and_pause ##############
+            const stop_transcribe_startNewRecording_and_pause = () => {
+                mediaRecorder.onstop = () => {
+                    audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    audioChunks = [];
+                    sending = true;
+                    transcribeAndHandleResult(WHERE_TO_INSERT_AT)
+                        .then().catch(Log.error);
+                    startRecording(true);
+                };
+                mediaRecorder.stop();
+            };
+            // ############## pauseRecordButton ##############
+            const pauseRecordButton = (insertDelimiter) => {
+                if (mediaRecorder?.state === 'recording') {
+                    mediaRecorder.pause();
+                    StateIndicator.update();
+                }
+                else if (mediaRecorder?.state === 'paused') {
+                    mediaRecorder.resume();
+                    StateIndicator.update();
+                }
+                else {
+                    if (insertDelimiter) {
+                        mainEditor.Undo.saveState();
+                        mainEditor.appendDelimiterAndCursor();
                     }
                     else {
-                        pauseRecordButton(false);
+                        mainEditor.appendStringAndCursor(" ");
                     }
-                });
-                // ############## transcribeAudioBlob ##############
-                Menu.wireItem("transcribeAgainButton", transcribeAudioBlob);
-                // ############## Misc ##############
-                wireUploadButton();
-                StateIndicator.update();
-            }
+                    startRecording();
+                }
+            };
+            const transcribeButton = () => {
+                if (mediaRecorder?.state === 'recording'
+                    || (mediaRecorder?.state === 'paused'
+                        && audioChunks.length > 0)) {
+                    stop_transcribe_startNewRecording_and_pause();
+                    return;
+                }
+                pauseRecordButton(false);
+            };
+            // ############## transcribeButton ##############
+            buttonWithId("transcribeButton").addEventListener('click', transcribeButton);
+            // ############## pauseRecordButtons ##############
+            buttonWithId("pauseRecordButton").addEventListener('click', () => pauseRecordButton(true));
+            buttonWithId("pauseRecordButtonWithoutDelimiter").addEventListener('click', () => {
+                if (mediaRecorder?.state === 'recording') {
+                    mainEditor.Undo.undo();
+                }
+                else {
+                    pauseRecordButton(false);
+                }
+            });
+            // ############## transcribeAudioBlob ##############
+            Menu.wireItem("transcribeAgainButton", Media.transcribeAudioBlob);
+            // ############## Misc ##############
+            wireUploadButton();
+            StateIndicator.update();
         })(Media = Buttons.Media || (Buttons.Media = {})); // End of media buttons
         let clipboard;
         (function (clipboard) {
@@ -691,7 +689,7 @@ export var UiFunctions;
             addKeyboardShortcuts();
             Menu.wireItem("undoActionButton", mainEditor.Undo.undo);
             // ############## Toggle Log Button ##############
-            Menu.wireItem("viewLogButton", Log.toggleLog(textAreaWithId));
+            Menu.wireItem("viewLogButton", Log.toggleLog());
             // ############## Crop Highlights Menu Item ##############
             const ttsTestGoogle = () => {
                 const speak = () => {
@@ -1086,10 +1084,10 @@ const init = () => {
     elementWithId("versionSpan").innerHTML = `${VERSION}, temperature: ${WHISPER_TEMPERATURE}`;
     mainEditorTextareaWrapper.setCursorAtEnd().focus();
     // noinspection PointlessBooleanExpressionJS
-    if (false) {
-        // noinspection UnreachableCodeJS
-        HelgeUtils.TTS.withOpenAi("Ein Test und dann geht hier auch noch mehr.", Cookies.get('corsproxyIoOpenAIApiKey') ?? "");
-    }
+    // if (false) {
+    //   // noinspection UnreachableCodeJS
+    //   HelgeUtils.TTS.withOpenAi("Ein Test und dann geht hier auch noch mehr.",Cookies.get('corsproxyIoOpenAIApiKey')??"").then()
+    // }
 };
 init();
 //# sourceMappingURL=Main.js.map

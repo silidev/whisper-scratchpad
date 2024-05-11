@@ -227,6 +227,7 @@ export var HelgeUtils;
             const RUN_TESTS = new Date().toISOString().slice(0, 10) === "2024-01-24";
             HelgeUtils.suppressUnusedWarning(RUN_TESTS);
         };
+        // eslint-disable-next-line no-shadow
         Tests.assert = (condition, ...output) => {
             if (condition)
                 // Everything is fine, just return:
@@ -238,6 +239,7 @@ export var HelgeUtils;
         /**
          * V2 27.04.2024
          */
+        // eslint-disable-next-line no-shadow
         Tests.assertEquals = (actual, expected, message = null) => {
             const expectedJson = JSON.stringify(expected);
             const actualJson = JSON.stringify(actual);
@@ -286,6 +288,8 @@ export var HelgeUtils;
             }
         }
     };
+    var assert = Tests.assert;
+    var assertEquals = Tests.assertEquals;
     HelgeUtils.testRemoveElements = () => {
         const tagsToRemove = ['tag1', 'tag2', 'tag3'];
         // Deep copy of tagsToRemove

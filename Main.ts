@@ -424,8 +424,15 @@ export namespace UiFunctions {
       import DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
       import replaceInCurrentNote = Misc.replaceInCurrentNote;
 
-      const transcribeAndHandleResult = async (audioBlob: Blob,
-                                               whereToPutTranscription: WhereToPutTranscription ) => {
+      let mediaRecorder: MediaRecorder
+      let audioChunks: Blob[] = []
+      let audioBlob: Blob
+      let isRecording = false; suppressUnusedWarning(isRecording)
+      let stream: MediaStream
+      let sending = false
+
+      const transcribeAndHandleResult = async (
+          whereToPutTranscription: Media.WhereToPutTranscription) => {
         try {
           const calcMaxEditorPrompt = (textArea: HTMLTextAreaElement) => {
             const text = textArea.value
@@ -520,243 +527,235 @@ export namespace UiFunctions {
       }
 
 
-      {
-        let mediaRecorder: MediaRecorder
-        let audioChunks: Blob[] = []
-        let audioBlob: Blob
-        let isRecording = false; suppressUnusedWarning(isRecording)
-        let stream: MediaStream
-        let sending = false
+      export const transcribeAudioBlob = () => {
+        transcribeAndHandleResult(WHERE_TO_INSERT_AT)
+            .then().catch(Log.error)
+      }
 
-        export const transcribeAudioBlob = () => {
-          transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
-              .then().catch(Log.error)
-        }
+      export namespace StateIndicator {
 
-        export namespace StateIndicator {
-
-          /** Updates the recorder state display. That consists of the text
-           * and color of the stop button and the pause record button. */
-          export const update = () => {
-            if (mediaRecorder?.state === 'recording') {
-              setRecording()
-            } else if (mediaRecorder?.state === 'paused') {
-              setPaused()
-            } else {
-              setStopped()
-            }
-          }
-          const setRecording = () => {
-            setHtmlOfButtonStop('◼<br>Stop')
-            setHtmlOfButtonPauseRecord(blinkFast('🔴 Recording') + '<br>|| Pause')
-            setPageBackgroundColor("var(--backgroundColor)");
-            buttonWithId("pauseRecordButton").style.animation = "none";
-          }
-          export const setPaused = () => {
-            setHtmlOfButtonStop('◼<br>Stop')
-            setHtmlOfButtonPauseRecord(blinkSlow('|| Paused')) // +'<br>⬤▶ Cont. Rec'
-            setPageBackgroundColor("var(--pausedBackgroundColor)");
-            // animation: blink 1s linear infinite;
-            buttonWithId("pauseRecordButton").style.animation =
-                "blink .5s linear infinite";
-          }
-          export const setStopped = () => {
-            setHtmlOfButtonStop('◼<br>Stop')
-            setHtmlOfButtonPauseRecord(sending
-                ? blinkFast('✎ Scribing') + '<br>⬤ Record'
-                : '<br>⬤ Record')
-            setPageBackgroundColor("var(--backgroundColor)");
-            buttonWithId("pauseRecordButton").style.animation = "none";
-          }
-          const setHtmlOfButtonStop = (html: string) => {
-            buttonWithId("stopButton").innerHTML = html
-            setPageBackgroundColor("var(--backgroundColor)");
-          }
-          const setHtmlOfButtonPauseRecord = (html: string) => {
-            buttonWithId("pauseRecordButton").innerHTML = html
+        /** Updates the recorder state display. That consists of the text
+         * and color of the stop button and the pause record button. */
+        export const update = () => {
+          if (mediaRecorder?.state === 'recording') {
+            setRecording()
+          } else if (mediaRecorder?.state === 'paused') {
+            setPaused()
+          } else {
+            setStopped()
           }
         }
-
-        export type WhereToPutTranscription = "appendAtEnd" | "insertAtCursor"
-
-        export namespace StopCallbackCreator {
-          export const createCancelingCallback = () => createInternal(true)
-          export const transcribingCallback = () => createInternal(false)
-          const createInternal = (cancel: boolean) => {
-            return () => {
-              HtmlUtils.Media.releaseMicrophone(stream)
-              isRecording = false
-              StateIndicator.update()
-              audioBlob = new Blob(audioChunks, {type: 'audio/wav'})
-              if (cancel) {
-                StateIndicator.setStopped()
-                return
-              }
-              audioChunks = []
-              { // Download button
-                downloadLink.href = URL.createObjectURL(audioBlob)
-                downloadLink.download = 'recording.wav'
-                downloadLink.style.display = 'block'
-              }
-              transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
-                  .then().catch(Log.error)
-            }
-          }
+        const setRecording = () => {
+          setHtmlOfButtonStop('◼<br>Stop')
+          setHtmlOfButtonPauseRecord(blinkFast('🔴 Recording') + '<br>|| Pause')
+          setPageBackgroundColor("var(--backgroundColor)");
+          buttonWithId("pauseRecordButton").style.animation = "none";
         }
+        export const setPaused = () => {
+          setHtmlOfButtonStop('◼<br>Stop')
+          setHtmlOfButtonPauseRecord(blinkSlow('|| Paused')) // +'<br>⬤▶ Cont. Rec'
+          setPageBackgroundColor("var(--pausedBackgroundColor)");
+          // animation: blink 1s linear infinite;
+          buttonWithId("pauseRecordButton").style.animation =
+              "blink .5s linear infinite";
+        }
+        export const setStopped = () => {
+          setHtmlOfButtonStop('◼<br>Stop')
+          setHtmlOfButtonPauseRecord(sending
+              ? blinkFast('✎ Scribing') + '<br>⬤ Record'
+              : '<br>⬤ Record')
+          setPageBackgroundColor("var(--backgroundColor)");
+          buttonWithId("pauseRecordButton").style.animation = "none";
+        }
+        const setHtmlOfButtonStop = (html: string) => {
+          buttonWithId("stopButton").innerHTML = html
+          setPageBackgroundColor("var(--backgroundColor)");
+        }
+        const setHtmlOfButtonPauseRecord = (html: string) => {
+          buttonWithId("pauseRecordButton").innerHTML = html
+        }
+      }
 
-        const getOnStreamReady = (beginPaused: boolean) => {
-          return (streamParam: MediaStream) => {
-            stream = streamParam
+      export type WhereToPutTranscription = "appendAtEnd" | "insertAtCursor"
 
-            // const audioContext = new AudioContext({
-            //   // sampleRate: 44100,
-            // })
-
-            // const source = audioContext.createMediaStreamSource(stream)
-
-            // MediaRecorder options
-            const options = {
-              // mimeType: 'audio/webm; codecs=pcm',
-              // audioBitsPerSecond: 32 * 44100 // 32 bits per sample * sample rate
-            }
-
-            /* https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/MediaRecorder */
-            mediaRecorder = new MediaRecorder(stream, options)
-            audioChunks = []
-            mediaRecorder.start()
-            isRecording = true
+      export namespace StopCallbackCreator {
+        export const createCancelingCallback = () => createInternal(true)
+        export const transcribingCallback = () => createInternal(false)
+        const createInternal = (cancel: boolean) => {
+          return () => {
+            HtmlUtils.Media.releaseMicrophone(stream)
+            isRecording = false
             StateIndicator.update()
-            mediaRecorder.ondataavailable = event => {
-              audioChunks.push(event.data)
-            }
-            if (beginPaused) mediaRecorder.pause()
-            StateIndicator.update()
-          }
-        }
-
-        const startRecording = (beginPaused: boolean = false) => {
-          navigator.mediaDevices
-              /* https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia */
-              .getUserMedia({audio: true})
-              .then(getOnStreamReady(beginPaused)).catch(Log.error)
-        }
-
-        const wireUploadButton = () => {
-
-          const transcribeSelectedFile = () => {
-            const fileInput = inputElementWithId('fileToUploadSelector')
-            if (!fileInput?.files?.[0])
+            audioBlob = new Blob(audioChunks, {type: 'audio/wav'})
+            if (cancel) {
+              StateIndicator.setStopped()
               return
-            const file = fileInput.files[0];
-            const reader = new FileReader();
-            reader.onload = event => {
-              if (event.target===null || event.target.result===null)
-                return
-              audioBlob = new Blob([event.target.result], {type: file.type});
-              mainEditor.appendDelimiterAndCursor()
-              /* The transcription of an uploaded file is tested and works fine.
-              Sometimes the OpenAI API will yield an error saying unsupported
-              file type even though the file type is listed as supported. That
-              is only the API's fault, not this code's. */
-              transcribeAudioBlob()
-            };
-            reader.readAsArrayBuffer(file);
-            Menu.close()
-          };
+            }
+            audioChunks = []
+            { // Download button
+              downloadLink.href = URL.createObjectURL(audioBlob)
+              downloadLink.download = 'recording.wav'
+              downloadLink.style.display = 'block'
+            }
+            transcribeAndHandleResult(WHERE_TO_INSERT_AT)
+                .then().catch(Log.error)
+          }
+        }
+      }
 
-          elementWithId('fileToUploadSelector').addEventListener('change', transcribeSelectedFile)
+      const getOnStreamReady = (beginPaused: boolean) => {
+        return (streamParam: MediaStream) => {
+          stream = streamParam
+
+          // const audioContext = new AudioContext({
+          //   // sampleRate: 44100,
+          // })
+
+          // const source = audioContext.createMediaStreamSource(stream)
+
+          // MediaRecorder options
+          const options = {
+            // mimeType: 'audio/webm; codecs=pcm',
+            // audioBitsPerSecond: 32 * 44100 // 32 bits per sample * sample rate
+          }
+
+          /* https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/MediaRecorder */
+          mediaRecorder = new MediaRecorder(stream, options)
+          audioChunks = []
+          mediaRecorder.start()
+          isRecording = true
+          StateIndicator.update()
+          mediaRecorder.ondataavailable = event => {
+            audioChunks.push(event.data)
+          }
+          if (beginPaused) mediaRecorder.pause()
+          StateIndicator.update()
+        }
+      }
+
+      const startRecording = (beginPaused: boolean = false) => {
+        navigator.mediaDevices
+            /* https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia */
+            .getUserMedia({audio: true})
+            .then(getOnStreamReady(beginPaused)).catch(Log.error)
+      }
+
+      const wireUploadButton = () => {
+
+        const transcribeSelectedFile = () => {
+          const fileInput = inputElementWithId('fileToUploadSelector')
+          if (!fileInput?.files?.[0])
+            return
+          const file = fileInput.files[0];
+          const reader = new FileReader();
+          reader.onload = event => {
+            if (event.target===null || event.target.result===null)
+              return
+            audioBlob = new Blob([event.target.result], {type: file.type});
+            mainEditor.appendDelimiterAndCursor()
+            /* The transcription of an uploaded file is tested and works fine.
+            Sometimes the OpenAI API will yield an error saying unsupported
+            file type even though the file type is listed as supported. That
+            is only the API's fault, not this code's. */
+            transcribeAudioBlob()
+          };
+          reader.readAsArrayBuffer(file);
+          Menu.close()
         };
 
-  // ############## stopButton ##############
-        const stopRecording = () => {
-          if (!mediaRecorder) return
-          mediaRecorder.onstop = StopCallbackCreator.transcribingCallback()
-          mediaRecorder.stop()
-        }
+        elementWithId('fileToUploadSelector').addEventListener('change', transcribeSelectedFile)
+      };
 
-        const stopButton = () => {
-          stopRecording()
-          /** delete, previous behavior
-          if (isRecording) {
-            stopRecording()
-          } else {
-            NotVisibleAtThisTime.showSpinner()
-            startRecording()
-          }
-          */
-        }
-        buttonWithId("stopButton").addEventListener('click', stopButton)
-
-  // ############## cancelRecording ##############
-        export const cancelRecording = () => {
-          if (!mediaRecorder) return
-          mainEditor.Undo.undo()
-          mediaRecorder.onstop = StopCallbackCreator.createCancelingCallback()
-          mediaRecorder.stop()
-        }
-
-  // ############## stop_transcribe_startNewRecording_and_pause ##############
-        const stop_transcribe_startNewRecording_and_pause = () => {
-          mediaRecorder.onstop = () => {
-            audioBlob = new Blob(audioChunks, {type: 'audio/wav'})
-            audioChunks = []
-            sending = true
-            transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
-                .then().catch(Log.error)
-            startRecording(true)
-          }
-          mediaRecorder.stop()
-        }
-
-        // ############## pauseRecordButton ##############
-        const pauseRecordButton = (insertDelimiter: boolean) => {
-          if (mediaRecorder?.state === 'recording') {
-            mediaRecorder.pause()
-            StateIndicator.update()
-          } else if (mediaRecorder?.state === 'paused') {
-            mediaRecorder.resume()
-            StateIndicator.update()
-          } else {
-            if (insertDelimiter) {
-              mainEditor.Undo.saveState()
-              mainEditor.appendDelimiterAndCursor()
-            } else {
-              mainEditor.appendStringAndCursor(" ")
-            }
-            startRecording()
-          }
-        }
-
-        const transcribeButton = () => {
-          if (mediaRecorder?.state === 'recording'
-              || (mediaRecorder?.state === 'paused'
-                  && audioChunks.length > 0)) {
-            stop_transcribe_startNewRecording_and_pause()
-            return
-          }
-          pauseRecordButton(false)
-        }
-
-  // ############## transcribeButton ##############
-        buttonWithId("transcribeButton").addEventListener('click', transcribeButton)
-  // ############## pauseRecordButtons ##############
-        buttonWithId("pauseRecordButton").addEventListener('click',
-            () => pauseRecordButton(true))
-        buttonWithId("pauseRecordButtonWithoutDelimiter").addEventListener('click',
-            () => {
-              if (mediaRecorder?.state === 'recording') {
-                mainEditor.Undo.undo()
-              } else {
-                pauseRecordButton(false)
-              }
-        })
-  // ############## transcribeAudioBlob ##############
-        Menu.wireItem("transcribeAgainButton", transcribeAudioBlob)
-  // ############## Misc ##############
-        wireUploadButton();
-
-        StateIndicator.update()
+// ############## stopButton ##############
+      const stopRecording = () => {
+        if (!mediaRecorder) return
+        mediaRecorder.onstop = StopCallbackCreator.transcribingCallback()
+        mediaRecorder.stop()
       }
+
+      const stopButton = () => {
+        stopRecording()
+        /** delete, previous behavior
+        if (isRecording) {
+          stopRecording()
+        } else {
+          NotVisibleAtThisTime.showSpinner()
+          startRecording()
+        }
+        */
+      }
+      buttonWithId("stopButton").addEventListener('click', stopButton)
+
+// ############## cancelRecording ##############
+      export const cancelRecording = () => {
+        if (!mediaRecorder) return
+        mainEditor.Undo.undo()
+        mediaRecorder.onstop = StopCallbackCreator.createCancelingCallback()
+        mediaRecorder.stop()
+      }
+
+// ############## stop_transcribe_startNewRecording_and_pause ##############
+      const stop_transcribe_startNewRecording_and_pause = () => {
+        mediaRecorder.onstop = () => {
+          audioBlob = new Blob(audioChunks, {type: 'audio/wav'})
+          audioChunks = []
+          sending = true
+          transcribeAndHandleResult(WHERE_TO_INSERT_AT)
+              .then().catch(Log.error)
+          startRecording(true)
+        }
+        mediaRecorder.stop()
+      }
+
+      // ############## pauseRecordButton ##############
+      const pauseRecordButton = (insertDelimiter: boolean) => {
+        if (mediaRecorder?.state === 'recording') {
+          mediaRecorder.pause()
+          StateIndicator.update()
+        } else if (mediaRecorder?.state === 'paused') {
+          mediaRecorder.resume()
+          StateIndicator.update()
+        } else {
+          if (insertDelimiter) {
+            mainEditor.Undo.saveState()
+            mainEditor.appendDelimiterAndCursor()
+          } else {
+            mainEditor.appendStringAndCursor(" ")
+          }
+          startRecording()
+        }
+      }
+
+      const transcribeButton = () => {
+        if (mediaRecorder?.state === 'recording'
+            || (mediaRecorder?.state === 'paused'
+                && audioChunks.length > 0)) {
+          stop_transcribe_startNewRecording_and_pause()
+          return
+        }
+        pauseRecordButton(false)
+      }
+
+// ############## transcribeButton ##############
+      buttonWithId("transcribeButton").addEventListener('click', transcribeButton)
+// ############## pauseRecordButtons ##############
+      buttonWithId("pauseRecordButton").addEventListener('click',
+          () => pauseRecordButton(true))
+      buttonWithId("pauseRecordButtonWithoutDelimiter").addEventListener('click',
+          () => {
+            if (mediaRecorder?.state === 'recording') {
+              mainEditor.Undo.undo()
+            } else {
+              pauseRecordButton(false)
+            }
+      })
+// ############## transcribeAudioBlob ##############
+      Menu.wireItem("transcribeAgainButton", transcribeAudioBlob)
+// ############## Misc ##############
+      wireUploadButton();
+
+      StateIndicator.update()
+
     } // End of media buttons
 
     namespace clipboard {
@@ -778,7 +777,7 @@ export namespace UiFunctions {
       Menu.wireItem("undoActionButton", mainEditor.Undo.undo)
 
 // ############## Toggle Log Button ##############
-      Menu.wireItem("viewLogButton", Log.toggleLog(textAreaWithId))
+      Menu.wireItem("viewLogButton", Log.toggleLog())
 
 // ############## Crop Highlights Menu Item ##############
       const ttsTestGoogle = () => {
@@ -1247,10 +1246,10 @@ const init = () => {
   mainEditorTextareaWrapper.setCursorAtEnd().focus()
 
   // noinspection PointlessBooleanExpressionJS
-  if (false) {
-    // noinspection UnreachableCodeJS
-    HelgeUtils.TTS.withOpenAi("Ein Test und dann geht hier auch noch mehr.",Cookies.get('corsproxyIoOpenAIApiKey')??"")
-  }
+  // if (false) {
+  //   // noinspection UnreachableCodeJS
+  //   HelgeUtils.TTS.withOpenAi("Ein Test und dann geht hier auch noch mehr.",Cookies.get('corsproxyIoOpenAIApiKey')??"").then()
+  // }
 
 }
 
