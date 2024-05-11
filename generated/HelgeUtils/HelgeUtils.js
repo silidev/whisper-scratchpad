@@ -1429,6 +1429,7 @@ export var HelgeUtils;
                 ["kommst", "komme"],
                 ["ärgerst", "ärgere"],
                 ["gewöhnst", "gewöhne"],
+                ["steckst", "stecke"],
                 // ["raufgehst"    ,""                          ],
                 // ["anpackst"     ,""                          ],
                 // ["einpackst"    ,""                          ],
