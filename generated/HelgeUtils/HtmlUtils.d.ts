@@ -7,6 +7,19 @@ declare global {
     }
 }
 export declare namespace HtmlUtils {
+    namespace ErrorHandling {
+        namespace ExceptionHandlers {
+            const installGlobalDefault: () => void;
+        }
+        /**
+         * Should be named "outputError" because it uses alert and console.log, but
+         * I am used to "printError".
+         * This outputs aggressively on top of everything to the user. */
+        const printError: (input: any) => void;
+        /**
+         * This outputs gently. Might not be seen by the user.  */
+        const printDebug: (str: string, parentElement?: HTMLElement) => void;
+    }
     const createFragmentFromHtml: (html: string) => DocumentFragment;
     /**
      * .blinkingFast {
@@ -119,19 +132,6 @@ export declare namespace HtmlUtils {
      * text when clicked. */
     const addClickListener: (buttonId: string, callback: () => void) => void;
     const scrollToBottom: () => void;
-    namespace ErrorHandling {
-        namespace ExceptionHandlers {
-            const installGlobalDefault: () => void;
-        }
-        /**
-           * Should be named "outputError" because it uses alert and console.log, but
-           * I am used to "printError".
-         * This outputs aggressively on top of everything to the user. */
-        const printError: (input: any) => void;
-        /**
-         * This outputs gently. Might not be seen by the user.  */
-        const printDebug: (str: string, parentElement?: HTMLElement) => void;
-    }
     const escapeHtml: (input: string) => string;
     /**
      # DOMException Read permission denied error

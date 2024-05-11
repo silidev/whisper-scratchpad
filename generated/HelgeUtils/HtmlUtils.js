@@ -7,6 +7,55 @@ import { HelgeUtils } from "./HelgeUtils.js";
 const MAX_COOKIE_SIZE = 4096;
 export var HtmlUtils;
 (function (HtmlUtils) {
+    var memoize = HelgeUtils.memoize;
+    let ErrorHandling;
+    (function (ErrorHandling) {
+        var Exceptions = HelgeUtils.Exceptions;
+        var callSwallowingExceptions = Exceptions.callSwallowingExceptions;
+        var unhandledExceptionAlert = Exceptions.unhandledExceptionAlert;
+        let ExceptionHandlers;
+        (function (ExceptionHandlers) {
+            ExceptionHandlers.installGlobalDefault = () => {
+                window.onerror = (message, source, lineNo, colNo, error) => {
+                    const errorMessage = `An error occurred: ${message}\nSource: ${source}\nLine: ${lineNo}\nColumn: ${colNo}\nError Object: ${error}`;
+                    ErrorHandling.printError(unhandledExceptionAlert(error ?? errorMessage)
+                    /* unhandledExceptionAlert is sometimes executed twice here. I
+                     don't know why. The debugger didn't help. This shouldn't
+                     happen anyway. Don't invest more time. */
+                    );
+                    return true; // Prevents the default browser error handling
+                };
+            };
+        })(ExceptionHandlers = ErrorHandling.ExceptionHandlers || (ErrorHandling.ExceptionHandlers = {}));
+        /**
+         * Should be named "outputError" because it uses alert and console.log, but
+         * I am used to "printError".
+         * This outputs aggressively on top of everything to the user. */
+        // eslint-disable-next-line no-shadow
+        ErrorHandling.printError = (input) => {
+            console.log(input);
+            // alert(input)
+            callSwallowingExceptions(() => {
+                document.body.insertAdjacentHTML('afterbegin', `<div 
+              style="position: fixed; z-index: 9999; background-color: #000000; color:red;"> 
+            <p style="font-size: 30px;">###### printDebug</p>
+            <p style="font-size:18px;">${HtmlUtils.escapeHtml(input.toString())}</p>`
+                    + `########</div>`);
+            });
+        };
+        /**
+         * This outputs gently. Might not be seen by the user.  */
+        ErrorHandling.printDebug = (str, parentElement = document.body) => {
+            HtmlUtils.showToast(str.substring(0, 80));
+            console.log(str);
+            HelgeUtils.Exceptions.callSwallowingExceptions(() => {
+                parentElement.insertAdjacentHTML('beforeend', `<div 
+              style="z-index: 9999; background-color: #00000000; color:red;"> 
+            <p style="font-size:18px;">${HtmlUtils.escapeHtml(str)}</p>`
+                    + `</div>`);
+            });
+        };
+    })(ErrorHandling = HtmlUtils.ErrorHandling || (HtmlUtils.ErrorHandling = {}));
     var printError = HtmlUtils.ErrorHandling.printError;
     HtmlUtils.createFragmentFromHtml = (html) => {
         const fragment = document.createDocumentFragment();
@@ -19,7 +68,6 @@ export var HtmlUtils;
         }
         return fragment;
     };
-    const memoize = HelgeUtils.memoize;
     // ########## Blinking fast and slow ##########
     // https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow
     /**
@@ -306,54 +354,6 @@ export var HtmlUtils;
     HtmlUtils.scrollToBottom = () => {
         window.scrollBy(0, 100000);
     };
-    let ErrorHandling;
-    (function (ErrorHandling) {
-        var Exceptions = HelgeUtils.Exceptions;
-        var callSwallowingExceptions = Exceptions.callSwallowingExceptions;
-        var unhandledExceptionAlert = Exceptions.unhandledExceptionAlert;
-        let ExceptionHandlers;
-        (function (ExceptionHandlers) {
-            ExceptionHandlers.installGlobalDefault = () => {
-                window.onerror = (message, source, lineNo, colNo, error) => {
-                    const errorMessage = `An error occurred: ${message}\nSource: ${source}\nLine: ${lineNo}\nColumn: ${colNo}\nError Object: ${error}`;
-                    ErrorHandling.printError(unhandledExceptionAlert(error ?? errorMessage)
-                    /* unhandledExceptionAlert is sometimes executed twice here. I
-                       don't know why. The debugger didn't help. This shouldn't
-                       happen anyway. Don't invest more time. */
-                    );
-                    return true; // Prevents the default browser error handling
-                };
-            };
-        })(ExceptionHandlers = ErrorHandling.ExceptionHandlers || (ErrorHandling.ExceptionHandlers = {}));
-        /**
-           * Should be named "outputError" because it uses alert and console.log, but
-           * I am used to "printError".
-         * This outputs aggressively on top of everything to the user. */
-        // eslint-disable-next-line no-shadow
-        ErrorHandling.printError = (input) => {
-            console.log(input);
-            // alert(input)
-            callSwallowingExceptions(() => {
-                document.body.insertAdjacentHTML('afterbegin', `<div 
-              style="position: fixed; z-index: 9999; background-color: #000000; color:red;"> 
-            <p style="font-size: 30px;">###### printDebug</p>
-            <p style="font-size:18px;">${HtmlUtils.escapeHtml(input.toString())}</p>`
-                    + `########</div>`);
-            });
-        };
-        /**
-         * This outputs gently. Might not be seen by the user.  */
-        ErrorHandling.printDebug = (str, parentElement = document.body) => {
-            HtmlUtils.showToast(str.substring(0, 80));
-            console.log(str);
-            HelgeUtils.Exceptions.callSwallowingExceptions(() => {
-                parentElement.insertAdjacentHTML('beforeend', `<div 
-              style="z-index: 9999; background-color: #00000000; color:red;"> 
-            <p style="font-size:18px;">${HtmlUtils.escapeHtml(str)}</p>`
-                    + `</div>`);
-            });
-        };
-    })(ErrorHandling = HtmlUtils.ErrorHandling || (HtmlUtils.ErrorHandling = {}));
     HtmlUtils.escapeHtml = (input) => {
         const element = document.createElement("div");
         element.innerText = input;
