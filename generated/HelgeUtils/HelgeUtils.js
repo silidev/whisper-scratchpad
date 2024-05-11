@@ -928,6 +928,8 @@ export var HelgeUtils;
         // noinspection SpellCheckingInspection
         /**
          * Converts "Du" to "Ich" and "Dein" to "Mein" and so on.
+         *
+         * Anki search: ((re:\bdu\b) OR (re:\bdir\b) OR (re:\bdein\b) OR (re:\bdeiner\b) OR (re:\bdeines\b)) -tag:du
          */
         Misc.du2ich = (input) => {
             const wordEndReplacements = [
@@ -1949,10 +1951,15 @@ export var HelgeUtils;
                 ["prägtest", "prägte"],
                 ["schraubtest", "schraubte"],
                 ["packtest", "packte"],
-                ["", ""],
+                ["ahntest", "ahnte"],
+                ["ahnst", "ahne"],
+                ["probierst", "probiere"],
+                ["probiertest", "probierte"],
             ];
             // delete:         ["dachtest"     ,"dachte"               ],
             const wholeWordReplacements = [
+                ["betreutest", "betreute"],
+                ["betreust", "betreue"],
                 ["reppst", "reppe"],
                 ["müsstest", "müsste"],
                 ["konntest", "konnte"],
@@ -1976,6 +1983,7 @@ export var HelgeUtils;
                 ["deiner", "meiner"],
                 ["dich", "mich"],
                 ["dir", "mir"],
+                ["deines", "meines"],
             ];
             let output = input;
             const replace = (replacements1, wordBoundaryAtStart) => {
