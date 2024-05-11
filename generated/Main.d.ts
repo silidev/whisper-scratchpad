@@ -55,20 +55,6 @@ export declare namespace UiFunctions {
             const addButtonEventListener: () => void;
         }
         namespace Media {
-            const transcribeAudioBlob: () => void;
-            namespace StateIndicator {
-                /** Updates the recorder state display. That consists of the text
-                 * and color of the stop button and the pause record button. */
-                const update: () => void;
-                const setPaused: () => void;
-                const setStopped: () => void;
-            }
-            type WhereToPutTranscription = "appendAtEnd" | "insertAtCursor";
-            namespace StopCallbackCreator {
-                const createCancelingCallback: () => () => void;
-                const transcribingCallback: () => () => void;
-            }
-            const cancelRecording: () => void;
         }
         const addEventListeners: () => void;
         const addWordReplaceRule: () => void;
@@ -81,7 +67,7 @@ export declare namespace Log {
     const error: (message: string) => void;
     /** This only shows the log. It does NOT turn logging on! */
     const showLog: () => void;
-    const toggleLog: (textAreaWithId: (id: string) => HTMLTextAreaElement) => () => void;
+    const toggleLog: () => () => void;
 }
 export declare const loadFormData: () => void;
 export declare const registerServiceWorker: () => void;

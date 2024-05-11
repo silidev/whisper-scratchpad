@@ -142,21 +142,6 @@ export var UiFunctions;
         Buttons.runTests = () => {
             NonWordChars.runTests();
         };
-        buttonWithId('editorMenuHeading').addEventListener('click', () => {
-            const menuIsHidden = elementWithId("editorMenuHeading")
-                .nextElementSibling?.classList.contains('hidden');
-            document.body.style.overflow = menuIsHidden ? "hidden" : "auto";
-        });
-        let BottomUi;
-        (function (BottomUi) {
-            const buttomUi = elementWithId("bottomUi");
-            BottomUi.toggleBottomUi = () => {
-                buttomUi.classList.toggle('hidden');
-                const isHidden = buttomUi.classList.contains('hidden');
-                document.body.style.overflow = isHidden ? "hidden" : "auto";
-            };
-            buttonWithId('toggleBottomUiButton').addEventListener('click', BottomUi.toggleBottomUi);
-        })(BottomUi = Buttons.BottomUi || (Buttons.BottomUi = {}));
         let Cursor;
         (function (Cursor) {
             // ############## findDuButton ##############
@@ -201,81 +186,98 @@ export var UiFunctions;
                         this.textarea = textarea;
                     }
                 }
-                const regex = /[" \-(),?!\n]/;
-                const negativeRegex = /[^" \-(),?!\n]/;
-                const mainEditorWConfig = new WConfig(regex, negativeRegex, textAreaWithId('mainEditorTextarea'));
-                const replaceRulesWConfig = new WConfig(regex, negativeRegex, textAreaWithId('replaceRulesTextArea'));
-                const createSelectWordLeftFunction = (wConfig) => {
-                    const textarea = wConfig.textarea;
-                    return (event) => {
-                        event.preventDefault(); // Prevent the textarea from losing focus
-                        const text = textarea.value;
-                        const cursorPosition = textarea.selectionStart - 2;
-                        if (cursorPosition < 0)
-                            return;
-                        // Find the start of the previous word
-                        const prevNonDelimiter = HelgeUtils.Strings.regexLastIndexOf(text, wConfig.negativeRegex, cursorPosition);
-                        const prevDelimiter = HelgeUtils.Strings.regexLastIndexOf(text, wConfig.regex, prevNonDelimiter);
-                        let startOfPreviousWord;
-                        if (prevDelimiter === -1) {
-                            // If there is no previous space, the start of the previous word is
-                            // the start of the text
-                            startOfPreviousWord = 0;
-                        }
-                        else {
-                            // If there is a previous space, the start of the previous word is
-                            // the position after the space
-                            startOfPreviousWord = prevDelimiter + 1;
-                        }
-                        textarea.selectionStart = startOfPreviousWord;
+                {
+                    const regex = /[" \-(),?!\n]/;
+                    const negativeRegex = /[^" \-(),?!\n]/;
+                    const mainEditorWConfig = new WConfig(regex, negativeRegex, textAreaWithId('mainEditorTextarea'));
+                    const replaceRulesWConfig = new WConfig(regex, negativeRegex, textAreaWithId('replaceRulesTextArea'));
+                    const createSelectWordLeftFunction = (wConfig) => {
+                        const textarea = wConfig.textarea;
+                        return (event) => {
+                            event.preventDefault(); // Prevent the textarea from losing focus
+                            const text = textarea.value;
+                            const cursorPosition = textarea.selectionStart - 2;
+                            if (cursorPosition < 0)
+                                return;
+                            // Find the start of the previous word
+                            const prevNonDelimiter = HelgeUtils.Strings.regexLastIndexOf(text, wConfig.negativeRegex, cursorPosition);
+                            const prevDelimiter = HelgeUtils.Strings.regexLastIndexOf(text, wConfig.regex, prevNonDelimiter);
+                            let startOfPreviousWord;
+                            if (prevDelimiter === -1) {
+                                // If there is no previous space, the start of the previous word is
+                                // the start of the text
+                                startOfPreviousWord = 0;
+                            }
+                            else {
+                                // If there is a previous space, the start of the previous word is
+                                // the position after the space
+                                startOfPreviousWord = prevDelimiter + 1;
+                            }
+                            textarea.selectionStart = startOfPreviousWord;
+                        };
                     };
-                };
-                const createWordLeftFunction = (wConfig) => {
-                    const textarea = wConfig.textarea;
-                    return (event) => {
-                        createSelectWordLeftFunction(wConfig)(event);
-                        textarea.selectionEnd = textarea.selectionStart;
+                    const createWordLeftFunction = (wConfig) => {
+                        const textarea = wConfig.textarea;
+                        return (event) => {
+                            createSelectWordLeftFunction(wConfig)(event);
+                            textarea.selectionEnd = textarea.selectionStart;
+                        };
                     };
-                };
-                const createSelectWordRightFunction = (wConfig) => {
-                    const textarea = wConfig.textarea;
-                    return (event) => {
-                        event.preventDefault(); // Prevent the textarea from losing focus
-                        const text = textarea.value;
-                        const cursorPosition = textarea.selectionStart + 1;
-                        if (cursorPosition >= text.length)
-                            return;
-                        // Find the end of the next word
-                        const a = HelgeUtils.Strings.regexIndexOf(text, wConfig.negativeRegex, cursorPosition);
-                        const b = HelgeUtils.Strings.regexIndexOf(text, wConfig.regex, a);
-                        let endOfNextWord;
-                        if (b === -1) {
-                            // If there is no next space, the end of the next word is the end
-                            // of the text
-                            endOfNextWord = text.length;
-                        }
-                        else {
-                            // If there is a next space, the end of the next word is the
-                            // position before the space
-                            endOfNextWord = b;
-                        }
-                        // Set the cursor position to the end of the next word
-                        textarea.selectionStart = endOfNextWord;
-                        // textarea.selectionEnd is NOT set on purpose here!
+                    const createSelectWordRightFunction = (wConfig) => {
+                        const textarea = wConfig.textarea;
+                        return (event) => {
+                            event.preventDefault(); // Prevent the textarea from losing focus
+                            const text = textarea.value;
+                            const cursorPosition = textarea.selectionStart + 1;
+                            if (cursorPosition >= text.length)
+                                return;
+                            // Find the end of the next word
+                            const a = HelgeUtils.Strings.regexIndexOf(text, wConfig.negativeRegex, cursorPosition);
+                            const b = HelgeUtils.Strings.regexIndexOf(text, wConfig.regex, a);
+                            let endOfNextWord;
+                            if (b === -1) {
+                                // If there is no next space, the end of the next word is the end
+                                // of the text
+                                endOfNextWord = text.length;
+                            }
+                            else {
+                                // If there is a next space, the end of the next word is the
+                                // position before the space
+                                endOfNextWord = b;
+                            }
+                            // Set the cursor position to the end of the next word
+                            textarea.selectionStart = endOfNextWord;
+                            // textarea.selectionEnd is NOT set on purpose here!
+                        };
                     };
-                };
-                const wireButtons = (editorIdPrefix, wConfig) => {
-                    buttonWithId(editorIdPrefix + 'SelectWordLeftButton')
-                        .addEventListener('pointerdown', createSelectWordLeftFunction(wConfig));
-                    buttonWithId(editorIdPrefix + 'WordLeftButton')
-                        .addEventListener('pointerdown', createWordLeftFunction(wConfig));
-                    buttonWithId(editorIdPrefix + 'WordRightButton')
-                        .addEventListener('pointerdown', createSelectWordRightFunction(wConfig));
-                };
-                wireButtons("mainEditor", mainEditorWConfig);
-                wireButtons("rr", replaceRulesWConfig);
+                    const wireButtons = (editorIdPrefix, wConfig) => {
+                        buttonWithId(editorIdPrefix + 'SelectWordLeftButton')
+                            .addEventListener('pointerdown', createSelectWordLeftFunction(wConfig));
+                        buttonWithId(editorIdPrefix + 'WordLeftButton')
+                            .addEventListener('pointerdown', createWordLeftFunction(wConfig));
+                        buttonWithId(editorIdPrefix + 'WordRightButton')
+                            .addEventListener('pointerdown', createSelectWordRightFunction(wConfig));
+                    };
+                    wireButtons("mainEditor", mainEditorWConfig);
+                    wireButtons("rr", replaceRulesWConfig);
+                }
             })(WordJumps || (WordJumps = {}));
         })(Cursor || (Cursor = {}));
+        buttonWithId('editorMenuHeading').addEventListener('click', () => {
+            const menuIsHidden = elementWithId("editorMenuHeading")
+                .nextElementSibling?.classList.contains('hidden');
+            document.body.style.overflow = menuIsHidden ? "hidden" : "auto";
+        });
+        let BottomUi;
+        (function (BottomUi) {
+            const bottomUi = elementWithId("bottomUi");
+            BottomUi.toggleBottomUi = () => {
+                bottomUi.classList.toggle('hidden');
+                const isHidden = bottomUi.classList.contains('hidden');
+                document.body.style.overflow = isHidden ? "hidden" : "auto";
+            };
+            buttonWithId('toggleBottomUiButton').addEventListener('click', BottomUi.toggleBottomUi);
+        })(BottomUi = Buttons.BottomUi || (Buttons.BottomUi = {}));
         /** This is WIP, not working. */
         let NonWordChars;
         (function (NonWordChars) {
@@ -361,65 +363,6 @@ export var UiFunctions;
         (function (Media) {
             var DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
             var replaceInCurrentNote = Misc.replaceInCurrentNote;
-            var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
-            var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
-            let mediaRecorder;
-            let audioChunks = [];
-            let audioBlob;
-            let isRecording = false;
-            suppressUnusedWarning(isRecording);
-            let stream;
-            let sending = false;
-            Media.transcribeAudioBlob = () => {
-                transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
-                    .then().catch(Log.error);
-            };
-            let StateIndicator;
-            (function (StateIndicator) {
-                var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
-                /** Updates the recorder state display. That consists of the text
-                 * and color of the stop button and the pause record button. */
-                StateIndicator.update = () => {
-                    if (mediaRecorder?.state === 'recording') {
-                        setRecording();
-                    }
-                    else if (mediaRecorder?.state === 'paused') {
-                        StateIndicator.setPaused();
-                    }
-                    else {
-                        StateIndicator.setStopped();
-                    }
-                };
-                const setRecording = () => {
-                    setHtmlOfButtonStop('◼<br>Stop');
-                    setHtmlOfButtonPauseRecord(blinkFast('🔴 Recording') + '<br>|| Pause');
-                    setPageBackgroundColor("var(--backgroundColor)");
-                    buttonWithId("pauseRecordButton").style.animation = "none";
-                };
-                StateIndicator.setPaused = () => {
-                    setHtmlOfButtonStop('◼<br>Stop');
-                    setHtmlOfButtonPauseRecord(blinkSlow('|| Paused')); // +'<br>⬤▶ Cont. Rec'
-                    setPageBackgroundColor("var(--pausedBackgroundColor)");
-                    // animation: blink 1s linear infinite;
-                    buttonWithId("pauseRecordButton").style.animation =
-                        "blink .5s linear infinite";
-                };
-                StateIndicator.setStopped = () => {
-                    setHtmlOfButtonStop('◼<br>Stop');
-                    setHtmlOfButtonPauseRecord(sending
-                        ? blinkFast('✎ Scribing') + '<br>⬤ Record'
-                        : '<br>⬤ Record');
-                    setPageBackgroundColor("var(--backgroundColor)");
-                    buttonWithId("pauseRecordButton").style.animation = "none";
-                };
-                const setHtmlOfButtonStop = (html) => {
-                    buttonWithId("stopButton").innerHTML = html;
-                    setPageBackgroundColor("var(--backgroundColor)");
-                };
-                const setHtmlOfButtonPauseRecord = (html) => {
-                    buttonWithId("pauseRecordButton").innerHTML = html;
-                };
-            })(StateIndicator = Media.StateIndicator || (Media.StateIndicator = {}));
             const transcribeAndHandleResult = async (audioBlob, whereToPutTranscription) => {
                 try {
                     const calcMaxEditorPrompt = (textArea) => {
@@ -431,7 +374,7 @@ export var UiFunctions;
                             return WHERE_TO_INSERT_AT === "appendAtEnd"
                                 ? text.length
                                 : textArea.selectionStart; /* Only the start is relevant
-                            b/c the selection will be overwritten by the new text. */
+                         b/c the selection will be overwritten by the new text. */
                         })();
                         const indexAfterPreviousDelimiter = (() => {
                             return new DelimiterSearch(NEW_NOTE_DELIMITER).leftIndex(text, maxLeftIndex);
@@ -509,172 +452,230 @@ export var UiFunctions;
                     StateIndicator.update();
                 }
             };
-            let StopCallbackCreator;
-            (function (StopCallbackCreator) {
-                StopCallbackCreator.createCancelingCallback = () => createInternal(true);
-                StopCallbackCreator.transcribingCallback = () => createInternal(false);
-                const createInternal = (cancel) => {
-                    return () => {
-                        HtmlUtils.Media.releaseMicrophone(stream);
-                        isRecording = false;
-                        StateIndicator.update();
-                        audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                        if (cancel) {
-                            StateIndicator.setStopped();
-                            return;
-                        }
-                        audioChunks = [];
-                        { // Download button
-                            downloadLink.href = URL.createObjectURL(audioBlob);
-                            downloadLink.download = 'recording.wav';
-                            downloadLink.style.display = 'block';
-                        }
-                        transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
-                            .then().catch(Log.error);
-                    };
-                };
-            })(StopCallbackCreator = Media.StopCallbackCreator || (Media.StopCallbackCreator = {}));
-            const getOnStreamReady = (beginPaused) => {
-                return (streamParam) => {
-                    stream = streamParam;
-                    // const audioContext = new AudioContext({
-                    //   // sampleRate: 44100,
-                    // })
-                    // const source = audioContext.createMediaStreamSource(stream)
-                    // MediaRecorder options
-                    const options = {
-                    // mimeType: 'audio/webm; codecs=pcm',
-                    // audioBitsPerSecond: 32 * 44100 // 32 bits per sample * sample rate
-                    };
-                    /* https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/MediaRecorder */
-                    mediaRecorder = new MediaRecorder(stream, options);
-                    audioChunks = [];
-                    mediaRecorder.start();
-                    isRecording = true;
-                    StateIndicator.update();
-                    mediaRecorder.ondataavailable = event => {
-                        audioChunks.push(event.data);
-                    };
-                    if (beginPaused)
-                        mediaRecorder.pause();
-                    StateIndicator.update();
-                };
-            };
-            const startRecording = (beginPaused = false) => {
-                navigator.mediaDevices
-                    /* https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia */
-                    .getUserMedia({ audio: true })
-                    .then(getOnStreamReady(beginPaused)).catch(Log.error);
-            };
-            const wireUploadButton = () => {
-                const transcribeSelectedFile = () => {
-                    const fileInput = inputElementWithId('fileToUploadSelector');
-                    if (!fileInput?.files?.[0])
-                        return;
-                    const file = fileInput.files[0];
-                    const reader = new FileReader();
-                    reader.onload = event => {
-                        if (event.target === null || event.target.result === null)
-                            return;
-                        audioBlob = new Blob([event.target.result], { type: file.type });
-                        mainEditor.appendDelimiterAndCursor();
-                        /* The transcription of an uploaded file is tested and works fine.
-                        Sometimes the OpenAI API will yield an error saying unsupported
-                        file type even though the file type is listed as supported. That
-                        is only the API's fault, not this code's. */
-                        Media.transcribeAudioBlob();
-                    };
-                    reader.readAsArrayBuffer(file);
-                    Menu.close();
-                };
-                elementWithId('fileToUploadSelector').addEventListener('change', transcribeSelectedFile);
-            };
-            // ############## stopButton ##############
-            const stopRecording = () => {
-                if (!mediaRecorder)
-                    return;
-                mediaRecorder.onstop = StopCallbackCreator.transcribingCallback();
-                mediaRecorder.stop();
-            };
-            const stopButton = () => {
-                stopRecording();
-                /** delete, previous behavior
-                if (isRecording) {
-                  stopRecording()
-                } else {
-                  NotVisibleAtThisTime.showSpinner()
-                  startRecording()
-                }
-                */
-            };
-            buttonWithId("stopButton").addEventListener('click', stopButton);
-            // ############## cancelRecording ##############
-            Media.cancelRecording = () => {
-                if (!mediaRecorder)
-                    return;
-                mainEditor.Undo.undo();
-                mediaRecorder.onstop = StopCallbackCreator.createCancelingCallback();
-                mediaRecorder.stop();
-            };
-            // ############## stop_transcribe_startNewRecording_and_pause ##############
-            const stop_transcribe_startNewRecording_and_pause = () => {
-                mediaRecorder.onstop = () => {
-                    audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                    audioChunks = [];
-                    sending = true;
+            {
+                let mediaRecorder;
+                let audioChunks = [];
+                let audioBlob;
+                let isRecording = false;
+                suppressUnusedWarning(isRecording);
+                let stream;
+                let sending = false;
+                export const transcribeAudioBlob = () => {
                     transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
                         .then().catch(Log.error);
-                    startRecording(true);
                 };
-                mediaRecorder.stop();
-            };
-            // ############## pauseRecordButton ##############
-            const pauseRecordButton = (insertDelimiter) => {
-                if (mediaRecorder?.state === 'recording') {
-                    mediaRecorder.pause();
-                    StateIndicator.update();
-                }
-                else if (mediaRecorder?.state === 'paused') {
-                    mediaRecorder.resume();
-                    StateIndicator.update();
-                }
-                else {
-                    if (insertDelimiter) {
-                        mainEditor.Undo.saveState();
-                        mainEditor.appendDelimiterAndCursor();
+                let StateIndicator;
+                (function (StateIndicator) {
+                    /** Updates the recorder state display. That consists of the text
+                     * and color of the stop button and the pause record button. */
+                    StateIndicator.update = () => {
+                        if (mediaRecorder?.state === 'recording') {
+                            setRecording();
+                        }
+                        else if (mediaRecorder?.state === 'paused') {
+                            StateIndicator.setPaused();
+                        }
+                        else {
+                            StateIndicator.setStopped();
+                        }
+                    };
+                    const setRecording = () => {
+                        setHtmlOfButtonStop('◼<br>Stop');
+                        setHtmlOfButtonPauseRecord(blinkFast('🔴 Recording') + '<br>|| Pause');
+                        setPageBackgroundColor("var(--backgroundColor)");
+                        buttonWithId("pauseRecordButton").style.animation = "none";
+                    };
+                    StateIndicator.setPaused = () => {
+                        setHtmlOfButtonStop('◼<br>Stop');
+                        setHtmlOfButtonPauseRecord(blinkSlow('|| Paused')); // +'<br>⬤▶ Cont. Rec'
+                        setPageBackgroundColor("var(--pausedBackgroundColor)");
+                        // animation: blink 1s linear infinite;
+                        buttonWithId("pauseRecordButton").style.animation =
+                            "blink .5s linear infinite";
+                    };
+                    StateIndicator.setStopped = () => {
+                        setHtmlOfButtonStop('◼<br>Stop');
+                        setHtmlOfButtonPauseRecord(sending
+                            ? blinkFast('✎ Scribing') + '<br>⬤ Record'
+                            : '<br>⬤ Record');
+                        setPageBackgroundColor("var(--backgroundColor)");
+                        buttonWithId("pauseRecordButton").style.animation = "none";
+                    };
+                    const setHtmlOfButtonStop = (html) => {
+                        buttonWithId("stopButton").innerHTML = html;
+                        setPageBackgroundColor("var(--backgroundColor)");
+                    };
+                    const setHtmlOfButtonPauseRecord = (html) => {
+                        buttonWithId("pauseRecordButton").innerHTML = html;
+                    };
+                })(StateIndicator = Media.StateIndicator || (Media.StateIndicator = {}));
+                let StopCallbackCreator;
+                (function (StopCallbackCreator) {
+                    StopCallbackCreator.createCancelingCallback = () => createInternal(true);
+                    StopCallbackCreator.transcribingCallback = () => createInternal(false);
+                    const createInternal = (cancel) => {
+                        return () => {
+                            HtmlUtils.Media.releaseMicrophone(stream);
+                            isRecording = false;
+                            StateIndicator.update();
+                            audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                            if (cancel) {
+                                StateIndicator.setStopped();
+                                return;
+                            }
+                            audioChunks = [];
+                            { // Download button
+                                downloadLink.href = URL.createObjectURL(audioBlob);
+                                downloadLink.download = 'recording.wav';
+                                downloadLink.style.display = 'block';
+                            }
+                            transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
+                                .then().catch(Log.error);
+                        };
+                    };
+                })(StopCallbackCreator = Media.StopCallbackCreator || (Media.StopCallbackCreator = {}));
+                const getOnStreamReady = (beginPaused) => {
+                    return (streamParam) => {
+                        stream = streamParam;
+                        // const audioContext = new AudioContext({
+                        //   // sampleRate: 44100,
+                        // })
+                        // const source = audioContext.createMediaStreamSource(stream)
+                        // MediaRecorder options
+                        const options = {
+                        // mimeType: 'audio/webm; codecs=pcm',
+                        // audioBitsPerSecond: 32 * 44100 // 32 bits per sample * sample rate
+                        };
+                        /* https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/MediaRecorder */
+                        mediaRecorder = new MediaRecorder(stream, options);
+                        audioChunks = [];
+                        mediaRecorder.start();
+                        isRecording = true;
+                        StateIndicator.update();
+                        mediaRecorder.ondataavailable = event => {
+                            audioChunks.push(event.data);
+                        };
+                        if (beginPaused)
+                            mediaRecorder.pause();
+                        StateIndicator.update();
+                    };
+                };
+                const startRecording = (beginPaused = false) => {
+                    navigator.mediaDevices
+                        /* https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia */
+                        .getUserMedia({ audio: true })
+                        .then(getOnStreamReady(beginPaused)).catch(Log.error);
+                };
+                const wireUploadButton = () => {
+                    const transcribeSelectedFile = () => {
+                        const fileInput = inputElementWithId('fileToUploadSelector');
+                        if (!fileInput?.files?.[0])
+                            return;
+                        const file = fileInput.files[0];
+                        const reader = new FileReader();
+                        reader.onload = event => {
+                            if (event.target === null || event.target.result === null)
+                                return;
+                            audioBlob = new Blob([event.target.result], { type: file.type });
+                            mainEditor.appendDelimiterAndCursor();
+                            /* The transcription of an uploaded file is tested and works fine.
+                            Sometimes the OpenAI API will yield an error saying unsupported
+                            file type even though the file type is listed as supported. That
+                            is only the API's fault, not this code's. */
+                            transcribeAudioBlob();
+                        };
+                        reader.readAsArrayBuffer(file);
+                        Menu.close();
+                    };
+                    elementWithId('fileToUploadSelector').addEventListener('change', transcribeSelectedFile);
+                };
+                // ############## stopButton ##############
+                const stopRecording = () => {
+                    if (!mediaRecorder)
+                        return;
+                    mediaRecorder.onstop = StopCallbackCreator.transcribingCallback();
+                    mediaRecorder.stop();
+                };
+                const stopButton = () => {
+                    stopRecording();
+                    /** delete, previous behavior
+                    if (isRecording) {
+                      stopRecording()
+                    } else {
+                      NotVisibleAtThisTime.showSpinner()
+                      startRecording()
+                    }
+                    */
+                };
+                buttonWithId("stopButton").addEventListener('click', stopButton);
+                // ############## cancelRecording ##############
+                export const cancelRecording = () => {
+                    if (!mediaRecorder)
+                        return;
+                    mainEditor.Undo.undo();
+                    mediaRecorder.onstop = StopCallbackCreator.createCancelingCallback();
+                    mediaRecorder.stop();
+                };
+                // ############## stop_transcribe_startNewRecording_and_pause ##############
+                const stop_transcribe_startNewRecording_and_pause = () => {
+                    mediaRecorder.onstop = () => {
+                        audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        audioChunks = [];
+                        sending = true;
+                        transcribeAndHandleResult(audioBlob, WHERE_TO_INSERT_AT)
+                            .then().catch(Log.error);
+                        startRecording(true);
+                    };
+                    mediaRecorder.stop();
+                };
+                // ############## pauseRecordButton ##############
+                const pauseRecordButton = (insertDelimiter) => {
+                    if (mediaRecorder?.state === 'recording') {
+                        mediaRecorder.pause();
+                        StateIndicator.update();
+                    }
+                    else if (mediaRecorder?.state === 'paused') {
+                        mediaRecorder.resume();
+                        StateIndicator.update();
                     }
                     else {
-                        mainEditor.appendStringAndCursor(" ");
+                        if (insertDelimiter) {
+                            mainEditor.Undo.saveState();
+                            mainEditor.appendDelimiterAndCursor();
+                        }
+                        else {
+                            mainEditor.appendStringAndCursor(" ");
+                        }
+                        startRecording();
                     }
-                    startRecording();
-                }
-            };
-            const transcribeButton = () => {
-                if (mediaRecorder?.state === 'recording'
-                    || (mediaRecorder?.state === 'paused'
-                        && audioChunks.length > 0)) {
-                    stop_transcribe_startNewRecording_and_pause();
-                    return;
-                }
-                pauseRecordButton(false);
-            };
-            // ############## transcribeButton ##############
-            buttonWithId("transcribeButton").addEventListener('click', transcribeButton);
-            // ############## pauseRecordButtons ##############
-            buttonWithId("pauseRecordButton").addEventListener('click', () => pauseRecordButton(true));
-            buttonWithId("pauseRecordButtonWithoutDelimiter").addEventListener('click', () => {
-                if (mediaRecorder?.state === 'recording') {
-                    mainEditor.Undo.undo();
-                }
-                else {
+                };
+                const transcribeButton = () => {
+                    if (mediaRecorder?.state === 'recording'
+                        || (mediaRecorder?.state === 'paused'
+                            && audioChunks.length > 0)) {
+                        stop_transcribe_startNewRecording_and_pause();
+                        return;
+                    }
                     pauseRecordButton(false);
-                }
-            });
-            // ############## transcribeAudioBlob ##############
-            Menu.wireItem("transcribeAgainButton", Media.transcribeAudioBlob);
-            // ############## Misc ##############
-            wireUploadButton();
-            StateIndicator.update();
+                };
+                // ############## transcribeButton ##############
+                buttonWithId("transcribeButton").addEventListener('click', transcribeButton);
+                // ############## pauseRecordButtons ##############
+                buttonWithId("pauseRecordButton").addEventListener('click', () => pauseRecordButton(true));
+                buttonWithId("pauseRecordButtonWithoutDelimiter").addEventListener('click', () => {
+                    if (mediaRecorder?.state === 'recording') {
+                        mainEditor.Undo.undo();
+                    }
+                    else {
+                        pauseRecordButton(false);
+                    }
+                });
+                // ############## transcribeAudioBlob ##############
+                Menu.wireItem("transcribeAgainButton", transcribeAudioBlob);
+                // ############## Misc ##############
+                wireUploadButton();
+                StateIndicator.update();
+            }
         })(Media = Buttons.Media || (Buttons.Media = {})); // End of media buttons
         let clipboard;
         (function (clipboard) {
@@ -699,7 +700,7 @@ export var UiFunctions;
                         alert("No secret set.");
                     const text = "Hello world";
                     const url = 'https://corsproxy.io/?' + encodeURIComponent('https://texttospeech.googleapis.com/v1/text:synthesize');
-                    const data = {
+                    const bodyData = {
                         input: {
                             text: text
                         },
@@ -720,7 +721,7 @@ export var UiFunctions;
                             "Authorization": "Bearer " + secret,
                             "x-goog-user-project": "fast-web-368218"
                         },
-                        body: JSON.stringify(data)
+                        body: JSON.stringify(bodyData)
                     })
                         .then(response => {
                         if (!response.ok)
@@ -1012,7 +1013,7 @@ export var Log;
     Log.showLog = () => {
         textAreaWithId("logTextArea").style.display = "block";
     };
-    Log.toggleLog = (textAreaWithId) => () => {
+    Log.toggleLog = () => () => {
         const log = textAreaWithId("logTextArea");
         if (log.style.display === "none") {
             log.style.display = "block";
