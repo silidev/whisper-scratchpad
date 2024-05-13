@@ -172,6 +172,7 @@ export namespace UiFunctions {
     import Cookies = HtmlUtils.BrowserStorage.Cookies;
     import addKeyboardShortcuts = Misc.addKeyboardShortcuts;
     import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
+    import showToast = HtmlUtils.showToast;
 
     export const runTests = () => {
       NonWordChars.runTests()
@@ -910,7 +911,7 @@ export namespace UiFunctions {
 
 // ############## backslashButton ##############
       HtmlUtils.addClickListener(("backslashButton"), () => {
-        alert("Inserting \b into replaceRulesEditor.") /* This alert is
+        showToast("Inserting \b into replaceRulesEditor.") /* This alert is
         important because sometimes you hit this button by accident and this
         can break the replace rules! */
         TextAreas.insertAndPutCursorAfter(replaceRulesTextArea,"\\b")

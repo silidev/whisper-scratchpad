@@ -139,6 +139,7 @@ export var UiFunctions;
         var Cookies = HtmlUtils.BrowserStorage.Cookies;
         var addKeyboardShortcuts = Misc.addKeyboardShortcuts;
         var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
+        var showToast = HtmlUtils.showToast;
         Buttons.runTests = () => {
             NonWordChars.runTests();
         };
@@ -803,7 +804,7 @@ export var UiFunctions;
             });
             // ############## backslashButton ##############
             HtmlUtils.addClickListener(("backslashButton"), () => {
-                alert("Inserting \b into replaceRulesEditor."); /* This alert is
+                showToast("Inserting \b into replaceRulesEditor."); /* This alert is
                 important because sometimes you hit this button by accident and this
                 can break the replace rules! */
                 TextAreas.insertAndPutCursorAfter(replaceRulesTextArea, "\\b");
