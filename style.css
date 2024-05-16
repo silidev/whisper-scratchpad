@@ -1,6 +1,6 @@
 :root {
  --backgroundColor: #333333;
- --buttonColor: #9eb508; /* olive */
+ --buttonColor: #576505; /* used for long, but too bright: #9eb508; !* olive *!*/
  --buttonFontSize: 14px;
  --buttonHeight: 50px;
  --editorFontSize: 20px; /* 18px is too small to edit on my phone */
@@ -257,7 +257,7 @@ button:hover, button:active {
  border-radius: 2px;
  border-style: solid;
  border-width: 0;
- box-shadow: 0 -2px 0 rgba(0,0,0,0.2) inset !important;
+ box-shadow: 0 -2px 0 rgba(0,0,0,0.6) inset !important;
  margin: 2px 2px;
  padding-bottom: 0.75em;
  padding-top: 0.8125em;
