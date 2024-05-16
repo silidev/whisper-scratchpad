@@ -14,9 +14,11 @@ import { HelgeUtils } from "./HelgeUtils/HelgeUtils.js";
 import { INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERIFY_LARGE_STORAGE, VERSION, WHERE_TO_INSERT_AT, WHISPER_TEMPERATURE } from "./Config.js";
 import { createCutFunction } from "./CutButton.js";
 import { HtmlUtils } from "./HelgeUtils/HtmlUtils.js";
+var downloadOffer = HtmlUtils.Misc.downloadOffer;
 import { CurrentNote } from "./CurrentNote.js";
 //@ts-ignore
 import { download, generateCsv, mkConfig } from "../node_modules/export-to-csv/output/index.js";
+const hoursBetweenBackups = 2;
 const LARGE_STORAGE_PROVIDER = VERIFY_LARGE_STORAGE
     ? HtmlUtils.BrowserStorage.LocalStorageVerified
     : HtmlUtils.BrowserStorage.LocalStorage;
@@ -32,12 +34,46 @@ if (RUN_TESTS)
     console.log("RUN_TESTS is true. This is only for " +
         "testing. Set it to false in production.");
 HtmlUtils.ErrorHandling.ExceptionHandlers.installGlobalDefault();
+var Backups;
+(function (Backups) {
+    let lastBackupDate = null;
+    const backupString = () => "## Main Editor\n" + mainEditorTextarea.value + "\n" + "## Replace Rules\n" + replaceRulesTextArea.value + "\n" + "## Prompt\n" + transcriptionPromptEditor.value;
+    // ############## backupDownload ##############
+    const backupDownload = () => {
+        downloadOffer(backupString(), "whisper-scratchpad-backup.txt");
+    };
+    Backups.offerBackupIfItsTime = () => {
+        const now = new Date();
+        const hoursElapsed = lastBackupDate ?
+            (now.getTime() - lastBackupDate.getTime()) / 1000 / 3600
+            : Infinity;
+        if (lastBackupDate === null || hoursElapsed > hoursBetweenBackups) {
+            backupDownload();
+            lastBackupDate = new Date();
+        }
+    };
+    Backups.wireBackupMenuItems = () => {
+        // ############## Copy Backup to clipboard Menu Item ##############
+        const backupToClipboard = () => {
+            {
+                navigator.clipboard.writeText(backupString()).then().catch(Log.error);
+            }
+        };
+        Menu.wireItem("backupToClipboard", backupToClipboard);
+        Menu.wireItem("backupDownload", backupDownload);
+    };
+})(Backups || (Backups = {}));
 export var mainEditor;
 (function (mainEditor) {
     let Undo;
     (function (Undo) {
+        var showToast = HtmlUtils.showToast;
         let undoBuffer = "";
         Undo.undo = () => {
+            if (undoBuffer === "") {
+                showToast("The undo buffer is empty.");
+                return;
+            }
             const swapBuffer = mainEditorTextarea.value;
             mainEditorTextarea.value = undoBuffer;
             undoBuffer = swapBuffer;
@@ -140,6 +176,7 @@ export var UiFunctions;
         var addKeyboardShortcuts = Misc.addKeyboardShortcuts;
         var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
         var showToast = HtmlUtils.showToast;
+        var offerBackupIfItsTime = Backups.offerBackupIfItsTime;
         Buttons.runTests = () => {
             NonWordChars.runTests();
         };
@@ -447,6 +484,7 @@ export var UiFunctions;
                     }
                     mainEditorTextareaWrapper.trim().focus();
                     mainEditor.save();
+                    offerBackupIfItsTime();
                 }
                 catch (error) {
                     if (error instanceof HelgeUtils.Transcription.TranscriptionError) {
@@ -745,31 +783,7 @@ export var UiFunctions;
                 mainEditor.insertNote(extractedHighlights);
             };
             Menu.wireItem("cropHighlightsMenuItem", cropHighlights);
-            const wireBackupMenuItems = () => {
-                const backupString = () => "## Main Editor\n" + mainEditorTextarea.value + "\n" + "## Replace Rules\n" + replaceRulesTextArea.value + "\n" + "## Prompt\n" + transcriptionPromptEditor.value;
-                // ############## Copy Backup to clipboard Menu Item ##############
-                const backupToClipboard = () => {
-                    clipboard.writeText(backupString()).then().catch(Log.error);
-                };
-                Menu.wireItem("backupToClipboard", backupToClipboard);
-                const offerToDownload = (str, filename) => {
-                    const blob = new Blob([str], { type: 'text/plain' });
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = filename;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    URL.revokeObjectURL(url);
-                };
-                // ############## backupDownload ##############
-                const backupDownload = () => {
-                    offerToDownload(backupString(), "whisper-scratchpad-backup.txt");
-                };
-                Menu.wireItem("backupDownload", backupDownload);
-            };
-            wireBackupMenuItems();
+            Backups.wireBackupMenuItems();
             // ############## Focus the main editor textarea Menu Item ##############
             Menu.wireItem("focusMainEditorMenuItem", mainEditorTextarea.focus);
             // ############## du2Ich Menu Item ##############
@@ -835,6 +849,7 @@ export var UiFunctions;
                 mainEditor.appendDelimiterAndCursor();
                 clipboard.read((text) => {
                     TextAreas.insertAndPutCursorAfter(mainEditorTextarea, text);
+                    offerBackupIfItsTime();
                 });
             });
             // cutNoteButton

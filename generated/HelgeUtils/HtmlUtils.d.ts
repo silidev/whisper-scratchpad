@@ -156,7 +156,6 @@ export declare namespace HtmlUtils {
         const read: (f: (text: string) => void) => void;
         /** @deprecated Rather use read() */
         const readText: () => Promise<string>;
-        const writeText: (text: string) => Promise<void>;
     }
     /**
      * @deprecated Use copyToClipboard instead.
@@ -196,6 +195,8 @@ export declare namespace HtmlUtils {
      * @deprecated Use showToast instead. */
     const alertAutoDismissing: (message: string, duration?: number) => void;
     namespace Misc {
+        /** Offers a string or blob as a file to the user for download. */
+        const downloadOffer: (input: string | Blob, filename: string) => void;
         const loadScript: (srcUri: string, afterLoad: ((this: GlobalEventHandlers, ev: Event) => any) | null) => void;
     }
 }

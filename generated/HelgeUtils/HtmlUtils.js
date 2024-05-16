@@ -397,7 +397,6 @@ export var HtmlUtils;
         };
         /** @deprecated Rather use read() */
         clipboard.readText = () => navigator.clipboard.readText();
-        clipboard.writeText = (text) => navigator.clipboard.writeText(text);
     })(clipboard = HtmlUtils.clipboard || (HtmlUtils.clipboard = {}));
     /**
      * @deprecated Use copyToClipboard instead.
@@ -493,6 +492,25 @@ export var HtmlUtils;
     HtmlUtils.alertAutoDismissing = HtmlUtils.showToast;
     let Misc;
     (function (Misc) {
+        /** Offers a string or blob as a file to the user for download. */
+        Misc.downloadOffer = (input, filename) => {
+            let blob;
+            // If input is a string convert it to a Blob
+            if (typeof input === 'string') {
+                blob = new Blob([input], { type: 'text/plain' });
+            }
+            else {
+                blob = input;
+            }
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        };
         Misc.loadScript = (srcUri, afterLoad) => {
             const script = document.createElement('script');
             script.src = srcUri;

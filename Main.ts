@@ -22,10 +22,13 @@ import {
 } from "./Config.js"
 import {createCutFunction} from "./CutButton.js"
 import {HtmlUtils} from "./HelgeUtils/HtmlUtils.js"
+import downloadOffer = HtmlUtils.Misc.downloadOffer
 import {CurrentNote} from "./CurrentNote.js";
 
 //@ts-ignore
 import {download, generateCsv, mkConfig} from "../node_modules/export-to-csv/output/index.js";
+
+const hoursBetweenBackups = 2
 
 const LARGE_STORAGE_PROVIDER =
     VERIFY_LARGE_STORAGE
@@ -46,16 +49,57 @@ if (RUN_TESTS) console.log("RUN_TESTS is true. This is only for " +
 
 HtmlUtils.ErrorHandling.ExceptionHandlers.installGlobalDefault()
 
+namespace Backups {
+
+  let lastBackupDate: Date | null = null
+
+  const backupString = () => "## Main Editor\n" + mainEditorTextarea.value + "\n" + "## Replace Rules\n" + replaceRulesTextArea.value + "\n" + "## Prompt\n" + transcriptionPromptEditor.value;
+
+  // ############## backupDownload ##############
+  const backupDownload = () => {
+    downloadOffer(backupString(), "whisper-scratchpad-backup.txt");
+  }
+
+  export const offerBackupIfItsTime = () => {
+    const now = new Date()
+    const hoursElapsed =
+        lastBackupDate ?
+        (now.getTime() - lastBackupDate.getTime()) / 1000 / 3600
+        : Infinity
+
+    if (lastBackupDate === null || hoursElapsed > hoursBetweenBackups) {
+      backupDownload()
+      lastBackupDate = new Date()
+    }
+  }
+
+  export const wireBackupMenuItems = () => {
+    // ############## Copy Backup to clipboard Menu Item ##############
+    const backupToClipboard = () => {{
+      navigator.clipboard.writeText(backupString()).then().catch(Log.error)
+    }}
+
+    Menu.wireItem("backupToClipboard", backupToClipboard)
+    Menu.wireItem("backupDownload", backupDownload)
+  }
+
+}
+
 export namespace mainEditor {
 
   export namespace Undo {
+    import showToast = HtmlUtils.showToast;
     let undoBuffer = ""
 
     export const undo = () => {
+      if (undoBuffer === "") {
+        showToast("The undo buffer is empty.")
+        return
+      }
       const swapBuffer = mainEditorTextarea.value
       mainEditorTextarea.value = undoBuffer
       undoBuffer = swapBuffer
-      mainEditor.save();
+      mainEditor.save()
     }
 
     export const saveState = () => {
@@ -173,6 +217,7 @@ export namespace UiFunctions {
     import addKeyboardShortcuts = Misc.addKeyboardShortcuts;
     import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
     import showToast = HtmlUtils.showToast;
+    import offerBackupIfItsTime = Backups.offerBackupIfItsTime;
 
     export const runTests = () => {
       NonWordChars.runTests()
@@ -516,7 +561,8 @@ export namespace UiFunctions {
             // the editor.
           }
           mainEditorTextareaWrapper.trim().focus()
-          mainEditor.save();
+          mainEditor.save()
+          offerBackupIfItsTime()
         } catch (error) {
           if (error instanceof HelgeUtils.Transcription.TranscriptionError) {
             Log.error(JSON.stringify(error.payload, null, 2))
@@ -839,37 +885,7 @@ export namespace UiFunctions {
       }
       Menu.wireItem("cropHighlightsMenuItem", cropHighlights)
 
-      const wireBackupMenuItems = () => {
-        const backupString = () => "## Main Editor\n" + mainEditorTextarea.value + "\n" + "## Replace Rules\n" + replaceRulesTextArea.value + "\n" + "## Prompt\n" + transcriptionPromptEditor.value;
-
-// ############## Copy Backup to clipboard Menu Item ##############
-        const backupToClipboard = () => {
-          clipboard.writeText(backupString()).then().catch(Log.error)
-        }
-
-        Menu.wireItem("backupToClipboard", backupToClipboard)
-
-        const offerToDownload = (str: string, filename: string) => {
-          const blob = new Blob([str], {type: 'text/plain'})
-          const url = URL.createObjectURL(blob)
-          const link = document.createElement('a')
-          link.href = url
-          link.download = filename
-          document.body.appendChild(link)
-          link.click()
-          document.body.removeChild(link)
-          URL.revokeObjectURL(url)
-        };
-
-// ############## backupDownload ##############
-        const backupDownload = () => {
-          offerToDownload(backupString(), "whisper-scratchpad-backup.txt");
-        }
-
-        Menu.wireItem("backupDownload", backupDownload)
-      }
-
-      wireBackupMenuItems()
+      Backups.wireBackupMenuItems()
 // ############## Focus the main editor textarea Menu Item ##############
       Menu.wireItem("focusMainEditorMenuItem", mainEditorTextarea.focus)
 
@@ -953,6 +969,7 @@ export namespace UiFunctions {
 
         clipboard.read((text: string) => {
           TextAreas.insertAndPutCursorAfter(mainEditorTextarea, text)
+          offerBackupIfItsTime()
         });
       })
 
