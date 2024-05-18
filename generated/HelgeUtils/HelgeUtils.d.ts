@@ -120,6 +120,10 @@ export declare namespace HelgeUtils {
      * will not.
      */
     export const createImmutableStrictObject: (input: object) => any;
+    export namespace MarkDown {
+        /** Returns the text of only the == ==-highlighted text. */
+        const extractHighlights: (input: string) => string[];
+    }
     /**
      * A function that does nothing. I use it to avoid "unused variable" warnings.
      *
@@ -304,7 +308,6 @@ export declare namespace HelgeUtils {
         const replaceByRulesAsString: (subject: string, allRules: string) => string;
     }
     export const memoize: <T, R>(func: (...args: T[]) => R) => (...args: T[]) => R;
-    export const extractHighlights: (input: string) => string[];
     export namespace Misc {
         /** This is NOT only for unit tests! */
         const assertTypeEquals: (value: any, expectedType: string) => void;

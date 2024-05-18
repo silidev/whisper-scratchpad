@@ -778,7 +778,7 @@ export var UiFunctions;
             const cropHighlights = () => {
                 mainEditor.Undo.saveState();
                 const currentNote = new CurrentNote(mainEditorTextarea);
-                const extractedHighlights = HelgeUtils.extractHighlights(currentNote.text()).join(' ');
+                const extractedHighlights = HelgeUtils.MarkDown.extractHighlights(currentNote.text()).join(' ');
                 mainEditorTextareaWrapper.setCursorAtEnd();
                 mainEditor.insertNote(extractedHighlights);
             };

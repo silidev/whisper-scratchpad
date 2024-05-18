@@ -878,7 +878,7 @@ export namespace UiFunctions {
       const cropHighlights = () => {
         mainEditor.Undo.saveState()
         const currentNote = new CurrentNote(mainEditorTextarea)
-        const extractedHighlights = HelgeUtils.extractHighlights(
+        const extractedHighlights = HelgeUtils.MarkDown.extractHighlights(
             currentNote.text()).join(' ')
         mainEditorTextareaWrapper.setCursorAtEnd()
         mainEditor.insertNote(extractedHighlights)
