@@ -6,6 +6,7 @@
  * Copyright by Helge Tobias Kosuch 2024 */
 export declare namespace HelgeUtils {
     export namespace Exceptions {
+        const stackTrace: (e: unknown) => string;
         /**
          * Reporting of exceptions in callbacks is sometimes very bad.
          * Therefore, exceptions should always be caught and then passed
@@ -71,7 +72,7 @@ export declare namespace HelgeUtils {
         const callSwallowingExceptions: (f: () => void) => void;
         /**
          * Displays an alert with the given message and throws the message as an exception.
-         *
+         * TODO: Rework this. Seems not well thought through.
          * @param msg {String} */
         const alertAndThrow: (...msg: any) => never;
         /**
@@ -305,6 +306,8 @@ export declare namespace HelgeUtils {
     export const memoize: <T, R>(func: (...args: T[]) => R) => (...args: T[]) => R;
     export const extractHighlights: (input: string) => string[];
     export namespace Misc {
+        /** This is NOT only for unit tests! */
+        const assertTypeEquals: (value: any, expectedType: string) => void;
         /** nullFilter
          *
          * Throws an exception if the input is null.

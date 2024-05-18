@@ -16,7 +16,7 @@ import { createCutFunction } from "./CutButton.js";
 import { HtmlUtils } from "./HelgeUtils/HtmlUtils.js";
 var downloadOffer = HtmlUtils.Misc.downloadOffer;
 import { CurrentNote } from "./CurrentNote.js";
-//@ts-ignore
+//@ts-expect-error
 import { download, generateCsv, mkConfig } from "../node_modules/export-to-csv/output/index.js";
 const hoursBetweenBackups = 2;
 const LARGE_STORAGE_PROVIDER = VERIFY_LARGE_STORAGE

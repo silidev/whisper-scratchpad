@@ -25,7 +25,7 @@ import {HtmlUtils} from "./HelgeUtils/HtmlUtils.js"
 import downloadOffer = HtmlUtils.Misc.downloadOffer
 import {CurrentNote} from "./CurrentNote.js";
 
-//@ts-ignore
+//@ts-expect-error
 import {download, generateCsv, mkConfig} from "../node_modules/export-to-csv/output/index.js";
 
 const hoursBetweenBackups = 2

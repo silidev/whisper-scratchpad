@@ -12,8 +12,6 @@ export declare namespace HtmlUtils {
             const installGlobalDefault: () => void;
         }
         /**
-         * Should be named "outputError" because it uses alert and console.log, but
-         * I am used to "printError".
          * This outputs aggressively on top of everything to the user. */
         const printError: (input: any) => void;
         /**

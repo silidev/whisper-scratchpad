@@ -9,6 +9,14 @@ export var HelgeUtils;
 (function (HelgeUtils) {
     let Exceptions;
     (function (Exceptions) {
+        Exceptions.stackTrace = (e) => {
+            let str = "";
+            if (e instanceof Error) {
+                str += ", Stack trace:\n";
+                str += e.stack;
+            }
+            return str;
+        };
         /**
          * Reporting of exceptions in callbacks is sometimes very bad.
          * Therefore, exceptions should always be caught and then passed
@@ -38,10 +46,7 @@ export var HelgeUtils;
          </pre>*/
         Exceptions.unhandledExceptionAlert = (e) => {
             let str = "Unhandled EXCEPTION! :" + e;
-            if (e instanceof Error) {
-                str += ", Stack trace:\n";
-                str += e.stack;
-            }
+            str += Exceptions.stackTrace(e);
             /* Do NOT call console.trace() here because the stack trace
                of this place here is not helpful, but instead very
                confusing. */
@@ -112,7 +117,7 @@ export var HelgeUtils;
         };
         /**
          * Displays an alert with the given message and throws the message as an exception.
-         *
+         * TODO: Rework this. Seems not well thought through.
          * @param msg {String} */
         Exceptions.alertAndThrow = (...msg) => {
             console.trace();
@@ -247,16 +252,16 @@ export var HelgeUtils;
                 if (actual instanceof Date && expected instanceof Date
                     && actual.getTime() === expected.getTime())
                     return;
-                console.log("*************** expected:\n" + expectedJson);
                 console.log("*************** actual  :\n" + actualJson);
+                console.log("*************** expected:\n" + expectedJson);
                 if (typeof expected === 'string' && typeof actual === 'string') {
                     const expectedShortened = expected.substring(0, 20).replace(/\n/g, '');
                     const actualShortened = actual.substring(0, 20).replace(/\n/g, '');
                     HelgeUtils.Exceptions.alertAndThrow(message
-                        || `Assertion failed: Expected ${expectedShortened}, but got ${actualShortened}`);
+                        || `Assertion failed: Actual: ${actualShortened}, but expected ${expectedShortened}`);
                 }
                 HelgeUtils.Exceptions.alertAndThrow(message
-                    || `Assertion failed: Expected ${expectedJson}, but got ${actualJson}`);
+                    || `Assertion failed: Actual: ${expectedJson}, but expected ${actualJson}`);
             }
         };
     })(Tests = HelgeUtils.Tests || (HelgeUtils.Tests = {}));
@@ -265,12 +270,12 @@ export var HelgeUtils;
     };
     HelgeUtils.consoleLogTheDifference = (actual, expected) => {
         console.log("*************** actual  :\n" + actual);
-        // @ts-ignore
+        // @ts-expect-error
         if (1 === 0) {
             console.log("*************** expected:\n" + expected);
         }
         let diffCount = 0;
-        // @ts-ignore
+        // @ts-expect-error
         if (1 === 0) {
             for (let i = 0; i < Math.max(expected.length, actual.length); i++) {
                 if (expected[i] !== actual[i]) {
@@ -552,7 +557,7 @@ export var HelgeUtils;
          * const result = formatString(input, replacements)
          * // result is now "Hello John, you are 25 years old." */
         Strings.formatString = (input, replacements) => input.replace(/\${(.*?)}/g, (_, key) => {
-            // @ts-ignore
+            // @ts-expect-error
             return replacements[key];
         });
         Strings.isBlank = (input) => {
@@ -764,7 +769,7 @@ export var HelgeUtils;
                     await withDeepgram(audioBlob, apiKey, true)
                     : api === "Deepgram-nova-2" ?
                         await withDeepgram(audioBlob, apiKey)
-                        // @ts-ignore
+                        // @ts-expect-error
                         : api === "Speechmatics" ?
                             await withSpeechmatics(audioBlob, apiKey)
                             : await withGladia(audioBlob, apiKey);
@@ -905,6 +910,13 @@ export var HelgeUtils;
     };
     let Misc;
     (function (Misc) {
+        /** This is NOT only for unit tests! */
+        Misc.assertTypeEquals = (value, expectedType) => {
+            const actual = typeof value;
+            if (actual !== expectedType) {
+                throw new Error(`Got type ${actual}, but expected type ${expectedType}/ toString()===${value.toString()}/ JSON===${JSON.stringify(value)}`);
+            }
+        };
         /** nullFilter
          *
          * Throws an exception if the input is null.
@@ -2037,7 +2049,7 @@ export var HelgeUtils;
                     }));
                 });
                 if (this.autorun && !this.running) {
-                    // @ts-ignore
+                    // @ts-expect-error
                     this.dequeue();
                 }
                 return this;
@@ -2067,7 +2079,7 @@ export var HelgeUtils;
             });
             setTimeout(function () {
                 // start the queue
-                // @ts-ignore
+                // @ts-expect-error
                 q.next();
             }, 2000);
         };
