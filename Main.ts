@@ -468,7 +468,6 @@ export namespace UiFunctions {
     export namespace Media {
 
       import DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
-      import replaceInCurrentNote = Misc.replaceInCurrentNote;
 
       let mediaRecorder: MediaRecorder
       let audioChunks: Blob[] = []
@@ -548,17 +547,16 @@ export namespace UiFunctions {
             return
           }
           const transcriptionText = await getTranscriptionText()
+          const afterReplace =
+              inputElementWithId("autoReplaceCheckbox").checked
+              ? ReplaceByRules.withUiLog(replaceRulesTextArea.value,transcriptionText)
+              : transcriptionText
 
           if (whereToPutTranscription=="insertAtCursor") {
             TextAreas.insertAndPutCursorAfter(mainEditorTextarea,
-                aSpaceIfNeeded() + removeLastDotIfNotAtEnd(transcriptionText))
+                aSpaceIfNeeded() + removeLastDotIfNotAtEnd(afterReplace))
           } else {
-            mainEditorTextareaWrapper.appendTextAndPutCursorAfter(transcriptionText.trim())
-          }
-          if (inputElementWithId("autoReplaceCheckbox").checked) {
-            replaceInCurrentNote() //TODOh: Stu: TODOhStu:
-            // Simplify this: Apply the rules before inserting the text into
-            // the editor.
+            mainEditorTextareaWrapper.appendTextAndPutCursorAfter(afterReplace.trim())
           }
           mainEditorTextareaWrapper.trim().focus()
           mainEditor.save()

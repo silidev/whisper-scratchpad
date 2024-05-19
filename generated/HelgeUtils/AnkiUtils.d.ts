@@ -1,30 +1,19 @@
 import printDebug = HtmlUtils.ErrorHandling.printDebug;
 import assertTypeEquals = HelgeUtils.Misc.assertTypeEquals;
-declare class Anki {
+/** This contains only wrapper methods for the real JS-API
+ *
+ * The main feature of this is that it throws an exception if call the JS API fails.
+ * */
+declare class JsApi {
     private static mock;
     private static disableDangerousActions;
     private static api;
     private static getApi;
-    private static readonly numToStr;
-    /** The date when the collection was created.
-     * Unconveniently, this is needed to calculate the due date from
-     * the value the API returns. */
-    private static dateOfCreationOfCollection;
     static addTagToCard(): Promise<void>;
     static buryCard(): Promise<void>;
     static answerEase(easeButtonNumber: number): void;
-    /**
-     * @param i A number between 1 and 4.
-     */
-    static answerButtonLabel(i: number): Promise<string>;
-    static nextTimeStringForButton(i: number): Promise<string>;
     private static wrapString;
-    private static nextTimeStringForButtonRaw;
-    static nextTimeValueAndUnitForButton(i: number): Promise<{
-        value: number;
-        unit: string;
-    }>;
-    static buttonRatio(daysOfButton: number | string): Promise<string>;
+    static nextTimeStringForButtonRaw: (i: number) => Promise<string>;
     /**
      * Returns card type
      *
@@ -36,19 +25,6 @@ declare class Anki {
      * https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#card-type
      */
     static cardStatus(): Promise<number>;
-    static parseButtonTimeStrNumberAndUnit(input: string): {
-        value: number;
-        unit: string;
-    };
-    private static testParseButtonTimeStrNumberAndUnit;
-    static runTests(): void;
-    static tryToConvertButtonTimeStrToDays(input: string): string | number;
-    static daysSinceCardModified(): Promise<number>;
-    static daysSinceCreationOfCollection(): number;
-    /**
-     * @return the number of days since the card was due.
-     * */
-    static daysSinceCardWasDue(): Promise<number>;
     /**
      * new: note id or random int
      * due: integer day, relative to the collection's creation time
@@ -96,17 +72,6 @@ declare class Anki {
      * https://docs.ankiweb.net/browsing.html#cards
      */
     static setCardDue(days: number): Promise<void>;
-    /**
-     * @return the time since the card was last shown to the user
-     * or "" if the card is due today or not due yet.
-     *
-     * I have lots of overdue cards and I find it very useful to display the number of
-     * days since the card was last seen. */
-    static timeSinceLastSeenAsString(): Promise<string>;
-    /**
-     * @return the time since the card was last shown to the user
-     * */
-    static daysSinceLastSeen(): Promise<number>;
     static cardId(): Promise<number>;
     /**
      https://github.com/ankidroid/Anki-Android/wiki/AnkiDroid-Javascript-API#last-modified-time-of-card
@@ -117,6 +82,11 @@ declare class Anki {
     static cardMod(): Promise<number>;
     static toggleFlag(): Promise<any>;
     static toggleMarkCard(): Promise<any>;
+    static eta(): Promise<number>;
+    static searchCard(query: string): Promise<void>;
+    /** @deprecated */
+    static cardInterval(): Promise<number>;
+    static showToast(): Promise<void>;
     static TTS: {
         new (): {};
         readonly QUEUE_ADD: 1;
@@ -136,10 +106,75 @@ declare class Anki {
         german(): Promise<void>;
         flushQueue(): Promise<void>;
     };
+    private static CallWithFailNotification;
+}
+declare class Anki {
+    private static readonly numToStr;
+    /** The date when the collection was created.
+     * Unconveniently, this is needed to calculate the due date from
+     * the value the API returns. */
+    private static dateOfCreationOfCollection;
+    /**
+     * @param i A number between 1 and 4.
+     */
+    static answerButtonLabel(i: number): Promise<string>;
+    static nextTimeStringForButton(i: number): Promise<string>;
+    static nextTimeValueAndUnitForButton(i: number): Promise<{
+        value: number;
+        unit: string;
+    }>;
+    static buttonRatio(daysOfButton: number | string): Promise<string>;
+    static parseButtonTimeStrNumberAndUnit(input: string): {
+        value: number;
+        unit: string;
+    };
+    private static testParseButtonTimeStrNumberAndUnit;
+    static runTests(): void;
+    static tryToConvertButtonTimeStrToDays(input: string): string | number;
+    static daysSinceCardModified(): Promise<number>;
+    static daysSinceCreationOfCollection(): number;
+    /**
+     * @return the number of days since the card was due.
+     * */
+    static daysSinceCardWasDue(): Promise<number>;
+    /**
+     * @return the time since the card was last shown to the user
+     * or "" if the card is due today or not due yet.
+     *
+     * I have lots of overdue cards and I find it very useful to display the number of
+     * days since the card was last seen. */
+    static timeSinceLastSeenAsString(): Promise<string>;
+    /**
+     * @return the time since the card was last shown to the user
+     * */
+    static daysSinceLastSeen(): Promise<number>;
+    static addTagToCard(): Promise<void>;
+    static buryCard(): Promise<void>;
+    static answerEase(easeButtonNumber: number): void;
+    static nextTimeStringForButtonRaw(i: number): Promise<string>;
+    static cardStatus(): Promise<number>;
+    static cardDue(): Promise<number>;
+    static cardDueRaw(): Promise<any>;
+    static cardOriginalDue(): Promise<number>;
+    static intervalOfCard(): Promise<number>;
+    static ease(): Promise<number>;
+    static showAnswer(): void;
+    static setCardDue(days: number): Promise<void>;
+    static cardId(): Promise<number>;
+    static cardMod(): Promise<number>;
+    static toggleFlag(): Promise<void>;
+    static toggleMarkCard(): Promise<void>;
     static eta(): Promise<number>;
     static searchCard(query: string): Promise<void>;
-    /** @deprecated */
-    static cardInterval(): Promise<number>;
-    static showToast(s: string): Promise<void>;
-    private static CallWithFailNotification;
+    static TTS: {
+        new (): {};
+        setLanguage(language: string): Promise<void>;
+        speak(text: string, queueMode?: number): Promise<void>;
+        setSpeed(speed: number): Promise<void>;
+        stop(): Promise<void>;
+        isSpeaking(): Promise<boolean>;
+        english(): Promise<void>;
+        german(): Promise<void>;
+        flushQueue(): Promise<void>;
+    };
 }

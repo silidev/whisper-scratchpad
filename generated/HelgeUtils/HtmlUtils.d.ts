@@ -37,9 +37,13 @@ export declare namespace HtmlUtils {
     const inputElementWithId: (id: string) => HTMLInputElement | null;
     /** These never return null. Instead, they throw a runtime error. */
     namespace NeverNull {
+        /** @see NeverNull */
         const elementWithId: (id: string) => HTMLElement;
+        /** @see NeverNull */
         const buttonWithId: (id: string) => HTMLButtonElement;
+        /** @see NeverNull */
         const inputElementWithId: (id: string) => HTMLInputElement;
+        /** @see NeverNull */
         const textAreaWithId: (id: string) => HTMLTextAreaElement;
     }
     namespace TextAreas {

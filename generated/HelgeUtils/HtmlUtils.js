@@ -79,12 +79,7 @@ export var HtmlUtils;
      */
     HtmlUtils.blinkSlow = (message) => `<span class="blinkingSlow">${message}</span>`;
     HtmlUtils.elementWithId = memoize((id) => {
-        const element = document.getElementById(id);
-        if (element === null) {
-            printError(`Element with ID ${id} not found.`);
-            return null;
-        }
-        return element;
+        return document.getElementById(id);
     });
     HtmlUtils.buttonWithId = HtmlUtils.elementWithId;
     HtmlUtils.textAreaWithId = HtmlUtils.elementWithId;
@@ -93,12 +88,16 @@ export var HtmlUtils;
     let NeverNull;
     (function (NeverNull) {
         var nullFilter = HelgeUtils.Misc.nullFilter;
+        /** @see NeverNull */
         // eslint-disable-next-line no-shadow
         NeverNull.elementWithId = (id) => nullFilter(HtmlUtils.elementWithId, id);
+        /** @see NeverNull */
         // eslint-disable-next-line no-shadow
         NeverNull.buttonWithId = (id) => nullFilter(HtmlUtils.buttonWithId, id);
+        /** @see NeverNull */
         // eslint-disable-next-line no-shadow
         NeverNull.inputElementWithId = (id) => nullFilter(HtmlUtils.inputElementWithId, id);
+        /** @see NeverNull */
         // eslint-disable-next-line no-shadow
         NeverNull.textAreaWithId = (id) => nullFilter(HtmlUtils.textAreaWithId, id);
     })(NeverNull = HtmlUtils.NeverNull || (HtmlUtils.NeverNull = {}));

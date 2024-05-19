@@ -400,7 +400,6 @@ export var UiFunctions;
         let Media;
         (function (Media) {
             var DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
-            var replaceInCurrentNote = Misc.replaceInCurrentNote;
             let mediaRecorder;
             let audioChunks = [];
             let audioBlob;
@@ -471,16 +470,14 @@ export var UiFunctions;
                         return;
                     }
                     const transcriptionText = await getTranscriptionText();
+                    const afterReplace = inputElementWithId("autoReplaceCheckbox").checked
+                        ? ReplaceByRules.withUiLog(replaceRulesTextArea.value, transcriptionText)
+                        : transcriptionText;
                     if (whereToPutTranscription == "insertAtCursor") {
-                        TextAreas.insertAndPutCursorAfter(mainEditorTextarea, aSpaceIfNeeded() + removeLastDotIfNotAtEnd(transcriptionText));
+                        TextAreas.insertAndPutCursorAfter(mainEditorTextarea, aSpaceIfNeeded() + removeLastDotIfNotAtEnd(afterReplace));
                     }
                     else {
-                        mainEditorTextareaWrapper.appendTextAndPutCursorAfter(transcriptionText.trim());
-                    }
-                    if (inputElementWithId("autoReplaceCheckbox").checked) {
-                        replaceInCurrentNote(); //TODOh: Stu: TODOhStu:
-                        // Simplify this: Apply the rules before inserting the text into
-                        // the editor.
+                        mainEditorTextareaWrapper.appendTextAndPutCursorAfter(afterReplace.trim());
                     }
                     mainEditorTextareaWrapper.trim().focus();
                     mainEditor.save();
