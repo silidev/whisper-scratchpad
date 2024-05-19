@@ -3,7 +3,9 @@
  *
  * Should be named DomUtils... but I am used to HtmlUtils.
  * */
+// Merge help: The following lines must be commented out in the Project Anca:
 import { HelgeUtils } from "./HelgeUtils.js";
+// Merge help end
 const MAX_COOKIE_SIZE = 4096;
 export var HtmlUtils;
 (function (HtmlUtils) {
@@ -100,6 +102,7 @@ export var HtmlUtils;
         // eslint-disable-next-line no-shadow
         NeverNull.textAreaWithId = (id) => nullFilter(HtmlUtils.textAreaWithId, id);
     })(NeverNull = HtmlUtils.NeverNull || (HtmlUtils.NeverNull = {}));
+    // Merge help: The following lines must be commented out in the Project Anca:
     let TextAreas;
     (function (TextAreas) {
         // eslint-disable-next-line no-shadow
@@ -253,6 +256,7 @@ export var HtmlUtils;
             }
         };
     })(TextAreas = HtmlUtils.TextAreas || (HtmlUtils.TextAreas = {}));
+    // end of Merge help
     let Media;
     (function (Media) {
         Media.releaseMicrophone = (stream) => {
