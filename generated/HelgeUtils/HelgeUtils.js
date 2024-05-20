@@ -127,14 +127,9 @@ export var HelgeUtils;
                 console.log(err);
             }
         };
-        /**
-         * Displays an alert with the given message and throws the message as an exception.
-         * TODO: Rework this. Seems not well thought through.
-         * @param msg {String} */
-        Exceptions.alertAndThrow = (...msg) => {
-            console.trace();
-            // alert(msg)
-            throw new Error(...msg);
+        /** @deprecated Inline this everywhere! */
+        Exceptions.throwError = (msg) => {
+            throw new Error(msg);
         };
         /**
          *
@@ -164,7 +159,6 @@ export var HelgeUtils;
     })(Exceptions = HelgeUtils.Exceptions || (HelgeUtils.Exceptions = {}));
     let Eval;
     (function (Eval) {
-        var alertAndThrow = HelgeUtils.Exceptions.alertAndThrow;
         /**
          * Like "eval(...)" but a little safer and with better performance.
          *
@@ -174,7 +168,7 @@ export var HelgeUtils;
          * */
         Eval.evalBetter = function (codeStr, args) {
             if (Strings.isBlank(codeStr)) {
-                alertAndThrow("evalBetter(): codeStr must not be empty");
+                throw ("evalBetter(): codeStr must not be empty");
             }
             return Eval.executeFunctionBody(" return (" + codeStr + ")", args);
         };
@@ -289,7 +283,7 @@ export var HelgeUtils;
     };
     let Tests;
     (function (Tests) {
-        /** Inline this function! */
+        /** This function is a copy template. */
         Tests.runTestsOnlyToday = () => {
             const RUN_TESTS = new Date().toISOString().slice(0, 10) === "2024-01-24";
             HelgeUtils.suppressUnusedWarning(RUN_TESTS);
@@ -301,7 +295,7 @@ export var HelgeUtils;
                 return;
             // It is NOT fine! Throw an error:
             console.log(...output);
-            HelgeUtils.Exceptions.alertAndThrow(...output);
+            throw new Error(output.join(","));
         };
         /**
          * V2 27.04.2024
@@ -319,10 +313,10 @@ export var HelgeUtils;
                 if (typeof expected === 'string' && typeof actual === 'string') {
                     const expectedShortened = expected.substring(0, 20).replace(/\n/g, '');
                     const actualShortened = actual.substring(0, 20).replace(/\n/g, '');
-                    HelgeUtils.Exceptions.alertAndThrow(message
+                    throw new Error(message
                         || `Assertion failed: Actual: ${actualShortened}, but expected ${expectedShortened}`);
                 }
-                HelgeUtils.Exceptions.alertAndThrow(message
+                throw new Error(message
                     || `Assertion failed: Actual: ${expectedJson}, but expected ${actualJson}`);
             }
         };
@@ -985,7 +979,7 @@ export var HelgeUtils;
         Misc.nullFilter = (f, ...parameters) => {
             const untypedNullFilter = (input) => {
                 if (input === null)
-                    Exceptions.alertAndThrow(`Unexpected null value.`);
+                    throw new Error(`Unexpected null value.`);
                 return input;
             };
             return untypedNullFilter(f(...parameters));

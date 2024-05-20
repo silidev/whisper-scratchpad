@@ -75,11 +75,8 @@ export declare namespace HelgeUtils {
         /**
          * Calls the function and swallows any exceptions. */
         const callSwallowingExceptions: (f: () => void) => void;
-        /**
-         * Displays an alert with the given message and throws the message as an exception.
-         * TODO: Rework this. Seems not well thought through.
-         * @param msg {String} */
-        const alertAndThrow: (...msg: any) => never;
+        /** @deprecated Inline this everywhere! */
+        const throwError: (msg: string) => never;
         /**
          *
          * See also {@link Exceptions.defineCustom}
@@ -153,7 +150,7 @@ export declare namespace HelgeUtils {
      */
     export const suppressUnusedWarning: (...args: any[]) => void;
     export namespace Tests {
-        /** Inline this function! */
+        /** This function is a copy template. */
         const runTestsOnlyToday: () => void;
         const assert: (condition: boolean, ...output: any[]) => void;
         /**

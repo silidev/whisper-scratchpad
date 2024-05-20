@@ -89,16 +89,12 @@ export var HtmlUtils;
     (function (NeverNull) {
         var nullFilter = HelgeUtils.Misc.nullFilter;
         /** @see NeverNull */
-        // eslint-disable-next-line no-shadow
         NeverNull.elementWithId = (id) => nullFilter(HtmlUtils.elementWithId, id);
         /** @see NeverNull */
-        // eslint-disable-next-line no-shadow
         NeverNull.buttonWithId = (id) => nullFilter(HtmlUtils.buttonWithId, id);
         /** @see NeverNull */
-        // eslint-disable-next-line no-shadow
         NeverNull.inputElementWithId = (id) => nullFilter(HtmlUtils.inputElementWithId, id);
         /** @see NeverNull */
-        // eslint-disable-next-line no-shadow
         NeverNull.textAreaWithId = (id) => nullFilter(HtmlUtils.textAreaWithId, id);
     })(NeverNull = HtmlUtils.NeverNull || (HtmlUtils.NeverNull = {}));
     // Merge help: The following lines must be commented out in the Project Anca:
@@ -413,7 +409,6 @@ export var HtmlUtils;
         /** https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper */
         let WcMenu;
         (function (WcMenu) {
-            // eslint-disable-next-line no-shadow
             var elementWithId = NeverNull.elementWithId;
             WcMenu.close = (menuHeadingId) => {
                 elementWithId(menuHeadingId).dispatchEvent(new CustomEvent('rootMenuClose'));
