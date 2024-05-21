@@ -24,7 +24,7 @@ export default [
           "hoist": "all",/*  "all" is the most restrictive. Controls the behavior for function declarations and can
            be set to `all`,`functions`, or `never`. */
           "allow": ["resolve", "reject","parent","name","currentTime","close","event",
-            "runTests", "prompt","Window"]
+            "runTests", "prompt","Window","target"]
         }
       ]
     }

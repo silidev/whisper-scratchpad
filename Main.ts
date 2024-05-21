@@ -3,13 +3,14 @@
  */
 
 import textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
-import TextAreas = HtmlUtils.TextAreas;
 import blinkFast = HtmlUtils.blinkFast;
 import blinkSlow = HtmlUtils.blinkSlow;
-import escapeForRegExp = HelgeUtils.Strings.escapeRegExp;
+import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
 import elementWithId = HtmlUtils.NeverNull.elementWithId;
 import TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
 import Cookies = HtmlUtils.BrowserStorage.Cookies;
+import downloadOffer = HtmlUtils.Misc.downloadOffer;
+import TextAreas = HtmlUtils.TextAreas;
 import {ctrlYRedo, ctrlZUndo} from "./DontInspect.js"
 import {HelgeUtils} from "./HelgeUtils/HelgeUtils.js"
 import {
@@ -22,7 +23,6 @@ import {
 } from "./Config.js"
 import {createCutFunction} from "./CutButton.js"
 import {HtmlUtils} from "./HelgeUtils/HtmlUtils.js"
-import downloadOffer = HtmlUtils.Misc.downloadOffer
 import {CurrentNote} from "./CurrentNote.js";
 
 //@ts-expect-error
@@ -223,6 +223,35 @@ export namespace UiFunctions {
       NonWordChars.runTests()
     }
 
+    // ############## searchReplaceRules ##############
+    namespace ReplaceRulesSearch {
+      let target: string | null
+
+      const searchInRr = (target: string) => {
+        TextAreas.FindCaseInsensitiveAndSelect.normal(replaceRulesTextArea, target)
+      }
+      export const searchReplaceRulesUi = () => {
+        target = prompt("Search replace rules")
+        if (!target)
+          return
+
+        /* Always start the search at the beginning because it would cause to many WTFs otherwise:*/
+        replaceRulesTextArea.selectionEnd = 0
+
+        BottomUi.unhide()
+        searchInRr(target)
+      }
+      export const searchReplaceRulesAgainUi = () => {
+        if (!target)
+          return
+        searchInRr(target)
+      }
+      export const wireElements = () => {
+        Menu.wireItem("searchReplaceRulesMenuItem", searchReplaceRulesUi)
+        Menu.wireItem("searchReplaceRulesAgainClickable", searchReplaceRulesAgainUi)
+      }
+    }
+
     namespace Cursor {
       // ############## findDuButton ##############
       buttonWithId('findDuButton').addEventListener('pointerdown', (event: { preventDefault: () => void; }) => {
@@ -354,13 +383,19 @@ export namespace UiFunctions {
     export namespace BottomUi {
       const bottomUi = elementWithId("bottomUi");
 
-      export const toggleBottomUi = () => {
-        bottomUi.classList.toggle('hidden')
+      const setOverflow = () => {
         const isHidden = bottomUi.classList.contains('hidden')
         document.body.style.overflow = isHidden ? "hidden" : "auto"
-      };
-
-      buttonWithId('toggleBottomUiButton').addEventListener('click', toggleBottomUi);
+      }
+      export const toggleHidden = () => {
+        bottomUi.classList.toggle('hidden')
+        setOverflow();
+      }
+      export const unhide = () => {
+        bottomUi.classList.remove("hidden")
+        setOverflow()
+      }
+      buttonWithId('toggleBottomUiButton').addEventListener('click', toggleHidden);
     }
 
     /** This is WIP, not working. */
@@ -871,6 +906,8 @@ export namespace UiFunctions {
         speak()
       }
       Menu.wireItem("ttsTestGoogleMenuItem", ttsTestGoogle)
+// ############## searchReplaceRules ##############
+      ReplaceRulesSearch.wireElements()
 
 // ############## Crop Highlights Menu Item ##############
       const cropHighlights = () => {
@@ -889,10 +926,10 @@ export namespace UiFunctions {
 
 // ############## du2Ich Menu Item ##############
       const du2ichMenuItem = () => {
-        mainEditor.Undo.saveState();
+        mainEditor.Undo.saveState()
 
         const currentNote = new CurrentNote(mainEditorTextarea)
-        const changedText = HelgeUtils.Misc.du2ich(currentNote.text());
+        const changedText = HelgeUtils.Misc.du2ich(currentNote.text())
         currentNote.delete()
 
         mainEditor.insertNote(changedText)
@@ -919,7 +956,7 @@ export namespace UiFunctions {
         replaceButton()
       })
       HtmlUtils.addClickListener(("replaceButton2"), () => {
-        UiFunctions.Buttons.BottomUi.toggleBottomUi()
+        UiFunctions.Buttons.BottomUi.toggleHidden()
         replaceButton()
       })
 
@@ -1052,7 +1089,7 @@ export namespace UiFunctions {
        * "REGEX"gm->"REPLACEMENT" */
       const quote = `"`;
       const maybeWordBoundary = requireWordBoundaryAtStart ? "\\b" : "";
-      const regEx = escapeForRegExp(inputStr);
+      const regEx = escapeRegExp(inputStr);
       const optionsAndArrow = 'gm->';
       /** This is the part before the text selection in the UI */
       const ruleStrPart1 =
@@ -1097,7 +1134,7 @@ export namespace UiFunctions {
           + numberToMakeItUnique
     }
 
-    const createTestRule = (numberToMakeItUnique: number) => `\n\n"${escapeForRegExp(magicText(numberToMakeItUnique))}"gm->""\n\n`
+    const createTestRule = (numberToMakeItUnique: number) => `\n\n"${escapeRegExp(magicText(numberToMakeItUnique))}"gm->""\n\n`
     const testRules =
         createTestRule(1)
         + replaceRulesTextArea.value
@@ -1119,8 +1156,11 @@ const languageSelector = document.getElementById('languageSelector') as HTMLSele
 const apiKeyInput = document.getElementById('apiKeyInputField') as HTMLTextAreaElement
 const mainEditorTextarea = document.getElementById('mainEditorTextarea') as HTMLTextAreaElement
 const mainEditorTextareaWrapper = new TextAreaWrapper(mainEditorTextarea)
-const transcriptionPromptEditor = document.getElementById('transcriptionPromptEditor') as HTMLTextAreaElement
-const replaceRulesTextArea = document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement
+const transcriptionPromptEditor =
+    document.getElementById('transcriptionPromptEditor') as HTMLTextAreaElement
+const replaceRulesTextArea =
+    document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement
+const replaceRulesTextareaWrapper = new TextAreaWrapper(replaceRulesTextArea)
 
 const saveReplaceRules = () => {
   LARGE_STORAGE_PROVIDER.set("replaceRules",
