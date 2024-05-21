@@ -24,6 +24,7 @@
   "exclude": [
     "node_modules/**",
     "generated/**",
-    "HelgeUtils/AnkiUtils.ts",
+    "HelgeUtils/Anki/**",
+    "HelgeUtils/Anki/Anki.d.ts",
   ]
 }
