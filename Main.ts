@@ -27,6 +27,7 @@ import {CurrentNote} from "./CurrentNote.js";
 
 //@ts-expect-error
 import {download, generateCsv, mkConfig} from "../node_modules/export-to-csv/output/index.js";
+import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
 
 const hoursBetweenBackups = 24
 
@@ -1161,6 +1162,7 @@ const transcriptionPromptEditor =
 const replaceRulesTextArea =
     document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement
 const replaceRulesTextareaWrapper = new TextAreaWrapper(replaceRulesTextArea)
+suppressUnusedWarning(replaceRulesTextareaWrapper)
 
 const saveReplaceRules = () => {
   LARGE_STORAGE_PROVIDER.set("replaceRules",
