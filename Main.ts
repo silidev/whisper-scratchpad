@@ -227,7 +227,7 @@ export namespace UiFunctions {
       // ############## findDuButton ##############
       buttonWithId('findDuButton').addEventListener('pointerdown', (event: { preventDefault: () => void; }) => {
         event.preventDefault(); // Prevent the textarea from losing focus
-        mainEditorTextareaWrapper.findAndSelect("du")
+        mainEditorTextareaWrapper.findWholeWordCaseInsensitiveAndSelect("du")
       });
 
       {
