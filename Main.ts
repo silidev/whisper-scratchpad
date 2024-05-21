@@ -54,7 +54,7 @@ namespace Backups {
 
   let lastBackupDate: Date | null = null
 
-  const backupString = () => "## Main Editor\n" + mainEditorTextarea.value + "\n" + "## Replace Rules\n" + replaceRulesTextArea.value + "\n" + "## Prompt\n" + transcriptionPromptEditor.value;
+  const backupString = () => "## Main Editor\n" + mainEditorTextarea.value + "\n" + "## Replace Rules\n" + replaceRulesTextarea.value + "\n" + "## Prompt\n" + transcriptionPromptEditor.value;
 
   // ############## backupDownload ##############
   const backupDownload = () => {
@@ -164,7 +164,7 @@ namespace Misc {
 
     const currentNote = new CurrentNote(mainEditorTextarea)
     const changedText = ReplaceByRules.withUiLog(
-        replaceRulesTextArea.value, currentNote.text())
+        replaceRulesTextarea.value, currentNote.text())
     currentNote.delete()
 
     mainEditor.insertNote(changedText)
@@ -229,7 +229,7 @@ export namespace UiFunctions {
       let target: string | null
 
       const searchInRr = (target: string) => {
-        TextAreas.FindCaseInsensitiveAndSelect.normal(replaceRulesTextArea, target)
+        TextAreas.FindCaseInsensitiveAndSelect.normal(replaceRulesTextarea, target)
       }
       export const searchReplaceRulesUi = () => {
         target = prompt("Search replace rules")
@@ -237,7 +237,7 @@ export namespace UiFunctions {
           return
 
         /* Always start the search at the beginning because it would cause to many WTFs otherwise:*/
-        replaceRulesTextArea.selectionEnd = 0
+        replaceRulesTextarea.selectionEnd = 0
 
         BottomUi.unhide()
         searchInRr(target)
@@ -296,7 +296,7 @@ export namespace UiFunctions {
           const mainEditorWConfig = new WConfig(regex,negativeRegex,
               textAreaWithId('mainEditorTextarea'));
           const replaceRulesWConfig = new WConfig(regex,negativeRegex,
-              textAreaWithId('replaceRulesTextArea'))
+              textAreaWithId('replaceRulesTextarea'))
 
           const createSelectWordLeftFunction = (wConfig: WConfig) => {
             const textarea = wConfig.textarea
@@ -488,7 +488,7 @@ export namespace UiFunctions {
           clipboard.writeText(
               du2ich(
                   ReplaceByRules.withUiLog(
-                      replaceRulesTextArea.value, text))
+                      replaceRulesTextarea.value, text))
                   .replaceAll("&#x27;","'")
           ).then().catch(Log.error)
         }).catch(Log.error)
@@ -585,7 +585,7 @@ export namespace UiFunctions {
           const transcriptionText = await getTranscriptionText()
           const afterReplace =
               inputElementWithId("autoReplaceCheckbox").checked
-              ? ReplaceByRules.withUiLog(replaceRulesTextArea.value,transcriptionText)
+              ? ReplaceByRules.withUiLog(replaceRulesTextarea.value,transcriptionText)
               : transcriptionText
 
           if (whereToPutTranscription=="insertAtCursor") {
@@ -966,7 +966,7 @@ export namespace UiFunctions {
         showToast("Inserting \b into replaceRulesEditor.") /* This alert is
         important because sometimes you hit this button by accident and this
         can break the replace rules! */
-        TextAreas.insertAndPutCursorAfter(replaceRulesTextArea,"\\b")
+        TextAreas.insertAndPutCursorAfter(replaceRulesTextarea,"\\b")
       })
 
 // ############## Undo #############
@@ -976,7 +976,7 @@ export namespace UiFunctions {
         ctrlZUndo()
       })
     }
-    addUndoClickListener("ctrlZButtonOfReplaceRules", replaceRulesTextArea)
+    addUndoClickListener("ctrlZButtonOfReplaceRules", replaceRulesTextarea)
     addUndoClickListener("ctrlZButtonOfPrompt", transcriptionPromptEditor)
 
     HtmlUtils.addClickListener("ctrlYButton", ctrlYRedo)
@@ -1030,7 +1030,7 @@ export namespace UiFunctions {
       }
 
       // copyButtons
-      addEventListenerForCopyButton("copyReplaceRulesButton", "replaceRulesTextArea")
+      addEventListenerForCopyButton("copyReplaceRulesButton", "replaceRulesTextarea")
       addEventListenerForCopyButton("copyPromptButton", "transcriptionPromptEditor")
 
 // ############## Misc ##############
@@ -1102,27 +1102,27 @@ export namespace UiFunctions {
           + quote;
       const ruleStrPart2 = inputStr + quote;
       const ruleString = ruleStrPart1 + ruleStrPart2
-      const lengthBefore = replaceRulesTextArea.value.length
+      const lengthBefore = replaceRulesTextarea.value.length
       const APPEND = true
       if (APPEND) {
         const ruleBeforeSelection = "\n" + ruleStrPart1;
-        TextAreas.appendTextAndCursor(replaceRulesTextArea,
+        TextAreas.appendTextAndCursor(replaceRulesTextarea,
             ruleBeforeSelection + ruleStrPart2)
         const SELECT_REPLACEMENT = true;
         if (SELECT_REPLACEMENT) {
-          replaceRulesTextArea.selectionStart = lengthBefore + ruleBeforeSelection.length
-          replaceRulesTextArea.selectionEnd = replaceRulesTextArea.value.length - 1;
+          replaceRulesTextarea.selectionStart = lengthBefore + ruleBeforeSelection.length
+          replaceRulesTextarea.selectionEnd = replaceRulesTextarea.value.length - 1;
         } else { // delete this if branch later
-          replaceRulesTextArea.selectionStart = lengthBefore
-          replaceRulesTextArea.selectionEnd = replaceRulesTextArea.value.length
+          replaceRulesTextarea.selectionStart = lengthBefore
+          replaceRulesTextarea.selectionEnd = replaceRulesTextarea.value.length
         }
-        TextAreas.scrollToEnd(replaceRulesTextArea)
+        TextAreas.scrollToEnd(replaceRulesTextarea)
       } else {
-        TextAreas.insertAndPutCursorAfter(replaceRulesTextArea, ruleString+"\n")
-        replaceRulesTextArea.selectionStart = 0
-        replaceRulesTextArea.selectionEnd = ruleString.length
+        TextAreas.insertAndPutCursorAfter(replaceRulesTextarea, ruleString+"\n")
+        replaceRulesTextarea.selectionStart = 0
+        replaceRulesTextarea.selectionEnd = ruleString.length
       }
-      replaceRulesTextArea.focus();
+      replaceRulesTextarea.focus();
       saveReplaceRules()
     }
     export const addWordReplaceRule = () => addReplaceRule(true)
@@ -1138,7 +1138,7 @@ export namespace UiFunctions {
     const createTestRule = (numberToMakeItUnique: number) => `\n\n"${escapeRegExp(magicText(numberToMakeItUnique))}"gm->""\n\n`
     const testRules =
         createTestRule(1)
-        + replaceRulesTextArea.value
+        + replaceRulesTextarea.value
         + createTestRule(2)
     const replaceResult = ReplaceByRules.withUiLog(testRules, magicText(1) + magicText(2))
     buttonWithId("testFailIndicatorOfReplaceRules").style.display =
@@ -1159,19 +1159,19 @@ const mainEditorTextarea = document.getElementById('mainEditorTextarea') as HTML
 const mainEditorTextareaWrapper = new TextAreaWrapper(mainEditorTextarea)
 const transcriptionPromptEditor =
     document.getElementById('transcriptionPromptEditor') as HTMLTextAreaElement
-const replaceRulesTextArea =
-    document.getElementById('replaceRulesTextArea') as HTMLTextAreaElement
-const replaceRulesTextareaWrapper = new TextAreaWrapper(replaceRulesTextArea)
+const replaceRulesTextarea =
+    document.getElementById('replaceRulesTextarea') as HTMLTextAreaElement
+const replaceRulesTextareaWrapper = new TextAreaWrapper(replaceRulesTextarea)
 suppressUnusedWarning(replaceRulesTextareaWrapper)
 
 const saveReplaceRules = () => {
   LARGE_STORAGE_PROVIDER.set("replaceRules",
-      textAreaWithId("replaceRulesTextArea").value)
+      textAreaWithId("replaceRulesTextarea").value)
   // Delete old cookie:
   Cookies.set("replaceRules", ""); // This used to be stored in a cookie.
 }
 
-textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions
+textAreaWithId('replaceRulesTextarea').addEventListener('input', UiFunctions
     .replaceRulesTextAreaOnInput)
 
 // Autosaves
@@ -1179,7 +1179,7 @@ textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions
   const handleAutoSaveError = (msg: string) => {
     Log.error(msg)
   }
-  TextAreas.setAutoSave('replaceRules', 'replaceRulesTextArea', handleAutoSaveError, LARGE_STORAGE_PROVIDER)
+  TextAreas.setAutoSave('replaceRules', 'replaceRulesTextarea', handleAutoSaveError, LARGE_STORAGE_PROVIDER)
   TextAreas.setAutoSave('editorText', 'mainEditorTextarea', handleAutoSaveError, LARGE_STORAGE_PROVIDER)
   TextAreas.setAutoSave('prompt', 'transcriptionPromptEditor', handleAutoSaveError, LARGE_STORAGE_PROVIDER)
 }
@@ -1271,7 +1271,7 @@ export const loadFormData = () => {
 
   mainEditorTextarea.value = getLocalStorageOrCookie("editorText")??""
   transcriptionPromptEditor.value = getLocalStorageOrCookie("prompt")??""
-  replaceRulesTextArea.value = getLocalStorageOrCookie("replaceRules")
+  replaceRulesTextarea.value = getLocalStorageOrCookie("replaceRules")
       ??`""->""\n` // Default replace rule
 
   apiSelector.value = Cookies.get("apiSelector")??'OpenAI'
