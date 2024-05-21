@@ -1167,8 +1167,8 @@ suppressUnusedWarning(replaceRulesTextareaWrapper)
 const saveReplaceRules = () => {
   LARGE_STORAGE_PROVIDER.set("replaceRules",
       textAreaWithId("replaceRulesTextArea").value)
+  // Delete old cookie:
   Cookies.set("replaceRules", ""); // This used to be stored in a cookie.
-  // Delete old cookie
 }
 
 textAreaWithId('replaceRulesTextArea').addEventListener('input', UiFunctions
