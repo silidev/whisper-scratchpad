@@ -28,7 +28,7 @@ import {CurrentNote} from "./CurrentNote.js";
 //@ts-expect-error
 import {download, generateCsv, mkConfig} from "../node_modules/export-to-csv/output/index.js";
 
-const hoursBetweenBackups = 2
+const hoursBetweenBackups = 24
 
 const LARGE_STORAGE_PROVIDER =
     VERIFY_LARGE_STORAGE
