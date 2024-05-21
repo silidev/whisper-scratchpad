@@ -702,7 +702,7 @@ export var HelgeUtils;
                 type: 'transcription',
                 transcription_config: {
                     operating_point: 'enhanced',
-                    language: 'de' //TODO
+                    language: 'de'
                 }
             }));
             const response = await fetch(
