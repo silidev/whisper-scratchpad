@@ -216,7 +216,6 @@ export namespace UiFunctions {
     // eslint-disable-next-line no-shadow
     import Cookies = HtmlUtils.BrowserStorage.Cookies;
     import addKeyboardShortcuts = Misc.addKeyboardShortcuts;
-    import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
     import showToast = HtmlUtils.showToast;
     import offerBackupIfItsTime = Backups.offerBackupIfItsTime;
 
