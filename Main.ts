@@ -52,7 +52,9 @@ HtmlUtils.ErrorHandling.ExceptionHandlers.installGlobalDefault()
 
 namespace Backups {
 
-  let lastBackupDate: Date | null = null
+  import parseIntWithNull = HelgeUtils.Conversions.parseIntWithNull
+
+  let lastBackupMillis = parseIntWithNull(LARGE_STORAGE_PROVIDER.get("lastBackupMillis"))
 
   const backupString = () => "## Main Editor\n" + mainEditorTextarea.value + "\n" + "## Replace Rules\n" + replaceRulesTextarea.value + "\n" + "## Prompt\n" + transcriptionPromptEditor.value;
 
@@ -62,15 +64,16 @@ namespace Backups {
   }
 
   export const offerBackupIfItsTime = () => {
-    const now = new Date()
+    const nowMillis = new Date().getTime()
     const hoursElapsed =
-        lastBackupDate ?
-        (now.getTime() - lastBackupDate.getTime()) / 1000 / 3600
+        lastBackupMillis ?
+        (nowMillis - lastBackupMillis) / 1000 / 3600
         : Infinity
 
-    if (lastBackupDate === null || hoursElapsed > hoursBetweenBackups) {
+    if (lastBackupMillis === null || hoursElapsed > hoursBetweenBackups) {
       backupDownload()
-      lastBackupDate = new Date()
+      lastBackupMillis = nowMillis
+      LARGE_STORAGE_PROVIDER.set("lastBackupMillis",lastBackupMillis.toString())
     }
   }
 
