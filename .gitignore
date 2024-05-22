@@ -1,2 +1,3 @@
 /node_modules
+/HelgeUtils # They are in their own repo. Checking them in here too would lead to WTFs.
 # /generated must NOT be ignored, because the js files are published from the git repo!
