@@ -191,6 +191,21 @@ export var HelgeUtils;
             }
           `)()(args);
     })(Eval = HelgeUtils.Eval || (HelgeUtils.Eval = {}));
+    let Conversions;
+    (function (Conversions) {
+        Conversions.parseIntWithNull = (input) => {
+            if (input == null) {
+                return null;
+            }
+            return parseInt(input);
+        };
+        Conversions.parseFloatWithNull = (input) => {
+            if (input == null) {
+                return null;
+            }
+            return parseFloat(input);
+        };
+    })(Conversions = HelgeUtils.Conversions || (HelgeUtils.Conversions = {}));
     let Types;
     (function (Types) {
         class TypeException extends Error {

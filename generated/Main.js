@@ -37,20 +37,22 @@ if (RUN_TESTS)
 HtmlUtils.ErrorHandling.ExceptionHandlers.installGlobalDefault();
 var Backups;
 (function (Backups) {
-    let lastBackupDate = null;
+    var parseIntWithNull = HelgeUtils.Conversions.parseIntWithNull;
+    let lastBackupMillis = parseIntWithNull(LARGE_STORAGE_PROVIDER.get("lastBackupMillis"));
     const backupString = () => "## Main Editor\n" + mainEditorTextarea.value + "\n" + "## Replace Rules\n" + replaceRulesTextarea.value + "\n" + "## Prompt\n" + transcriptionPromptEditor.value;
     // ############## backupDownload ##############
     const backupDownload = () => {
         downloadOffer(backupString(), "whisper-scratchpad-backup.txt");
     };
     Backups.offerBackupIfItsTime = () => {
-        const now = new Date();
-        const hoursElapsed = lastBackupDate ?
-            (now.getTime() - lastBackupDate.getTime()) / 1000 / 3600
+        const nowMillis = new Date().getTime();
+        const hoursElapsed = lastBackupMillis ?
+            (nowMillis - lastBackupMillis) / 1000 / 3600
             : Infinity;
-        if (lastBackupDate === null || hoursElapsed > hoursBetweenBackups) {
+        if (lastBackupMillis === null || hoursElapsed > hoursBetweenBackups) {
             backupDownload();
-            lastBackupDate = new Date();
+            lastBackupMillis = nowMillis;
+            LARGE_STORAGE_PROVIDER.set("lastBackupMillis", lastBackupMillis.toString());
         }
     };
     Backups.wireBackupMenuItems = () => {

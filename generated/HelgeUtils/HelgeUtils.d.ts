@@ -118,6 +118,10 @@ export declare namespace HelgeUtils {
          * */
         const executeFunctionBody: (functionBodyStr: string, args: object) => any;
     }
+    export namespace Conversions {
+        const parseIntWithNull: (input: string | null) => number | null;
+        const parseFloatWithNull: (input: string | null) => number | null;
+    }
     export namespace Types {
         class TypeException extends Error {
             constructor(message: string);
