@@ -2,7 +2,8 @@ import {HtmlUtils} from "./HelgeUtils/HtmlUtils.js"
 import {Log, mainEditor} from "./Main.js"
 import {CurrentNote} from "./CurrentNote.js"
 import buttonWithId = HtmlUtils.NeverNull.buttonWithId;
-import alertAutoDismissing = HtmlUtils.alertAutoDismissing;
+
+import showToast = HtmlUtils.showToast;
 
 const clipboard = navigator.clipboard
 
@@ -27,7 +28,7 @@ export const createCutFunction =
             }
           }
           mainEditor.save()
-          alertAutoDismissing("The current note was cut out.")
+          showToast("The current note was cut out.")
           mainEditorTextarea.focus()
         }).catch(Log.error)
   }

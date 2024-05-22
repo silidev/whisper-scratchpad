@@ -991,6 +991,7 @@ export var HelgeUtils;
          * Anki search: ((re:\bdu\b) OR (re:\bdir\b) OR (re:\bdein\b) OR (re:\bdeiner\b) OR (re:\bdeines\b)) -tag:du
          */
         Misc.du2ich = (input) => {
+            // noinspection SpellCheckingInspection
             const wordEndReplacements = [
                 ["abstellst", "abstelle"],
                 ["aktivierst", "aktiviere"],
@@ -1523,7 +1524,7 @@ export var HelgeUtils;
                 ["bearbeitetest", "bearbeitete"],
                 ["bedanktest", "bedankte"],
                 ["bedecktest", "bedeckte"],
-                ["bedenktest", "bedenkte"],
+                ["bedachest", "bedachte"],
                 ["bedeutetest", "bedeutete"],
                 ["bedientest", "bediente"],
                 ["beeinflusstest", "beeinflusste"],
@@ -2016,6 +2017,7 @@ export var HelgeUtils;
                 ["probiertest", "probierte"],
             ];
             // delete:         ["dachtest"     ,"dachte"               ],
+            // noinspection SpellCheckingInspection
             const wholeWordReplacements = [
                 ["betreutest", "betreute"],
                 ["betreust", "betreue"],
