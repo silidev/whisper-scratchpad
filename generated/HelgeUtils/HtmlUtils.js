@@ -6,6 +6,8 @@
 // Merge help: The following lines must be commented out in the Project Anca:
 import { HelgeUtils } from "./HelgeUtils.js";
 // Merge help end
+// ***** Config ****
+const globalDefaultExceptionHandler = true;
 const MAX_COOKIE_SIZE = 4096;
 export var HtmlUtils;
 (function (HtmlUtils) {
@@ -27,6 +29,9 @@ export var HtmlUtils;
                     return true; // Prevents the default browser error handling
                 };
             };
+            if (globalDefaultExceptionHandler) {
+                ExceptionHandlers.installGlobalDefault();
+            }
         })(ExceptionHandlers = ErrorHandling.ExceptionHandlers || (ErrorHandling.ExceptionHandlers = {}));
         /**
          * This outputs aggressively on top of everything to the user. */
