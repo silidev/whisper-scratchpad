@@ -9,6 +9,20 @@
 // import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js";
 export var HelgeUtils;
 (function (HelgeUtils) {
+    /** Config */
+    /** You can turn this off for debugging */
+    let Config;
+    (function (Config) {
+        let Debug;
+        (function (Debug) {
+            Debug.debug = false;
+            let Misc;
+            (function (Misc) {
+                /** Misc because these are used in the Misc namespace below */
+                Misc.bufferFunctionReturnValues = Debug.debug;
+            })(Misc = Debug.Misc || (Debug.Misc = {}));
+        })(Debug = Config.Debug || (Config.Debug = {}));
+    })(Config = HelgeUtils.Config || (HelgeUtils.Config = {}));
     let Exceptions;
     (function (Exceptions) {
         /**
@@ -227,9 +241,15 @@ export var HelgeUtils;
             SafeConversions.toBoolean = (resultAsString) => {
                 switch (resultAsString.trim()) {
                     case "t":
+                    case "tt":
                     case "true":
+                    case "on":
+                    case "ON":
                         return true;
                     case "f":
+                    case "ff":
+                    case "off":
+                    case "OFF":
                     case "false":
                         return false;
                     default:
@@ -960,7 +980,7 @@ export var HelgeUtils;
         const cache = new Map();
         return (...args) => {
             const key = JSON.stringify(args);
-            if (cache.has(key)) {
+            if (cache.has(key) && Config.Debug.Misc.bufferFunctionReturnValues) {
                 return cache.get(key);
             }
             else {

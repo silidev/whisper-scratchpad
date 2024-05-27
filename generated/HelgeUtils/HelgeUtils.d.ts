@@ -7,6 +7,17 @@
  *
  * Copyright by Helge Tobias Kosuch 2024 */
 export declare namespace HelgeUtils {
+    /** Config */
+    /** You can turn this off for debugging */
+    export namespace Config {
+        namespace Debug {
+            let debug: boolean;
+            namespace Misc {
+                /** Misc because these are used in the Misc namespace below */
+                let bufferFunctionReturnValues: boolean;
+            }
+        }
+    }
     export namespace Exceptions {
         /**
          * This is just a template to inline. */
