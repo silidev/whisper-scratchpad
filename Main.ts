@@ -48,8 +48,6 @@ const RUN_TESTS = (() => {
 if (RUN_TESTS) console.log("RUN_TESTS is true. This is only for " +
     "testing. Set it to false in production.")
 
-HtmlUtils.ErrorHandling.ExceptionHandlers.installGlobalDefault()
-
 namespace Backups {
 
   import parseIntWithNull = HelgeUtils.Conversions.parseIntWithNull
