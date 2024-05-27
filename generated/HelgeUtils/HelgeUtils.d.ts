@@ -336,14 +336,15 @@ export declare namespace HelgeUtils {
          *
          * Throws an exception if the input is null.
          *
+         * This canNOT be replace with the ?? in assignments.
+         *
          * I use "strictNullChecks": true to avoid bugs. Therefore, I need this
          * where that is too strict.
          *
          * Use example:
          * const elementWithId = (id: string) =>
-         *   nullFilter<HTMLElement>(HtmlUtils.elementWithId, id)
-         */
-        const nullFilter: <T>(f: Function, ...parameters: any) => T;
+         *   nullFilter<HTMLElement>(HtmlUtils.elementWithId(id)) */
+        const nullFilter: <U>(input: U | null) => U;
         /**
          * Converts "Du" to "Ich" and "Dein" to "Mein" and so on.
          *

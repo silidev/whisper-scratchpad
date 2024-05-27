@@ -36,14 +36,16 @@ export declare namespace HtmlUtils {
     const textAreaWithId: (id: string) => HTMLTextAreaElement | null;
     const inputElementWithId: (id: string) => HTMLInputElement | null;
     /** These never return null. Instead, they throw a runtime error. */
-    namespace NeverNull {
-        /** @see NeverNull */
+    namespace NullFiltered {
+        /** @see NullFiltered */
+        const querySelector: (element: DocumentFragment, selector: string) => HTMLElement;
+        /** @see NullFiltered */
         const elementWithId: (id: string) => HTMLElement;
-        /** @see NeverNull */
+        /** @see NullFiltered */
         const buttonWithId: (id: string) => HTMLButtonElement;
-        /** @see NeverNull */
+        /** @see NullFiltered */
         const inputElementWithId: (id: string) => HTMLInputElement;
-        /** @see NeverNull */
+        /** @see NullFiltered */
         const textAreaWithId: (id: string) => HTMLTextAreaElement;
     }
     namespace TextAreas {
@@ -116,6 +118,8 @@ export declare namespace HtmlUtils {
              * @throws Error if the local storage item value exceeds 5242880 characters.*/
             const set: (itemName: string, itemValue: string) => void;
             const get: (name: string) => string | null;
+            const getNumber: (name: string) => number | null;
+            function setNumber(name: string, value: number): void;
         }
         namespace Cookies {
             /**

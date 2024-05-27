@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2024 by Helge Tobias Kosuch
  */
-var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
+var textAreaWithId = HtmlUtils.NullFiltered.textAreaWithId;
 var blinkFast = HtmlUtils.blinkFast;
 var blinkSlow = HtmlUtils.blinkSlow;
 var escapeRegExp = HelgeUtils.Strings.escapeRegExp;
-var elementWithId = HtmlUtils.NeverNull.elementWithId;
+var elementWithId = HtmlUtils.NullFiltered.elementWithId;
 var TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
 var Cookies = HtmlUtils.BrowserStorage.Cookies;
 var downloadOffer = HtmlUtils.Misc.downloadOffer;
@@ -163,17 +163,17 @@ const setPageBackgroundColor = (backgroundColor) => {
 };
 export var UiFunctions;
 (function (UiFunctions) {
-    var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
+    var buttonWithId = HtmlUtils.NullFiltered.buttonWithId;
     UiFunctions.runTests = () => {
         Buttons.runTests();
     };
     let Buttons;
     (function (Buttons) {
         // eslint-disable-next-line no-shadow
-        var buttonWithId = HtmlUtils.NeverNull.buttonWithId;
-        var inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
+        var buttonWithId = HtmlUtils.NullFiltered.buttonWithId;
+        var inputElementWithId = HtmlUtils.NullFiltered.inputElementWithId;
         // eslint-disable-next-line no-shadow
-        var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
+        var textAreaWithId = HtmlUtils.NullFiltered.textAreaWithId;
         // eslint-disable-next-line no-shadow
         var Cookies = HtmlUtils.BrowserStorage.Cookies;
         var addKeyboardShortcuts = Misc.addKeyboardShortcuts;
@@ -1038,7 +1038,7 @@ const getApiSelectedInUi = () => apiSelector.value;
 const getLanguageSelectedInUi = () => (languageSelector.value);
 export var Log;
 (function (Log) {
-    var inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
+    var inputElementWithId = HtmlUtils.NullFiltered.inputElementWithId;
     const MAX_LOG_LEN = 10000;
     // noinspection JSUnusedGlobalSymbols
     Log.turnOnLogging = () => {
@@ -1078,7 +1078,7 @@ export var Log;
 var ReplaceByRules;
 (function (ReplaceByRules) {
     // Overload signatures
-    var inputElementWithId = HtmlUtils.NeverNull.inputElementWithId;
+    var inputElementWithId = HtmlUtils.NullFiltered.inputElementWithId;
     function withUiLog(rules, subject, wholeWords = false, preserveCase = false) {
         const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked;
         const retVal = HelgeUtils.ReplaceByRules.replaceByRules(subject, rules, wholeWords, logFlag, preserveCase);

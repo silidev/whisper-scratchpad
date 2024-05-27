@@ -983,21 +983,18 @@ export var HelgeUtils;
          *
          * Throws an exception if the input is null.
          *
+         * This canNOT be replace with the ?? in assignments.
+         *
          * I use "strictNullChecks": true to avoid bugs. Therefore, I need this
          * where that is too strict.
          *
          * Use example:
          * const elementWithId = (id: string) =>
-         *   nullFilter<HTMLElement>(HtmlUtils.elementWithId, id)
-         */
-        // eslint-disable-next-line @typescript-eslint/ban-types
-        Misc.nullFilter = (f, ...parameters) => {
-            const untypedNullFilter = (input) => {
-                if (input === null)
-                    throw new Error(`Unexpected null value.`);
-                return input;
-            };
-            return untypedNullFilter(f(...parameters));
+         *   nullFilter<HTMLElement>(HtmlUtils.elementWithId(id)) */
+        Misc.nullFilter = (input) => {
+            if (input === null)
+                throw new Error(`Unexpected null value.`);
+            return input;
         };
         // noinspection SpellCheckingInspection
         /**

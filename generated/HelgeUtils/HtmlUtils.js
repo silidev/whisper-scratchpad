@@ -85,23 +85,27 @@ export var HtmlUtils;
     HtmlUtils.textAreaWithId = HtmlUtils.elementWithId;
     HtmlUtils.inputElementWithId = HtmlUtils.elementWithId;
     /** These never return null. Instead, they throw a runtime error. */
-    let NeverNull;
-    (function (NeverNull) {
+    let NullFiltered;
+    (function (NullFiltered) {
         var nullFilter = HelgeUtils.Misc.nullFilter;
-        /** @see NeverNull */
-        NeverNull.elementWithId = (id) => nullFilter(HtmlUtils.elementWithId, id);
-        /** @see NeverNull */
-        NeverNull.buttonWithId = (id) => nullFilter(HtmlUtils.buttonWithId, id);
-        /** @see NeverNull */
-        NeverNull.inputElementWithId = (id) => nullFilter(HtmlUtils.inputElementWithId, id);
-        /** @see NeverNull */
-        NeverNull.textAreaWithId = (id) => nullFilter(HtmlUtils.textAreaWithId, id);
-    })(NeverNull = HtmlUtils.NeverNull || (HtmlUtils.NeverNull = {}));
+        /** @see NullFiltered */
+        NullFiltered.querySelector = (element, selector) => {
+            return nullFilter(element.querySelector(selector));
+        };
+        /** @see NullFiltered */
+        NullFiltered.elementWithId = (id) => nullFilter(HtmlUtils.elementWithId(id));
+        /** @see NullFiltered */
+        NullFiltered.buttonWithId = (id) => nullFilter(HtmlUtils.buttonWithId(id));
+        /** @see NullFiltered */
+        NullFiltered.inputElementWithId = (id) => nullFilter(HtmlUtils.inputElementWithId(id));
+        /** @see NullFiltered */
+        NullFiltered.textAreaWithId = (id) => nullFilter(HtmlUtils.textAreaWithId(id));
+    })(NullFiltered = HtmlUtils.NullFiltered || (HtmlUtils.NullFiltered = {}));
     // Merge help: The following lines must be commented out in the Project Anca:
     let TextAreas;
     (function (TextAreas) {
         // eslint-disable-next-line no-shadow
-        var textAreaWithId = HtmlUtils.NeverNull.textAreaWithId;
+        var textAreaWithId = HtmlUtils.NullFiltered.textAreaWithId;
         var trimExceptASingleNewlineAtTheEnd = HelgeUtils.Strings.trimExceptASingleNewlineAtTheEnd;
         var Strings = HelgeUtils.Strings;
         var escapeRegExp = HelgeUtils.Strings.escapeRegExp;
@@ -289,6 +293,7 @@ export var HtmlUtils;
         })(LocalStorageVerified = BrowserStorage.LocalStorageVerified || (BrowserStorage.LocalStorageVerified = {}));
         let LocalStorage;
         (function (LocalStorage) {
+            var parseFloatWithNull = HelgeUtils.Conversions.parseFloatWithNull;
             /**
              * Sets a local storage item with the given name and value.
              *
@@ -299,6 +304,13 @@ export var HtmlUtils;
             LocalStorage.get = (name) => {
                 return localStorage.getItem(name);
             };
+            LocalStorage.getNumber = (name) => {
+                return parseFloatWithNull(LocalStorage.get(name));
+            };
+            function setNumber(name, value) {
+                LocalStorage.set(name, value.toString());
+            }
+            LocalStorage.setNumber = setNumber;
         })(LocalStorage = BrowserStorage.LocalStorage || (BrowserStorage.LocalStorage = {}));
         let Cookies;
         (function (Cookies) {
@@ -419,7 +431,7 @@ export var HtmlUtils;
         /** https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper */
         let WcMenu;
         (function (WcMenu) {
-            var elementWithId = NeverNull.elementWithId;
+            var elementWithId = NullFiltered.elementWithId;
             WcMenu.close = (menuHeadingId) => {
                 elementWithId(menuHeadingId).dispatchEvent(new CustomEvent('rootMenuClose'));
             };
