@@ -26,7 +26,8 @@ export var HtmlUtils;
                      don't know why. The debugger didn't help. This shouldn't
                      happen anyway. Don't invest more time. */
                     );
-                    return true; // Prevents the default browser error handling
+                    throw "Was handled by installGlobalDefault";
+                    // return true; // Prevents the default browser error handling
                 };
             };
             if (globalDefaultExceptionHandler) {
@@ -58,16 +59,10 @@ export var HtmlUtils;
         };
     })(ErrorHandling = HtmlUtils.ErrorHandling || (HtmlUtils.ErrorHandling = {}));
     var printError = HtmlUtils.ErrorHandling.printError;
-    HtmlUtils.createFragmentFromHtml = (html) => {
-        const fragment = document.createDocumentFragment();
-        {
-            const tempElement = document.createElement('div');
-            tempElement.innerHTML = html;
-            while (tempElement.firstChild) {
-                fragment.appendChild(tempElement.firstChild);
-            }
-        }
-        return fragment;
+    HtmlUtils.createDivElementFromHtml = (html) => {
+        const tempElement = document.createElement('div');
+        tempElement.innerHTML = html;
+        return tempElement;
     };
     // ########## Blinking fast and slow ##########
     // https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow
@@ -304,10 +299,19 @@ export var HtmlUtils;
              *
              * @throws Error if the local storage item value exceeds 5242880 characters.*/
             LocalStorage.set = (itemName, itemValue) => {
-                localStorage.setItem(itemName, itemValue);
+                localStorage.setItem(itemName, JSON.stringify(itemValue));
             };
             LocalStorage.get = (name) => {
-                return localStorage.getItem(name);
+                const item = localStorage.getItem(name);
+                if (item) {
+                    try {
+                        return JSON.parse(item);
+                    }
+                    catch (e) {
+                        console.error('Error parsing JSON from localStorage', e);
+                    }
+                }
+                return null;
             };
             LocalStorage.getNumber = (name) => {
                 return parseFloatWithNull(LocalStorage.get(name));
@@ -491,15 +495,15 @@ export var HtmlUtils;
     HtmlUtils.showToast = (message, duration = 500) => {
         const alertBox = document.createElement("div");
         alertBox.style.cssText = `
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: lightblue;
-    padding: 10px;
-    border-radius: 5px;
-    z-index: 999999;
-  `;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: lightblue;
+      padding: 10px;
+      border-radius: 5px;
+      z-index: 999999;
+    `;
         alertBox.textContent = message;
         document.body.appendChild(alertBox);
         setTimeout(() => {

@@ -18,7 +18,7 @@ export declare namespace HtmlUtils {
          * This outputs gently. Might not be seen by the user.  */
         const printDebug: (str: string, parentElement?: HTMLElement) => void;
     }
-    const createFragmentFromHtml: (html: string) => DocumentFragment;
+    const createDivElementFromHtml: (html: string) => HTMLDivElement;
     /**
      * .blinkingFast {
      *  animation: blink 1s linear infinite
@@ -109,15 +109,15 @@ export declare namespace HtmlUtils {
         }
         namespace LocalStorageVerified {
             const set: (itemName: string, itemValue: string) => void;
-            const get: (name: string) => string | null;
+            const get: (name: string) => unknown;
         }
         namespace LocalStorage {
             /**
              * Sets a local storage item with the given name and value.
              *
              * @throws Error if the local storage item value exceeds 5242880 characters.*/
-            const set: (itemName: string, itemValue: string) => void;
-            const get: (name: string) => string | null;
+            const set: (itemName: string, itemValue: unknown) => void;
+            const get: <T>(name: string) => T | null;
             const getNumber: (name: string) => number | null;
             function setNumber(name: string, value: number): void;
         }
