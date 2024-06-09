@@ -279,10 +279,10 @@ export var HtmlUtils;
         var parseFloatWithNull = HelgeUtils.Conversions.parseFloatWithNull;
         class BsProviderExtras {
             setJsonStringified(itemName, itemValue) {
-                localStorage.setItem(itemName, JSON.stringify(itemValue));
+                this.setString(itemName, JSON.stringify(itemValue));
             }
             getAndJsonParse(name) {
-                const item = localStorage.getItem(name);
+                const item = this.getString(name);
                 if (item) {
                     try {
                         return JSON.parse(item);
@@ -294,7 +294,14 @@ export var HtmlUtils;
                 return null;
             }
             ;
+            getNumber(name) {
+                return parseFloatWithNull(this.getString(name));
+            }
+            setNumber(name, value) {
+                this.setString(name, value.toString());
+            }
         }
+        BrowserStorage.BsProviderExtras = BsProviderExtras;
         class LocalStorage extends BsProviderExtras {
             isAvailable() {
                 return true;
@@ -312,12 +319,6 @@ export var HtmlUtils;
             }
             getString(name) {
                 return localStorage.getItem(name);
-            }
-            getNumber(name) {
-                return parseFloatWithNull(this.getString(name));
-            }
-            setNumber(name, value) {
-                this.setString(name, value.toString());
             }
         }
         BrowserStorage.LocalStorage = LocalStorage;

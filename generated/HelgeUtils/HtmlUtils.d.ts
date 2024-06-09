@@ -103,7 +103,7 @@ export declare namespace HtmlUtils {
         const releaseMicrophone: (stream: MediaStream) => void;
     }
     namespace BrowserStorage {
-        export interface BsProvider {
+        interface BsProvider {
             isAvailable(): boolean;
             clear(): void;
             getAllKeys(): Object;
@@ -111,12 +111,18 @@ export declare namespace HtmlUtils {
             getString(itemName: string): string | null;
             getAndJsonParse<T>(name: string): T | null;
             setJsonStringified(itemName: string, itemValue: unknown): void;
+            getNumber(name: string): number | null;
+            setNumber(name: string, value: number): void;
         }
-        class BsProviderExtras {
+        abstract class BsProviderExtras {
+            abstract setString(itemName: string, itemValue: string): void;
+            abstract getString(name: string): string | null;
             setJsonStringified(itemName: string, itemValue: unknown): void;
             getAndJsonParse<T>(name: string): T | null;
+            getNumber(name: string): number | null;
+            setNumber(name: string, value: number): void;
         }
-        export class LocalStorage extends BsProviderExtras implements BsProvider {
+        class LocalStorage extends BsProviderExtras implements BsProvider {
             isAvailable(): boolean;
             clear(): void;
             getAllKeys(): Object;
@@ -124,10 +130,8 @@ export declare namespace HtmlUtils {
              * @throws Error if the local storage item value exceeds 5242880 characters.*/
             setString(itemName: string, itemValue: string): void;
             getString(name: string): string | null;
-            getNumber(name: string): number | null;
-            setNumber(name: string, value: number): void;
         }
-        export namespace Cookies {
+        namespace Cookies {
             /**
              * Sets a cookie with the given name and value.
              *
@@ -135,7 +139,6 @@ export declare namespace HtmlUtils {
             const set: (cookieName: string, cookieValue: string) => void;
             const get: (name: string) => string | null;
         }
-        export {};
     }
     /**
      * Known "problems": If the user clicks on the button multiple times in a row, the checkmark will
