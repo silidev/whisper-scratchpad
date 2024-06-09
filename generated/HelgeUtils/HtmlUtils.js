@@ -196,7 +196,7 @@ export var HtmlUtils;
             textAreaWithId(id).addEventListener('input', () => {
                 const text = textAreaWithId(id).value;
                 try {
-                    storage.set(storageKey, text);
+                    storage.setString(storageKey, text);
                 }
                 catch (e) {
                     handleError(`${storageKey}: Text area content exceeds 4095 characters. Content will not be saved.`);
@@ -276,50 +276,12 @@ export var HtmlUtils;
     })(Media = HtmlUtils.Media || (HtmlUtils.Media = {}));
     let BrowserStorage;
     (function (BrowserStorage) {
-        class LocalStorageVerified {
-            lsProvider = new LocalStorage();
-            isAvailable() {
-                return true;
-            }
-            clear() {
-                this.lsProvider.clear();
-            }
-            getAllKeys() {
-                throw new Error("Method not implemented.");
-            }
-            set(itemName, itemValue) {
-                this.lsProvider.set(itemName, itemValue);
-                // console.log(`itemValue: ${itemValue.length}`)
-                const reread = this.lsProvider.get(itemName);
-                // console.log(`reread: ${reread?.length}`)
-                if (reread !== itemValue) {
-                    throw new Error(`Local storage item "${itemName}"'s was not stored correctly!`);
-                }
-            }
-            get(key) {
-                return this.lsProvider.get(key);
-            }
-        }
-        BrowserStorage.LocalStorageVerified = LocalStorageVerified;
         var parseFloatWithNull = HelgeUtils.Conversions.parseFloatWithNull;
-        class LocalStorage {
-            isAvailable() {
-                return true;
-            }
-            clear() {
-                localStorage.clear();
-            }
-            getAllKeys() {
-                throw new Error("Method not implemented.");
-            }
-            /**
-             * Sets a local storage item with the given name and value.
-             *
-             * @throws Error if the local storage item value exceeds 5242880 characters.*/
-            set(itemName, itemValue) {
+        class BsProviderExtras {
+            setJsonStringified(itemName, itemValue) {
                 localStorage.setItem(itemName, JSON.stringify(itemValue));
             }
-            get(name) {
+            getAndJsonParse(name) {
                 const item = localStorage.getItem(name);
                 if (item) {
                     try {
@@ -332,11 +294,30 @@ export var HtmlUtils;
                 return null;
             }
             ;
+        }
+        class LocalStorage extends BsProviderExtras {
+            isAvailable() {
+                return true;
+            }
+            clear() {
+                localStorage.clear();
+            }
+            getAllKeys() {
+                throw new Error("Method not implemented.");
+            }
+            /** Sets a local storage item with the given name and value.
+             * @throws Error if the local storage item value exceeds 5242880 characters.*/
+            setString(itemName, itemValue) {
+                localStorage.setItem(itemName, itemValue);
+            }
+            getString(name) {
+                return localStorage.getItem(name);
+            }
             getNumber(name) {
-                return parseFloatWithNull(this.get(name));
+                return parseFloatWithNull(this.getString(name));
             }
             setNumber(name, value) {
-                this.set(name, value.toString());
+                this.setString(name, value.toString());
             }
         }
         BrowserStorage.LocalStorage = LocalStorage;

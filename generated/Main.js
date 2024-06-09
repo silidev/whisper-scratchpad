@@ -12,7 +12,7 @@ var downloadOffer = HtmlUtils.Misc.downloadOffer;
 var TextAreas = HtmlUtils.TextAreas;
 import { ctrlYRedo, ctrlZUndo } from "./DontInspect.js";
 import { HelgeUtils } from "./HelgeUtils/HelgeUtils.js";
-import { INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERIFY_LARGE_STORAGE, VERSION, WHERE_TO_INSERT_AT, WHISPER_TEMPERATURE } from "./Config.js";
+import { INSERT_EDITOR_INTO_PROMPT, NEW_NOTE_DELIMITER, VERSION, WHERE_TO_INSERT_AT, WHISPER_TEMPERATURE } from "./Config.js";
 import { createCutFunction } from "./CutButton.js";
 import { HtmlUtils } from "./HelgeUtils/HtmlUtils.js";
 import { CurrentNote } from "./CurrentNote.js";
@@ -20,9 +20,7 @@ import { CurrentNote } from "./CurrentNote.js";
 import { download, generateCsv, mkConfig } from "../node_modules/export-to-csv/output/index.js";
 var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
 const hoursBetweenBackups = 24;
-const LARGE_STORAGE_PROVIDER = VERIFY_LARGE_STORAGE
-    ? new HtmlUtils.BrowserStorage.LocalStorageVerified()
-    : new HtmlUtils.BrowserStorage.LocalStorage();
+const LARGE_STORAGE_PROVIDER = new HtmlUtils.BrowserStorage.LocalStorage();
 export const OPEN_CLOZE_STR = "{{c1::";
 export const CLOSE_CLOZE_STR = "}},,";
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
@@ -37,7 +35,7 @@ if (RUN_TESTS)
 var Backups;
 (function (Backups) {
     var parseIntWithNull = HelgeUtils.Conversions.parseIntWithNull;
-    let lastBackupMillis = parseIntWithNull(LARGE_STORAGE_PROVIDER.get("lastBackupMillis"));
+    let lastBackupMillis = parseIntWithNull(LARGE_STORAGE_PROVIDER.getString("lastBackupMillis"));
     const backupString = () => "## Main Editor\n" + mainEditorTextarea.value + "\n" + "## Replace Rules\n" + replaceRulesTextarea.value + "\n" + "## Prompt\n" + transcriptionPromptEditor.value;
     // ############## backupDownload ##############
     const backupDownload = () => {
@@ -51,7 +49,7 @@ var Backups;
         if (lastBackupMillis === null || hoursElapsed > hoursBetweenBackups) {
             backupDownload();
             lastBackupMillis = nowMillis;
-            LARGE_STORAGE_PROVIDER.set("lastBackupMillis", lastBackupMillis.toString());
+            LARGE_STORAGE_PROVIDER.setString("lastBackupMillis", lastBackupMillis.toString());
         }
     };
     Backups.wireBackupMenuItems = () => {
@@ -101,7 +99,7 @@ export var mainEditor;
     };
     mainEditor.save = () => {
         try {
-            LARGE_STORAGE_PROVIDER.set("editorText", textAreaWithId("mainEditorTextarea").value);
+            LARGE_STORAGE_PROVIDER.setString("editorText", textAreaWithId("mainEditorTextarea").value);
         }
         catch (e) {
             alert("Error saving editor text: " + e);
@@ -1018,7 +1016,7 @@ const replaceRulesTextarea = document.getElementById('replaceRulesTextarea');
 const replaceRulesTextareaWrapper = new TextAreaWrapper(replaceRulesTextarea);
 suppressUnusedWarning(replaceRulesTextareaWrapper);
 const saveReplaceRules = () => {
-    LARGE_STORAGE_PROVIDER.set("replaceRules", textAreaWithId("replaceRulesTextarea").value);
+    LARGE_STORAGE_PROVIDER.setString("replaceRules", textAreaWithId("replaceRulesTextarea").value);
     // Delete old cookie:
     Cookies.set("replaceRules", ""); // This used to be stored in a cookie.
 };
@@ -1102,7 +1100,7 @@ const setApiKeyCookie = (apiKey) => {
 };
 export const loadFormData = () => {
     const getLocalStorageOrCookie = (key) => {
-        return LARGE_STORAGE_PROVIDER.get(key) ?? Cookies.get(key);
+        return LARGE_STORAGE_PROVIDER.getString(key) ?? Cookies.get(key);
     };
     mainEditorTextarea.value = getLocalStorageOrCookie("editorText") ?? "";
     transcriptionPromptEditor.value = getLocalStorageOrCookie("prompt") ?? "";

@@ -16,7 +16,6 @@ import {HelgeUtils} from "./HelgeUtils/HelgeUtils.js"
 import {
   INSERT_EDITOR_INTO_PROMPT,
   NEW_NOTE_DELIMITER,
-  VERIFY_LARGE_STORAGE,
   VERSION,
   WHERE_TO_INSERT_AT,
   WHISPER_TEMPERATURE
@@ -31,10 +30,7 @@ import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
 
 const hoursBetweenBackups = 24
 
-const LARGE_STORAGE_PROVIDER =
-    VERIFY_LARGE_STORAGE
-        ? new HtmlUtils.BrowserStorage.LocalStorageVerified()
-        : new HtmlUtils.BrowserStorage.LocalStorage()
+const LARGE_STORAGE_PROVIDER = new HtmlUtils.BrowserStorage.LocalStorage()
 
 export const OPEN_CLOZE_STR = "{{c1::";
 export const CLOSE_CLOZE_STR = "}},,";
@@ -52,7 +48,7 @@ namespace Backups {
 
   import parseIntWithNull = HelgeUtils.Conversions.parseIntWithNull
 
-  let lastBackupMillis = parseIntWithNull(LARGE_STORAGE_PROVIDER.get("lastBackupMillis"))
+  let lastBackupMillis = parseIntWithNull(LARGE_STORAGE_PROVIDER.getString("lastBackupMillis"))
 
   const backupString = () => "## Main Editor\n" + mainEditorTextarea.value + "\n" + "## Replace Rules\n" + replaceRulesTextarea.value + "\n" + "## Prompt\n" + transcriptionPromptEditor.value;
 
@@ -71,7 +67,7 @@ namespace Backups {
     if (lastBackupMillis === null || hoursElapsed > hoursBetweenBackups) {
       backupDownload()
       lastBackupMillis = nowMillis
-      LARGE_STORAGE_PROVIDER.set("lastBackupMillis",lastBackupMillis.toString())
+      LARGE_STORAGE_PROVIDER.setString("lastBackupMillis",lastBackupMillis.toString())
     }
   }
 
@@ -131,7 +127,7 @@ export namespace mainEditor {
 
   export const save = () => {
     try {
-      LARGE_STORAGE_PROVIDER.set("editorText", textAreaWithId("mainEditorTextarea").value);
+      LARGE_STORAGE_PROVIDER.setString("editorText", textAreaWithId("mainEditorTextarea").value);
     } catch (e) {
       alert("Error saving editor text: " + e)
     }
@@ -1165,7 +1161,7 @@ const replaceRulesTextareaWrapper = new TextAreaWrapper(replaceRulesTextarea)
 suppressUnusedWarning(replaceRulesTextareaWrapper)
 
 const saveReplaceRules = () => {
-  LARGE_STORAGE_PROVIDER.set("replaceRules",
+  LARGE_STORAGE_PROVIDER.setString("replaceRules",
       textAreaWithId("replaceRulesTextarea").value)
   // Delete old cookie:
   Cookies.set("replaceRules", ""); // This used to be stored in a cookie.
@@ -1266,7 +1262,7 @@ const setApiKeyCookie = (apiKey: string) => {
 
 export const loadFormData = () => {
   const getLocalStorageOrCookie = (key: string) => {
-    return LARGE_STORAGE_PROVIDER.get<string>(key) ?? Cookies.get(key)
+    return LARGE_STORAGE_PROVIDER.getString(key) ?? Cookies.get(key)
   }
 
   mainEditorTextarea.value = getLocalStorageOrCookie("editorText")??""
