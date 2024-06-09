@@ -33,8 +33,8 @@ const hoursBetweenBackups = 24
 
 const LARGE_STORAGE_PROVIDER =
     VERIFY_LARGE_STORAGE
-        ? HtmlUtils.BrowserStorage.LocalStorageVerified
-        : HtmlUtils.BrowserStorage.LocalStorage;
+        ? new HtmlUtils.BrowserStorage.LocalStorageVerified()
+        : new HtmlUtils.BrowserStorage.LocalStorage()
 
 export const OPEN_CLOZE_STR = "{{c1::";
 export const CLOSE_CLOZE_STR = "}},,";
@@ -1266,7 +1266,7 @@ const setApiKeyCookie = (apiKey: string) => {
 
 export const loadFormData = () => {
   const getLocalStorageOrCookie = (key: string) => {
-    return LARGE_STORAGE_PROVIDER.get(key) ?? Cookies.get(key)
+    return LARGE_STORAGE_PROVIDER.get<string>(key) ?? Cookies.get(key)
   }
 
   mainEditorTextarea.value = getLocalStorageOrCookie("editorText")??""

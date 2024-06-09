@@ -21,8 +21,8 @@ import { download, generateCsv, mkConfig } from "../node_modules/export-to-csv/o
 var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
 const hoursBetweenBackups = 24;
 const LARGE_STORAGE_PROVIDER = VERIFY_LARGE_STORAGE
-    ? HtmlUtils.BrowserStorage.LocalStorageVerified
-    : HtmlUtils.BrowserStorage.LocalStorage;
+    ? new HtmlUtils.BrowserStorage.LocalStorageVerified()
+    : new HtmlUtils.BrowserStorage.LocalStorage();
 export const OPEN_CLOZE_STR = "{{c1::";
 export const CLOSE_CLOZE_STR = "}},,";
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */

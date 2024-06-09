@@ -276,32 +276,50 @@ export var HtmlUtils;
     })(Media = HtmlUtils.Media || (HtmlUtils.Media = {}));
     let BrowserStorage;
     (function (BrowserStorage) {
-        let LocalStorageVerified;
-        (function (LocalStorageVerified) {
-            LocalStorageVerified.set = (itemName, itemValue) => {
-                LocalStorage.set(itemName, itemValue);
+        class LocalStorageVerified {
+            lsProvider = new LocalStorage();
+            isAvailable() {
+                return true;
+            }
+            clear() {
+                this.lsProvider.clear();
+            }
+            getAllKeys() {
+                throw new Error("Method not implemented.");
+            }
+            set(itemName, itemValue) {
+                this.lsProvider.set(itemName, itemValue);
                 // console.log(`itemValue: ${itemValue.length}`)
-                const reread = LocalStorage.get(itemName);
+                const reread = this.lsProvider.get(itemName);
                 // console.log(`reread: ${reread?.length}`)
                 if (reread !== itemValue) {
                     throw new Error(`Local storage item "${itemName}"'s was not stored correctly!`);
                 }
-            };
-            LocalStorageVerified.get = (name) => {
-                return LocalStorage.get(name);
-            };
-        })(LocalStorageVerified = BrowserStorage.LocalStorageVerified || (BrowserStorage.LocalStorageVerified = {}));
-        let LocalStorage;
-        (function (LocalStorage) {
-            var parseFloatWithNull = HelgeUtils.Conversions.parseFloatWithNull;
+            }
+            get(key) {
+                return this.lsProvider.get(key);
+            }
+        }
+        BrowserStorage.LocalStorageVerified = LocalStorageVerified;
+        var parseFloatWithNull = HelgeUtils.Conversions.parseFloatWithNull;
+        class LocalStorage {
+            isAvailable() {
+                return true;
+            }
+            clear() {
+                localStorage.clear();
+            }
+            getAllKeys() {
+                throw new Error("Method not implemented.");
+            }
             /**
              * Sets a local storage item with the given name and value.
              *
              * @throws Error if the local storage item value exceeds 5242880 characters.*/
-            LocalStorage.set = (itemName, itemValue) => {
+            set(itemName, itemValue) {
                 localStorage.setItem(itemName, JSON.stringify(itemValue));
-            };
-            LocalStorage.get = (name) => {
+            }
+            get(name) {
                 const item = localStorage.getItem(name);
                 if (item) {
                     try {
@@ -312,15 +330,16 @@ export var HtmlUtils;
                     }
                 }
                 return null;
-            };
-            LocalStorage.getNumber = (name) => {
-                return parseFloatWithNull(LocalStorage.get(name));
-            };
-            function setNumber(name, value) {
-                LocalStorage.set(name, value.toString());
             }
-            LocalStorage.setNumber = setNumber;
-        })(LocalStorage = BrowserStorage.LocalStorage || (BrowserStorage.LocalStorage = {}));
+            ;
+            getNumber(name) {
+                return parseFloatWithNull(this.get(name));
+            }
+            setNumber(name, value) {
+                this.set(name, value.toString());
+            }
+        }
+        BrowserStorage.LocalStorage = LocalStorage;
         let Cookies;
         (function (Cookies) {
             /**
