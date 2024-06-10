@@ -105,7 +105,8 @@ export declare namespace HtmlUtils {
     namespace BrowserStorage {
         interface BsProvider {
             isAvailable(): boolean;
-            clear(): void;
+            /** Delete all entries whose keys begin with prefix */
+            clear(prefix: string): void;
             getAllKeys(): Object;
             setString(key: string, value: string): void;
             getString(itemName: string): string | null;
@@ -124,7 +125,7 @@ export declare namespace HtmlUtils {
         }
         class LocalStorage extends BsProviderExtras implements BsProvider {
             isAvailable(): boolean;
-            clear(): void;
+            clear(prefix: string): void;
             getAllKeys(): Object;
             /** Sets a local storage item with the given name and value.
              * @throws Error if the local storage item value exceeds 5242880 characters.*/

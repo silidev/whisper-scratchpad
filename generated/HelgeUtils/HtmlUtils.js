@@ -6,6 +6,7 @@
 // Merge help: The following lines must be commented out in the Project Anca:
 import { HelgeUtils } from "./HelgeUtils.js";
 // Merge help end
+var parseFloatWithNull = HelgeUtils.Conversions.parseFloatWithNull;
 // ***** Config ****
 const globalDefaultExceptionHandler = true;
 const MAX_COOKIE_SIZE = 4096;
@@ -276,7 +277,6 @@ export var HtmlUtils;
     })(Media = HtmlUtils.Media || (HtmlUtils.Media = {}));
     let BrowserStorage;
     (function (BrowserStorage) {
-        var parseFloatWithNull = HelgeUtils.Conversions.parseFloatWithNull;
         class BsProviderExtras {
             setJsonStringified(itemName, itemValue) {
                 this.setString(itemName, JSON.stringify(itemValue));
@@ -306,11 +306,15 @@ export var HtmlUtils;
             isAvailable() {
                 return true;
             }
-            clear() {
-                localStorage.clear();
+            clear(prefix) {
+                Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith(prefix)) {
+                        localStorage.removeItem(key);
+                    }
+                });
             }
             getAllKeys() {
-                throw new Error("Method not implemented.");
+                return Object.keys(localStorage);
             }
             /** Sets a local storage item with the given name and value.
              * @throws Error if the local storage item value exceeds 5242880 characters.*/
