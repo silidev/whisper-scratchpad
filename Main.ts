@@ -38,13 +38,13 @@ export const OPEN_CLOZE_STR = "{{c1::";
 export const CLOSE_CLOZE_STR = "}},,";
 
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
-const RUN_TESTS = (() => {
-  const d = new Date().toISOString().slice(0, 10);
-  return HtmlUtils.isMsWindows()
-      && (d === "2024-02-21" || d === "2024-02-22");
-})()
-if (RUN_TESTS) console.log("RUN_TESTS is true. This is only for " +
-    "testing. Set it to false in production.")
+const RUN_TESTS = true
+// (() => {
+//   const d = new Date().toISOString().slice(0, 10);
+//   return HtmlUtils.isMsWindows()
+//       && (d === "2024-06-11" || d === "2024-02-22");
+// })()
+if (RUN_TESTS) console.log("RUN_TESTS is true.")
 
 namespace Backups {
 
@@ -219,7 +219,6 @@ export namespace UiFunctions {
     import offerBackupIfItsTime = Backups.offerBackupIfItsTime;
 
     export const runTests = () => {
-      NonWordChars.runTests()
     }
 
     // ############## searchReplaceRules ##############
@@ -399,8 +398,7 @@ export namespace UiFunctions {
 
     /** This is WIP, not working. */
     export namespace NonWordChars {
-
-      import assert = HelgeUtils.Tests.assert;
+      import assertEquals = HelgeUtils.Tests.assertEquals
 
       /** The inputStr until and including the word under the cursor
 
@@ -456,10 +454,8 @@ export namespace UiFunctions {
 
 
       export const runTests = () => {
-        const equals = (a: any, b: any) => a[0]==b[0] && a[1]==b[1]
-
-        assert(equals(replaceWithSpace("t.bra.",1),["t Bra.",1]))
-        assert(equals(replaceWithSpace("t.bra.",4),["t Bra.",1]))
+        assertEquals(replaceWithSpace("t.bra.",1),["t Bra.",1])
+        assertEquals(replaceWithSpace("t.bra.",4),["t Bra.",1])
       }
 
       export const replaceWithSpaceInMainEditor = () => {
@@ -1241,10 +1237,10 @@ namespace ReplaceByRules {
     const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked
     const retVal = HelgeUtils.ReplaceByRules.replaceByRules(subject, rules, wholeWords, logFlag, preserveCase)
     Log.writeIfLoggingEnabled(retVal.log)
-    return capitalizeSentences(
-        retVal.resultingText)
+    return (capitalizeSentences
+        (retVal.resultingText)
+    )
   }
-
   // noinspection JSUnusedGlobalSymbols
   export function onlyWholeWordsWithUiLog(rules: string, subject: string) {
     return withUiLog(rules, subject, true)
@@ -1290,6 +1286,7 @@ const mayRunTests = () => {
   if (!RUN_TESTS) return
   HelgeUtils.runTests()
   UiFunctions.runTests()
+  DelimiterSearch.runTests()
 }
 
 const init = () => {

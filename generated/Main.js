@@ -26,14 +26,14 @@ const LARGE_STORAGE_PROVIDER = new HtmlUtils.BrowserStorage.LocalStorage();
 export const OPEN_CLOZE_STR = "{{c1::";
 export const CLOSE_CLOZE_STR = "}},,";
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
-const RUN_TESTS = (() => {
-    const d = new Date().toISOString().slice(0, 10);
-    return HtmlUtils.isMsWindows()
-        && (d === "2024-02-21" || d === "2024-02-22");
-})();
+const RUN_TESTS = true;
+// (() => {
+//   const d = new Date().toISOString().slice(0, 10);
+//   return HtmlUtils.isMsWindows()
+//       && (d === "2024-06-11" || d === "2024-02-22");
+// })()
 if (RUN_TESTS)
-    console.log("RUN_TESTS is true. This is only for " +
-        "testing. Set it to false in production.");
+    console.log("RUN_TESTS is true.");
 var Backups;
 (function (Backups) {
     var parseIntWithNull = HelgeUtils.Conversions.parseIntWithNull;
@@ -179,7 +179,6 @@ export var UiFunctions;
         var showToast = HtmlUtils.showToast;
         var offerBackupIfItsTime = Backups.offerBackupIfItsTime;
         Buttons.runTests = () => {
-            NonWordChars.runTests();
         };
         // ############## searchReplaceRules ##############
         let ReplaceRulesSearch;
@@ -353,7 +352,7 @@ export var UiFunctions;
         /** This is WIP, not working. */
         let NonWordChars;
         (function (NonWordChars) {
-            var assert = HelgeUtils.Tests.assert;
+            var assertEquals = HelgeUtils.Tests.assertEquals;
             /** The inputStr until and including the word under the cursor
       
               In educational style to make it as easy as possible to understand.
@@ -401,9 +400,8 @@ export var UiFunctions;
             //   return [s, c]
             // }
             NonWordChars.runTests = () => {
-                const equals = (a, b) => a[0] == b[0] && a[1] == b[1];
-                assert(equals(NonWordChars.replaceWithSpace("t.bra.", 1), ["t Bra.", 1]));
-                assert(equals(NonWordChars.replaceWithSpace("t.bra.", 4), ["t Bra.", 1]));
+                assertEquals(NonWordChars.replaceWithSpace("t.bra.", 1), ["t Bra.", 1]);
+                assertEquals(NonWordChars.replaceWithSpace("t.bra.", 4), ["t Bra.", 1]);
             };
             NonWordChars.replaceWithSpaceInMainEditor = () => {
                 const [newText, cursor] = NonWordChars.replaceWithSpace(mainEditorTextarea.value, mainEditorTextarea.selectionStart);
@@ -1081,7 +1079,7 @@ var ReplaceByRules;
         const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked;
         const retVal = HelgeUtils.ReplaceByRules.replaceByRules(subject, rules, wholeWords, logFlag, preserveCase);
         Log.writeIfLoggingEnabled(retVal.log);
-        return capitalizeSentences(retVal.resultingText);
+        return (capitalizeSentences(retVal.resultingText));
     }
     ReplaceByRules.withUiLog = withUiLog;
     // noinspection JSUnusedGlobalSymbols
@@ -1125,6 +1123,7 @@ const mayRunTests = () => {
         return;
     HelgeUtils.runTests();
     UiFunctions.runTests();
+    DelimiterSearch.runTests();
 };
 const init = () => {
     mayRunTests();

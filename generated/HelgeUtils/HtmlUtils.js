@@ -351,6 +351,43 @@ export var HtmlUtils;
                 return null;
             };
         })(Cookies = BrowserStorage.Cookies || (BrowserStorage.Cookies = {}));
+        let Misc;
+        (function (Misc) {
+            /** A mode whose status is stored to a persistent storage, e. g. localStorage. */
+            class StoredMode {
+                _storage;
+                _enabled;
+                /** key used in storage */
+                _enabledKey;
+                constructor(_storageKey, _storage) {
+                    this._storage = _storage;
+                    this._enabledKey = _storageKey + '._enabled';
+                    this._enabled = _storage.getAndJsonParse(this._enabledKey) ?? false;
+                }
+                enabled = () => {
+                    return this._enabled;
+                };
+                saveToStorage = () => {
+                    this._storage.setJsonStringified(this._enabledKey, this._enabled);
+                };
+                enable = () => {
+                    this._enabled = true;
+                    this.saveToStorage();
+                };
+                disable = () => {
+                    this._enabled = false;
+                    this.saveToStorage();
+                };
+                toggle = () => {
+                    if (this._enabled) {
+                        this.disable();
+                        return;
+                    }
+                    this.enable();
+                };
+            }
+            Misc.StoredMode = StoredMode;
+        })(Misc = BrowserStorage.Misc || (BrowserStorage.Misc = {}));
     })(BrowserStorage = HtmlUtils.BrowserStorage || (HtmlUtils.BrowserStorage = {}));
     /**
      * Known "problems": If the user clicks on the button multiple times in a row, the checkmark will
@@ -495,16 +532,17 @@ export var HtmlUtils;
      * Search keywords: "toast message", "toast notification", "toast popup", "alert"
      *
      * @param message
-     * @param duration
+     * @param durationMs
      */
-    HtmlUtils.showToast = (message, duration = 500) => {
+    HtmlUtils.showToast = (message, durationMs = 1000) => {
         const alertBox = document.createElement("div");
         alertBox.style.cssText = `
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translateX(-50%);
-      background-color: lightblue;
+      background-color: darkblue;
+      color: white;
       padding: 10px;
       border-radius: 5px;
       z-index: 999999;
@@ -513,7 +551,7 @@ export var HtmlUtils;
         document.body.appendChild(alertBox);
         setTimeout(() => {
             alertBox.remove();
-        }, duration);
+        }, durationMs);
     };
     /**
      * @deprecated Use showToast instead. */

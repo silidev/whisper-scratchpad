@@ -140,6 +140,21 @@ export declare namespace HtmlUtils {
             const set: (cookieName: string, cookieValue: string) => void;
             const get: (name: string) => string | null;
         }
+        namespace Misc {
+            /** A mode whose status is stored to a persistent storage, e. g. localStorage. */
+            class StoredMode {
+                private _storage;
+                private _enabled;
+                /** key used in storage */
+                private readonly _enabledKey;
+                constructor(_storageKey: string, _storage: BsProvider);
+                enabled: () => boolean;
+                private saveToStorage;
+                enable: () => void;
+                disable: () => void;
+                toggle: () => void;
+            }
+        }
     }
     /**
      * Known "problems": If the user clicks on the button multiple times in a row, the checkmark will
@@ -207,12 +222,12 @@ export declare namespace HtmlUtils {
      * Search keywords: "toast message", "toast notification", "toast popup", "alert"
      *
      * @param message
-     * @param duration
+     * @param durationMs
      */
-    const showToast: (message: string, duration?: number) => void;
+    const showToast: (message: string, durationMs?: number) => void;
     /**
      * @deprecated Use showToast instead. */
-    const alertAutoDismissing: (message: string, duration?: number) => void;
+    const alertAutoDismissing: (message: string, durationMs?: number) => void;
     namespace Misc {
         /** Offers a string or blob as a file to the user for download. */
         const downloadOffer: (input: string | Blob, filename: string) => void;

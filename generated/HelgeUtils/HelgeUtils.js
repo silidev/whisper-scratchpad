@@ -352,7 +352,7 @@ export var HelgeUtils;
                         || `Assertion failed: Actual: ${actualShortened}, but expected ${expectedShortened}`);
                 }
                 throw new Error(message
-                    || `Assertion failed: Actual: ${expectedJson}, but expected ${actualJson}`);
+                    || `Assertion failed: Actual: ${actualJson}, but expected ${expectedJson}`);
             }
         };
     })(Tests = HelgeUtils.Tests || (HelgeUtils.Tests = {}));
