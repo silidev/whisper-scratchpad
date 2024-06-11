@@ -571,6 +571,7 @@ export var HelgeUtils;
             Strings.testRemoveEmojis();
             Strings.Whitespace.runTests();
             DelimiterSearch.runTests();
+            Strings.testCapitalizeSentences();
         };
         Strings.removeEmojis = (str) => str.replace(/[^a-zA-Z0-9 _\-üöäÜÖÄß]/g, "");
         Strings.testRemoveEmojis = () => {
@@ -664,6 +665,29 @@ export var HelgeUtils;
                 return input;
             }
             return input.replace(/(\r\n|\n|\r)/gm, "");
+        };
+        Strings.capitalizeSentences = (text) => {
+            const sentenceEndings = /([.!?]\s|\.$)/g;
+            const parts = text.split(sentenceEndings)
+                // Remove all falsy values:
+                .filter(// The function Boolean converts everything to boolean:
+            Boolean);
+            return parts
+                .map((part, index) => {
+                if (index % 2 === 0) {
+                    return part.charAt(0).toUpperCase() + part.slice(1);
+                }
+                else {
+                    return part;
+                }
+            })
+                .join('');
+        };
+        Strings.testCapitalizeSentences = () => {
+            const text = "this is a sentence. here is another one! yet another sentence? and one more.";
+            const expectedOutput = "This is a sentence. Here is another one! Yet another sentence? And one more.";
+            const result = Strings.capitalizeSentences(text);
+            console.assert(result === expectedOutput, `Test failed: ${result} != ${expectedOutput}`);
         };
     })(Strings = HelgeUtils.Strings || (HelgeUtils.Strings = {}));
     /* Returns a random element of the given array */

@@ -269,6 +269,8 @@ export declare namespace HelgeUtils {
         const isBlank: (input: string) => boolean;
         const isNotBlank: (input: string) => boolean;
         const removeLineBreaks: (input: string) => string;
+        const capitalizeSentences: (text: string) => string;
+        const testCapitalizeSentences: () => void;
     }
     export const randomElementOf: <T>(arr: T[]) => T;
     export const runTests: () => void;

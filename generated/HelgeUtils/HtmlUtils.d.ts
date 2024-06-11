@@ -217,5 +217,6 @@ export declare namespace HtmlUtils {
         /** Offers a string or blob as a file to the user for download. */
         const downloadOffer: (input: string | Blob, filename: string) => void;
         const loadScript: (srcUri: string, afterLoad: ((this: GlobalEventHandlers, ev: Event) => any) | null) => void;
+        const removeBySelector: (doc: Document, selector: string) => void;
     }
 }

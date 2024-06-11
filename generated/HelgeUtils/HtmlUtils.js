@@ -546,6 +546,9 @@ export var HtmlUtils;
             script.onload = afterLoad;
             document.head.appendChild(script);
         };
+        Misc.removeBySelector = (doc, selector) => {
+            doc.querySelectorAll(selector).forEach(e => e.remove());
+        };
     })(Misc = HtmlUtils.Misc || (HtmlUtils.Misc = {}));
 })(HtmlUtils || (HtmlUtils = {}));
 //# sourceMappingURL=HtmlUtils.js.map
