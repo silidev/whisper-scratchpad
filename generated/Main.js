@@ -19,6 +19,7 @@ import { CurrentNote } from "./CurrentNote.js";
 //@ts-expect-error
 import { download, generateCsv, mkConfig } from "../node_modules/export-to-csv/output/index.js";
 var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
+var capitalizeSentences = HelgeUtils.Strings.capitalizeSentences;
 const hoursBetweenBackups = 24;
 const LARGE_STORAGE_PROVIDER = new HtmlUtils.BrowserStorage.LocalStorage();
 export const OPEN_CLOZE_STR = "{{c1::";
@@ -1080,7 +1081,7 @@ var ReplaceByRules;
         const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked;
         const retVal = HelgeUtils.ReplaceByRules.replaceByRules(subject, rules, wholeWords, logFlag, preserveCase);
         Log.writeIfLoggingEnabled(retVal.log);
-        return retVal.resultingText;
+        return capitalizeSentences(retVal.resultingText);
     }
     ReplaceByRules.withUiLog = withUiLog;
     // noinspection JSUnusedGlobalSymbols

@@ -27,6 +27,7 @@ import {CurrentNote} from "./CurrentNote.js";
 //@ts-expect-error
 import {download, generateCsv, mkConfig} from "../node_modules/export-to-csv/output/index.js";
 import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
+import capitalizeSentences = HelgeUtils.Strings.capitalizeSentences
 
 const hoursBetweenBackups = 24
 
@@ -1241,7 +1242,8 @@ namespace ReplaceByRules {
     const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked
     const retVal = HelgeUtils.ReplaceByRules.replaceByRules(subject, rules, wholeWords, logFlag, preserveCase)
     Log.writeIfLoggingEnabled(retVal.log)
-    return retVal.resultingText
+    return capitalizeSentences(
+        retVal.resultingText)
   }
 
   // noinspection JSUnusedGlobalSymbols
