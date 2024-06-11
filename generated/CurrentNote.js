@@ -1,6 +1,5 @@
-import { HelgeUtils } from "./HelgeUtils/HelgeUtils.js";
 import { NEW_NOTE_DELIMITER } from "./Config.js";
-var DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
+import { DelimiterSearch } from './HelgeUtils/DelimiterSearch.js';
 /** The current note is the text between the two newNoteDelimiters. */
 export class CurrentNote {
     mainEditorTextarea;
@@ -8,11 +7,11 @@ export class CurrentNote {
         this.mainEditorTextarea = mainEditorTextarea;
     }
     leftIndex() {
-        return new HelgeUtils.Strings.DelimiterSearch(NEW_NOTE_DELIMITER)
+        return new DelimiterSearch(NEW_NOTE_DELIMITER)
             .leftIndex(this.mainEditorTextarea.value, this.mainEditorTextarea.selectionStart);
     }
     rightIndex() {
-        return new HelgeUtils.Strings.DelimiterSearch(NEW_NOTE_DELIMITER)
+        return new DelimiterSearch(NEW_NOTE_DELIMITER)
             .rightIndex(this.mainEditorTextarea.value, this.mainEditorTextarea.selectionStart);
     }
     text() {

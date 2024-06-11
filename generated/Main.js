@@ -20,6 +20,7 @@ import { CurrentNote } from "./CurrentNote.js";
 import { download, generateCsv, mkConfig } from "../node_modules/export-to-csv/output/index.js";
 var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
 var capitalizeSentences = HelgeUtils.Strings.capitalizeSentences;
+import { DelimiterSearch } from './HelgeUtils/DelimiterSearch.js';
 const hoursBetweenBackups = 24;
 const LARGE_STORAGE_PROVIDER = new HtmlUtils.BrowserStorage.LocalStorage();
 export const OPEN_CLOZE_STR = "{{c1::";
@@ -432,7 +433,6 @@ export var UiFunctions;
         FixClipboard.addButtonEventListener();
         let Media;
         (function (Media) {
-            var DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
             let mediaRecorder;
             let audioChunks = [];
             let audioBlob;

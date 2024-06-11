@@ -28,6 +28,7 @@ import {CurrentNote} from "./CurrentNote.js";
 import {download, generateCsv, mkConfig} from "../node_modules/export-to-csv/output/index.js";
 import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
 import capitalizeSentences = HelgeUtils.Strings.capitalizeSentences
+import {DelimiterSearch} from './HelgeUtils/DelimiterSearch.js'
 
 const hoursBetweenBackups = 24
 
@@ -499,8 +500,6 @@ export namespace UiFunctions {
     FixClipboard.addButtonEventListener()
 
     export namespace Media {
-
-      import DelimiterSearch = HelgeUtils.Strings.DelimiterSearch;
 
       let mediaRecorder: MediaRecorder
       let audioChunks: Blob[] = []
