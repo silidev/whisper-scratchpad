@@ -38,15 +38,15 @@ export declare namespace HtmlUtils {
     /** These never return null. Instead, they throw a runtime error. */
     namespace NullFiltered {
         /** @see NullFiltered */
-        const querySelector: (element: DocumentFragment, selector: string) => HTMLElement;
+        const querySelectorNte: (element: DocumentFragment, selector: string) => HTMLElement;
         /** @see NullFiltered */
-        const elementWithId: (id: string) => HTMLElement;
+        const elementWithIdNte: (id: string) => HTMLElement;
         /** @see NullFiltered */
-        const buttonWithId: (id: string) => HTMLButtonElement;
+        const buttonWithIdNte: (id: string) => HTMLButtonElement;
         /** @see NullFiltered */
-        const inputElementWithId: (id: string) => HTMLInputElement;
+        const inputElementWithIdNte: (id: string) => HTMLInputElement;
         /** @see NullFiltered */
-        const textAreaWithId: (id: string) => HTMLTextAreaElement;
+        const textAreaWithIdNte: (id: string) => HTMLTextAreaElement;
     }
     namespace TextAreas {
         class TextAreaWrapper {

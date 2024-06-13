@@ -90,23 +90,23 @@ export var HtmlUtils;
     (function (NullFiltered) {
         var nullFilter = HelgeUtils.Misc.nullFilter;
         /** @see NullFiltered */
-        NullFiltered.querySelector = (element, selector) => {
+        NullFiltered.querySelectorNte = (element, selector) => {
             return nullFilter(element.querySelector(selector));
         };
         /** @see NullFiltered */
-        NullFiltered.elementWithId = (id) => nullFilter(HtmlUtils.elementWithId(id));
+        NullFiltered.elementWithIdNte = (id) => nullFilter(HtmlUtils.elementWithId(id));
         /** @see NullFiltered */
-        NullFiltered.buttonWithId = (id) => nullFilter(HtmlUtils.buttonWithId(id));
+        NullFiltered.buttonWithIdNte = (id) => nullFilter(HtmlUtils.buttonWithId(id));
         /** @see NullFiltered */
-        NullFiltered.inputElementWithId = (id) => nullFilter(HtmlUtils.inputElementWithId(id));
+        NullFiltered.inputElementWithIdNte = (id) => nullFilter(HtmlUtils.inputElementWithId(id));
         /** @see NullFiltered */
-        NullFiltered.textAreaWithId = (id) => nullFilter(HtmlUtils.textAreaWithId(id));
+        NullFiltered.textAreaWithIdNte = (id) => nullFilter(HtmlUtils.textAreaWithId(id));
     })(NullFiltered = HtmlUtils.NullFiltered || (HtmlUtils.NullFiltered = {}));
     // Merge help: The following lines must be commented out in the Project Anca:
     let TextAreas;
     (function (TextAreas) {
         // eslint-disable-next-line no-shadow
-        var textAreaWithId = HtmlUtils.NullFiltered.textAreaWithId;
+        var textAreaWithId = HtmlUtils.NullFiltered.textAreaWithIdNte;
         var trimExceptASingleNewlineAtTheEnd = HelgeUtils.Strings.trimExceptASingleNewlineAtTheEnd;
         var Strings = HelgeUtils.Strings;
         var escapeRegExp = HelgeUtils.Strings.escapeRegExp;
@@ -482,7 +482,7 @@ export var HtmlUtils;
         /** https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper */
         let WcMenu;
         (function (WcMenu) {
-            var elementWithId = NullFiltered.elementWithId;
+            var elementWithId = NullFiltered.elementWithIdNte;
             WcMenu.close = (menuHeadingId) => {
                 elementWithId(menuHeadingId).dispatchEvent(new CustomEvent('rootMenuClose'));
             };

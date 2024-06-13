@@ -1,7 +1,7 @@
 import {HtmlUtils} from "./HelgeUtils/HtmlUtils.js"
 import {Log, mainEditor} from "./Main.js"
 import {CurrentNote} from "./CurrentNote.js"
-import buttonWithId = HtmlUtils.NullFiltered.buttonWithId;
+import buttonWithId = HtmlUtils.NullFiltered.buttonWithIdNte;
 
 import showToast = HtmlUtils.showToast;
 

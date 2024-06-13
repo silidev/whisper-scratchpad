@@ -186,6 +186,35 @@ export declare namespace HelgeUtils {
      */
     export const removeElements: (input: any[], toBeRemoved: any) => string[];
     export namespace Strings {
+        namespace Regexes {
+            /**
+             * Replaces parts of a string based on a list of regular expression and replacement pairs.
+             *
+             * @param {string} input - The input string to be processed.
+             * @param {Array.<[RegExp, string]>} replacementList - An array of arrays, where each inner array contains
+             *        a RegExp object and a string.
+             *        and the corresponding strings are used to replace those matches.
+             *
+             * @returns {string} - The processed string with replacements applied.
+             *
+             * The function first pads the input string with spaces at the beginning and end.
+             * Then, for each pair in the replacement list, it performs a replacement operation using the given regular
+             *     expression and replacement string. Finally, it ensures the first and last characters of the resulting
+             *     string are spaces, removes them, and returns the modified string.
+             *
+             * Example:
+             * ```
+             * const input = "example text";
+             * const replacementList = [
+             *   [/\bexample\b/g, "sample"],
+             *   [/\btext\b/g, "string"]
+             * ];
+             * const result = replaceFromList(input, replacementList);
+             * console.log(result); // Outputs: "sample string"
+             * ```
+             */
+            const replaceFromListAndTrim: (input: string, replacementList: [RegExp | string, string][]) => string;
+        }
         /** Returns the index of the first occurrence of the given regex in the string.
          *
          * @param input
