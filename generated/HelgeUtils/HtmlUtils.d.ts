@@ -35,17 +35,19 @@ export declare namespace HtmlUtils {
     const buttonWithId: (id: string) => HTMLButtonElement | null;
     const textAreaWithId: (id: string) => HTMLTextAreaElement | null;
     const inputElementWithId: (id: string) => HTMLInputElement | null;
-    /** These never return null. Instead, they throw a runtime error. */
-    namespace NullFiltered {
-        /** @see NullFiltered */
+    /** These never return null. Instead, they throw a runtime error.
+     * "Nte" in the name means "null throws exception".
+     * Old name: NullFilter */
+    namespace NullThrowsException {
+        /** @see NullThrowsException */
         const querySelectorNte: (element: DocumentFragment, selector: string) => HTMLElement;
-        /** @see NullFiltered */
+        /** @see NullThrowsException */
         const elementWithIdNte: (id: string) => HTMLElement;
-        /** @see NullFiltered */
+        /** @see NullThrowsException */
         const buttonWithIdNte: (id: string) => HTMLButtonElement;
-        /** @see NullFiltered */
+        /** @see NullThrowsException */
         const inputElementWithIdNte: (id: string) => HTMLInputElement;
-        /** @see NullFiltered */
+        /** @see NullThrowsException */
         const textAreaWithIdNte: (id: string) => HTMLTextAreaElement;
     }
     namespace TextAreas {

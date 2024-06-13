@@ -2,11 +2,11 @@
  * Copyright (c) 2024 by Helge Tobias Kosuch
  */
 
-import textAreaWithId = HtmlUtils.NullFiltered.textAreaWithIdNte;
+import textAreaWithId = HtmlUtils.NullThrowsException.textAreaWithIdNte;
 import blinkFast = HtmlUtils.blinkFast;
 import blinkSlow = HtmlUtils.blinkSlow;
 import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
-import elementWithId = HtmlUtils.NullFiltered.elementWithIdNte;
+import elementWithId = HtmlUtils.NullThrowsException.elementWithIdNte;
 import TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
 import Cookies = HtmlUtils.BrowserStorage.Cookies;
 import downloadOffer = HtmlUtils.Misc.downloadOffer;
@@ -200,7 +200,7 @@ const setPageBackgroundColor = (backgroundColor: string) => {
 };
 
 export namespace UiFunctions {
-  import buttonWithId = HtmlUtils.NullFiltered.buttonWithIdNte;
+  import buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte;
 
   export const runTests = () => {
     Buttons.runTests()
@@ -208,10 +208,10 @@ export namespace UiFunctions {
 
   export namespace Buttons {
     // eslint-disable-next-line no-shadow
-    import buttonWithId = HtmlUtils.NullFiltered.buttonWithIdNte;
-    import inputElementWithId = HtmlUtils.NullFiltered.inputElementWithIdNte;
+    import buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte;
+    import inputElementWithId = HtmlUtils.NullThrowsException.inputElementWithIdNte;
     // eslint-disable-next-line no-shadow
-    import textAreaWithId = HtmlUtils.NullFiltered.textAreaWithIdNte;
+    import textAreaWithId = HtmlUtils.NullThrowsException.textAreaWithIdNte;
     // eslint-disable-next-line no-shadow
     import Cookies = HtmlUtils.BrowserStorage.Cookies;
     import addKeyboardShortcuts = Misc.addKeyboardShortcuts;
@@ -1180,7 +1180,7 @@ const getApiSelectedInUi = () => (apiSelector.value as HelgeUtils.Transcription.
 const getLanguageSelectedInUi = () => (languageSelector.value)
 
 export namespace Log {
-  import inputElementWithId = HtmlUtils.NullFiltered.inputElementWithIdNte;
+  import inputElementWithId = HtmlUtils.NullThrowsException.inputElementWithIdNte;
   const MAX_LOG_LEN = 10000
 
   // noinspection JSUnusedGlobalSymbols
@@ -1226,7 +1226,7 @@ export namespace Log {
 
 namespace ReplaceByRules {
   // Overload signatures
-  import inputElementWithId = HtmlUtils.NullFiltered.inputElementWithIdNte;
+  import inputElementWithId = HtmlUtils.NullThrowsException.inputElementWithIdNte;
 
   export function withUiLog(rules: string, subject: string): string
   export function withUiLog(rules: string, subject: string, wholeWords: boolean): string

@@ -213,7 +213,7 @@ export declare namespace HelgeUtils {
              * console.log(result); // Outputs: "sample string"
              * ```
              */
-            const replaceFromListAndTrim: (input: string, replacementList: [RegExp | string, string][]) => string;
+            const replaceFromList: (input: string, replacementList: [RegExp | string, string][]) => string;
         }
         /** Returns the index of the first occurrence of the given regex in the string.
          *
@@ -278,7 +278,7 @@ export declare namespace HelgeUtils {
         const isBlank: (input: string) => boolean;
         const isNotBlank: (input: string) => boolean;
         const removeLineBreaks: (input: string) => string;
-        const capitalizeSentences: (text: string) => string;
+        const capitalizeSentences: (text: string, sentenceEndRegex?: RegExp) => string;
         const testCapitalizeSentences: () => void;
     }
     export const randomElementOf: <T>(arr: T[]) => T;

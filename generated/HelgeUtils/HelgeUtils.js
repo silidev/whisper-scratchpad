@@ -451,12 +451,12 @@ export var HelgeUtils;
              * console.log(result); // Outputs: "sample string"
              * ```
              */
-            Regexes.replaceFromListAndTrim = (input, replacementList) => {
-                let result = " " + input + " ";
+            Regexes.replaceFromList = (input, replacementList) => {
+                let result = input;
                 replacementList.forEach(([regex, replacement]) => {
                     result = result.replace(regex, replacement);
                 });
-                return result.trim();
+                return result;
             };
         })(Regexes = Strings.Regexes || (Strings.Regexes = {}));
         /** Returns the index of the first occurrence of the given regex in the string.
@@ -623,8 +623,8 @@ export var HelgeUtils;
             }
             return input.replace(/(\r\n|\n|\r)/gm, "");
         };
-        Strings.capitalizeSentences = (text) => {
-            const sentenceEndings = /([.!?]\s|\.$)/g;
+        Strings.capitalizeSentences = (text, sentenceEndRegex = /([.!:?]\s)|(\{\{c\d\d::)/g) => {
+            const sentenceEndings = sentenceEndRegex;
             const parts = text.split(sentenceEndings)
                 // Remove all falsy values:
                 .filter(// The function Boolean converts everything to boolean:

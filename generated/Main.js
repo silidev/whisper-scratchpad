@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2024 by Helge Tobias Kosuch
  */
-var textAreaWithId = HtmlUtils.NullFiltered.textAreaWithIdNte;
+var textAreaWithId = HtmlUtils.NullThrowsException.textAreaWithIdNte;
 var blinkFast = HtmlUtils.blinkFast;
 var blinkSlow = HtmlUtils.blinkSlow;
 var escapeRegExp = HelgeUtils.Strings.escapeRegExp;
-var elementWithId = HtmlUtils.NullFiltered.elementWithIdNte;
+var elementWithId = HtmlUtils.NullThrowsException.elementWithIdNte;
 var TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
 var Cookies = HtmlUtils.BrowserStorage.Cookies;
 var downloadOffer = HtmlUtils.Misc.downloadOffer;
@@ -162,17 +162,17 @@ const setPageBackgroundColor = (backgroundColor) => {
 };
 export var UiFunctions;
 (function (UiFunctions) {
-    var buttonWithId = HtmlUtils.NullFiltered.buttonWithIdNte;
+    var buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte;
     UiFunctions.runTests = () => {
         Buttons.runTests();
     };
     let Buttons;
     (function (Buttons) {
         // eslint-disable-next-line no-shadow
-        var buttonWithId = HtmlUtils.NullFiltered.buttonWithIdNte;
-        var inputElementWithId = HtmlUtils.NullFiltered.inputElementWithIdNte;
+        var buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte;
+        var inputElementWithId = HtmlUtils.NullThrowsException.inputElementWithIdNte;
         // eslint-disable-next-line no-shadow
-        var textAreaWithId = HtmlUtils.NullFiltered.textAreaWithIdNte;
+        var textAreaWithId = HtmlUtils.NullThrowsException.textAreaWithIdNte;
         // eslint-disable-next-line no-shadow
         var Cookies = HtmlUtils.BrowserStorage.Cookies;
         var addKeyboardShortcuts = Misc.addKeyboardShortcuts;
@@ -1034,7 +1034,7 @@ const getApiSelectedInUi = () => apiSelector.value;
 const getLanguageSelectedInUi = () => (languageSelector.value);
 export var Log;
 (function (Log) {
-    var inputElementWithId = HtmlUtils.NullFiltered.inputElementWithIdNte;
+    var inputElementWithId = HtmlUtils.NullThrowsException.inputElementWithIdNte;
     const MAX_LOG_LEN = 10000;
     // noinspection JSUnusedGlobalSymbols
     Log.turnOnLogging = () => {
@@ -1074,7 +1074,7 @@ export var Log;
 var ReplaceByRules;
 (function (ReplaceByRules) {
     // Overload signatures
-    var inputElementWithId = HtmlUtils.NullFiltered.inputElementWithIdNte;
+    var inputElementWithId = HtmlUtils.NullThrowsException.inputElementWithIdNte;
     function withUiLog(rules, subject, wholeWords = false, preserveCase = false) {
         const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked;
         const retVal = HelgeUtils.ReplaceByRules.replaceByRules(subject, rules, wholeWords, logFlag, preserveCase);

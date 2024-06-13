@@ -1,7 +1,7 @@
 import { HtmlUtils } from "./HelgeUtils/HtmlUtils.js";
 import { Log, mainEditor } from "./Main.js";
 import { CurrentNote } from "./CurrentNote.js";
-var buttonWithId = HtmlUtils.NullFiltered.buttonWithIdNte;
+var buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte;
 var showToast = HtmlUtils.showToast;
 const clipboard = navigator.clipboard;
 export const createCutFunction = (mainEditorTextarea, prefix = "", postfix = "") => {

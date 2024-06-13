@@ -85,28 +85,30 @@ export var HtmlUtils;
     HtmlUtils.buttonWithId = HtmlUtils.elementWithId;
     HtmlUtils.textAreaWithId = HtmlUtils.elementWithId;
     HtmlUtils.inputElementWithId = HtmlUtils.elementWithId;
-    /** These never return null. Instead, they throw a runtime error. */
-    let NullFiltered;
-    (function (NullFiltered) {
+    /** These never return null. Instead, they throw a runtime error.
+     * "Nte" in the name means "null throws exception".
+     * Old name: NullFilter */
+    let NullThrowsException;
+    (function (NullThrowsException) {
         var nullFilter = HelgeUtils.Misc.nullFilter;
-        /** @see NullFiltered */
-        NullFiltered.querySelectorNte = (element, selector) => {
+        /** @see NullThrowsException */
+        NullThrowsException.querySelectorNte = (element, selector) => {
             return nullFilter(element.querySelector(selector));
         };
-        /** @see NullFiltered */
-        NullFiltered.elementWithIdNte = (id) => nullFilter(HtmlUtils.elementWithId(id));
-        /** @see NullFiltered */
-        NullFiltered.buttonWithIdNte = (id) => nullFilter(HtmlUtils.buttonWithId(id));
-        /** @see NullFiltered */
-        NullFiltered.inputElementWithIdNte = (id) => nullFilter(HtmlUtils.inputElementWithId(id));
-        /** @see NullFiltered */
-        NullFiltered.textAreaWithIdNte = (id) => nullFilter(HtmlUtils.textAreaWithId(id));
-    })(NullFiltered = HtmlUtils.NullFiltered || (HtmlUtils.NullFiltered = {}));
+        /** @see NullThrowsException */
+        NullThrowsException.elementWithIdNte = (id) => nullFilter(HtmlUtils.elementWithId(id));
+        /** @see NullThrowsException */
+        NullThrowsException.buttonWithIdNte = (id) => nullFilter(HtmlUtils.buttonWithId(id));
+        /** @see NullThrowsException */
+        NullThrowsException.inputElementWithIdNte = (id) => nullFilter(HtmlUtils.inputElementWithId(id));
+        /** @see NullThrowsException */
+        NullThrowsException.textAreaWithIdNte = (id) => nullFilter(HtmlUtils.textAreaWithId(id));
+    })(NullThrowsException = HtmlUtils.NullThrowsException || (HtmlUtils.NullThrowsException = {}));
     // Merge help: The following lines must be commented out in the Project Anca:
     let TextAreas;
     (function (TextAreas) {
         // eslint-disable-next-line no-shadow
-        var textAreaWithId = HtmlUtils.NullFiltered.textAreaWithIdNte;
+        var textAreaWithId = HtmlUtils.NullThrowsException.textAreaWithIdNte;
         var trimExceptASingleNewlineAtTheEnd = HelgeUtils.Strings.trimExceptASingleNewlineAtTheEnd;
         var Strings = HelgeUtils.Strings;
         var escapeRegExp = HelgeUtils.Strings.escapeRegExp;
@@ -482,7 +484,7 @@ export var HtmlUtils;
         /** https://www.webcomponents.org/element/@vanillawc/wc-menu-wrapper */
         let WcMenu;
         (function (WcMenu) {
-            var elementWithId = NullFiltered.elementWithIdNte;
+            var elementWithId = NullThrowsException.elementWithIdNte;
             WcMenu.close = (menuHeadingId) => {
                 elementWithId(menuHeadingId).dispatchEvent(new CustomEvent('rootMenuClose'));
             };
