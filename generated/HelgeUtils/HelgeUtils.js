@@ -609,7 +609,7 @@ export var HelgeUtils;
          * const result = formatString(input, replacements)
          * // result is now "Hello John, you are 25 years old." */
         Strings.formatString = (input, replacements) => input.replace(/\${(.*?)}/g, (_, key) => {
-            // @ts-expect-error
+            // @ts-ignore
             return replacements[key];
         });
         Strings.isBlank = (input) => {

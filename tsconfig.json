@@ -11,7 +11,9 @@
     "moduleResolution": "node",
     "strict": true,
     "forceConsistentCasingInFileNames": true,
+
     "composite": true,
+    "noFallthroughCasesInSwitch": false,
     "baseUrl": ".", // This must be specified if "paths" is.
     "paths": {
 //      "../node_modules/*": ["./node_modules/*"]
