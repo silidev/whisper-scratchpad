@@ -623,7 +623,7 @@ export var HelgeUtils;
             }
             return input.replace(/(\r\n|\n|\r)/gm, "");
         };
-        Strings.capitalizeSentences = (text, sentenceEndRegex = /([.!:?]\s)|(\{\{c\d\d::)/g) => {
+        Strings.capitalizeSentences = (text, sentenceEndRegex = /([.!:?]\s)|(\{\{c\d\d?::)/g) => {
             const sentenceEndings = sentenceEndRegex;
             const parts = text.split(sentenceEndings)
                 // Remove all falsy values:
@@ -641,10 +641,12 @@ export var HelgeUtils;
                 .join('');
         };
         Strings.testCapitalizeSentences = () => {
-            const text = "this is a sentence. here is another one! yet another sentence? and one more.";
-            const expectedOutput = "This is a sentence. Here is another one! Yet another sentence? And one more.";
+            const text = "this is a sentence. here is another one! yet another sentence? and one more."
+                + " A {{c1::and a special case. And more.";
+            const expectedOutput = "This is a sentence. Here is another one! Yet another sentence? And one more."
+                + " A {{c1::And a special case. And more.";
             const result = Strings.capitalizeSentences(text);
-            console.assert(result === expectedOutput, `Test failed: ${result} != ${expectedOutput}`);
+            assertEquals(result, expectedOutput, `testCapitalizeSentences failed`);
         };
     })(Strings = HelgeUtils.Strings || (HelgeUtils.Strings = {}));
     /* Returns a random element of the given array */
