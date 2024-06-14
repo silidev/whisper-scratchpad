@@ -22,6 +22,7 @@ var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
 var capitalizeSentences = HelgeUtils.Strings.capitalizeSentences;
 import { DelimiterSearch } from './HelgeUtils/DelimiterSearch.js';
 import { du2ich } from './HelgeUtils/du2ich.js';
+import { transcribe, TranscriptionError } from './HelgeUtils/Transcription.js';
 const hoursBetweenBackups = 24;
 const LARGE_STORAGE_PROVIDER = new HtmlUtils.BrowserStorage.LocalStorage();
 export const OPEN_CLOZE_STR = "{{c1::";
@@ -486,7 +487,7 @@ export var UiFunctions;
                                 ? maxEditorPrompt.slice(-maxCharsFromEditor)
                                 : "");
                     };
-                    const getTranscriptionText = async () => await HelgeUtils.Transcription.transcribe(apiName, audioBlob, getApiKey(), finalPrompt(), getLanguageSelectedInUi(), inputElementWithId("translateCheckbox").checked);
+                    const getTranscriptionText = async () => await transcribe(apiName, audioBlob, getApiKey(), finalPrompt(), getLanguageSelectedInUi(), inputElementWithId("translateCheckbox").checked);
                     const removeLastDotIfNotAtEnd = (input) => {
                         if (mainEditorTextarea.selectionStart < mainEditorTextarea.value.length) {
                             return removeLastDot(input);
@@ -515,7 +516,7 @@ export var UiFunctions;
                     offerBackupIfItsTime();
                 }
                 catch (error) {
-                    if (error instanceof HelgeUtils.Transcription.TranscriptionError) {
+                    if (error instanceof TranscriptionError) {
                         Log.error(JSON.stringify(error.payload, null, 2));
                     }
                     else

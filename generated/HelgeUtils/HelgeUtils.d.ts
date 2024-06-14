@@ -294,14 +294,6 @@ export declare namespace HelgeUtils {
          */
         const withOpenAi: (input: string, apiKey: string) => Promise<void>;
     }
-    export namespace Transcription {
-        class TranscriptionError extends Error {
-            payload: object;
-            constructor(payload: object);
-        }
-        type ApiName = "OpenAI" | "Gladia" | "Deepgram-nova-2" | "Deepgram-whisper";
-        const transcribe: (api: ApiName, audioBlob: Blob, apiKey: string, prompt?: string, language?: string, translateToEnglish?: boolean) => Promise<string>;
-    }
     export namespace ReplaceByRules {
         class ReplaceRules {
             private rules;

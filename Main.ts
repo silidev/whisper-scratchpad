@@ -30,6 +30,7 @@ import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
 import capitalizeSentences = HelgeUtils.Strings.capitalizeSentences
 import {DelimiterSearch} from './HelgeUtils/DelimiterSearch.js'
 import {du2ich} from './HelgeUtils/du2ich.js'
+import {ApiName, transcribe, TranscriptionError} from './HelgeUtils/Transcription.js'
 
 const hoursBetweenBackups = 24
 
@@ -555,7 +556,7 @@ export namespace UiFunctions {
                     : "")
           }
           const getTranscriptionText = async () => await
-              HelgeUtils.Transcription.transcribe(
+              transcribe(
                   apiName, audioBlob, getApiKey() as string, finalPrompt(),
                   getLanguageSelectedInUi(),
                   inputElementWithId("translateCheckbox").checked)
@@ -590,7 +591,7 @@ export namespace UiFunctions {
           mainEditor.save()
           offerBackupIfItsTime()
         } catch (error) {
-          if (error instanceof HelgeUtils.Transcription.TranscriptionError) {
+          if (error instanceof TranscriptionError) {
             Log.error(JSON.stringify(error.payload, null, 2))
           } else throw error
         } finally {
@@ -1176,7 +1177,7 @@ textAreaWithId('replaceRulesTextarea').addEventListener('input', UiFunctions
   TextAreas.setAutoSave('prompt', 'transcriptionPromptEditor', handleAutoSaveError, LARGE_STORAGE_PROVIDER)
 }
 
-const getApiSelectedInUi = () => (apiSelector.value as HelgeUtils.Transcription.ApiName)
+const getApiSelectedInUi = () => (apiSelector.value as ApiName)
 const getLanguageSelectedInUi = () => (languageSelector.value)
 
 export namespace Log {
