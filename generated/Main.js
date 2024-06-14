@@ -30,9 +30,9 @@ export const CLOSE_CLOZE_STR = "}},,";
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = true;
 // (() => {
-//   const d = new Date().toISOString().slice(0, 10);
+//   const d = new Date().toISOString().slice(0, 10)
 //   return HtmlUtils.isMsWindows()
-//       && (d === "2024-06-11" || d === "2024-02-22");
+//       && (d === "2024-06-11" || d === "2024-02-22")
 // })()
 if (RUN_TESTS)
     console.log("RUN_TESTS is true.");
@@ -556,7 +556,7 @@ export var UiFunctions;
                     setHtmlOfButtonStop('◼<br>Stop');
                     setHtmlOfButtonPauseRecord(blinkSlow('|| Paused')); // +'<br>⬤▶ Cont. Rec'
                     setPageBackgroundColor("var(--pausedBackgroundColor)");
-                    // animation: blink 1s linear infinite;
+                    // animation: blink 1s linear infinite
                     buttonWithId("pauseRecordButton").style.animation =
                         "blink .5s linear infinite";
                 };

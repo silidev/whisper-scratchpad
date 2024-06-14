@@ -2,15 +2,15 @@
  * Copyright (c) 2024 by Helge Tobias Kosuch
  */
 
-import textAreaWithId = HtmlUtils.NullThrowsException.textAreaWithIdNte;
-import blinkFast = HtmlUtils.blinkFast;
-import blinkSlow = HtmlUtils.blinkSlow;
-import escapeRegExp = HelgeUtils.Strings.escapeRegExp;
-import elementWithId = HtmlUtils.NullThrowsException.elementWithIdNte;
-import TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper;
-import Cookies = HtmlUtils.BrowserStorage.Cookies;
-import downloadOffer = HtmlUtils.Misc.downloadOffer;
-import TextAreas = HtmlUtils.TextAreas;
+import textAreaWithId = HtmlUtils.NullThrowsException.textAreaWithIdNte
+import blinkFast = HtmlUtils.blinkFast
+import blinkSlow = HtmlUtils.blinkSlow
+import escapeRegExp = HelgeUtils.Strings.escapeRegExp
+import elementWithId = HtmlUtils.NullThrowsException.elementWithIdNte
+import TextAreaWrapper = HtmlUtils.TextAreas.TextAreaWrapper
+import Cookies = HtmlUtils.BrowserStorage.Cookies
+import downloadOffer = HtmlUtils.Misc.downloadOffer
+import TextAreas = HtmlUtils.TextAreas
 import {ctrlYRedo, ctrlZUndo} from "./DontInspect.js"
 import {HelgeUtils} from "./HelgeUtils/HelgeUtils.js"
 import {
@@ -22,11 +22,11 @@ import {
 } from "./Config.js"
 import {createCutFunction} from "./CutButton.js"
 import {HtmlUtils} from "./HelgeUtils/HtmlUtils.js"
-import {CurrentNote} from "./CurrentNote.js";
+import {CurrentNote} from "./CurrentNote.js"
 
 //@ts-expect-error
-import {download, generateCsv, mkConfig} from "../node_modules/export-to-csv/output/index.js";
-import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
+import {download, generateCsv, mkConfig} from "../node_modules/export-to-csv/output/index.js"
+import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning
 import capitalizeSentences = HelgeUtils.Strings.capitalizeSentences
 import {DelimiterSearch} from './HelgeUtils/DelimiterSearch.js'
 import {du2ich} from './HelgeUtils/du2ich.js'
@@ -36,15 +36,15 @@ const hoursBetweenBackups = 24
 
 const LARGE_STORAGE_PROVIDER = new HtmlUtils.BrowserStorage.LocalStorage()
 
-export const OPEN_CLOZE_STR = "{{c1::";
-export const CLOSE_CLOZE_STR = "}},,";
+export const OPEN_CLOZE_STR = "{{c1::"
+export const CLOSE_CLOZE_STR = "}},,"
 
 /** Inlined from HelgeUtils.Test.runTestsOnlyToday */
 const RUN_TESTS = true
 // (() => {
-//   const d = new Date().toISOString().slice(0, 10);
+//   const d = new Date().toISOString().slice(0, 10)
 //   return HtmlUtils.isMsWindows()
-//       && (d === "2024-06-11" || d === "2024-02-22");
+//       && (d === "2024-06-11" || d === "2024-02-22")
 // })()
 if (RUN_TESTS) console.log("RUN_TESTS is true.")
 
@@ -54,11 +54,11 @@ namespace Backups {
 
   let lastBackupMillis = parseIntWithNull(LARGE_STORAGE_PROVIDER.getString("lastBackupMillis"))
 
-  const backupString = () => "## Main Editor\n" + mainEditorTextarea.value + "\n" + "## Replace Rules\n" + replaceRulesTextarea.value + "\n" + "## Prompt\n" + transcriptionPromptEditor.value;
+  const backupString = () => "## Main Editor\n" + mainEditorTextarea.value + "\n" + "## Replace Rules\n" + replaceRulesTextarea.value + "\n" + "## Prompt\n" + transcriptionPromptEditor.value
 
   // ############## backupDownload ##############
   const backupDownload = () => {
-    downloadOffer(backupString(), "whisper-scratchpad-backup.txt");
+    downloadOffer(backupString(), "whisper-scratchpad-backup.txt")
   }
 
   export const offerBackupIfItsTime = () => {
@@ -90,7 +90,7 @@ namespace Backups {
 export namespace mainEditor {
 
   export namespace Undo {
-    import showToast = HtmlUtils.showToast;
+    import showToast = HtmlUtils.showToast
     let undoBuffer = ""
 
     export const undo = () => {
@@ -106,13 +106,13 @@ export namespace mainEditor {
 
     export const saveState = () => {
       undoBuffer = mainEditorTextarea.value
-    };
+    }
   }
 
   export const appendStringAndCursor = (insertedString: string) => {
     TextAreas.appendTextAndCursor(mainEditorTextarea, insertedString)
-    mainEditor.save();
-    TextAreas.scrollToEnd(mainEditorTextarea);
+    mainEditor.save()
+    TextAreas.scrollToEnd(mainEditorTextarea)
   }
 
   export const appendDelimiterAndCursor = () => {
@@ -127,21 +127,21 @@ export namespace mainEditor {
         )
         + NEW_NOTE_DELIMITER)
     mainEditorTextarea.focus()
-  };
+  }
 
   export const save = () => {
     try {
-      LARGE_STORAGE_PROVIDER.setString("editorText", textAreaWithId("mainEditorTextarea").value);
+      LARGE_STORAGE_PROVIDER.setString("editorText", textAreaWithId("mainEditorTextarea").value)
     } catch (e) {
       alert("Error saving editor text: " + e)
     }
     // Delete old cookie
     // Cookies.set("editorText", ""); // This used to be stored in a cookie.
-  };
+  }
 
   export const insertNote = (changedText: string) => {
     const cursorIsAtTheEndOfTheTextarea =
-        mainEditorTextarea.value.length == mainEditorTextarea.selectionStart;
+        mainEditorTextarea.value.length == mainEditorTextarea.selectionStart
 
     if (cursorIsAtTheEndOfTheTextarea) {
       mainEditorTextareaWrapper
@@ -152,14 +152,14 @@ export namespace mainEditor {
       mainEditorTextareaWrapper
           .insertAndPutCursorAfter(changedText + NEW_NOTE_DELIMITER)
     }
-    mainEditor.save();
+    mainEditor.save()
   }
 }
 
 namespace Misc {
 
   export const replaceInCurrentNote = () => {
-    mainEditor.Undo.saveState();
+    mainEditor.Undo.saveState()
     const selectionStart = mainEditorTextarea.selectionStart
     // const selectionEnd = mainEditorTextarea.selectionEnd
 
@@ -189,7 +189,7 @@ namespace Misc {
 }
 
 export namespace Menu {
-  import WcMenu = HtmlUtils.Menus.WcMenu;
+  import WcMenu = HtmlUtils.Menus.WcMenu
 
   export const wireItem = WcMenu.addItem("editorMenuHeading")
   export const close = () => WcMenu.close("editorMenuHeading")
@@ -198,11 +198,11 @@ export namespace Menu {
 const setPageBackgroundColor = (backgroundColor: string) => {
   document.body.style.backgroundColor = backgroundColor
   // set color of the margins of the page
-  document.documentElement.style.backgroundColor = backgroundColor;
-};
+  document.documentElement.style.backgroundColor = backgroundColor
+}
 
 export namespace UiFunctions {
-  import buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte;
+  import buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte
 
   export const runTests = () => {
     Buttons.runTests()
@@ -210,15 +210,15 @@ export namespace UiFunctions {
 
   export namespace Buttons {
     // eslint-disable-next-line no-shadow
-    import buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte;
-    import inputElementWithId = HtmlUtils.NullThrowsException.inputElementWithIdNte;
+    import buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte
+    import inputElementWithId = HtmlUtils.NullThrowsException.inputElementWithIdNte
     // eslint-disable-next-line no-shadow
-    import textAreaWithId = HtmlUtils.NullThrowsException.textAreaWithIdNte;
+    import textAreaWithId = HtmlUtils.NullThrowsException.textAreaWithIdNte
     // eslint-disable-next-line no-shadow
-    import Cookies = HtmlUtils.BrowserStorage.Cookies;
-    import addKeyboardShortcuts = Misc.addKeyboardShortcuts;
-    import showToast = HtmlUtils.showToast;
-    import offerBackupIfItsTime = Backups.offerBackupIfItsTime;
+    import Cookies = HtmlUtils.BrowserStorage.Cookies
+    import addKeyboardShortcuts = Misc.addKeyboardShortcuts
+    import showToast = HtmlUtils.showToast
+    import offerBackupIfItsTime = Backups.offerBackupIfItsTime
 
     export const runTests = () => {
     }
@@ -257,7 +257,7 @@ export namespace UiFunctions {
       buttonWithId('findDuButton').addEventListener('pointerdown', (event: { preventDefault: () => void; }) => {
         event.preventDefault(); // Prevent the textarea from losing focus
         mainEditorTextareaWrapper.findWholeWordCaseInsensitiveAndSelect("du")
-      });
+      })
 
       {
         const textarea = textAreaWithId('mainEditorTextarea')
@@ -273,10 +273,10 @@ export namespace UiFunctions {
                   textarea.selectionStart = textarea.selectionStart + 1
                   if (noSelection) textarea.selectionEnd = textarea.selectionStart
                 }
-              });
+              })
         }
-        wireCursorButton(true);
-        wireCursorButton(false);
+        wireCursorButton(true)
+        wireCursorButton(false)
       }
       namespace WordJumps {
         /** WConfig = word jump config */
@@ -290,10 +290,10 @@ export namespace UiFunctions {
         }
 
         {
-          const regex = /[" \-(),?!\n]/;
-          const negativeRegex = /[^" \-(),?!\n]/;
+          const regex = /[" \-(),?!\n]/
+          const negativeRegex = /[^" \-(),?!\n]/
           const mainEditorWConfig = new WConfig(regex,negativeRegex,
-              textAreaWithId('mainEditorTextarea'));
+              textAreaWithId('mainEditorTextarea'))
           const replaceRulesWConfig = new WConfig(regex,negativeRegex,
               textAreaWithId('replaceRulesTextarea'))
 
@@ -301,24 +301,24 @@ export namespace UiFunctions {
             const textarea = wConfig.textarea
             return (event: Event) => {
               event.preventDefault(); // Prevent the textarea from losing focus
-              const text = textarea.value;
-              const cursorPosition = textarea.selectionStart - 2;
-              if (cursorPosition < 0) return;
+              const text = textarea.value
+              const cursorPosition = textarea.selectionStart - 2
+              if (cursorPosition < 0) return
 
               // Find the start of the previous word
-              const prevNonDelimiter = HelgeUtils.Strings.regexLastIndexOf(text, wConfig.negativeRegex, cursorPosition);
-              const prevDelimiter = HelgeUtils.Strings.regexLastIndexOf(text, wConfig.regex, prevNonDelimiter);
-              let startOfPreviousWord;
+              const prevNonDelimiter = HelgeUtils.Strings.regexLastIndexOf(text, wConfig.negativeRegex, cursorPosition)
+              const prevDelimiter = HelgeUtils.Strings.regexLastIndexOf(text, wConfig.regex, prevNonDelimiter)
+              let startOfPreviousWord
               if (prevDelimiter === -1) {
                 // If there is no previous space, the start of the previous word is
                 // the start of the text
-                startOfPreviousWord = 0;
+                startOfPreviousWord = 0
               } else {
                 // If there is a previous space, the start of the previous word is
                 // the position after the space
-                startOfPreviousWord = prevDelimiter + 1;
+                startOfPreviousWord = prevDelimiter + 1
               }
-              textarea.selectionStart = startOfPreviousWord;
+              textarea.selectionStart = startOfPreviousWord
             }
           }
 
@@ -326,7 +326,7 @@ export namespace UiFunctions {
             const textarea = wConfig.textarea
             return (event: Event) => {
               createSelectWordLeftFunction(wConfig)(event)
-              textarea.selectionEnd = textarea.selectionStart;
+              textarea.selectionEnd = textarea.selectionStart
             }
           }
 
@@ -334,41 +334,41 @@ export namespace UiFunctions {
             const textarea = wConfig.textarea
             return (event: Event) => {
               event.preventDefault(); // Prevent the textarea from losing focus
-              const text = textarea.value;
-              const cursorPosition = textarea.selectionStart + 1;
-              if (cursorPosition >= text.length) return;
+              const text = textarea.value
+              const cursorPosition = textarea.selectionStart + 1
+              if (cursorPosition >= text.length) return
 
               // Find the end of the next word
-              const a = HelgeUtils.Strings.regexIndexOf(text, wConfig.negativeRegex, cursorPosition);
-              const b = HelgeUtils.Strings.regexIndexOf(text, wConfig.regex, a);
-              let endOfNextWord;
+              const a = HelgeUtils.Strings.regexIndexOf(text, wConfig.negativeRegex, cursorPosition)
+              const b = HelgeUtils.Strings.regexIndexOf(text, wConfig.regex, a)
+              let endOfNextWord
               if (b === -1) {
                 // If there is no next space, the end of the next word is the end
                 // of the text
-                endOfNextWord = text.length;
+                endOfNextWord = text.length
               } else {
                 // If there is a next space, the end of the next word is the
                 // position before the space
-                endOfNextWord = b;
+                endOfNextWord = b
               }
 
               // Set the cursor position to the end of the next word
-              textarea.selectionStart = endOfNextWord;
+              textarea.selectionStart = endOfNextWord
               // textarea.selectionEnd is NOT set on purpose here!
             }
           }
 
           const wireButtons = (editorIdPrefix: string, wConfig: WConfig) => {
             buttonWithId(editorIdPrefix + 'SelectWordLeftButton')
-                .addEventListener('pointerdown', createSelectWordLeftFunction(wConfig));
+                .addEventListener('pointerdown', createSelectWordLeftFunction(wConfig))
             buttonWithId(editorIdPrefix + 'WordLeftButton')
-                .addEventListener('pointerdown', createWordLeftFunction(wConfig));
+                .addEventListener('pointerdown', createWordLeftFunction(wConfig))
             buttonWithId(editorIdPrefix + 'WordRightButton')
-                .addEventListener('pointerdown', createSelectWordRightFunction(wConfig));
+                .addEventListener('pointerdown', createSelectWordRightFunction(wConfig))
           }
 
-          wireButtons("mainEditor", mainEditorWConfig);
-          wireButtons("rr", replaceRulesWConfig);
+          wireButtons("mainEditor", mainEditorWConfig)
+          wireButtons("rr", replaceRulesWConfig)
         }
       }
     }
@@ -378,10 +378,10 @@ export namespace UiFunctions {
       const menuIsHidden = elementWithId("editorMenuHeading")
           .nextElementSibling?.classList.contains('hidden')
       document.body.style.overflow = menuIsHidden ? "hidden" : "auto"
-    });
+    })
 
     export namespace BottomUi {
-      const bottomUi = elementWithId("bottomUi");
+      const bottomUi = elementWithId("bottomUi")
 
       const setOverflow = () => {
         const isHidden = bottomUi.classList.contains('hidden')
@@ -389,13 +389,13 @@ export namespace UiFunctions {
       }
       export const toggleHidden = () => {
         bottomUi.classList.toggle('hidden')
-        setOverflow();
+        setOverflow()
       }
       export const unhide = () => {
         bottomUi.classList.remove("hidden")
         setOverflow()
       }
-      buttonWithId('toggleBottomUiButton').addEventListener('click', toggleHidden);
+      buttonWithId('toggleBottomUiButton').addEventListener('click', toggleHidden)
     }
 
     /** This is WIP, not working. */
@@ -428,21 +428,21 @@ export namespace UiFunctions {
       export const replaceWithSpace = (s: string, c: number): [string,number] => {
         // Step 1: Move cursor to the left until a word character is found
         while (c > 0 && !s[c - 1].match(/\w/)) {
-          c--;
+          c--
         }
 
         // Step 2: Delete the stretch of non-word characters to the right
-        let rightPart = s.slice(c).replace(/^\W+/, '');
+        let rightPart = s.slice(c).replace(/^\W+/, '')
 
         // Step 3: Uppercase the first letter of the word to the right
-        rightPart = rightPart.charAt(0).toUpperCase() + rightPart.slice(1);
+        rightPart = rightPart.charAt(0).toUpperCase() + rightPart.slice(1)
 
         // Step 4: Insert a space before the word and adjust the cursor position
-        const leftPart = s.slice(0, c);
+        const leftPart = s.slice(0, c)
 
         // The cursor position is simulated by returning the string with a '|' to indicate the cursor position
-        return [`${leftPart} ${rightPart}` as string, leftPart.length];
-      };
+        return [`${leftPart} ${rightPart}` as string, leftPart.length]
+      }
 
       // Delete:
       // export const replaceWithSpace = (s: string, c: number) =>
@@ -462,7 +462,7 @@ export namespace UiFunctions {
 
       export const replaceWithSpaceInMainEditor = () => {
         const [newText, cursor] = replaceWithSpace(mainEditorTextarea.value,
-                mainEditorTextarea.selectionStart);
+                mainEditorTextarea.selectionStart)
 
         mainEditorTextarea.value = newText
         mainEditorTextarea.selectionStart = cursor
@@ -622,28 +622,28 @@ export namespace UiFunctions {
         const setRecording = () => {
           setHtmlOfButtonStop('◼<br>Stop')
           setHtmlOfButtonPauseRecord(blinkFast('🔴 Recording') + '<br>|| Pause')
-          setPageBackgroundColor("var(--backgroundColor)");
-          buttonWithId("pauseRecordButton").style.animation = "none";
+          setPageBackgroundColor("var(--backgroundColor)")
+          buttonWithId("pauseRecordButton").style.animation = "none"
         }
         export const setPaused = () => {
           setHtmlOfButtonStop('◼<br>Stop')
           setHtmlOfButtonPauseRecord(blinkSlow('|| Paused')) // +'<br>⬤▶ Cont. Rec'
-          setPageBackgroundColor("var(--pausedBackgroundColor)");
-          // animation: blink 1s linear infinite;
+          setPageBackgroundColor("var(--pausedBackgroundColor)")
+          // animation: blink 1s linear infinite
           buttonWithId("pauseRecordButton").style.animation =
-              "blink .5s linear infinite";
+              "blink .5s linear infinite"
         }
         export const setStopped = () => {
           setHtmlOfButtonStop('◼<br>Stop')
           setHtmlOfButtonPauseRecord(sending
               ? blinkFast('✎ Scribing') + '<br>⬤ Record'
               : '<br>⬤ Record')
-          setPageBackgroundColor("var(--backgroundColor)");
-          buttonWithId("pauseRecordButton").style.animation = "none";
+          setPageBackgroundColor("var(--backgroundColor)")
+          buttonWithId("pauseRecordButton").style.animation = "none"
         }
         const setHtmlOfButtonStop = (html: string) => {
           buttonWithId("stopButton").innerHTML = html
-          setPageBackgroundColor("var(--backgroundColor)");
+          setPageBackgroundColor("var(--backgroundColor)")
         }
         const setHtmlOfButtonPauseRecord = (html: string) => {
           buttonWithId("pauseRecordButton").innerHTML = html
@@ -720,25 +720,25 @@ export namespace UiFunctions {
           const fileInput = inputElementWithId('fileToUploadSelector')
           if (!fileInput?.files?.[0])
             return
-          const file = fileInput.files[0];
-          const reader = new FileReader();
+          const file = fileInput.files[0]
+          const reader = new FileReader()
           reader.onload = event => {
             if (event.target===null || event.target.result===null)
               return
-            audioBlob = new Blob([event.target.result], {type: file.type});
+            audioBlob = new Blob([event.target.result], {type: file.type})
             mainEditor.appendDelimiterAndCursor()
             /* The transcription of an uploaded file is tested and works fine.
             Sometimes the OpenAI API will yield an error saying unsupported
             file type even though the file type is listed as supported. That
             is only the API's fault, not this code's. */
             transcribeAudioBlob()
-          };
-          reader.readAsArrayBuffer(file);
+          }
+          reader.readAsArrayBuffer(file)
           Menu.close()
-        };
+        }
 
         elementWithId('fileToUploadSelector').addEventListener('change', transcribeSelectedFile)
-      };
+      }
 
 // ############## stopButton ##############
       const stopRecording = () => {
@@ -826,7 +826,7 @@ export namespace UiFunctions {
 // ############## transcribeAudioBlob ##############
       Menu.wireItem("transcribeAgainButton", transcribeAudioBlob)
 // ############## Misc ##############
-      wireUploadButton();
+      wireUploadButton()
 
       StateIndicator.update()
 
@@ -835,13 +835,13 @@ export namespace UiFunctions {
     namespace clipboard {
       export const read = (f1: (text: string) => void) => {
         navigator.clipboard.readText().then(text => {
-          f1(text);
+          f1(text)
         }).catch(Log.error)
-      };
+      }
 
-      export const readText = () => navigator.clipboard.readText();
+      export const readText = () => navigator.clipboard.readText()
 
-      export const writeText = (text: string) => navigator.clipboard.writeText(text);
+      export const writeText = (text: string) => navigator.clipboard.writeText(text)
     }
 
     export const addEventListeners = () => {
@@ -860,7 +860,7 @@ export namespace UiFunctions {
           if (!secret) alert("No secret set.")
 
           const text = "Hello world"
-          const url = 'https://corsproxy.io/?' + encodeURIComponent('https://texttospeech.googleapis.com/v1/text:synthesize');
+          const url = 'https://corsproxy.io/?' + encodeURIComponent('https://texttospeech.googleapis.com/v1/text:synthesize')
 
           const bodyData = {
             input: {
@@ -934,7 +934,7 @@ export namespace UiFunctions {
       const saveAPIKeyButton = () => {
         setApiKeyCookie(apiKeyInput.value)
         apiKeyInput.value = ''
-      };
+      }
       HtmlUtils.addClickListener(("saveAPIKeyButton"), () => {
         saveAPIKeyButton()
       })
@@ -988,7 +988,7 @@ export namespace UiFunctions {
         clipboard.writeText(mainEditorTextarea.value).then(
           () => {
             mainEditorTextarea.value = ''
-            mainEditor.save();
+            mainEditor.save()
           }).catch(Log.error)
         )
 
@@ -999,7 +999,7 @@ export namespace UiFunctions {
         clipboard.read((text: string) => {
           TextAreas.insertAndPutCursorAfter(mainEditorTextarea, text)
           offerBackupIfItsTime()
-        });
+        })
       })
 
 // cutNoteButton
@@ -1046,7 +1046,7 @@ export namespace UiFunctions {
         // Uses https://github.com/alexcaza/export-to-csv
         const csvConfig = mkConfig({
           columnHeaders: ["column1"], showColumnHeaders: false, useTextFile: true
-        });
+        })
         const textArray = mainEditorTextareaWrapper.value().split(NEW_NOTE_DELIMITER)
         const csvData = textArray.map((text: string) => {
           if (text.includes("}}"))
@@ -1056,21 +1056,21 @@ export namespace UiFunctions {
 
           return {column1: "{{c1::" + text + "}},,"}
         })
-        const csv = generateCsv(csvConfig)(csvData);
-        return download(csvConfig)(csv);
-      };
+        const csv = generateCsv(csvConfig)(csvData)
+        return download(csvConfig)(csv)
+      }
 
       const exportAnkiClozeCsv = () => {
         window.open("obsidian://advanced-uri?vault=o1&heading=CL&uid=wscr2Anki", '_blank')
-        return downloadCsv();
-      };
-      Menu.wireItem("exportAnkiClozeCsv", exportAnkiClozeCsv);
-      Menu.wireItem("downloadCsv", downloadCsv);
+        return downloadCsv()
+      }
+      Menu.wireItem("exportAnkiClozeCsv", exportAnkiClozeCsv)
+      Menu.wireItem("downloadCsv", downloadCsv)
     }
 
     const insertTextIntoMainEditor = (insertedString: string) => {
       TextAreas.insertAndPutCursorAfter(mainEditorTextarea, insertedString)
-      mainEditor.save();
+      mainEditor.save()
     }
     suppressUnusedWarning(insertTextIntoMainEditor)
 
@@ -1081,10 +1081,10 @@ export namespace UiFunctions {
       const inputStr = TextAreas.selectedText(mainEditorTextarea)
       /* The following builds a rule like this:
        * "REGEX"gm->"REPLACEMENT" */
-      const quote = `"`;
-      const maybeWordBoundary = requireWordBoundaryAtStart ? "\\b" : "";
-      const regEx = escapeRegExp(inputStr);
-      const optionsAndArrow = 'gm->';
+      const quote = `"`
+      const maybeWordBoundary = requireWordBoundaryAtStart ? "\\b" : ""
+      const regEx = escapeRegExp(inputStr)
+      const optionsAndArrow = 'gm->'
       /** This is the part before the text selection in the UI */
       const ruleStrPart1 =
             quote
@@ -1092,19 +1092,19 @@ export namespace UiFunctions {
           + regEx
           + quote
           + optionsAndArrow
-          + quote;
-      const ruleStrPart2 = inputStr + quote;
+          + quote
+      const ruleStrPart2 = inputStr + quote
       const ruleString = ruleStrPart1 + ruleStrPart2
       const lengthBefore = replaceRulesTextarea.value.length
       const APPEND = true
       if (APPEND) {
-        const ruleBeforeSelection = "\n" + ruleStrPart1;
+        const ruleBeforeSelection = "\n" + ruleStrPart1
         TextAreas.appendTextAndCursor(replaceRulesTextarea,
             ruleBeforeSelection + ruleStrPart2)
-        const SELECT_REPLACEMENT = true;
+        const SELECT_REPLACEMENT = true
         if (SELECT_REPLACEMENT) {
           replaceRulesTextarea.selectionStart = lengthBefore + ruleBeforeSelection.length
-          replaceRulesTextarea.selectionEnd = replaceRulesTextarea.value.length - 1;
+          replaceRulesTextarea.selectionEnd = replaceRulesTextarea.value.length - 1
         } else { // delete this if branch later
           replaceRulesTextarea.selectionStart = lengthBefore
           replaceRulesTextarea.selectionEnd = replaceRulesTextarea.value.length
@@ -1115,7 +1115,7 @@ export namespace UiFunctions {
         replaceRulesTextarea.selectionStart = 0
         replaceRulesTextarea.selectionEnd = ruleString.length
       }
-      replaceRulesTextarea.focus();
+      replaceRulesTextarea.focus()
       saveReplaceRules()
     }
     export const addWordReplaceRule = () => addReplaceRule(true)
@@ -1181,7 +1181,7 @@ const getApiSelectedInUi = () => (apiSelector.value as ApiName)
 const getLanguageSelectedInUi = () => (languageSelector.value)
 
 export namespace Log {
-  import inputElementWithId = HtmlUtils.NullThrowsException.inputElementWithIdNte;
+  import inputElementWithId = HtmlUtils.NullThrowsException.inputElementWithIdNte
   const MAX_LOG_LEN = 10000
 
   // noinspection JSUnusedGlobalSymbols
@@ -1227,7 +1227,7 @@ export namespace Log {
 
 namespace ReplaceByRules {
   // Overload signatures
-  import inputElementWithId = HtmlUtils.NullThrowsException.inputElementWithIdNte;
+  import inputElementWithId = HtmlUtils.NullThrowsException.inputElementWithIdNte
 
   export function withUiLog(rules: string, subject: string): string
   export function withUiLog(rules: string, subject: string, wholeWords: boolean): string

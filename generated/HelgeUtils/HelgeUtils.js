@@ -6,7 +6,7 @@
  * specific project.
  *
  * Copyright by Helge Tobias Kosuch 2024 */
-// import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js";
+// import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js"
 export var HelgeUtils;
 (function (HelgeUtils) {
     /** Config */
@@ -86,7 +86,7 @@ export var HelgeUtils;
          *
          * Example use:
          const produceError = () => {throw "error"}
-         const noError = swallowAll(produceError);
+         const noError = swallowAll(produceError)
          noError(); // Does NOT throw an exception.
          *
          * @param func
@@ -445,12 +445,12 @@ export var HelgeUtils;
              *
              * Example:
              * ```
-             * const input = "example text";
+             * const input = "example text"
              * const replacementList = [
              *   [/\bexample\b/g, "sample"],
              *   [/\btext\b/g, "string"]
-             * ];
-             * const result = replaceFromList(input, replacementList);
+             * ]
+             * const result = replaceFromList(input, replacementList)
              * console.log(result); // Outputs: "sample string"
              * ```
              */
@@ -647,10 +647,12 @@ export var HelgeUtils;
              capitalization will fail. That is fine. Not worth the time to fix it. */
             const text = "this is a sentence.. here is another one! yet another sentence? And the answer is:"
                 + minimumBetweenSentenceEndMarkers
-                + "{{c1::and a special case. And more.";
+                + "{" /* Do NOT hard merge these string or Anki will tell you "Template contains errors". */
+                + "{c1::and a special case. And more.";
             const expectedOutput = "This is a sentence.. Here is another one! Yet another sentence? And the answer is:"
                 + minimumBetweenSentenceEndMarkers
-                + "{{c1::And a special case. And more.";
+                + "{" /* Do NOT hard merge these string or Anki will tell you "Template contains errors". */
+                + "{c1::And a special case. And more.";
             const result = Strings.capitalizeSentences(text);
             assertEquals(result, expectedOutput, `testCapitalizeSentences failed`);
         };

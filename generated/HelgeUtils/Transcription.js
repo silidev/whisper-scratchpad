@@ -1,5 +1,6 @@
 import { HelgeUtils } from './HelgeUtils.js';
 var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
+// import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js"
 export class TranscriptionError extends Error {
     payload;
     constructor(payload) {

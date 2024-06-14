@@ -1,9 +1,9 @@
 import {HtmlUtils} from "./HelgeUtils/HtmlUtils.js"
 import {Log, mainEditor} from "./Main.js"
 import {CurrentNote} from "./CurrentNote.js"
-import buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte;
+import buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte
 
-import showToast = HtmlUtils.showToast;
+import showToast = HtmlUtils.showToast
 
 const clipboard = navigator.clipboard
 

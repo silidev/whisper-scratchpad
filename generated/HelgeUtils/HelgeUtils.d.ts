@@ -56,7 +56,7 @@ export declare namespace HelgeUtils {
          *
          * Example use:
          const produceError = () => {throw "error"}
-         const noError = swallowAll(produceError);
+         const noError = swallowAll(produceError)
          noError(); // Does NOT throw an exception.
          *
          * @param func
@@ -207,12 +207,12 @@ export declare namespace HelgeUtils {
              *
              * Example:
              * ```
-             * const input = "example text";
+             * const input = "example text"
              * const replacementList = [
              *   [/\bexample\b/g, "sample"],
              *   [/\btext\b/g, "string"]
-             * ];
-             * const result = replaceFromList(input, replacementList);
+             * ]
+             * const result = replaceFromList(input, replacementList)
              * console.log(result); // Outputs: "sample string"
              * ```
              */
