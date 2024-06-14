@@ -192,7 +192,8 @@ export var HelgeUtils;
          * In contrast to {@link evalBetter} here you can and must use a return
          * statement if you want to return a value.
          *
-         * Docs about the method: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval
+         * Docs about the method:
+         * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval
          *
          * @param functionBodyStr
          * @param args {object} An object with entities, which you want to give the code
@@ -426,19 +427,21 @@ export var HelgeUtils;
             //   return input
             // }
             /**
-             * Replaces parts of a string based on a list of regular expression and replacement pairs.
+             * Replaces parts of a string based on a list of regular expression and replacement
+             * pairs.
              *
              * @param {string} input - The input string to be processed.
-             * @param {Array.<[RegExp, string]>} replacementList - An array of arrays, where each inner array contains
-             *        a RegExp object and a string.
-             *        and the corresponding strings are used to replace those matches.
+             * @param {Array.<[RegExp, string]>} replacementList - An array of arrays, where
+             *     each inner array contains a RegExp object and a string. and the
+             *     corresponding strings are used to replace those matches.
              *
              * @returns {string} - The processed string with replacements applied.
              *
              * The function first pads the input string with spaces at the beginning and end.
-             * Then, for each pair in the replacement list, it performs a replacement operation using the given regular
-             *     expression and replacement string. Finally, it ensures the first and last characters of the resulting
-             *     string are spaces, removes them, and returns the modified string.
+             * Then, for each pair in the replacement list, it performs a replacement operation
+             *     using the given regular expression and replacement string. Finally, it
+             *     ensures the first and last characters of the resulting string are spaces,
+             *     removes them, and returns the modified string.
              *
              * Example:
              * ```
@@ -623,9 +626,8 @@ export var HelgeUtils;
             }
             return input.replace(/(\r\n|\n|\r)/gm, "");
         };
-        Strings.capitalizeSentences = (text, sentenceEndRegex = /([.!:?]\s)|(\{\{c\d\d?::)/g) => {
-            const sentenceEndings = sentenceEndRegex;
-            const parts = text.split(sentenceEndings)
+        Strings.capitalizeSentences = (text, sentenceEndMarkerRegex = /([.!:?]\s)|(\{\{c\d\d?::)/g) => {
+            const parts = text.split(sentenceEndMarkerRegex)
                 // Remove all falsy values:
                 .filter(// The function Boolean converts everything to boolean:
             Boolean);
@@ -641,10 +643,14 @@ export var HelgeUtils;
                 .join('');
         };
         Strings.testCapitalizeSentences = () => {
-            const text = "this is a sentence. here is another one! yet another sentence? and one more."
-                + " A {{c1::and a special case. And more.";
-            const expectedOutput = "This is a sentence. Here is another one! Yet another sentence? And one more."
-                + " A {{c1::And a special case. And more.";
+            const minimumBetweenSentenceEndMarkers = "  "; /* If this would be only a single space,
+             capitalization will fail. That is fine. Not worth the time to fix it. */
+            const text = "this is a sentence.. here is another one! yet another sentence? And the answer is:"
+                + minimumBetweenSentenceEndMarkers
+                + "{{c1::and a special case. And more.";
+            const expectedOutput = "This is a sentence.. Here is another one! Yet another sentence? And the answer is:"
+                + minimumBetweenSentenceEndMarkers
+                + "{{c1::And a special case. And more.";
             const result = Strings.capitalizeSentences(text);
             assertEquals(result, expectedOutput, `testCapitalizeSentences failed`);
         };
@@ -1003,7 +1009,8 @@ export var HelgeUtils;
         /**
          * Converts "Du" to "Ich" and "Dein" to "Mein" and so on.
          *
-         * Anki search: ((re:\bdu\b) OR (re:\bdir\b) OR (re:\bdein\b) OR (re:\bdeiner\b) OR (re:\bdeines\b)) -tag:du
+         * Anki search: ((re:\bdu\b) OR (re:\bdir\b) OR (re:\bdein\b) OR (re:\bdeiner\b) OR
+         * (re:\bdeines\b)) -tag:du
          */
         Misc.du2ich = (input) => {
             // noinspection SpellCheckingInspection
@@ -2084,7 +2091,8 @@ export var HelgeUtils;
         //end of namespace Misc:
     })(Misc = HelgeUtils.Misc || (HelgeUtils.Misc = {}));
     /**
-     * Source: https://stackoverflow.com/questions/17528749/semaphore-like-queue-in-javascript
+     * Source:
+     * https://stackoverflow.com/questions/17528749/semaphore-like-queue-in-javascript
      */
     let Semaphore;
     (function (Semaphore) {

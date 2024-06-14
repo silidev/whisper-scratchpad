@@ -121,7 +121,8 @@ export declare namespace HelgeUtils {
          * In contrast to {@link evalBetter} here you can and must use a return
          * statement if you want to return a value.
          *
-         * Docs about the method: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval
+         * Docs about the method:
+         * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval
          *
          * @param functionBodyStr
          * @param args {object} An object with entities, which you want to give the code
@@ -188,19 +189,21 @@ export declare namespace HelgeUtils {
     export namespace Strings {
         namespace Regexes {
             /**
-             * Replaces parts of a string based on a list of regular expression and replacement pairs.
+             * Replaces parts of a string based on a list of regular expression and replacement
+             * pairs.
              *
              * @param {string} input - The input string to be processed.
-             * @param {Array.<[RegExp, string]>} replacementList - An array of arrays, where each inner array contains
-             *        a RegExp object and a string.
-             *        and the corresponding strings are used to replace those matches.
+             * @param {Array.<[RegExp, string]>} replacementList - An array of arrays, where
+             *     each inner array contains a RegExp object and a string. and the
+             *     corresponding strings are used to replace those matches.
              *
              * @returns {string} - The processed string with replacements applied.
              *
              * The function first pads the input string with spaces at the beginning and end.
-             * Then, for each pair in the replacement list, it performs a replacement operation using the given regular
-             *     expression and replacement string. Finally, it ensures the first and last characters of the resulting
-             *     string are spaces, removes them, and returns the modified string.
+             * Then, for each pair in the replacement list, it performs a replacement operation
+             *     using the given regular expression and replacement string. Finally, it
+             *     ensures the first and last characters of the resulting string are spaces,
+             *     removes them, and returns the modified string.
              *
              * Example:
              * ```
@@ -278,7 +281,7 @@ export declare namespace HelgeUtils {
         const isBlank: (input: string) => boolean;
         const isNotBlank: (input: string) => boolean;
         const removeLineBreaks: (input: string) => string;
-        const capitalizeSentences: (text: string, sentenceEndRegex?: RegExp) => string;
+        const capitalizeSentences: (text: string, sentenceEndMarkerRegex?: RegExp) => string;
         const testCapitalizeSentences: () => void;
     }
     export const randomElementOf: <T>(arr: T[]) => T;
@@ -370,12 +373,14 @@ export declare namespace HelgeUtils {
         /**
          * Converts "Du" to "Ich" and "Dein" to "Mein" and so on.
          *
-         * Anki search: ((re:\bdu\b) OR (re:\bdir\b) OR (re:\bdein\b) OR (re:\bdeiner\b) OR (re:\bdeines\b)) -tag:du
+         * Anki search: ((re:\bdu\b) OR (re:\bdir\b) OR (re:\bdein\b) OR (re:\bdeiner\b) OR
+         * (re:\bdeines\b)) -tag:du
          */
         const du2ich: (input: string) => string;
     }
     /**
-     * Source: https://stackoverflow.com/questions/17528749/semaphore-like-queue-in-javascript
+     * Source:
+     * https://stackoverflow.com/questions/17528749/semaphore-like-queue-in-javascript
      */
     export namespace Semaphore {
         class Queue {
