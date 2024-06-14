@@ -21,6 +21,7 @@ import { download, generateCsv, mkConfig } from "../node_modules/export-to-csv/o
 var suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
 var capitalizeSentences = HelgeUtils.Strings.capitalizeSentences;
 import { DelimiterSearch } from './HelgeUtils/DelimiterSearch.js';
+import { du2ich } from './HelgeUtils/du2ich.js';
 const hoursBetweenBackups = 24;
 const LARGE_STORAGE_PROVIDER = new HtmlUtils.BrowserStorage.LocalStorage();
 export const OPEN_CLOZE_STR = "{{c1::";
@@ -417,7 +418,6 @@ export var UiFunctions;
         NonWordChars.addButtonEventListener();
         let FixClipboard;
         (function (FixClipboard) {
-            var du2ich = HelgeUtils.Misc.du2ich;
             const fixClipboard = () => {
                 clipboard.readText().then(text => {
                     clipboard.writeText(du2ich(ReplaceByRules.withUiLog(replaceRulesTextarea.value, text))
@@ -820,7 +820,7 @@ export var UiFunctions;
             const du2ichMenuItem = () => {
                 mainEditor.Undo.saveState();
                 const currentNote = new CurrentNote(mainEditorTextarea);
-                const changedText = HelgeUtils.Misc.du2ich(currentNote.text());
+                const changedText = du2ich(currentNote.text());
                 currentNote.delete();
                 mainEditor.insertNote(changedText);
             };

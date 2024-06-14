@@ -29,6 +29,7 @@ import {download, generateCsv, mkConfig} from "../node_modules/export-to-csv/out
 import suppressUnusedWarning = HelgeUtils.suppressUnusedWarning;
 import capitalizeSentences = HelgeUtils.Strings.capitalizeSentences
 import {DelimiterSearch} from './HelgeUtils/DelimiterSearch.js'
+import {du2ich} from './HelgeUtils/du2ich.js'
 
 const hoursBetweenBackups = 24
 
@@ -476,7 +477,6 @@ export namespace UiFunctions {
     NonWordChars.addButtonEventListener()
 
     export namespace FixClipboard {
-      import du2ich = HelgeUtils.Misc.du2ich;
       const fixClipboard = () => {
         clipboard.readText().then(text => {
           clipboard.writeText(
@@ -922,7 +922,7 @@ export namespace UiFunctions {
         mainEditor.Undo.saveState()
 
         const currentNote = new CurrentNote(mainEditorTextarea)
-        const changedText = HelgeUtils.Misc.du2ich(currentNote.text())
+        const changedText = du2ich(currentNote.text())
         currentNote.delete()
 
         mainEditor.insertNote(changedText)
