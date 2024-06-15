@@ -537,19 +537,22 @@ export var HtmlUtils;
      */
     HtmlUtils.showToast = (message, durationMs = 1000) => {
         const alertBox = document.createElement("div");
+        alertBox.classList.add("showToastMsg");
+        /* Do NOT put this into the CSS. I want this to be portable.*/
         alertBox.style.cssText = `
-      position: fixed
-      top: 50%
-      left: 50%
-      transform: translateX(-50%)
-      background-color: darkblue
-      color: white
-      padding: 10px
-      border-radius: 5px
-      z-index: 999999
+      ;position: fixed
+      ;top: 50%
+      ;left: 50%
+      ;transform: translateX(-50%)
+      ;background-color: darkblue
+      ;color: white
+      ;padding: 10px
+      ;border-radius: 5px
+      ;z-index: 999999
     `;
         alertBox.textContent = message;
         document.body.appendChild(alertBox);
+        console.log(message);
         setTimeout(() => {
             alertBox.remove();
         }, durationMs);

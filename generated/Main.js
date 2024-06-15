@@ -180,6 +180,7 @@ export var UiFunctions;
         var addKeyboardShortcuts = Misc.addKeyboardShortcuts;
         var showToast = HtmlUtils.showToast;
         var offerBackupIfItsTime = Backups.offerBackupIfItsTime;
+        var ClozeMarkers = HelgeUtils.Anki.ClozeMarkers;
         Buttons.runTests = () => {
         };
         // ############## searchReplaceRules ##############
@@ -922,11 +923,13 @@ export var UiFunctions;
                 });
                 const textArray = mainEditorTextareaWrapper.value().split(NEW_NOTE_DELIMITER);
                 const csvData = textArray.map((text) => {
-                    if (text.includes("}}"))
+                    if (text.includes("}}")) {
                         return { column1: text };
-                    else if (text.includes("{{"))
+                    }
+                    else if (text.includes("{{")) {
                         return { column1: text + "}}" };
-                    return { column1: "{{c1::" + text + "}},," };
+                    }
+                    return { column1: ClozeMarkers.OPEN + text + ClozeMarkers.CLOSE };
                 });
                 const csv = generateCsv(csvConfig)(csvData);
                 return download(csvConfig)(csv);

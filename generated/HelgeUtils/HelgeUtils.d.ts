@@ -130,6 +130,14 @@ export declare namespace HelgeUtils {
          * */
         const executeFunctionBody: (functionBodyStr: string, args: object) => any;
     }
+    /** Yes, this must be here to b/c this file can't depend on AnkiUtils.
+     * Some of this code contains special cases for Anki. */
+    export namespace Anki {
+        namespace ClozeMarkers {
+            const OPEN: string;
+            const CLOSE: string;
+        }
+    }
     export namespace Conversions {
         const parseIntWithNull: (input: string | null) => number | null;
         const parseFloatWithNull: (input: string | null) => number | null;
