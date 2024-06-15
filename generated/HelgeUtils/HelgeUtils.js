@@ -213,8 +213,9 @@ export var HelgeUtils;
         let ClozeMarkers;
         (function (ClozeMarkers) {
             /* Do NOT hard merge these string or Anki will tell you "Template contains errors". */
-            ClozeMarkers.OPEN = "{" + "{c1::";
-            ClozeMarkers.CLOSE = "}" + "},,";
+            ClozeMarkers.openC1 = "{" + "{c1::";
+            ClozeMarkers.closeAndShowAnswer = "}" + "},,";
+            ClozeMarkers.closeAndShowFront = "}" + "}";
         })(ClozeMarkers = Anki.ClozeMarkers || (Anki.ClozeMarkers = {}));
     })(Anki = HelgeUtils.Anki || (HelgeUtils.Anki = {}));
     let Conversions;
@@ -428,6 +429,7 @@ export var HelgeUtils;
     };
     let Strings;
     (function (Strings) {
+        var ClozeMarkers = HelgeUtils.Anki.ClozeMarkers;
         let Regexes;
         (function (Regexes) {
             // const removeFirstAndLastChar = (input: string) => input.substring(1, input.length - 1)
@@ -658,10 +660,10 @@ export var HelgeUtils;
              capitalization will fail. That is fine. Not worth the time to fix it. */
             const text = "this is a sentence.. here is another one! yet another sentence? And the answer is:"
                 + minimumBetweenSentenceEndMarkers
-                + ClozeMarkers.OPEN + "and a special case. And more.";
+                + ClozeMarkers.openC1 + "and a special case. And more.";
             const expectedOutput = "This is a sentence.. Here is another one! Yet another sentence? And the answer is:"
                 + minimumBetweenSentenceEndMarkers
-                + ClozeMarkers.OPEN + "And a special case. And more.";
+                + ClozeMarkers.openC1 + "And a special case. And more.";
             const result = Strings.capitalizeSentences(text);
             assertEquals(result, expectedOutput, `testCapitalizeSentences failed`);
         };

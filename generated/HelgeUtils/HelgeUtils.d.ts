@@ -134,8 +134,9 @@ export declare namespace HelgeUtils {
      * Some of this code contains special cases for Anki. */
     export namespace Anki {
         namespace ClozeMarkers {
-            const OPEN: string;
-            const CLOSE: string;
+            const openC1: string;
+            const closeAndShowAnswer: string;
+            const closeAndShowFront: string;
         }
     }
     export namespace Conversions {

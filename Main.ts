@@ -1055,7 +1055,7 @@ export namespace UiFunctions {
           } else if (text.includes("{{")) {
             return {column1: text + "}}"}
           }
-          return {column1: ClozeMarkers.OPEN + text + ClozeMarkers.CLOSE}
+          return {column1: ClozeMarkers.openC1 + text + ClozeMarkers.CLOSE}
         })
         const csv = generateCsv(csvConfig)(csvData)
         return download(csvConfig)(csv)

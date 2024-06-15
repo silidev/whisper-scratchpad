@@ -4,6 +4,9 @@ import {CurrentNote} from "./CurrentNote.js"
 import buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte
 
 import showToast = HtmlUtils.showToast
+import {ankiSpecialsSwitch} from './Config.js'
+import {HelgeUtils} from './HelgeUtils/HelgeUtils.js'
+import ClozeMarkers = HelgeUtils.Anki.ClozeMarkers
 
 const clipboard = navigator.clipboard
 
@@ -14,7 +17,11 @@ export const createCutFunction =
   return () => {
     mainEditor.Undo.saveState()
     const currentNote = new CurrentNote(mainEditorTextarea)
-    clipboard.writeText(prefix + currentNote.text().trim() + postfix)
+    let text = prefix + currentNote.text().trim() + postfix
+    if (ankiSpecialsSwitch && text.includes(ClozeMarkers.openC1)) {
+      text += ClozeMarkers.closeAndShowFront
+    }
+    clipboard.writeText(text)
         .then(() => {
           HtmlUtils.signalClickToUser(buttonWithId("cutNoteButton"))
           {
