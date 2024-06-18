@@ -657,22 +657,12 @@ export var UiFunctions;
                 elementWithId('fileToUploadSelector').addEventListener('change', transcribeSelectedFile);
             };
             // ############## stopButton ##############
-            const stopRecording = () => {
+            const stopButton = () => {
                 if (!mediaRecorder)
                     return;
                 mediaRecorder.onstop = StopCallbackCreator.transcribingCallback();
                 mediaRecorder.stop();
-            };
-            const stopButton = () => {
-                stopRecording();
-                /** delete, previous behavior
-                if (isRecording) {
-                  stopRecording()
-                } else {
-                  NotVisibleAtThisTime.showSpinner()
-                  startRecording()
-                }
-                */
+                mainEditor.appendStringAndCursor("\n\n\n\n\n\n\n\n\n\n\n\n");
             };
             buttonWithId("stopButton").addEventListener('click', stopButton);
             // ############## cancelRecording ##############
@@ -921,7 +911,7 @@ export var UiFunctions;
                     columnHeaders: ["column1"], showColumnHeaders: false, useTextFile: true
                 });
                 const textArray = mainEditorTextareaWrapper.value().split(NEW_NOTE_DELIMITER);
-                const csvData = textArray.map((text) => {
+                const surroundWithClozeDelimiters = (text) => {
                     if (text.endsWith("}}")
                         || text.endsWith("}},,")) {
                         return { column1: text };
@@ -930,6 +920,9 @@ export var UiFunctions;
                         return { column1: text + "}},," };
                     }
                     return { column1: '{{c1::' + text + "}},," };
+                };
+                const csvData = textArray.map((text) => {
+                    return surroundWithClozeDelimiters(text.trim());
                 });
                 const csv = generateCsv(csvConfig)(csvData);
                 return download(csvConfig)(csv);

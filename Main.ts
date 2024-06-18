@@ -117,7 +117,6 @@ export namespace mainEditor {
 
   export const appendDelimiterAndCursor = () => {
     mainEditorTextareaWrapper.trim()
-
     const dateAlreadyPresent =
         / - \d\d?\.\d\d?\.\d\d\n?$/.test(mainEditorTextarea.value)
     appendStringAndCursor(
@@ -741,22 +740,12 @@ export namespace UiFunctions {
       }
 
 // ############## stopButton ##############
-      const stopRecording = () => {
-        if (!mediaRecorder) return
+      const stopButton = () => {
+        if (!mediaRecorder)
+          return
         mediaRecorder.onstop = StopCallbackCreator.transcribingCallback()
         mediaRecorder.stop()
-      }
-
-      const stopButton = () => {
-        stopRecording()
-        /** delete, previous behavior
-        if (isRecording) {
-          stopRecording()
-        } else {
-          NotVisibleAtThisTime.showSpinner()
-          startRecording()
-        }
-        */
+        mainEditor.appendStringAndCursor("\n\n\n\n\n\n\n\n\n\n\n\n")
       }
       buttonWithId("stopButton").addEventListener('click', stopButton)
 
@@ -1048,7 +1037,7 @@ export namespace UiFunctions {
           columnHeaders: ["column1"], showColumnHeaders: false, useTextFile: true
         })
         const textArray = mainEditorTextareaWrapper.value().split(NEW_NOTE_DELIMITER)
-        const csvData = textArray.map((text: string) => {
+        const surroundWithClozeDelimiters = (text: string) => {
           if (text.endsWith("}}")
               || text.endsWith("}},,")) {
             return {column1: text}
@@ -1056,6 +1045,9 @@ export namespace UiFunctions {
             return {column1: text + "}},,"}
           }
           return {column1: '{{c1::' + text + "}},,"}
+        }
+        const csvData = textArray.map((text: string) => {
+          return surroundWithClozeDelimiters(text.trim())
         })
         const csv = generateCsv(csvConfig)(csvData)
         return download(csvConfig)(csv)
