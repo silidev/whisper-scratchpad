@@ -1,11 +1,3 @@
-/**
- * Updates: https://github.com/silidev/HelgeUtils/blob/main/HelgeUtils.ts
- *
- * HelgeUtils.ts V1.0
- * @description A collection of general utility functions not connected to a
- * specific project.
- *
- * Copyright by Helge Tobias Kosuch 2024 */
 export declare namespace HelgeUtils {
     /** Config */
     /** You can turn this off for debugging */
@@ -132,13 +124,7 @@ export declare namespace HelgeUtils {
     }
     /** Yes, this must be here to b/c this file can't depend on AnkiUtils.
      * Some of this code contains special cases for Anki. */
-    export namespace Anki {
-        namespace ClozeMarkers {
-            const openC1: string;
-            const closeAndShowAnswer: string;
-            const closeAndShowFront: string;
-        }
-    }
+    export const Anki: any;
     export namespace Conversions {
         const parseIntWithNull: (input: string | null) => number | null;
         const parseFloatWithNull: (input: string | null) => number | null;
@@ -174,6 +160,7 @@ export declare namespace HelgeUtils {
      * @param args
      */
     export const suppressUnusedWarning: (...args: any[]) => void;
+    export const crossRefOnly: (...args: any[]) => void;
     export namespace Tests {
         /** This function is a copy template. */
         const runTestsOnlyToday: () => void;

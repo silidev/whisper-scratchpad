@@ -32,6 +32,7 @@ export declare namespace HtmlUtils {
      */
     const blinkSlow: (message: string) => string;
     const elementWithId: (...args: string[]) => HTMLElement | null;
+    const elementWithIdNte: (id: string) => HTMLElement;
     const buttonWithId: (id: string) => HTMLButtonElement | null;
     const textAreaWithId: (id: string) => HTMLTextAreaElement | null;
     const inputElementWithId: (id: string) => HTMLInputElement | null;
@@ -149,8 +150,9 @@ export declare namespace HtmlUtils {
                 private _enabled;
                 /** key used in storage */
                 private readonly _enabledKey;
-                constructor(_storageKey: string, _storage: BsProvider);
+                constructor(_storageKey: string, _storage: BsProvider, initialValue?: boolean);
                 enabled: () => boolean;
+                disabled: () => boolean;
                 private saveToStorage;
                 enable: () => void;
                 disable: () => void;
@@ -215,6 +217,8 @@ export declare namespace HtmlUtils {
     }
     namespace Styles {
         const toggleDisplayNone: (element: HTMLElement, visibleDisplayStyle: string) => void;
+        /** If element is null, nothing happens, no error. */
+        const toggleDisplayNoneIfPossible: (element: HTMLElement | null, visibleDisplayStyle: string) => void;
     }
     /**
      * showToast

@@ -6,7 +6,7 @@ import buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte
 import showToast = HtmlUtils.showToast
 import {ankiSpecialsSwitch} from './Config.js'
 import {HelgeUtils} from './HelgeUtils/HelgeUtils.js'
-import ClozeMarkers = HelgeUtils.Anki.ClozeMarkers
+const ClozeMarkers = HelgeUtils.Anki?.ClozeMarkers
 
 const clipboard = navigator.clipboard
 

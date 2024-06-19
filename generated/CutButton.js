@@ -5,7 +5,7 @@ var buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte;
 var showToast = HtmlUtils.showToast;
 import { ankiSpecialsSwitch } from './Config.js';
 import { HelgeUtils } from './HelgeUtils/HelgeUtils.js';
-var ClozeMarkers = HelgeUtils.Anki.ClozeMarkers;
+const ClozeMarkers = HelgeUtils.Anki?.ClozeMarkers;
 const clipboard = navigator.clipboard;
 export const createCutFunction = (mainEditorTextarea, prefix = "", postfix = "") => {
     return () => {

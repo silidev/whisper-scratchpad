@@ -6,6 +6,7 @@
  * specific project.
  *
  * Copyright by Helge Tobias Kosuch 2024 */
+import { ankiSpecialsSwitch } from '../Config.js';
 // import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js"
 export var HelgeUtils;
 (function (HelgeUtils) {
@@ -208,16 +209,8 @@ export var HelgeUtils;
     })(Eval = HelgeUtils.Eval || (HelgeUtils.Eval = {}));
     /** Yes, this must be here to b/c this file can't depend on AnkiUtils.
      * Some of this code contains special cases for Anki. */
-    let Anki;
-    (function (Anki) {
-        let ClozeMarkers;
-        (function (ClozeMarkers) {
-            /* Do NOT hard merge these string or Anki will tell you "Template contains errors". */
-            ClozeMarkers.openC1 = "{" + "{c1::";
-            ClozeMarkers.closeAndShowAnswer = "}" + "},,";
-            ClozeMarkers.closeAndShowFront = "}" + "}";
-        })(ClozeMarkers = Anki.ClozeMarkers || (Anki.ClozeMarkers = {}));
-    })(Anki = HelgeUtils.Anki || (HelgeUtils.Anki = {}));
+    // @ts-ignore
+    HelgeUtils.Anki = window.koh455?.Anki;
     let Conversions;
     (function (Conversions) {
         Conversions.parseIntWithNull = (input) => {
@@ -329,6 +322,7 @@ export var HelgeUtils;
             console.log(args);
         }
     };
+    HelgeUtils.crossRefOnly = HelgeUtils.suppressUnusedWarning;
     let Tests;
     (function (Tests) {
         /** This function is a copy template. */
@@ -429,7 +423,6 @@ export var HelgeUtils;
     };
     let Strings;
     (function (Strings) {
-        var ClozeMarkers = HelgeUtils.Anki.ClozeMarkers;
         let Regexes;
         (function (Regexes) {
             // const removeFirstAndLastChar = (input: string) => input.substring(1, input.length - 1)
@@ -660,10 +653,10 @@ export var HelgeUtils;
              capitalization will fail. That is fine. Not worth the time to fix it. */
             const text = "this is a sentence.. here is another one! yet another sentence? And the answer is:"
                 + minimumBetweenSentenceEndMarkers
-                + ClozeMarkers.openC1 + "and a special case. And more.";
+                + (ankiSpecialsSwitch ? HelgeUtils.Anki.ClozeMarkers.openC1 + "and a special case. And more." : "");
             const expectedOutput = "This is a sentence.. Here is another one! Yet another sentence? And the answer is:"
                 + minimumBetweenSentenceEndMarkers
-                + ClozeMarkers.openC1 + "And a special case. And more.";
+                + (ankiSpecialsSwitch ? HelgeUtils.Anki.ClozeMarkers.openC1 + "And a special case. And more." : "");
             const result = Strings.capitalizeSentences(text);
             assertEquals(result, expectedOutput, `testCapitalizeSentences failed`);
         };

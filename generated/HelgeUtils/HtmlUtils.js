@@ -82,6 +82,13 @@ export var HtmlUtils;
     HtmlUtils.elementWithId = memoize((id) => {
         return document.getElementById(id);
     });
+    HtmlUtils.elementWithIdNte = (id) => {
+        const el = HtmlUtils.elementWithId(id);
+        if (!el) {
+            throw new Error(`Element with id ${id} not found`);
+        }
+        return el;
+    };
     HtmlUtils.buttonWithId = HtmlUtils.elementWithId;
     HtmlUtils.textAreaWithId = HtmlUtils.elementWithId;
     HtmlUtils.inputElementWithId = HtmlUtils.elementWithId;
@@ -98,7 +105,7 @@ export var HtmlUtils;
         /** @see NullThrowsException */
         NullThrowsException.elementWithIdNte = (id) => nullFilter(HtmlUtils.elementWithId(id));
         /** @see NullThrowsException */
-        NullThrowsException.buttonWithIdNte = (id) => nullFilter(HtmlUtils.buttonWithId(id));
+        NullThrowsException.buttonWithIdNte = (id) => HtmlUtils.elementWithIdNte(id); //TODO: Also implement the others with this.
         /** @see NullThrowsException */
         NullThrowsException.inputElementWithIdNte = (id) => nullFilter(HtmlUtils.inputElementWithId(id));
         /** @see NullThrowsException */
@@ -360,13 +367,16 @@ export var HtmlUtils;
                 _enabled;
                 /** key used in storage */
                 _enabledKey;
-                constructor(_storageKey, _storage) {
+                constructor(_storageKey, _storage, initialValue = false) {
                     this._storage = _storage;
                     this._enabledKey = _storageKey + '._enabled';
-                    this._enabled = _storage.getAndJsonParse(this._enabledKey) ?? false;
+                    this._enabled = _storage.getAndJsonParse(this._enabledKey) ?? initialValue;
                 }
                 enabled = () => {
                     return this._enabled;
+                };
+                disabled = () => {
+                    return !this._enabled;
                 };
                 saveToStorage = () => {
                     this._storage.setJsonStringified(this._enabledKey, this._enabled);
@@ -523,6 +533,13 @@ export var HtmlUtils;
             else {
                 element.style.display = "none";
             }
+        };
+        /** If element is null, nothing happens, no error. */
+        Styles.toggleDisplayNoneIfPossible = (element, visibleDisplayStyle) => {
+            if (!element) {
+                return;
+            }
+            Styles.toggleDisplayNone(element, visibleDisplayStyle);
         };
     })(Styles = HtmlUtils.Styles || (HtmlUtils.Styles = {}));
     /**
