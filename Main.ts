@@ -745,7 +745,7 @@ export namespace UiFunctions {
           return
         mediaRecorder.onstop = StopCallbackCreator.transcribingCallback()
         mediaRecorder.stop()
-        mainEditor.appendStringAndCursor("\n\n\n\n\n\n\n\n\n\n\n\n")
+        // mainEditor.appendStringAndCursor("\n\n\n\n\n\n\n\n\n\n\n\n")
       }
       buttonWithId("stopButton").addEventListener('click', stopButton)
 
