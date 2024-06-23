@@ -6,7 +6,6 @@
  * specific project.
  *
  * Copyright by Helge Tobias Kosuch 2024 */
-import { ankiSpecialsSwitch } from '../Config.js';
 // import {Deepgram} from "../node_modules/@deepgram/sdk/dist/module/index.js"
 export var HelgeUtils;
 (function (HelgeUtils) {
@@ -24,6 +23,8 @@ export var HelgeUtils;
             })(Misc = Debug.Misc || (Debug.Misc = {}));
         })(Debug = Config.Debug || (Config.Debug = {}));
     })(Config = HelgeUtils.Config || (HelgeUtils.Config = {}));
+    // @ts-ignore
+    const ankiSpecialsSwitch = window.koh455?.ankiSpecialsSwitch;
     let Exceptions;
     (function (Exceptions) {
         /**

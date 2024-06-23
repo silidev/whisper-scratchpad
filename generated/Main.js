@@ -745,6 +745,9 @@ export var UiFunctions;
         })(clipboard || (clipboard = {}));
         Buttons.addEventListeners = () => {
             addKeyboardShortcuts();
+            Menu.wireItem("rrCountChars", () => {
+                alert(replaceRulesTextarea.textLength);
+            });
             Menu.wireItem("undoActionButton", mainEditor.Undo.undo);
             // ############## Toggle Log Button ##############
             Menu.wireItem("viewLogButton", Log.toggleLog());

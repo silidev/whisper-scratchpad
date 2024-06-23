@@ -1,3 +1,11 @@
+/**
+ * Updates: https://github.com/silidev/HelgeUtils/blob/main/HelgeUtils.ts
+ *
+ * HelgeUtils.ts V1.0
+ * @description A collection of general utility functions not connected to a
+ * specific project.
+ *
+ * Copyright by Helge Tobias Kosuch 2024 */
 export declare namespace HelgeUtils {
     /** Config */
     /** You can turn this off for debugging */

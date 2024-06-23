@@ -837,6 +837,10 @@ export namespace UiFunctions {
 
       addKeyboardShortcuts()
 
+      Menu.wireItem("rrCountChars", () => {
+        alert(replaceRulesTextarea.textLength)
+      })
+
       Menu.wireItem("undoActionButton", mainEditor.Undo.undo)
 
 // ############## Toggle Log Button ##############
