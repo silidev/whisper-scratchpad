@@ -1181,33 +1181,29 @@ export namespace Log {
   import inputElementWithId = HtmlUtils.NullThrowsException.inputElementWithIdNte
   const MAX_LOG_LEN = 10000
 
-  // noinspection JSUnusedGlobalSymbols
   export const turnOnLogging = () => {
     inputElementWithId("logReplaceRulesCheckbox").checked = true
-  }
 
-  function logEvenIfNotEnabled(message: string) {
+  }
+  const logEvenIfNotEnabled = (message: string) => {
     const logTextArea = textAreaWithId("logTextArea")
     const oldLog = logTextArea.value
     logTextArea.value = (oldLog + "\n" + message).slice(-MAX_LOG_LEN).trim()
     TextAreas.scrollToEnd(logTextArea)
   }
-
   export const writeIfLoggingEnabled = (message: string) => {
     if (!inputElementWithId("logReplaceRulesCheckbox").checked) return
     logEvenIfNotEnabled(message)
   }
-
   export const error = (message: string) => {
     logEvenIfNotEnabled(message)
     showLog()
   }
-
   /** This only shows the log. It does NOT turn logging on! */
   export const showLog = () => {
     textAreaWithId("logTextArea").style.display = "block"
-  }
 
+  }
   export const toggleLog = () => () => {
 
     const log = textAreaWithId("logTextArea")
@@ -1219,42 +1215,46 @@ export namespace Log {
       inputElementWithId("logReplaceRulesCheckbox").checked = false
     }
   }
-
 }
 
+/** Also always capitalizes sentences. */
 namespace ReplaceByRules {
-  // Overload signatures
   import inputElementWithId = HtmlUtils.NullThrowsException.inputElementWithIdNte
 
+  // Overload signatures
+  /** See {@link ReplaceByRules}*/
   export function withUiLog(rules: string, subject: string): string
+  /** See {@link ReplaceByRules}*/
   export function withUiLog(rules: string, subject: string, wholeWords: boolean): string
+  /** See {@link ReplaceByRules}*/
   export function withUiLog(rules: string, subject: string, wholeWords: boolean,
                             preserveCase: boolean): string
 
-  export function withUiLog(rules: string, subject: string, wholeWords = false, preserveCase = false): string {
+  /** See {@link ReplaceByRules}*/
+  export function withUiLog(rules: string, subject: string, wholeWords = false,
+      preserveCase = false): string {
     const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked
-    const retVal = HelgeUtils.ReplaceByRules.replaceByRules(subject, rules, wholeWords, logFlag, preserveCase)
+    const retVal = HelgeUtils.ReplaceByRules.replaceByRules(subject, rules, wholeWords,
+        logFlag, preserveCase)
     Log.writeIfLoggingEnabled(retVal.log)
-    return (capitalizeSentences
-        (retVal.resultingText)
-    )
+    return capitalizeSentences(retVal.resultingText)
   }
-  // noinspection JSUnusedGlobalSymbols
+  /** See {@link ReplaceByRules}*/
   export function onlyWholeWordsWithUiLog(rules: string, subject: string) {
     return withUiLog(rules, subject, true)
+
   }
-  // noinspection JSUnusedGlobalSymbols
+  /** See {@link ReplaceByRules}*/
   export function onlyWholeWordsPreserveCaseWithUiLog(rules: string, subject: string) {
     return withUiLog(rules, subject, true, true)
+
   }
 }
-
 const getApiKey = () => Cookies.get(apiSelector.value + 'ApiKey')
-
 const setApiKeyCookie = (apiKey: string) => {
   Cookies.set(apiSelector.value + 'ApiKey', apiKey)
-}
 
+}
 export const loadFormData = () => {
   const getLocalStorageOrCookie = (key: string) => {
     return LARGE_STORAGE_PROVIDER.getString(key) ?? Cookies.get(key)
@@ -1268,7 +1268,6 @@ export const loadFormData = () => {
   apiSelector.value = Cookies.get("apiSelector")??'OpenAI'
   languageSelector.value = Cookies.get("languageSelector")??''
 }
-
 export const registerServiceWorker = () => {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
@@ -1279,14 +1278,12 @@ export const registerServiceWorker = () => {
         }).catch(Log.error)
   }
 }
-
 const mayRunTests = () => {
   if (!RUN_TESTS) return
   HelgeUtils.runTests()
   UiFunctions.runTests()
   DelimiterSearch.runTests()
 }
-
 const init = () => {
   mayRunTests()
   UiFunctions.Buttons.addEventListeners()

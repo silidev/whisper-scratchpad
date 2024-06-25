@@ -1036,16 +1036,15 @@ export var Log;
 (function (Log) {
     var inputElementWithId = HtmlUtils.NullThrowsException.inputElementWithIdNte;
     const MAX_LOG_LEN = 10000;
-    // noinspection JSUnusedGlobalSymbols
     Log.turnOnLogging = () => {
         inputElementWithId("logReplaceRulesCheckbox").checked = true;
     };
-    function logEvenIfNotEnabled(message) {
+    const logEvenIfNotEnabled = (message) => {
         const logTextArea = textAreaWithId("logTextArea");
         const oldLog = logTextArea.value;
         logTextArea.value = (oldLog + "\n" + message).slice(-MAX_LOG_LEN).trim();
         TextAreas.scrollToEnd(logTextArea);
-    }
+    };
     Log.writeIfLoggingEnabled = (message) => {
         if (!inputElementWithId("logReplaceRulesCheckbox").checked)
             return;
@@ -1071,23 +1070,24 @@ export var Log;
         }
     };
 })(Log || (Log = {}));
+/** Also always capitalizes sentences. */
 var ReplaceByRules;
 (function (ReplaceByRules) {
-    // Overload signatures
     var inputElementWithId = HtmlUtils.NullThrowsException.inputElementWithIdNte;
+    /** See {@link ReplaceByRules}*/
     function withUiLog(rules, subject, wholeWords = false, preserveCase = false) {
         const logFlag = inputElementWithId("logReplaceRulesCheckbox").checked;
         const retVal = HelgeUtils.ReplaceByRules.replaceByRules(subject, rules, wholeWords, logFlag, preserveCase);
         Log.writeIfLoggingEnabled(retVal.log);
-        return (capitalizeSentences(retVal.resultingText));
+        return capitalizeSentences(retVal.resultingText);
     }
     ReplaceByRules.withUiLog = withUiLog;
-    // noinspection JSUnusedGlobalSymbols
+    /** See {@link ReplaceByRules}*/
     function onlyWholeWordsWithUiLog(rules, subject) {
         return withUiLog(rules, subject, true);
     }
     ReplaceByRules.onlyWholeWordsWithUiLog = onlyWholeWordsWithUiLog;
-    // noinspection JSUnusedGlobalSymbols
+    /** See {@link ReplaceByRules}*/
     function onlyWholeWordsPreserveCaseWithUiLog(rules, subject) {
         return withUiLog(rules, subject, true, true);
     }
