@@ -650,16 +650,13 @@ export var HelgeUtils;
                 .join('');
         };
         Strings.testCapitalizeSentences = () => {
-            const minimumBetweenSentenceEndMarkers = "  "; /* If this would be only a single space,
-             capitalization will fail. That is fine. Not worth the time to fix it. */
-            const text = "this is a sentence.. here is another one! yet another sentence? And the answer is:"
-                + minimumBetweenSentenceEndMarkers
-                + (ankiSpecialsSwitch ? HelgeUtils.Anki.ClozeMarkers.openC1 + "and a special case. And more." : "");
-            const expectedOutput = "This is a sentence.. Here is another one! Yet another sentence? And the answer is:"
-                + minimumBetweenSentenceEndMarkers
-                + (ankiSpecialsSwitch ? HelgeUtils.Anki.ClozeMarkers.openC1 + "And a special case. And more." : "");
-            const result = Strings.capitalizeSentences(text);
-            assertEquals(result, expectedOutput, `testCapitalizeSentences failed`);
+            const text = "this is a sentence.. here is another one! exclamation? question: "
+                + "colon {" + "{c11::anki";
+            const expected = "This is a sentence.. Here is another one! Exclamation? Question: "
+                + "Colon {" + "{c11::Anki";
+            const actual = Strings.capitalizeSentences(text);
+            // console.log("testCapitalizeSentences")
+            assertEquals(actual, expected, `testCapitalizeSentences failed`);
         };
     })(Strings = HelgeUtils.Strings || (HelgeUtils.Strings = {}));
     /* Returns a random element of the given array */
@@ -880,7 +877,7 @@ export var HelgeUtils;
                  * Often you should inline this function and load it before other scripts.
                  * */
                 Eruda.load = () => {
-                    // Import from here instead: HelgeLoadFirst.Debug.DevConsole.Eruda.load()
+                    // Import from here instead: LoadFirstDebugging.DevConsole.Eruda.load()
                 };
             })(Eruda = DevConsoles.Eruda || (DevConsoles.Eruda = {}));
         })(DevConsoles = Debugging.DevConsoles || (Debugging.DevConsoles = {}));

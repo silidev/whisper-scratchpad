@@ -49,6 +49,10 @@ export var HtmlUtils;
         /**
          * This outputs gently. Might not be seen by the user.  */
         ErrorHandling.printDebug = (str, parentElement = document.body) => {
+            if (!str) {
+                ErrorHandling.printDebug("printDebug called with falsy str.");
+                return;
+            }
             HtmlUtils.showToast(str.substring(0, 80));
             console.log(str);
             HelgeUtils.Exceptions.callSwallowingExceptions(() => {

@@ -1279,6 +1279,7 @@ export const registerServiceWorker = () => {
   }
 }
 const mayRunTests = () => {
+  // console.log("mayRunTests")
   if (!RUN_TESTS) return
   HelgeUtils.runTests()
   UiFunctions.runTests()

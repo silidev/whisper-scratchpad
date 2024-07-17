@@ -1,3 +1,8 @@
+/** Copyright by Helge Tobias Kosuch 2023
+ *
+ * Should be named DomUtils... but I am used to HtmlUtils.
+ * */
+import { HelgeUtils } from "./HelgeUtils.js";
 declare global {
     interface Window {
         getCaretCoordinates: (element: HTMLElement, position: number) => {
@@ -144,8 +149,9 @@ export declare namespace HtmlUtils {
             const get: (name: string) => string | null;
         }
         namespace Misc {
+            import Switch = HelgeUtils.Types.Switch;
             /** A mode whose status is stored to a persistent storage, e. g. localStorage. */
-            class StoredMode {
+            class StoredMode implements Switch {
                 private _storage;
                 private _enabled;
                 /** key used in storage */

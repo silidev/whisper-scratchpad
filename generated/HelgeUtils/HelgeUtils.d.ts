@@ -106,6 +106,11 @@ export declare namespace HelgeUtils {
          */
         const catchSpecificError: (errorType: any, callback: (error: Error) => void, wantedErrorMsg?: string | null) => (error: Error) => void;
     }
+    export namespace Types {
+        interface Switch {
+            enabled(): boolean;
+        }
+    }
     export namespace Eval {
         /**
          * Like "eval(...)" but a little safer and with better performance.
