@@ -3,7 +3,6 @@ import { Log, mainEditor } from "./Main.js";
 import { CurrentNote } from "./CurrentNote.js";
 var buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte;
 var showToast = HtmlUtils.showToast;
-import { ankiSpecialsSwitch } from './Config.js';
 import { HelgeUtils } from './HelgeUtils/HelgeUtils.js';
 const ClozeMarkers = HelgeUtils.Anki?.ClozeMarkers;
 const clipboard = navigator.clipboard;
@@ -12,8 +11,8 @@ export const createCutFunction = (mainEditorTextarea, prefix = "", postfix = "")
         mainEditor.Undo.saveState();
         const currentNote = new CurrentNote(mainEditorTextarea);
         let text = prefix + currentNote.text().trim() + postfix;
-        if (ankiSpecialsSwitch && text.includes(ClozeMarkers.openC1)) {
-            text += ClozeMarkers.closeAndShowFront;
+        if (text.includes("{{c1::") && !text.includes("}}")) {
+            text += "}}";
         }
         clipboard.writeText(text)
             .then(() => {

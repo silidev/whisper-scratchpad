@@ -4,7 +4,6 @@ import {CurrentNote} from "./CurrentNote.js"
 import buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte
 
 import showToast = HtmlUtils.showToast
-import {ankiSpecialsSwitch} from './Config.js'
 import {HelgeUtils} from './HelgeUtils/HelgeUtils.js'
 const ClozeMarkers = HelgeUtils.Anki?.ClozeMarkers
 
@@ -18,8 +17,8 @@ export const createCutFunction =
     mainEditor.Undo.saveState()
     const currentNote = new CurrentNote(mainEditorTextarea)
     let text = prefix + currentNote.text().trim() + postfix
-    if (ankiSpecialsSwitch && text.includes(ClozeMarkers.openC1)) {
-      text += ClozeMarkers.closeAndShowFront
+    if (text.includes("{{c1::") && !text.includes("}}")) {
+      text += "}}"
     }
     clipboard.writeText(text)
         .then(() => {
