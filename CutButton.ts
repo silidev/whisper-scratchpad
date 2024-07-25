@@ -4,23 +4,30 @@ import {CurrentNote} from "./CurrentNote.js"
 import buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte
 
 import showToast = HtmlUtils.showToast
-import {HelgeUtils} from './HelgeUtils/HelgeUtils.js'
-const ClozeMarkers = HelgeUtils.Anki?.ClozeMarkers
 
 const clipboard = navigator.clipboard
 
 export const createCutFunction =
-    (mainEditorTextarea: HTMLTextAreaElement,
-     prefix = "", postfix = "") => {
+    (mainEditorTextarea: HTMLTextAreaElement, addClozeMarkersIfNotPresentFlag: boolean) => {
 
   return () => {
-    mainEditor.Undo.saveState()
-    const currentNote = new CurrentNote(mainEditorTextarea)
-    let text = prefix + currentNote.text().trim() + postfix
-    if (text.includes("{{c1::") && !text.includes("}}")) {
-      text += "}}"
+    const addClozeMarkersIfNotPresent = (input: string, addClozeMarkersIfNotPresentFlag: boolean) => {
+      if (!addClozeMarkersIfNotPresentFlag) {
+        return input
+      }
+      if (input.includes("{{c1::")) {
+        if (input.includes("}}")) {
+          return input
+        }
+        return input + "}}"
+      }
+      return "{{c1::" + input + "}},,"
     }
-    clipboard.writeText(text)
+    mainEditor.Undo.saveState()
+    const currentNote  = new CurrentNote(mainEditorTextarea)
+    const output: string = addClozeMarkersIfNotPresent(currentNote.text().trim()
+        , addClozeMarkersIfNotPresentFlag)
+    clipboard.writeText(output)
         .then(() => {
           HtmlUtils.signalClickToUser(buttonWithId("cutNoteButton"))
           {

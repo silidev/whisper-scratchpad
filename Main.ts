@@ -174,7 +174,7 @@ namespace Misc {
   }
 
   export const addKeyboardShortcuts = () => {
-    const cutFromMainEditor = createCutFunction(mainEditorTextarea, OPEN_CLOZE_STR, CLOSE_CLOZE_STR)
+    const cutFromMainEditor = createCutFunction(mainEditorTextarea,true)
 
     document.addEventListener('keyup', (event) => {
       // console.log(event.key,event.shiftKey,event.ctrlKey,event.altKey)
@@ -997,10 +997,10 @@ export namespace UiFunctions {
 
 // cutNoteButton
       buttonWithId("cutNoteButton").addEventListener('click',
-          createCutFunction(mainEditorTextarea))
+          createCutFunction(mainEditorTextarea,false))
 // cutAnkiButton
       buttonWithId("cutAnkiButton").addEventListener('click',
-          createCutFunction(mainEditorTextarea, OPEN_CLOZE_STR, CLOSE_CLOZE_STR))
+          createCutFunction(mainEditorTextarea,true))
 
 // copyButtons
       /** Adds an event listener to a button that copies the text of an input element to the clipboard. */

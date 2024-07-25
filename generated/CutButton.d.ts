@@ -1,1 +1,1 @@
-export declare const createCutFunction: (mainEditorTextarea: HTMLTextAreaElement, prefix?: string, postfix?: string) => () => void;
+export declare const createCutFunction: (mainEditorTextarea: HTMLTextAreaElement, addClozeMarkersIfNotPresentFlag: boolean) => () => void;

@@ -140,7 +140,7 @@ var Misc;
         mainEditorTextarea.selectionEnd = selectionStart;
     };
     Misc.addKeyboardShortcuts = () => {
-        const cutFromMainEditor = createCutFunction(mainEditorTextarea, OPEN_CLOZE_STR, CLOSE_CLOZE_STR);
+        const cutFromMainEditor = createCutFunction(mainEditorTextarea, true);
         document.addEventListener('keyup', (event) => {
             // console.log(event.key,event.shiftKey,event.ctrlKey,event.altKey)
             if (event.key === 'X' && event.shiftKey && event.ctrlKey) {
@@ -877,9 +877,9 @@ export var UiFunctions;
                 });
             });
             // cutNoteButton
-            buttonWithId("cutNoteButton").addEventListener('click', createCutFunction(mainEditorTextarea));
+            buttonWithId("cutNoteButton").addEventListener('click', createCutFunction(mainEditorTextarea, false));
             // cutAnkiButton
-            buttonWithId("cutAnkiButton").addEventListener('click', createCutFunction(mainEditorTextarea, OPEN_CLOZE_STR, CLOSE_CLOZE_STR));
+            buttonWithId("cutAnkiButton").addEventListener('click', createCutFunction(mainEditorTextarea, true));
             // copyButtons
             /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
             const addEventListenerForCopyButton = (buttonId, inputElementId) => {

@@ -3,18 +3,25 @@ import { Log, mainEditor } from "./Main.js";
 import { CurrentNote } from "./CurrentNote.js";
 var buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte;
 var showToast = HtmlUtils.showToast;
-import { HelgeUtils } from './HelgeUtils/HelgeUtils.js';
-const ClozeMarkers = HelgeUtils.Anki?.ClozeMarkers;
 const clipboard = navigator.clipboard;
-export const createCutFunction = (mainEditorTextarea, prefix = "", postfix = "") => {
+export const createCutFunction = (mainEditorTextarea, addClozeMarkersIfNotPresentFlag) => {
     return () => {
+        const addClozeMarkersIfNotPresent = (input, addClozeMarkersIfNotPresentFlag) => {
+            if (!addClozeMarkersIfNotPresentFlag) {
+                return input;
+            }
+            if (input.includes("{{c1::")) {
+                if (input.includes("}}")) {
+                    return input;
+                }
+                return input + "}}";
+            }
+            return "{{c1::" + input + "}},,";
+        };
         mainEditor.Undo.saveState();
         const currentNote = new CurrentNote(mainEditorTextarea);
-        let text = prefix + currentNote.text().trim() + postfix;
-        if (text.includes("{{c1::") && !text.includes("}}")) {
-            text += "}}";
-        }
-        clipboard.writeText(text)
+        const output = addClozeMarkersIfNotPresent(currentNote.text().trim(), addClozeMarkersIfNotPresentFlag);
+        clipboard.writeText(output)
             .then(() => {
             HtmlUtils.signalClickToUser(buttonWithId("cutNoteButton"));
             {
