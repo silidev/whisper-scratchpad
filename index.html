@@ -38,11 +38,9 @@ height: 6cm; width: 100%">
            style="min-width:var(--buttonHeight); width:96%">☰</div>
 
       <div class='item buttonMenuItem'>
-        <button class="buttonLikeBox all buttonInMenu" id="replaceButton1">♻<br>Repl
-        </button>
         <button class="buttonLikeBox all buttonInMenu" id="du2ichMenuItem">du2ich</button>
         <button class="buttonLikeBox all buttonInMenu" id="viewLogButton">
-          View<br>Log
+          Toggle<br>Log View
         </button>
 
         <span class="buttonLikeBox all buttonInMenu">
@@ -54,8 +52,10 @@ height: 6cm; width: 100%">
 
         <button class='buttonLikeBox all buttonInMenu'
            id="transcribeAgainButton">Scribe again</button>
-
-
+        <!--############## undoActionButton ##############-->
+        <button class="buttonLikeBox all buttonInMenu" id="ctrlYButton">
+          Ctrl-Y<br>Redo
+        </button>
       </div>
       <!-- ############# New Menu Line ############# -->
       <div class='item' style="padding-left: 0">
@@ -66,25 +66,19 @@ height: 6cm; width: 100%">
             // Do NOT reference anything from other scripts here, because this must work even if the other scripts are broken.
             ">Update<br>w/o save
         </button>
-
-        <!--############## Anki-Export Button ##############-->
-        <button class="buttonLikeBox all buttonInMenu" id="exportAnkiClozeCsv">Anki-<br>Export</button>
-
-        <!--############# Auto-Replace Checkbox ############# -->
-        <span class="buttonLikeBox all buttonInMenu">
-          <input type="checkbox" id="autoReplaceCheckbox" class="forceMainColor"
-                 checked="checked">
-          <label style="margin-left: 8px;" for="autoReplaceCheckbox">
-            Auto-
-            <br>Replace
-          </label>
-        </span>
-
-        <!--############## undoActionButton ##############-->
-        <button class="buttonLikeBox all buttonInMenu" id="ctrlYButton">Ctrl-Y<br>Redo</button>
+        <button class="buttonLikeBox all buttonInMenu" id="addWordReplaceRuleButton"><span style="font-size: 16px">
+          \b-></span>
+        </button>
+        <button class="buttonLikeBox all buttonInMenu" id="addReplaceRuleButton">
+          <span style="font-size: 16px">""->""</span>
+        </button>
+        <button class="buttonLikeBox all buttonInMenu" id="replaceButton1">
+          ♻<br>Repl
+        </button>
 
         <!--############## Insert delimiter ##############-->
-        <button class="buttonLikeBox all buttonInMenu" id="insertNewNoteDelimiterButton1">
+        <button class="buttonLikeBox all buttonInMenu" id="insertNewNoteDelimiterButton1"
+                style="display: none">
           )))---(((
         </button>
 
@@ -152,7 +146,20 @@ height: 6cm; width: 100%">
                 class="buttonLikeBox all buttonInMenu">Fix<br>clip</button>
         <button id="removePunctuationButton"
                 class="buttonLikeBox all buttonInMenu">Kill<br>,.</button>
+        <!--############## Anki-Export Button ##############-->
+        <button class="buttonLikeBox all buttonInMenu" id="exportAnkiClozeCsv">Anki-<br>Export</button>
+
+        <!--############# Auto-Replace Checkbox ############# -->
+        <span class="buttonLikeBox all buttonInMenu">
+          <input type="checkbox" id="autoReplaceCheckbox" class="forceMainColor"
+                 checked="checked">
+          <label style="margin-left: 8px;" for="autoReplaceCheckbox">
+            Auto-
+            <br>Replace
+          </label>
+        </span>
       </div>
+
 
       <div class='item'>
         <!--############## Language Selector ##############-->
@@ -220,10 +227,6 @@ height: 6cm; width: 100%">
 
   <!-- ########### row1EditorButtons ############# -->
 
-  <button class="buttonLikeBox all hideOnPhone"
-          id="insertNewNoteDelimiterButton2">
-    )))---(((
-  </button>
   <button class="buttonLikeBox all" id="cutAnkiButton">✂ Cut<br>Note</button> <!--Copy icon was ⎘-->
   <button class="buttonLikeBox all" id="pasteButton">
     <span class="forceMainColor">📋</span>
@@ -246,23 +249,22 @@ height: 6cm; width: 100%">
   <button class="buttonLikeBox all" id="cutNoteButton">
     Cut<br>Raw
   </button>
-  <button class="buttonLikeBox all" id="addWordReplaceRuleButton"><span style="font-size: 16px">\b
-    -></span></button>
-  <button class="buttonLikeBox all" id="addReplaceRuleButton"><span style="font-size: 16px">""->""</span></button>
-
   <!--Not used any more, remove eventually -->
     <button style="display: none" class="buttonLikeBox all" id="transcribeButton">✎ <br>T-scribe</button>
 
   <button class="buttonLikeBox all" id="ctrlZButtonOfReplaceRules">⎌<br>Ctrl-z</button>
   <button class="buttonLikeBox all" id="pauseRecordButtonWithoutDelimiter">Cont.<br>Rec</button>
-
+  <button id="mainEditorSelectWordLeftButton" class="buttonLikeBox all">&lt;&lt;x</button>
 </div>
 
 <!-- ########### row3EditorButtons ############# -->
 <div id="row3EditorButtons" class="flexClass">
   <button class="buttonLikeBox all" id="toggleBottomUiButton">...</button>
   <button id="findDuButton" class="buttonLikeBox all">du</button>
-  <button id="mainEditorSelectWordLeftButton" class="buttonLikeBox all">&lt;&lt;x</button>
+  <button class="buttonLikeBox all"
+          id="insertNewNoteDelimiterButton2">
+    )))---(((
+  </button>
   <button id="mainEditorWordLeftButton" class="buttonLikeBox all"><<</button>
   <button id="mainEditorWordRightButton" class="buttonLikeBox all"
           onclick="return false;">>></button>
