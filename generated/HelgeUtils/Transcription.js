@@ -87,12 +87,15 @@ const withDeepgram = async (audioBlob, apiKey, useWhisper = false) => {
  * @param language
  * @param translateToEnglish
  */
-const withOpenAiCompatible = async (url, model, audioBlob, apiKey, prompt, language = '', translateToEnglish = false) => {
+const withOpenAiCompatible = async (url, model, audioBlob, apiKey, prompt, language, translateToEnglish = false) => {
     const formData = new FormData();
     formData.append('file', audioBlob, 'audio.wav');
     formData.append('model', model); // Using the largest model
+    if (language) {
+        formData.append('language', language); /* Language. Anything in a different language will be translated to the target language. e.g. "en". The language of the input audio. Supplying the input language in ISO-639-1 format will improve accuracy and latency. */
+    }
     if (!translateToEnglish)
-        formData.append('prompt', prompt); /* Language. Anything in a different language will be translated to the target language. e.g. "en". The language of the input audio. Supplying the input language in ISO-639-1 format will improve accuracy and latency. */
+        formData.append('prompt', prompt);
     // formData.append('temperature', WHISPER_TEMPERATURE) // temperature number Optional
     // Defaults to 0 The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. If set to 0, the model will use log probability to automatically increase the temperature until certain thresholds are hit. https://platform.openai.com/docs/api-reference/audio/createTranscription#audio-createtranscription-temperature
     /* Docs: https://platform.openai.com/docs/api-reference/audio/createTranscription */
