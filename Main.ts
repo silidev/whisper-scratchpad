@@ -688,9 +688,6 @@ export namespace UiFunctions {
 
           // MediaRecorder options
           const options = {
-            // These dont work for groq:
-            // mimeType: 'audio/webm',
-            // audioBitsPerSecond: 256000
           }
 
           /* https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/MediaRecorder */

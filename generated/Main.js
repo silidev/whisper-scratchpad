@@ -609,11 +609,7 @@ export var UiFunctions;
                     // })
                     // const source = audioContext.createMediaStreamSource(stream)
                     // MediaRecorder options
-                    const options = {
-                    // These dont work for groq:
-                    // mimeType: 'audio/webm',
-                    // audioBitsPerSecond: 256000
-                    };
+                    const options = {};
                     /* https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/MediaRecorder */
                     mediaRecorder = new MediaRecorder(stream, options);
                     audioChunks = [];

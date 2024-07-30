@@ -79,33 +79,24 @@ const withDeepgram = async (audioBlob, apiKey, useWhisper = false) => {
 };
 /** Transcribes the given audio blob using the given API key and prompt.
  *
+ * @param url
+ * @param model
  * @param audioBlob
  * @param apiKey
  * @param prompt Ignored if translateToEnglish==true
  * @param language
  * @param translateToEnglish
  */
-const withOpenAi = async (audioBlob, apiKey, prompt, language = "", translateToEnglish = false) => {
+const withOpenAiCompatible = async (url, model, audioBlob, apiKey, prompt, language = '', translateToEnglish = false) => {
     const formData = new FormData();
-    formData.append('file', audioBlob);
-    formData.append('model', 'whisper-1'); // Using the largest model
+    formData.append('file', audioBlob, 'audio.wav');
+    formData.append('model', model); // Using the largest model
     if (!translateToEnglish)
-        formData.append('prompt', prompt);
-    /* Language. Anything in a different language will be translated to the target language. */
-    formData.append('language', language);
-    /*  */
-    formData.append('language', language); // e.g. "en". The language of the input audio. Supplying the input language in ISO-639-1 format will improve accuracy and latency.
+        formData.append('prompt', prompt); /* Language. Anything in a different language will be translated to the target language. e.g. "en". The language of the input audio. Supplying the input language in ISO-639-1 format will improve accuracy and latency. */
     // formData.append('temperature', WHISPER_TEMPERATURE) // temperature number Optional
     // Defaults to 0 The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. If set to 0, the model will use log probability to automatically increase the temperature until certain thresholds are hit. https://platform.openai.com/docs/api-reference/audio/createTranscription#audio-createtranscription-temperature
     /* Docs: https://platform.openai.com/docs/api-reference/audio/createTranscription */
-    const response = await fetch("https://api.openai.com/v1/audio/"
-        // "https://api.groq.com/openai/v1/audio/"
-        /* Groq: "https://api.groq.com/openai/v1/audio/" wäre hier korrekt. Es anzusprechen
-        klappt auch, aber dann kriege ich leider:     "message": "file must be one of the following types: [flac mp3 mp4 mpeg mpga m4a ogg opus webm webm]","type": "invalid_request_error"
-        Auch wenn ich die model oben auf "whisper-large-v3" setze.
-        Docs: https://console.groq.com/docs/speech-text
-         */
-        + (translateToEnglish ? 'translations' : 'transcriptions'), {
+    const response = await fetch(url + (translateToEnglish ? 'translations' : 'transcriptions'), {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${apiKey}`
@@ -148,15 +139,18 @@ export const transcribe = async (api, audioBlob, apiKey, prompt = '', language =
     if (!audioBlob || audioBlob.size === 0)
         return "";
     const output = api === "OpenAI" ?
-        await withOpenAi(audioBlob, apiKey, prompt, language, translateToEnglish)
-        : api === "Deepgram-whisper" ?
-            await withDeepgram(audioBlob, apiKey, true)
-            : api === "Deepgram-nova-2" ?
-                await withDeepgram(audioBlob, apiKey)
-                // @ts-expect-error
-                : api === "Speechmatics" ?
-                    await withSpeechmatics(audioBlob, apiKey)
-                    : await withGladia(audioBlob, apiKey);
+        await withOpenAiCompatible('https://api.openai.com/v1/audio/', 'whisper-1', audioBlob, apiKey, prompt, language, translateToEnglish)
+        : api === "groq-whisper" ?
+            // Docs: https://console.groq.com/docs/speech-text
+            await withOpenAiCompatible("https://api.groq.com/openai/v1/audio/", 'whisper-large-v3', audioBlob, apiKey, prompt, language, translateToEnglish)
+            : api === "Deepgram-whisper" ?
+                await withDeepgram(audioBlob, apiKey, true)
+                : api === "Deepgram-nova-2" ?
+                    await withDeepgram(audioBlob, apiKey)
+                    // @ts-expect-error
+                    : api === "Speechmatics" ?
+                        await withSpeechmatics(audioBlob, apiKey)
+                        : await withGladia(audioBlob, apiKey);
     if (typeof output === "string")
         return output;
     throw new TranscriptionError(output);
