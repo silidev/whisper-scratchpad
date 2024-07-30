@@ -99,6 +99,12 @@ const withOpenAi = async (audioBlob, apiKey, prompt, language = "", translateToE
     // Defaults to 0 The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. If set to 0, the model will use log probability to automatically increase the temperature until certain thresholds are hit. https://platform.openai.com/docs/api-reference/audio/createTranscription#audio-createtranscription-temperature
     /* Docs: https://platform.openai.com/docs/api-reference/audio/createTranscription */
     const response = await fetch("https://api.openai.com/v1/audio/"
+        // "https://api.groq.com/openai/v1/audio/"
+        /* Groq: "https://api.groq.com/openai/v1/audio/" wäre hier korrekt. Es anzusprechen
+        klappt auch, aber dann kriege ich leider:     "message": "file must be one of the following types: [flac mp3 mp4 mpeg mpga m4a ogg opus webm webm]","type": "invalid_request_error"
+        Auch wenn ich die model oben auf "whisper-large-v3" setze.
+        Docs: https://console.groq.com/docs/speech-text
+         */
         + (translateToEnglish ? 'translations' : 'transcriptions'), {
         method: 'POST',
         headers: {
