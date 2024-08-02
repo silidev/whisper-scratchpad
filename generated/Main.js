@@ -45,6 +45,10 @@ var Backups;
     const backupDownload = () => {
         downloadOffer(backupString(), "whisper-scratchpad-backup.txt");
     };
+    // ############## backupDownload ##############
+    const backupMainEditorDownload = () => {
+        downloadOffer(mainEditorTextarea.value, "wscr-main-editor.txt");
+    };
     Backups.offerBackupIfItsTime = () => {
         const nowMillis = new Date().getTime();
         const hoursElapsed = lastBackupMillis ?
@@ -65,6 +69,7 @@ var Backups;
         };
         Menu.wireItem("backupToClipboard", backupToClipboard);
         Menu.wireItem("backupDownload", backupDownload);
+        Menu.wireItem("backupMainEditorDownload", backupMainEditorDownload);
     };
 })(Backups || (Backups = {}));
 export var mainEditor;

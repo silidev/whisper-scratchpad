@@ -61,6 +61,11 @@ namespace Backups {
     downloadOffer(backupString(), "whisper-scratchpad-backup.txt")
   }
 
+  // ############## backupDownload ##############
+  const backupMainEditorDownload = () => {
+    downloadOffer(mainEditorTextarea.value, "wscr-main-editor.txt")
+  }
+
   export const offerBackupIfItsTime = () => {
     const nowMillis = new Date().getTime()
     const hoursElapsed =
@@ -83,6 +88,7 @@ namespace Backups {
 
     Menu.wireItem("backupToClipboard", backupToClipboard)
     Menu.wireItem("backupDownload", backupDownload)
+    Menu.wireItem("backupMainEditorDownload", backupMainEditorDownload)
   }
 
 }
