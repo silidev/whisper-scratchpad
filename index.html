@@ -163,6 +163,7 @@ height: 6cm; width: 100%">
 
       <div class='item'>
         <!--############## Language Selector ##############-->
+        <div>
         Language
         <info-button>Only for OpenAI, otherwise ignored.
         </info-button>
@@ -185,6 +186,22 @@ height: 6cm; width: 100%">
 <!--          <option value="ru">Russian</option>-->
 <!--          <option value="zh">Chinese</option>-->
         </select>
+        </div>
+        <span style="width: 30px"></span>
+        <div>
+          <!--############## API Selector ##############-->
+          API
+          <select id="apiSelector" style="font-size: 22px" class="all buttonColors buttonInMenu">
+            <option value="OpenAI">OpenAI</option>
+            <option value="groq-whisper">groq-whisper</option>
+            <option value="corsproxyIoOpenAI">corsproxyIoOpenAI</option>
+            <option value="Deepgram-whisper">Deepgram-whisper</option>
+            <option value="Deepgram-nova-2">Deepgram-nova-2</option>
+            <option value="Gladia">Gladia.io</option>
+            <option value="Google">Google</option>
+            <option value="Speechmatics">Speechmatics</option>
+          </select>
+        </div>
       </div>
       <div class='item' style="display: none">
         <!--############## Replaces Rules Selector ##############-->
@@ -360,20 +377,6 @@ height: 6cm; width: 100%">
   </div>
 </div>
 
-  <div style="width:100%">
-    <!--############## API Selector ##############-->
-    <br>API
-    <select id="apiSelector" style="font-size: 22px" class="all buttonColors buttonInMenu">
-      <option value="OpenAI">OpenAI</option>
-      <option value="groq-whisper">groq-whisper</option>
-      <option value="corsproxyIoOpenAI">corsproxyIoOpenAI</option>
-      <option value="Deepgram-whisper">Deepgram-whisper</option>
-      <option value="Deepgram-nova-2">Deepgram-nova-2</option>
-      <option value="Gladia">Gladia.io</option>
-      <option value="Google">Google</option>
-      <option value="Speechmatics">Speechmatics</option>
-    </select>
-  </div>
 <div style="width:100%">
 <!--############## API Key ##############-->
   <br><h2>API Key</h2>
