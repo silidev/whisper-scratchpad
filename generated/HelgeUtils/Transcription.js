@@ -143,20 +143,22 @@ export const transcribe = async (api, audioBlob, apiKey, prompt = '', language =
         return "";
     const output = api === "OpenAI" ?
         await withOpenAiCompatible('https://api.openai.com/v1/audio/', 'whisper-1', audioBlob, apiKey, prompt, language, translateToEnglish)
-        : api === "gpt-4o-mini-transcribe" ?
-            await withOpenAiCompatible("https://api.openai.com/v1/audio/", 'gpt-4o-mini-transcribe', audioBlob, apiKey, prompt, language, translateToEnglish)
-            : api === "gpt-4o-transcribe" ?
-                await withOpenAiCompatible("https://api.openai.com/v1/audio/", 'gpt-4o-transcribe', audioBlob, apiKey, prompt, language, translateToEnglish)
-                : api === "groq-whisper" ?
-                    // Docs: https://console.groq.com/docs/speech-text
-                    await withOpenAiCompatible("https://api.groq.com/openai/v1/audio/", 'whisper-large-v3', audioBlob, apiKey, prompt, language, translateToEnglish)
-                    : api === "Deepgram-whisper" ?
-                        await withDeepgram(audioBlob, apiKey, true)
-                        : api === "Deepgram-nova-2" ?
-                            await withDeepgram(audioBlob, apiKey)
-                            : api === "Speechmatics" ?
-                                await withSpeechmatics(audioBlob, apiKey)
-                                : await withGladia(audioBlob, apiKey);
+        : api === "tmpTest" ?
+            await withOpenAiCompatible('https://api.openai.com/v1/audio/', 'whisper-1', audioBlob, apiKey, prompt, language, translateToEnglish)
+            : api === "gpt-4o-mini-transcribe" ?
+                await withOpenAiCompatible("https://api.openai.com/v1/audio/", 'gpt-4o-mini-transcribe', audioBlob, apiKey, prompt, language, translateToEnglish)
+                : api === "gpt-4o-transcribe" ?
+                    await withOpenAiCompatible("https://api.openai.com/v1/audio/", 'gpt-4o-transcribe', audioBlob, apiKey, prompt, language, translateToEnglish)
+                    : api === "groq-whisper" ?
+                        // Docs: https://console.groq.com/docs/speech-text
+                        await withOpenAiCompatible("https://api.groq.com/openai/v1/audio/", 'whisper-large-v3', audioBlob, apiKey, prompt, language, translateToEnglish)
+                        : api === "Deepgram-whisper" ?
+                            await withDeepgram(audioBlob, apiKey, true)
+                            : api === "Deepgram-nova-2" ?
+                                await withDeepgram(audioBlob, apiKey)
+                                : api === "Speechmatics" ?
+                                    await withSpeechmatics(audioBlob, apiKey)
+                                    : await withGladia(audioBlob, apiKey);
     if (typeof output === "string")
         return output;
     throw new TranscriptionError(output);
