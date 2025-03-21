@@ -91,6 +91,7 @@ const withOpenAiCompatible = async (url, model, audioBlob, apiKey, prompt, langu
     const formData = new FormData();
     formData.append('file', audioBlob, 'audio.wav');
     formData.append('model', model);
+    formData.append('response_format', "XXXdummy");
     if (language) {
         formData.append('language', language); /* Language. Anything in a different language will be translated to the target language. e.g. "en". The language of the input audio. Supplying the input language in ISO-639-1 format will improve accuracy and latency. */
     }
@@ -146,8 +147,8 @@ export const transcribe = async (api, audioBlob, apiKey, prompt = '', language =
         : api === "tmpTest" ?
             await withOpenAiCompatible('https://api.openai.com/v1/audio/', 'whisper-1', audioBlob, apiKey, prompt, language, translateToEnglish)
             : api === "gpt-4o-mini-transcribe" ?
-                /* Doesnt work, it gets me: "error": {"message": "This model does not support the format you provided.","type": "invalid_request_error","param": "messages","code": "unsupported_format"
-                 }*/
+                /* Doesnt work, it gets me: "This model does not support the format you provided."
+                The problem is the audio format. Not all wav-files are accepted.*/
                 await withOpenAiCompatible("https://api.openai.com/v1/audio/", 'gpt-4o-mini-transcribe', audioBlob, apiKey, null, null, false)
                 : api === "gpt-4o-transcribe" ?
                     /* error, see gpt-4o-mini-transcribe */
