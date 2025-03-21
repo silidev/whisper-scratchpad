@@ -94,7 +94,7 @@ const withOpenAiCompatible = async (url, model, audioBlob, apiKey, prompt, langu
     if (language) {
         formData.append('language', language); /* Language. Anything in a different language will be translated to the target language. e.g. "en". The language of the input audio. Supplying the input language in ISO-639-1 format will improve accuracy and latency. */
     }
-    if (!translateToEnglish)
+    if (prompt && !translateToEnglish)
         formData.append('prompt', prompt);
     // formData.append('temperature', WHISPER_TEMPERATURE) // temperature number Optional
     // Defaults to 0 The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. If set to 0, the model will use log probability to automatically increase the temperature until certain thresholds are hit. https://platform.openai.com/docs/api-reference/audio/createTranscription#audio-createtranscription-temperature
@@ -148,10 +148,10 @@ export const transcribe = async (api, audioBlob, apiKey, prompt = '', language =
             : api === "gpt-4o-mini-transcribe" ?
                 /* Doesnt work, it gets me: "error": {"message": "This model does not support the format you provided.","type": "invalid_request_error","param": "messages","code": "unsupported_format"
                  }*/
-                await withOpenAiCompatible("https://api.openai.com/v1/audio/", 'gpt-4o-mini-transcribe', audioBlob, apiKey, prompt, language, translateToEnglish)
+                await withOpenAiCompatible("https://api.openai.com/v1/audio/", 'gpt-4o-mini-transcribe', audioBlob, apiKey, null, null, false)
                 : api === "gpt-4o-transcribe" ?
                     /* error, see gpt-4o-mini-transcribe */
-                    await withOpenAiCompatible("https://api.openai.com/v1/audio/", 'gpt-4o-transcribe', audioBlob, apiKey, prompt, language, translateToEnglish)
+                    await withOpenAiCompatible("https://api.openai.com/v1/audio/", 'gpt-4o-transcribe', audioBlob, apiKey, null, null, false)
                     : api === "groq-whisper" ?
                         // Docs: https://console.groq.com/docs/speech-text
                         await withOpenAiCompatible("https://api.groq.com/openai/v1/audio/", 'whisper-large-v3', audioBlob, apiKey, prompt, language, translateToEnglish)
