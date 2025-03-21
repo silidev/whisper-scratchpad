@@ -91,7 +91,7 @@ const withOpenAiCompatible = async (url, model, audioBlob, apiKey, prompt, langu
     const formData = new FormData();
     formData.append('file', audioBlob, 'audio.wav');
     formData.append('model', model);
-    formData.append('response_format', "XXXdummy");
+    // formData.append('response_format', "XXXdummy")
     if (language) {
         formData.append('language', language); /* Language. Anything in a different language will be translated to the target language. e.g. "en". The language of the input audio. Supplying the input language in ISO-639-1 format will improve accuracy and latency. */
     }

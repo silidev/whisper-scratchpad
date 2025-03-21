@@ -687,9 +687,9 @@ export namespace UiFunctions {
           stream = streamParam
 
           // const audioContext = new AudioContext({
-          //   // sampleRate: 44100,
+          //   sampleRate: 44100,
           // })
-
+          //
           // const source = audioContext.createMediaStreamSource(stream)
 
           // MediaRecorder options
