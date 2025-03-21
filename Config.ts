@@ -5,7 +5,7 @@ import {UiFunctions} from "./Main.js"
 import WhereToPutTranscription = UiFunctions.Buttons.Media.WhereToPutTranscription
 
 // noinspection SpellCheckingInspection
-export const VERSION = "Fix"
+export const VERSION = "nulls"
 export const WHISPER_TEMPERATURE = "0"
 export const INSERT_EDITOR_INTO_PROMPT = true
 export const NEW_NOTE_DELIMITER = ')))---(((\n'
