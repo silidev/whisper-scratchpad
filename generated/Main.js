@@ -173,6 +173,15 @@ export var UiFunctions;
     UiFunctions.runTests = () => {
         Buttons.runTests();
     };
+    const wireTextMacroButton = (buttonId, textarea, macroText) => {
+        if (!textarea)
+            throw new Error("Textarea is null");
+        const listener = (event) => {
+            event.preventDefault(); // Prevent the textarea from losing focus
+            TextAreas.insertAndPutCursorAfter(textarea, macroText);
+        };
+        buttonWithId(buttonId).addEventListener('pointerdown', listener);
+    };
     let Buttons;
     (function (Buttons) {
         // eslint-disable-next-line no-shadow
@@ -219,10 +228,7 @@ export var UiFunctions;
                 event.preventDefault(); // Prevent the textarea from losing focus
                 mainEditorTextareaWrapper.findWholeWordCaseInsensitiveAndSelect("du");
             });
-            buttonWithId('openClozeButton').addEventListener('pointerdown', (event) => {
-                event.preventDefault(); // Prevent the textarea from losing focus
-                TextAreas.insertAndPutCursorAfter(mainEditorTextarea, "{{c1::");
-            });
+            wireTextMacroButton('openClozeButton', document.getElementById('mainEditorTextarea'), '{{c1::');
             {
                 const textarea = textAreaWithId('mainEditorTextarea');
                 const wireCursorButton = (isLeft) => {
