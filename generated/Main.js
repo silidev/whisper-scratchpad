@@ -215,10 +215,13 @@ export var UiFunctions;
         })(ReplaceRulesSearch || (ReplaceRulesSearch = {}));
         let Cursor;
         (function (Cursor) {
-            // ############## findDuButton ##############
             buttonWithId('findDuButton').addEventListener('pointerdown', (event) => {
                 event.preventDefault(); // Prevent the textarea from losing focus
                 mainEditorTextareaWrapper.findWholeWordCaseInsensitiveAndSelect("du");
+            });
+            buttonWithId('openClozeButton').addEventListener('pointerdown', (event) => {
+                event.preventDefault(); // Prevent the textarea from losing focus
+                TextAreas.insertAndPutCursorAfter(mainEditorTextarea, "{{c1::");
             });
             {
                 const textarea = textAreaWithId('mainEditorTextarea');

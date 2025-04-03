@@ -258,12 +258,14 @@ export namespace UiFunctions {
     }
 
     namespace Cursor {
-      // ############## findDuButton ##############
       buttonWithId('findDuButton').addEventListener('pointerdown', (event: { preventDefault: () => void; }) => {
         event.preventDefault(); // Prevent the textarea from losing focus
         mainEditorTextareaWrapper.findWholeWordCaseInsensitiveAndSelect("du")
       })
-
+      buttonWithId('openClozeButton').addEventListener('pointerdown', (event: { preventDefault: () => void; }) => {
+        event.preventDefault(); // Prevent the textarea from losing focus
+        TextAreas.insertAndPutCursorAfter(mainEditorTextarea,"{{c1::")
+      })
       {
         const textarea = textAreaWithId('mainEditorTextarea')
         const wireCursorButton = (isLeft: boolean) => {
