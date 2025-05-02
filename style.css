@@ -226,7 +226,7 @@ This used to be called greenFilter.*/
  text-align: center;
 }
 .buttonWidthAndPadding {
- min-width:85px;
+ min-width:80px; /* This is optimized for my phone. I tried to make it flexible and look good, but it took to much time. */
  padding: 0 0;
 }
 
