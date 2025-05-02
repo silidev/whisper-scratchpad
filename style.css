@@ -225,6 +225,10 @@ This used to be called greenFilter.*/
  padding: 0 10px;
  text-align: center;
 }
+.buttonWidthAndPadding {
+ min-width:85px;
+ padding: 0 0;
+}
 
 .buttonInMenu {
  background-color: blue;
