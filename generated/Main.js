@@ -182,6 +182,18 @@ export var UiFunctions;
         };
         buttonWithId(buttonId).addEventListener('pointerdown', listener);
     };
+    const wireSelectionSurroundingButton = (buttonId, textarea, startString, endString) => {
+        if (!textarea)
+            throw new Error("Textarea is null");
+        const listener = (event) => {
+            event.preventDefault(); // Prevent the textarea from losing focus
+            const selectionStr = TextAreas.selectedText(mainEditorTextarea);
+            TextAreas.insertAndPutCursorAfter(textarea, startString);
+            TextAreas.insertAndPutCursorAfter(textarea, selectionStr);
+            TextAreas.insertAndPutCursorAfter(textarea, endString);
+        };
+        buttonWithId(buttonId).addEventListener('pointerdown', listener);
+    };
     let Buttons;
     (function (Buttons) {
         // eslint-disable-next-line no-shadow
@@ -229,6 +241,7 @@ export var UiFunctions;
                 mainEditorTextareaWrapper.findWholeWordCaseInsensitiveAndSelect("du");
             });
             wireTextMacroButton('openClozeButton', document.getElementById('mainEditorTextarea'), '{{c1::');
+            wireSelectionSurroundingButton('boldButton', document.getElementById('mainEditorTextarea'), "==", "==");
             {
                 const textarea = textAreaWithId('mainEditorTextarea');
                 const wireCursorButton = (isLeft) => {

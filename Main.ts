@@ -223,6 +223,20 @@ export namespace UiFunctions {
     buttonWithId(buttonId).addEventListener('pointerdown', listener)
   }
 
+  const wireSelectionSurroundingButton = (buttonId: string, textarea: HTMLTextAreaElement
+      , startString: string, endString: string) => {
+    if (!textarea)
+      throw new Error("Textarea is null")
+    const listener = (event: {preventDefault: () => void}) => {
+      event.preventDefault() // Prevent the textarea from losing focus
+      const selectionStr = TextAreas.selectedText(mainEditorTextarea)
+      TextAreas.insertAndPutCursorAfter(textarea, startString)
+      TextAreas.insertAndPutCursorAfter(textarea, selectionStr)
+      TextAreas.insertAndPutCursorAfter(textarea, endString)
+    }
+    buttonWithId(buttonId).addEventListener('pointerdown', listener)
+  }
+
   export namespace Buttons {
     // eslint-disable-next-line no-shadow
     import buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte
@@ -273,6 +287,8 @@ export namespace UiFunctions {
         mainEditorTextareaWrapper.findWholeWordCaseInsensitiveAndSelect("du")
       })
       wireTextMacroButton('openClozeButton', document.getElementById('mainEditorTextarea') as HTMLTextAreaElement, '{{c1::')
+      wireSelectionSurroundingButton('boldButton', document.getElementById('mainEditorTextarea') as HTMLTextAreaElement, "==","==")
+
       {
         const textarea = textAreaWithId('mainEditorTextarea')
         const wireCursorButton = (isLeft: boolean) => {
