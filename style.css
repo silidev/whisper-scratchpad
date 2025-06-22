@@ -3,7 +3,7 @@
  --buttonColor: #576505; /* used for long, but too bright: #9eb508; !* olive *!*/
  --buttonFontSize: 14px;
  --buttonHeight: 50px;
- --mainEditorTextareaHeight: 8cm; /* 240px is good for 5 button rows.*/
+ --mainEditorTextareaHeight: 240px; /* 8 cm is good for 4 button rows. 240px is good for 5 button rows.*/
  --editorFontSize: 20px; /* 18px is too small to edit on my phone */
  --mainColor: #ffffff;
  --menuItemHeight: 44px;
