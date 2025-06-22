@@ -29,12 +29,15 @@ export class CurrentNote {
   }
 
   /** Selects the text of the current note in the UI */
-  public select() {
-    const selectionStart = this.leftIndex()
-        // Also select the newNoteDelimiter before the note:
-        - (this.leftIndex() > NEW_NOTE_DELIMITER.length ? NEW_NOTE_DELIMITER.length : 0)
+  public select(withNewNoteDelimiter = true) {
+    const selectionStart1 = this.leftIndex()
+    // Also select the newNoteDelimiter before the note:
+    const selectionStart2 = selectionStart1 +
+        (withNewNoteDelimiter && this.leftIndex() > NEW_NOTE_DELIMITER.length
+            ? - NEW_NOTE_DELIMITER.length
+            : 0)
     const selectionEnd = this.rightIndex()
-    this.mainEditorTextarea.setSelectionRange(selectionStart, selectionEnd)
+    this.mainEditorTextarea.setSelectionRange(selectionStart2, selectionEnd)
   }
 }
 

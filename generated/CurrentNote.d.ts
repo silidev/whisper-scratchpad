@@ -7,5 +7,5 @@ export declare class CurrentNote {
     text(): string;
     delete(): void;
     /** Selects the text of the current note in the UI */
-    select(): void;
+    select(withNewNoteDelimiter?: boolean): void;
 }

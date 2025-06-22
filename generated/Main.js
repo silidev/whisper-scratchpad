@@ -905,6 +905,13 @@ export var UiFunctions;
             buttonWithId("cutNoteButton").addEventListener('click', createCutFunction(mainEditorTextarea, false));
             // cutAnkiButton
             buttonWithId("cutAnkiButton").addEventListener('click', createCutFunction(mainEditorTextarea, true));
+            // selectNoteButton
+            buttonWithId("selectNoteButton").addEventListener('click', () => {
+                const currentNote = new CurrentNote(mainEditorTextarea);
+                currentNote.select(false);
+                mainEditor.save();
+                mainEditorTextarea.focus();
+            }, true);
             // copyButtons
             /** Adds an event listener to a button that copies the text of an input element to the clipboard. */
             const addEventListenerForCopyButton = (buttonId, inputElementId) => {
