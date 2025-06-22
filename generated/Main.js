@@ -133,12 +133,12 @@ export var mainEditor;
 })(mainEditor || (mainEditor = {}));
 var Misc;
 (function (Misc) {
-    Misc.replaceInCurrentNote = () => {
+    Misc.replaceInCurrentNote = (rules) => {
         mainEditor.Undo.saveState();
         const selectionStart = mainEditorTextarea.selectionStart;
         // const selectionEnd = mainEditorTextarea.selectionEnd
         const currentNote = new CurrentNote(mainEditorTextarea);
-        const changedText = ReplaceByRules.withUiLog(replaceRulesTextarea.value, currentNote.text());
+        const changedText = ReplaceByRules.withUiLog(rules, currentNote.text());
         currentNote.delete();
         mainEditor.insertNote(changedText);
         mainEditorTextarea.selectionStart = selectionStart;
@@ -853,11 +853,17 @@ export var UiFunctions;
                 saveAPIKeyButton();
             });
             const replaceButton = () => {
-                Misc.replaceInCurrentNote();
+                Misc.replaceInCurrentNote(replaceRulesTextarea.value);
                 mainEditorTextarea.focus();
                 // window.scrollBy(0,-100000)
             };
             // replaceButtons
+            /** replaces "? Antwort:" with "? {{c1::" */
+            HtmlUtils.addClickListener(("replaceAntwortButton"), () => {
+                Misc.replaceInCurrentNote('"\\? Antwort: "gm->"? {{c1::"\n');
+                // Test: Misc.replaceInCurrentNote('"a"gm->"b"\n')
+                mainEditorTextarea.focus();
+            });
             HtmlUtils.addClickListener(("replaceButton1"), () => {
                 replaceButton();
             });

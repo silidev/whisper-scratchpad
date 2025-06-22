@@ -163,14 +163,14 @@ export namespace mainEditor {
 
 namespace Misc {
 
-  export const replaceInCurrentNote = () => {
+  export const replaceInCurrentNote = (rules: string) => {
     mainEditor.Undo.saveState()
     const selectionStart = mainEditorTextarea.selectionStart
     // const selectionEnd = mainEditorTextarea.selectionEnd
 
     const currentNote = new CurrentNote(mainEditorTextarea)
     const changedText = ReplaceByRules.withUiLog(
-        replaceRulesTextarea.value, currentNote.text())
+        rules, currentNote.text())
     currentNote.delete()
 
     mainEditor.insertNote(changedText)
@@ -962,12 +962,18 @@ export namespace UiFunctions {
       })
 
       const replaceButton = () => {
-        Misc.replaceInCurrentNote()
+        Misc.replaceInCurrentNote(replaceRulesTextarea.value)
         mainEditorTextarea.focus()
         // window.scrollBy(0,-100000)
       }
 
 // replaceButtons
+      /** replaces "? Antwort:" with "? {{c1::" */
+       HtmlUtils.addClickListener(("replaceAntwortButton"), () => {
+        Misc.replaceInCurrentNote('"\\? Antwort: "gm->"? {{c1::"\n')
+        // Test: Misc.replaceInCurrentNote('"a"gm->"b"\n')
+        mainEditorTextarea.focus()
+      })
       HtmlUtils.addClickListener(("replaceButton1"), () => {
         replaceButton()
       })
