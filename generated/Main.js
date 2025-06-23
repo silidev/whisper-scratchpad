@@ -194,6 +194,11 @@ export var UiFunctions;
         };
         buttonWithId(buttonId).addEventListener('pointerdown', listener);
     };
+    UiFunctions.replaceAntwortWithClozeOpen = () => {
+        Misc.replaceInCurrentNote('"\\? Antwort: "gm->"? {{c1::"\n');
+        // Test: Misc.replaceInCurrentNote('"a"gm->"b"\n')
+        mainEditorTextarea.focus();
+    };
     let Buttons;
     (function (Buttons) {
         // eslint-disable-next-line no-shadow
@@ -858,12 +863,10 @@ export var UiFunctions;
                 // window.scrollBy(0,-100000)
             };
             // replaceButtons
-            /** replaces "? Antwort:" with "? {{c1::" */
-            HtmlUtils.addClickListener(("replaceAntwortButton"), () => {
-                Misc.replaceInCurrentNote('"\\? Antwort: "gm->"? {{c1::"\n');
-                // Test: Misc.replaceInCurrentNote('"a"gm->"b"\n')
-                mainEditorTextarea.focus();
-            });
+            /* old, remove later
+                   HtmlUtils.addClickListener(("replaceAntwortButton"), () => {
+                     replaceAntwortWithClozeOpen()
+                   }) */
             HtmlUtils.addClickListener(("replaceButton1"), () => {
                 replaceButton();
             });

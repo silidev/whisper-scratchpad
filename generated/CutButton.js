@@ -1,5 +1,5 @@
 import { HtmlUtils } from "./HelgeUtils/HtmlUtils.js";
-import { Log, mainEditor } from "./Main.js";
+import { Log, mainEditor, UiFunctions } from './Main.js';
 import { CurrentNote } from "./CurrentNote.js";
 var buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte;
 var showToast = HtmlUtils.showToast;
@@ -19,6 +19,7 @@ export const createCutFunction = (mainEditorTextarea, addClozeMarkersIfNotPresen
             return "{{c1::" + input + "}},,";
         };
         mainEditor.Undo.saveState();
+        UiFunctions.replaceAntwortWithClozeOpen();
         const currentNote = new CurrentNote(mainEditorTextarea);
         const output = addClozeMarkersIfNotPresent(currentNote.text().trim(), addClozeMarkersIfNotPresentFlag);
         clipboard.writeText(output)

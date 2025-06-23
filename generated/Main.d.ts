@@ -16,6 +16,7 @@ export declare namespace Menu {
 }
 export declare namespace UiFunctions {
     const runTests: () => void;
+    const replaceAntwortWithClozeOpen: () => void;
     namespace Buttons {
         const runTests: () => void;
         namespace BottomUi {

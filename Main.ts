@@ -237,6 +237,12 @@ export namespace UiFunctions {
     buttonWithId(buttonId).addEventListener('pointerdown', listener)
   }
 
+  export const replaceAntwortWithClozeOpen = () => {
+    Misc.replaceInCurrentNote('"\\? Antwort: "gm->"? {{c1::"\n')
+    // Test: Misc.replaceInCurrentNote('"a"gm->"b"\n')
+    mainEditorTextarea.focus()
+  }
+
   export namespace Buttons {
     // eslint-disable-next-line no-shadow
     import buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte
@@ -968,12 +974,10 @@ export namespace UiFunctions {
       }
 
 // replaceButtons
-      /** replaces "? Antwort:" with "? {{c1::" */
+/* old, remove later
        HtmlUtils.addClickListener(("replaceAntwortButton"), () => {
-        Misc.replaceInCurrentNote('"\\? Antwort: "gm->"? {{c1::"\n')
-        // Test: Misc.replaceInCurrentNote('"a"gm->"b"\n')
-        mainEditorTextarea.focus()
-      })
+         replaceAntwortWithClozeOpen()
+       }) */
       HtmlUtils.addClickListener(("replaceButton1"), () => {
         replaceButton()
       })
