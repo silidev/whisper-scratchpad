@@ -72,6 +72,7 @@ export declare namespace UiFunctions {
             }
             const cancelRecording: () => void;
         }
+        const replaceButton: () => void;
         const addEventListeners: () => void;
         const addWordReplaceRule: () => void;
     }

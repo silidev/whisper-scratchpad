@@ -238,7 +238,7 @@ export namespace UiFunctions {
   }
 
   export const replaceAntwortWithClozeOpen = () => {
-    Misc.replaceInCurrentNote('"\\? Antwort: "gm->"? {{c1::"\n')
+    Misc.replaceInCurrentNote('"\\? Antwort: "gmi->"? {{c1::"\n')
     // Test: Misc.replaceInCurrentNote('"a"gm->"b"\n')
     mainEditorTextarea.focus()
   }
@@ -868,6 +868,12 @@ export namespace UiFunctions {
       export const writeText = (text: string) => navigator.clipboard.writeText(text)
     }
 
+    export const replaceButton = () => {
+      Misc.replaceInCurrentNote(replaceRulesTextarea.value)
+      mainEditorTextarea.focus()
+      // window.scrollBy(0,-100000)
+    }
+
     export const addEventListeners = () => {
 
       addKeyboardShortcuts()
@@ -966,12 +972,6 @@ export namespace UiFunctions {
       HtmlUtils.addClickListener(("saveAPIKeyButton"), () => {
         saveAPIKeyButton()
       })
-
-      const replaceButton = () => {
-        Misc.replaceInCurrentNote(replaceRulesTextarea.value)
-        mainEditorTextarea.focus()
-        // window.scrollBy(0,-100000)
-      }
 
 // replaceButtons
 /* old, remove later

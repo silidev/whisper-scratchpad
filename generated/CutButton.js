@@ -20,6 +20,7 @@ export const createCutFunction = (mainEditorTextarea, addClozeMarkersIfNotPresen
         };
         mainEditor.Undo.saveState();
         UiFunctions.replaceAntwortWithClozeOpen();
+        UiFunctions.Buttons.replaceButton();
         const currentNote = new CurrentNote(mainEditorTextarea);
         const output = addClozeMarkersIfNotPresent(currentNote.text().trim(), addClozeMarkersIfNotPresentFlag);
         clipboard.writeText(output)

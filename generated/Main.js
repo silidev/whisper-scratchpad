@@ -195,7 +195,7 @@ export var UiFunctions;
         buttonWithId(buttonId).addEventListener('pointerdown', listener);
     };
     UiFunctions.replaceAntwortWithClozeOpen = () => {
-        Misc.replaceInCurrentNote('"\\? Antwort: "gm->"? {{c1::"\n');
+        Misc.replaceInCurrentNote('"\\? Antwort: "gmi->"? {{c1::"\n');
         // Test: Misc.replaceInCurrentNote('"a"gm->"b"\n')
         mainEditorTextarea.focus();
     };
@@ -773,6 +773,11 @@ export var UiFunctions;
             clipboard.readText = () => navigator.clipboard.readText();
             clipboard.writeText = (text) => navigator.clipboard.writeText(text);
         })(clipboard || (clipboard = {}));
+        Buttons.replaceButton = () => {
+            Misc.replaceInCurrentNote(replaceRulesTextarea.value);
+            mainEditorTextarea.focus();
+            // window.scrollBy(0,-100000)
+        };
         Buttons.addEventListeners = () => {
             addKeyboardShortcuts();
             Menu.wireItem("rrCountChars", () => {
@@ -857,22 +862,17 @@ export var UiFunctions;
             HtmlUtils.addClickListener(("saveAPIKeyButton"), () => {
                 saveAPIKeyButton();
             });
-            const replaceButton = () => {
-                Misc.replaceInCurrentNote(replaceRulesTextarea.value);
-                mainEditorTextarea.focus();
-                // window.scrollBy(0,-100000)
-            };
             // replaceButtons
             /* old, remove later
                    HtmlUtils.addClickListener(("replaceAntwortButton"), () => {
                      replaceAntwortWithClozeOpen()
                    }) */
             HtmlUtils.addClickListener(("replaceButton1"), () => {
-                replaceButton();
+                Buttons.replaceButton();
             });
             HtmlUtils.addClickListener(("replaceButton2"), () => {
                 UiFunctions.Buttons.BottomUi.toggleHidden();
-                replaceButton();
+                Buttons.replaceButton();
             });
             // ############## backslashButton ##############
             HtmlUtils.addClickListener(("backslashButton"), () => {

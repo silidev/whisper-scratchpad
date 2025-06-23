@@ -4,6 +4,7 @@ import {CurrentNote} from "./CurrentNote.js"
 import buttonWithId = HtmlUtils.NullThrowsException.buttonWithIdNte
 
 import showToast = HtmlUtils.showToast
+import Misc = HtmlUtils.Misc
 
 const clipboard = navigator.clipboard
 
@@ -25,6 +26,7 @@ export const createCutFunction =
     }
     mainEditor.Undo.saveState()
     UiFunctions.replaceAntwortWithClozeOpen()
+    UiFunctions.Buttons.replaceButton()
     const currentNote  = new CurrentNote(mainEditorTextarea)
     const output: string = addClozeMarkersIfNotPresent(currentNote.text().trim()
         , addClozeMarkersIfNotPresentFlag)
