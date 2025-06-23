@@ -292,7 +292,7 @@ export namespace UiFunctions {
         event.preventDefault(); // Prevent the textarea from losing focus
         mainEditorTextareaWrapper.findWholeWordCaseInsensitiveAndSelect("du")
       })
-      wireTextMacroButton('openClozeButton', document.getElementById('mainEditorTextarea') as HTMLTextAreaElement, '{{c1::')
+      wireTextMacroButton('openClozeButton', document.getElementById('mainEditorTextarea') as HTMLTextAreaElement, 'Antwort: ')
       wireSelectionSurroundingButton('boldButton', document.getElementById('mainEditorTextarea') as HTMLTextAreaElement, "==","==")
 
       {

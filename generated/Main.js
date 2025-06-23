@@ -245,7 +245,7 @@ export var UiFunctions;
                 event.preventDefault(); // Prevent the textarea from losing focus
                 mainEditorTextareaWrapper.findWholeWordCaseInsensitiveAndSelect("du");
             });
-            wireTextMacroButton('openClozeButton', document.getElementById('mainEditorTextarea'), '{{c1::');
+            wireTextMacroButton('openClozeButton', document.getElementById('mainEditorTextarea'), 'Antwort: ');
             wireSelectionSurroundingButton('boldButton', document.getElementById('mainEditorTextarea'), "==", "==");
             {
                 const textarea = textAreaWithId('mainEditorTextarea');
