@@ -1041,12 +1041,17 @@ export namespace UiFunctions {
       buttonWithId("cutAnkiButton").addEventListener('click',
           createCutFunction(mainEditorTextarea,true))
 // selectNoteButton
-      buttonWithId("selectNoteButton").addEventListener('click',
+      buttonWithId("replaceAndSelectNoteButton").addEventListener('click',
           () => {
-            const currentNote  = new CurrentNote(mainEditorTextarea)
-            currentNote.select(false)
-            mainEditor.save()
-            mainEditorTextarea.focus()
+            const selectNote = () => {
+              const currentNote = new CurrentNote(mainEditorTextarea)
+              currentNote.select(false)
+              mainEditor.save()
+              mainEditorTextarea.focus()
+            }
+
+            replaceButton()
+            selectNote()
           }
           ,true)
 
