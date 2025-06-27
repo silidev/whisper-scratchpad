@@ -195,7 +195,7 @@ export var UiFunctions;
         buttonWithId(buttonId).addEventListener('pointerdown', listener);
     };
     UiFunctions.replaceAntwortWithClozeOpen = () => {
-        Misc.replaceInCurrentNote('"\\? Antwort: "gmi->"? {{c1::"\n');
+        Misc.replaceInCurrentNote('"\\? Antwort: "gmi->"?\n{{c1::\n"\n');
         // Test: Misc.replaceInCurrentNote('"a"gm->"b"\n')
         mainEditorTextarea.focus();
     };
@@ -961,12 +961,12 @@ export var UiFunctions;
                         return { column1: text };
                     }
                     else if (text.includes("{{")) {
-                        return { column1: text + "}},," };
+                        return { column1: text + "\n}},," };
                     }
-                    return { column1: '{{c1::' + text + "}},," };
+                    return { column1: '\n{{c1::\n' + text + "\n}},," };
                 };
                 const csvData = textArray.map((text) => {
-                    return surroundWithClozeDelimiters(text.trim());
+                    return surroundWithClozeDelimiters(text);
                 });
                 const csv = generateCsv(csvConfig)(csvData);
                 return download(csvConfig)(csv);

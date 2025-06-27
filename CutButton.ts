@@ -20,9 +20,9 @@ export const createCutFunction =
         if (input.includes("}}")) {
           return input
         }
-        return input + "}}"
+        return input + "\n}}"
       }
-      return "{{c1::" + input + "}},,"
+      return "{{c1::\n" + input + "\n}},,"
     }
     mainEditor.Undo.saveState()
     UiFunctions.replaceAntwortWithClozeOpen()
