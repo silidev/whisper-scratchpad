@@ -274,7 +274,7 @@ export var HtmlUtils;
                 step2(cursor, textArea, target);
             };
             FindCaseInsensitiveAndSelect.normal = (textArea, target) => {
-                const cursor = textArea.value.toLowerCase().indexOf(target, textArea.selectionEnd);
+                const cursor = textArea.value.toLocaleLowerCase('de-DE').indexOf(target.toLocaleLowerCase('de-DE'), textArea.selectionEnd);
                 step2(cursor, textArea, target);
             };
         })(FindCaseInsensitiveAndSelect = TextAreas.FindCaseInsensitiveAndSelect || (TextAreas.FindCaseInsensitiveAndSelect = {}));
